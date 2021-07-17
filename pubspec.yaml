@@ -1,0 +1,134 @@
+name: loginsignspaceorion
+description: A new Flutter application.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^0.5.12+4
+  intl: ^0.16.1
+  syncfusion_flutter_sliders: ^19.1.56-beta
+  multi_select_flutter: ^4.0.0
+  hive: ^1.4.4+1
+  hive_flutter: any
+  bottom_navy_bar: any
+  font_awesome_flutter: any
+  modal_progress_hud: ^0.1.3
+  dio: 0.1.6  #latest version
+  persistent_bottom_nav_bar: any
+  circular_profile_avatar: ^1.0.8
+  flutter_launcher_icons: ^0.8.1
+  flutter_password_strength: ^0.1.4
+  pit_contact_count: ^0.1.3
+  image_picker: ^0.6.1+4
+  flutter_cache_manager: ^2.1.1
+  connectivity: ^2.0.2
+  toggle_switch: "^0.1.8"
+  custom_switch: ^0.0.1
+  flutter_secure_storage: ^3.3.5
+  json_annotation: ^3.1.1
+  flutter_local_notifications: ^1.4.4+2
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+    # add this line to your dependencies
+  fluttertoast: ^7.1.6
+  sqflite:
+  dotted_border: ^1.0.7
+  provider: ^4.1.3
+  stacked_themes: ^0.2.2+2
+  stacked: ^1.2.2
+  #  image_picker: ^0.6.0+3
+  flutter_contact: ^0.6.4
+  url_launcher: ^5.7.2
+  permission_handler: ^5.0.1+1
+  form_field_validator: ^1.0.1
+  toast: ^0.1.5
+  rflutter_alert: ^1.1.0
+  google_fonts: ^1.1.1
+  string_validator: ^0.1.4
+  build_runner: ^1.11.0
+  json_serializable: ^3.5.1
+dropdown: ^1.0.2
+theme_manager: ^1.0.4
+dropdownfield: ^1.0.3
+cupertino_icons: ^0.1.2
+scoped_model: ^1.0.1
+dotted_border: ^1.0.2
+url_launcher: ^5.4.0 # Good, any 5.4.x version where x >= 0 works.
+screen: ^0.0.5
+flutter_gifimage: ^1.0.0
+tuple: any
+flutter_bloc: ^0.20.0
+equatable: ^0.4.0
+splashscreen: ^1.3.5
+http: ^0.12.0+4
+#syncfusion_flutter_sliders: ^19.1.56-beta
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/genLogo.png"
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/orion.jpeg
+    - assets/images/slide1.jpg
+    - assets/images/genLogo.png
+    - assets/images/qwe.png
+    - assets/images/space.jpeg
+    - assets/images/blank.png
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
