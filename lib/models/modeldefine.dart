@@ -123,16 +123,16 @@ class Device {
   String dId;
 
   factory Device.fromJson(Map<String, dynamic> json) => Device(
-    id: json["id"],
-    dateInstalled: DateTime.parse(json["date_installed"]),
+    // id: json["id"],
+    // dateInstalled: DateTime.parse(json["date_installed"]),
     user: json["user"],
     rId: json["r_id"],
     dId: json["d_id"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "date_installed": "${dateInstalled.year.toString().padLeft(4, '0')}-${dateInstalled.month.toString().padLeft(2, '0')}-${dateInstalled.day.toString().padLeft(2, '0')}",
+    // "id": id,
+    // "date_installed": "${dateInstalled.toString().padLeft(4, '0')}-${dateInstalled.month.toString().padLeft(2, '0')}-${dateInstalled.day.toString().padLeft(2, '0')}",
     "user": user,
     "r_id": rId,
     "d_id": dId,

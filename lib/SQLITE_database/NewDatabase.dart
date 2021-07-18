@@ -9,6 +9,8 @@ import 'dart:io';
 List tableOfPlace;
  class NewDbProvider {
 
+
+
   NewDbProvider._privateConstructor();
   PlaceType placeType;
   static final NewDbProvider instance = NewDbProvider._privateConstructor();
@@ -32,12 +34,28 @@ List tableOfPlace;
 
 
 
-  static final _placeFloorTable='placeFloorTable';
-  static final columnPlaceFloorId='f_id';
-  static final columnPlaceFloorPid='p_id';
-  static final columnPlaceFloorName='f_name';
-  static final columnPlaceFloorUser='user';
+  static final _deviceTable='deviceTable';
+  static final columnDeviceId='d_id';
+  static final columnDeviceUser='user';
+  static final columnDeviceRoomId='r_id';
 
+
+
+
+  static final _devicePinStatus='devicePinValues';
+
+  static final columnDevicePin1='pin1Status';
+  static final columnDevicePin2='pin2Status';
+  static final columnDevicePin3='pin3Status';
+  static final columnDevicePin4='pin4Status';
+  static final columnDevicePin5='pin5Status';
+  static final columnDevicePin6='pin6Status';
+  static final columnDevicePin7='pin7Status';
+  static final columnDevicePin8='pin8Status';
+  static final columnDevicePin9='pin9Status';
+  static final columnDevicePin10='pin10Status';
+  static final columnDevicePin11='pin11Status';
+  static final columnDevicePin12='pin12Status';
 
   Database db;
 
@@ -64,30 +82,37 @@ List tableOfPlace;
          CREATE TABLE $_tableName (  $columnPlaceId INTEGER PRIMARY KEY,
          $columnPlaceName TEXT NOT NULL,$columnPlaceUser INTEGER )
          ''');
-
-     // await db.execute('''
-     //     CREATE TABLE $_floorTableName ($columnFloorId  NOT NULL PRIMARY KEY,
-     //     $columnFloorName TEXT NOT NULL   )
-     //     ''');
      await db.execute('''
-        CREATE TABLE $_floorTableName($columnFloorId NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnPlaceId) REFERENCES $_tableName ($columnPlaceId ));
+        CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnPlaceId ));
         ''');
 
      await db.execute('''
-        CREATE TABLE $_roomTableName(   $columnRoomId NOT NULL PRIMARY KEY , $columnRoomName TEXT NOT NULL ,$columnFloorId INTEGER,$columnRoomUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnFloorId ))
+        CREATE TABLE $_roomTableName(   $columnRoomId INTEGER NOT NULL PRIMARY KEY , $columnRoomName TEXT NOT NULL ,$columnFloorId INTEGER,$columnRoomUser INTEGER,FOREIGN KEY($columnRoomId) REFERENCES $_floorTableName ($columnFloorId ))
         ''');
 
-     // await db.execute('''CREATE TABLE $_placeFloorTable ($columnPlaceFloorId NOT NULL PRIMARY KEY , $columnPlaceFloorPid INTEGER ,$columnPlaceFloorName TEXT, $columnPlaceFloorUser INTEGER )
-     // ''');
 
      await db.execute('''
-        CREATE TABLE $_placeFloorTable(   $columnPlaceFloorId NOT NULL PRIMARY KEY , $columnPlaceFloorName TEXT NOT NULL ,$columnPlaceFloorPid INTEGER,$columnPlaceFloorUser INTEGER)
+        CREATE TABLE $_deviceTable( $columnDeviceUser INTEGER , $columnRoomId INTEGER NOT NULL , $columnDeviceId TINYTEXT PRIMARY KEY ,FOREIGN KEY($columnDeviceId) REFERENCES $_roomTableName($columnRoomId))
         ''');
 
-      // await db.execute(''' CREATE $_floorTableName ($columnFloorId INTEGER NOT NULL PRIMARY KEY, $columnFloorName TEXT NOT NULL ,$columnFloorPlaceId INTEGER NOT NULL,
-      //  FOREIGN KEY ($columnFloorId) REFERENCES $_tableName($columnPlaceId)
-      //  )
-      // ''');
+
+     await db.execute('''
+        CREATE TABLE $_devicePinStatus( 
+        $columnDevicePin1 INTEGER  , 
+        $columnDevicePin2 INTEGER ,
+         $columnDevicePin3 INTEGER ,
+         $columnDevicePin4 INTEGER ,
+         $columnDevicePin5 INTEGER ,
+         $columnDevicePin6 INTEGER ,
+         $columnDevicePin7 INTEGER ,
+         $columnDevicePin8 INTEGER ,
+         $columnDevicePin9 INTEGER ,
+         $columnDevicePin10 INTEGER ,
+         $columnDevicePin11 INTEGER ,
+         $columnDevicePin12 INTEGER )
+        ''');
+
+
     });
     return database;
   }
@@ -96,10 +121,6 @@ List tableOfPlace;
 var qq;
 
 
-  Future <void> insertAnotherTableData(FloorType floorType)async{
-    final db= await database;
-    await db.insert('$_placeFloorTable', floorType.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
-  }
 
   // Define a function that inserts dogs into the database
   Future<void> insertPlaceModelData(PlaceType placeType) async {
@@ -124,7 +145,7 @@ var qq;
   }
 
 
-  Future<void> insertRomModelData(RoomType roomType) async {
+  Future<void> insertRoomModelData(RoomType roomType) async {
     // Get a reference to the database.
     final db = await database;
     await db.insert(
@@ -132,6 +153,27 @@ var qq;
       roomType.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+
+
+  Future<void> insertDeviceModelData(Device device) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_deviceTable',
+      device.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('_deviceTable  ${_deviceTable}');
+  }
+
+
+  Future<void> insertDevicePin(DevicePin devicePin)async{
+    final db= await database;
+    await db.insert('$_devicePinStatus',
+      devicePin.toJson(),
+    conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
 // A method that retrieves all the dogs from the dogs table.
@@ -159,31 +201,12 @@ var qq;
 
 
 
-   Future<int> insertPlaceData(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    Database db2 = await instance.database;
-
-    // var ff=await db.insert(_tableName, row);
-    // ff=await db.insert(_floorTableName, row);
-    // db2.insert(_floorTableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
-
-    return await db.insert(_tableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
-    // return ff;
-  }
-
-  Future<int> insertFloorData(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-// print('row $row');
-    return await db.insert(_floorTableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
-    // return ff;
-  }
-
-  Future<int> insertRoomData(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    print('row $row');
-    return await db.insert(_roomTableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
-    // return ff;
-  }
+  // Future<int> insertRoomData(Map<String, dynamic> row) async {
+  //   Database db = await instance.database;
+  //   print('row $row');
+  //   return await db.insert(_roomTableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
+  //   // return ff;
+  // }
 
 
 
@@ -194,22 +217,24 @@ var qq;
     print(db.query(_tableName).toString());
     return await db.query(_tableName);
   }
-
-
-   queryAnotherFloor() async {
-     Database db = await instance.database;
-     // tableOfPlace=db.query(_tableName);
-     // print(tableOfPlace)
-     print(db.query(_placeFloorTable).toString());
-     return await db.query(_placeFloorTable);
-   }
-
-
   queryFloor() async {
     Database db = await instance.database;
 
     return await db.query(_floorTableName);
   }
+
+   queryRoom() async {
+     Database db = await instance.database;
+
+     return await db.query(_roomTableName);
+   }
+
+   queryDevice() async {
+     Database db = await instance.database;
+
+     return await db.query(_deviceTable);
+   }
+
 
   selectTable()async{
 
@@ -235,10 +260,41 @@ var qq;
      // return result;
    }
 
-   queryRoom() async {
-    Database db = await instance.database;
-    return await db.query(_roomTableName);
-  }
+   Future getRoomById(String id) async {
+     final db = await database;
+     var result = await db.query("roomTable", where: "f_id = ? ", whereArgs: [id]);
+     print('FlooronCHangesresult $result');
+     // return result.isNotEmpty?result.first:Null;
+     return result;
+     return result.isNotEmpty ? FloorType.fromJson(result.first): Null;
+
+     // fromMap(result.first) : Null;
+     // return result;
+   }
+
+
+
+
+
+   Future getDeviceByRId(String id) async {
+     final db = await database;
+     var result = await db.query("deviceTable", where: "r_id = ? ", whereArgs: [id]);
+     print('roomchanges $result');
+     // return result.isNotEmpty?result.first:Null;
+     return result;
+     return result.isNotEmpty ? FloorType.fromJson(result.first): Null;
+
+     // fromMap(result.first) : Null;
+     // return result;
+   }
+
+
+
+
+
+
+
+
   // Future update(Map<String, dynamic> row) async {
   //   Database db = await instance.database;
   //   int id = row[columnPlaceId];
@@ -254,16 +310,5 @@ var qq;
     return await db.update(_tableName,row, where: '$columnPlaceId=?',whereArgs: [id]);
   }
 
-  Future<int> delete(int id)async{
-    Database db= await instance.database;
-    // await db.transaction((txn) async{
-    // var batch=txn.batch();
-    //   batch.delete(id.pId);
-    //   batch.delete(id.fName);
-    //   batch.delete(id.fId);
-    //   batch.delete(id.user.toString());
-    //   await batch.commit();
-    // });
-    return await db.delete(_placeFloorTable,where: "$columnPlaceFloorPid=?",whereArgs: [id]);
-  }
+
 }
