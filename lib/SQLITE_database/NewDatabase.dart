@@ -43,7 +43,7 @@ List tableOfPlace;
 
 
   static final _devicePinStatus='devicePinValues';
-
+  static final columnDevicePinId='id';
   static final columnDevicePin1='pin1Status';
   static final columnDevicePin2='pin2Status';
   static final columnDevicePin3='pin3Status';
@@ -98,6 +98,7 @@ List tableOfPlace;
 
      await db.execute('''
         CREATE TABLE $_devicePinStatus( 
+        $columnDevicePinId INTEGER,
         $columnDevicePin1 INTEGER  , 
         $columnDevicePin2 INTEGER ,
          $columnDevicePin3 INTEGER ,

@@ -52,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    fetchPlace().then((value) => getAllFloor()).then((value) => getAllRoom());
+    placeQueryFunc();
+    fetchPlace().then((value) => getAllFloor()).then((value) => getAllRoom()).then((value) =>     getAllDevice());
       // NewDbProvider.instance.dogs();
     // readData();
 
@@ -84,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           });
 
-    NewDbProvider.instance.insertPlaceModelData(fido).then((value) => queryRows= NewDbProvider.instance.queryAll() );
+    NewDbProvider.instance.insertPlaceModelData(fido);
 
           // NewDbProvider.instance.insertPlaceData({
           //   NewDbProvider.columnPlaceName: placeData[i]['p_type'],
@@ -393,7 +394,11 @@ print('fId  ${fId}');
     print('did12 ${did}');
 
   }
+placeQueryFunc()async{
+  queryRows =
+      await NewDbProvider.instance.queryAll();
 
+}
 
   var ff;
   List qwe;
@@ -455,10 +460,7 @@ List floorQueryData2;
                  // await getAllRoom();
                   queryRows =
                   await NewDbProvider.instance.queryAll();
-                  setState(() {
-                      placeQueryData=queryRows;
-                  });
-                  print(placeQueryData[0]['p_type']);
+
 
                 },
                 child: const Text('Place Query'),
@@ -771,34 +773,20 @@ List floorQueryData2;
                           }).toList(),
                           onChanged: (selectedRoom)async {
                             await getAllDevice();
+                            deviceQueryRows= await NewDbProvider.instance.queryDevice();
                             print('selectedRoom $selectedRoom');
 
                             var deviceId=selectedRoom.substring(7,14);
                             print('selectedRoom $deviceId');
-                            // await getAllDevice();
-                            deviceQueryRows=  await NewDbProvider.instance.queryDevice();
+
+
                             var  aa= await NewDbProvider.instance.getDeviceByRId(deviceId.toString());
+                            print('DeviceCheck  ${deviceQueryRows}');
                             // print('deviceQueryRows ${deviceQueryRows['dId']}');
                                 setState(() {
                                   deviceQueryRows2=aa;
                                   deviceVal=returnDeviceQuery();
                                 });
-
-
-
-                            // var  aa= await NewDbProvider.instance.getDeviceByRId(dId.toString());
-                            // print('AA  ${aa}');
-                            // setState(() {
-                            //   anotherRoomQueryRows123=aa;
-                            // });
-                            print('forDevice  ${deviceQueryRows2}');
-
-
-                            // for(int i=0;i<deviceQueryRows.length;i++){
-                            //   print(deviceQueryRows[i]['d_id']);
-                            // }
-
-
                             },
                           // items:snapshot.data
                         ),
