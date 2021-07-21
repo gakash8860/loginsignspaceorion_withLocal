@@ -47,30 +47,63 @@ class _MyHomePageState extends State<MyHomePage> {
   List copyFloorData;
   FloorType floorType;
   Future floorval;
+  Future pinVal;
+  Future sensorVal;
+  var ff;
+  List qwe;
+  List<Map<String, dynamic>> queryRows;
+  List placeQueryData;
+  List floorQueryData;
+  List floorQueryData2;
+  List<Map<String, dynamic>> floorQueryRows;
+  List<Map<String, dynamic>> roomQueryRows;
+  List<Map<String, dynamic>> deviceQueryRows;
+  List<Map<String, dynamic>> pinStatusQueryRows;
+  List<Map<String, dynamic>> sensorQueryRows;
+  List<Map<String, dynamic>> sensor2QueryRows;
+  List<Map<String, dynamic>> deviceQueryRows2;
+  List<Map<String, dynamic>> devicePinNamesQueryRows;
+  List<Map<String, dynamic>> devicePinNamesQueryRows2;
+  List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> roomQueryRows2;
 
-
+  Future roomVal;
+  Future deviceVal;
   @override
   void initState() {
     super.initState();
-    deviceQueryFunc();
-    returnPlaceQuery();
-    placeQueryFunc().then((value) =>  floorQueryFunc());
-    floorQueryFunc();
-    roomQueryFunc();
-
-
-    fetchPlace().then((value) => getAllFloor()).then((value) => getAllRoom()).then((value) =>     getAllDevice());
-      // NewDbProvider.instance.dogs();
-
-    // readData();
-
-
-    
-    // timer=Timer.periodic(Duration(milliseconds: 5), (timer) { fetchPlace();});
+    allAwaitFunction();
   }
+
+
+  allAwaitFunction()async{
+    await fetchPlace();
+    await placeQueryFunc();
+    await returnPlaceQuery();
+
+    await getAllFloor();
+    await floorQueryFunc();
+
+    await getAllRoom();
+    await roomQueryFunc();
+
+    await getAllDevice();
+    await deviceQueryFunc();
+    await getSensorData();
+    await devicePinSensorQueryFunc();
+    await getPinStatusData();
+    await devicePinStatusQueryFunc();
+    await getAllPinNames();
+    await devicePinNamesQueryFunc();
+
+
+  }
+
   List placeData;
+  List roomData;
+  List deviceData;
   var fido;
-  Future<List<PlaceType>> fetchPlace() async {
+  Future<bool> fetchPlace() async {
     // await openPlaceBox();
     String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
     final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
@@ -84,27 +117,19 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode > 0) {
          placeData = jsonDecode(response.body);
         for (int i = 0; i < placeData.length; i++) {
-          setState(() {
-             fido = PlaceType(
+
+             var placeQuery = PlaceType(
                 pId: placeData[i]['p_id'],
                 pType: placeData[i]['p_type'],
                 user: placeData[i]['user']
             );
+             NewDbProvider.instance.insertPlaceModelData(placeQuery);
 
-          });
 
-    NewDbProvider.instance.insertPlaceModelData(fido);
-
-          // NewDbProvider.instance.insertPlaceData({
-          //   NewDbProvider.columnPlaceName: placeData[i]['p_type'],
-          //   NewDbProvider.columnPlaceId: placeData[i]['p_id']
-          // });
-
-          // }
         }
-         // NewDbProvider.instance.queryAll();
 
-        places = placeData.map((data) => PlaceType.fromJson(data)).toList();
+
+        // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
 
       }
     } catch (e) {}
@@ -114,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-List copy=[];
+
   List<FloorType> floors;
   Future<bool> getAllFloor()async{
     var pId;
@@ -143,12 +168,6 @@ List copy=[];
             user: floorData[i]['user']
           );
         await  NewDbProvider.instance.insertFloorModelData(floorQuery);
-          // NewDbProvider.instance.insertFloorData({
-          //
-          //   NewDbProvider.columnFloorName: floorData[i]['f_name'].toString(),
-          //   NewDbProvider.columnFloorId: floorData[i]['f_id'],
-          //   NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-          // });
         }
       }
 
@@ -165,38 +184,12 @@ List copy=[];
   }
 
 
-
-List roomData;
-List deviceData;
-List<dynamic> devicePinNamesData=[];
-  var roomQuery;
-  var deviceQuery;
-  var aa;
-  Future returnPlaceQuery(){
-    return NewDbProvider.instance.queryAll();
-  }
-  Future returnFloorQuery(String pId){
-
-    return NewDbProvider.instance.queryFloor();
-  }
-
-  Future returnRoomQuery(String fId){
-
-    return NewDbProvider.instance.queryRoom();
-  }
-  Future returnDeviceQuery(String rId){
-
-    return NewDbProvider.instance.queryDevice();
-  }
-
-Future roomVal;
-Future deviceVal;
   Future<bool> getAllRoom()async{
-var fId;
+    var fId;
     for(int i=0;i<floorQueryData.length;i++) {
-    //   print(NewDbProvider.instance.dogs());
+      //   print(NewDbProvider.instance.dogs());
       fId = floorQueryData[i]['f_id'].toString();
-print('fId  ${fId}');
+      print('fId  ${fId}');
 
 
       // String url="http://10.0.2.2:8000/api/data";
@@ -216,11 +209,11 @@ print('fId  ${fId}');
         for(int i=0;i<roomData.length;i++){
 
 
-           roomQuery=RoomType(
-            rId: roomData[i]['r_id'],
-            rName: roomData[i]['r_name'].toString(),
-            fId: roomData[i]['f_id'],
-            user: roomData[i]['user']
+          roomQuery=RoomType(
+              rId: roomData[i]['r_id'],
+              rName: roomData[i]['r_name'].toString(),
+              fId: roomData[i]['f_id'],
+              user: roomData[i]['user']
           );
 
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
@@ -260,7 +253,7 @@ print('fId  ${fId}');
         'Authorization': 'Token $token',
 
       });
-       deviceData = jsonDecode(response.body);
+      deviceData = jsonDecode(response.body);
       // print('deviceData  ${deviceData}');
       for (int i = 0; i < deviceData.length; i++) {
         var deviceQuery = Device(
@@ -276,9 +269,6 @@ print('fId  ${fId}');
     }
     return Future.value(true);
   }
-
-
-
   Future<bool> getAllPinNames()async{
     String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
     var did;
@@ -288,56 +278,48 @@ print('fId  ${fId}');
       did=deviceQueryRows[i]['d_id'];
       print('didqwe ${did}');
       String url = "http://genorionofficial.herokuapp.com/editpinnames/?d_id="+did;
-           // try {
+      // try {
       final   response = await http.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
 
-        });
-        if(response.statusCode==200) {
-         var  devicePinNamesData=json.decode(response.body);
-         DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
+      });
+      if(response.statusCode==200) {
+        var  devicePinNamesData=json.decode(response.body);
+        DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-          List listOfPinNames=[devicePinNamesData,];
-         print('QWERTY  ${listOfPinNames}');
-          for (int i = 0; i < listOfPinNames.length; i++) {
+        List listOfPinNames=[devicePinNamesData,];
+        print('QWERTY  ${listOfPinNames}');
+        for (int i = 0; i < listOfPinNames.length; i++) {
 
-            print('devicePinData ${listOfPinNames}');
+          print('devicePinData ${listOfPinNames}');
 
-            var devicePinNamesQuery = DevicePin(
-              id: listOfPinNames[i]['id'],
-              dId: listOfPinNames[i]['d_id'].toString(),
-              pin1Name: listOfPinNames[i]['pin1Name'].toString(),
-              pin2Name: listOfPinNames[i]['pin2Name'].toString(),
-              pin3Name: listOfPinNames[i]['pin3Name'].toString(),
-              pin4Name: listOfPinNames[i]['pin4Name'].toString(),
-              pin5Name: listOfPinNames[i]['pin5Name'].toString(),
-              pin6Name: listOfPinNames[i]['pin6Name'].toString(),
-              pin7Name: listOfPinNames[i]['pin7Name'].toString(),
-              pin8Name: listOfPinNames[i]['pin8Name'].toString(),
-              pin9Name: listOfPinNames[i]['pin9Name'].toString(),
-              pin10Name: listOfPinNames[i]['pin10Name'].toString(),
-              pin11Name: listOfPinNames[i]['pin11Name'].toString(),
-              pin12Name: listOfPinNames[i]['pin12Name'].toString(),
-            );
-            print('devicePinNamesInsertQuery    ${devicePinNamesQuery}');
-            print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
-            await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
-          }
+          var devicePinNamesQuery = DevicePin(
+            id: listOfPinNames[i]['id'],
+            dId: listOfPinNames[i]['d_id'].toString(),
+            pin1Name: listOfPinNames[i]['pin1Name'].toString(),
+            pin2Name: listOfPinNames[i]['pin2Name'].toString(),
+            pin3Name: listOfPinNames[i]['pin3Name'].toString(),
+            pin4Name: listOfPinNames[i]['pin4Name'].toString(),
+            pin5Name: listOfPinNames[i]['pin5Name'].toString(),
+            pin6Name: listOfPinNames[i]['pin6Name'].toString(),
+            pin7Name: listOfPinNames[i]['pin7Name'].toString(),
+            pin8Name: listOfPinNames[i]['pin8Name'].toString(),
+            pin9Name: listOfPinNames[i]['pin9Name'].toString(),
+            pin10Name: listOfPinNames[i]['pin10Name'].toString(),
+            pin11Name: listOfPinNames[i]['pin11Name'].toString(),
+            pin12Name: listOfPinNames[i]['pin12Name'].toString(),
+          );
+          print('devicePinNamesInsertQuery    ${devicePinNamesQuery}');
+          print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
+          await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
         }
-      // print('devicePinDataOutside ${pinData.length}');
-
-      // print('devicePin123 ${pinData}');
-
-
-    print('index of ddd  $i');
+      }
     }
 
 
   }
-
-
   Future<bool> getSensorData() async {
     // arr=[arr.length-arr.length];
     String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
@@ -355,42 +337,32 @@ print('fId  ${fId}');
             'Accept': 'application/json',
             'Authorization': 'Token $token',
           });
-      int index=0;
-if(response.statusCode==200){
-  print('sensorResponse  ${response.statusCode}');
-  index++;
-}      if (response.statusCode ==200) {
-       var arr = jsonDecode(response.body);
+      if(response.statusCode==200){
+        print('sensorResponse  ${response.statusCode}');
 
-
-
-      print('aarrr ${arr}');
-
-
-        for (int i = 0; i < arr.length; i++) {
-          var sensorQuery = SensorData(
-            dId: arr['d_id'],
-            sensor1: arr['sensor1'],
-            sensor2: arr['sensor2'],
-            sensor3: arr['sensor3'],
-            sensor4: arr['sensor4'],
-            sensor5: arr['sensor5'],
-            sensor6: arr['sensor6'],
-            sensor7: arr['sensor7'],
-            sensor8: arr['sensor8'],
-            sensor9: arr['sensor9'],
-            sensor10: arr['sensor10'],
-          );
-          await NewDbProvider.instance.insertSensorData(sensorQuery);
-        }
-      } else {
-        throw Exception(Exception);
       }
+      var arr = jsonDecode(response.body);
+      List listOfPinSensor=[arr,];
+      for (int i = 0; i < listOfPinSensor.length; i++) {
+        var sensorQuery = SensorData(
+          dId: listOfPinSensor[i]['d_id'],
+          sensor1: listOfPinSensor[i]['sensor1'],
+          sensor2: listOfPinSensor[i]['sensor2'],
+          sensor3: listOfPinSensor[i]['sensor3'],
+          sensor4: listOfPinSensor[i]['sensor4'],
+          sensor5: listOfPinSensor[i]['sensor5'],
+          sensor6: listOfPinSensor[i]['sensor6'],
+          sensor7: listOfPinSensor[i]['sensor7'],
+          sensor8: listOfPinSensor[i]['sensor8'],
+          sensor9: listOfPinSensor[i]['sensor9'],
+          sensor10: listOfPinSensor[i]['sensor10'],
+        );
+        print('deviceSensorJson    ${sensorQuery.toJson()}');
+        await NewDbProvider.instance.insertSensorData(sensorQuery);
+      }
+
     }
   }
-
-
-
   Future<bool> getPinStatusData() async {
     // arr=[arr.length-arr.length];
     String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
@@ -410,7 +382,7 @@ if(response.statusCode==200){
           });
       int index=0;
       if(response.statusCode==200){
-        print('sensorResponse  ${response.statusCode}');
+        print('PinStatusResponse  ${response.statusCode}');
         var pinStatus= jsonDecode(response.body);
         PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
         List listOfPinStatusValue=[pinStatus];
@@ -448,11 +420,37 @@ if(response.statusCode==200){
   }
 
 
+List<dynamic> devicePinNamesData=[];
+  var roomQuery;
+  var deviceQuery;
+  var aa;
+  Future returnPlaceQuery(){
+    return NewDbProvider.instance.queryPlace();
+  }
+  Future returnFloorQuery(String pId){
+
+    return NewDbProvider.instance.queryFloor();
+  }
+
+  Future returnRoomQuery(String fId){
+
+    return NewDbProvider.instance.queryRoom();
+  }
+  Future returnDeviceQuery(String rId){
+
+    return NewDbProvider.instance.queryDevice();
+  }
+
+
+
+
+
+
 
 
   Future placeQueryFunc()async{
   queryRows =
-      await NewDbProvider.instance.queryAll();
+      await NewDbProvider.instance.queryPlace();
 
 }
  Future floorQueryFunc()async{
@@ -464,7 +462,7 @@ if(response.statusCode==200){
 
 
   }
-  roomQueryFunc()async {
+  Future roomQueryFunc()async {
     roomQueryRows =
     await NewDbProvider.instance.queryRoom();
     setState(() {
@@ -475,12 +473,10 @@ if(response.statusCode==200){
   deviceQueryFunc()async{
     deviceQueryRows =
     await NewDbProvider.instance.queryDevice();
-    // setState(() {
-    //   deviceQueryRows =
-    //        NewDbProvider.instance.queryDevice();
-    // });
+
    await getAllPinNames();
    await getSensorData();
+   await getPinStatusData();
   }
   Future devicePinNamesQueryFunc()async{
     devicePinNamesQueryRows =
@@ -503,32 +499,13 @@ if(response.statusCode==200){
     return sensorQueryRows;
 
   }
+  Future devicePinStatusQueryFunc()async{
+    pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
+    return pinStatusQueryRows;
+
+  }
 
 
-  Future pinVal;
-  Future sensorVal;
-  var ff;
-  List qwe;
-readData()async{
-  List<Map<String, dynamic>> queryRows =
-      await NewDbProvider.instance.queryAll();
-  ff=queryRows;
-  // print(ff[0]['p_type']);
-}
-  List<Map<String, dynamic>> queryRows;
-List placeQueryData;
-List floorQueryData;
-List floorQueryData2;
-  List<Map<String, dynamic>> floorQueryRows;
-  List<Map<String, dynamic>> roomQueryRows;
-  List<Map<String, dynamic>> deviceQueryRows;
-  List<Map<String, dynamic>> sensorQueryRows;
-  List<Map<String, dynamic>> sensor2QueryRows;
-  List<Map<String, dynamic>> deviceQueryRows2;
-  List<Map<String, dynamic>> devicePinNamesQueryRows;
-  List<Map<String, dynamic>> devicePinNamesQueryRows2;
-  List<Map<String, dynamic>> floorQueryRows2;
-  List<Map<String, dynamic>> roomQueryRows2;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -541,34 +518,11 @@ List floorQueryData2;
             mainAxisAlignment: MainAxisAlignment.center,
             // ignore: prefer_const_literals_to_create_immutables
             children: <Widget>[
-
-              // FlatButton(
-              //   onPressed: () async {
-              //     int i = await NewDbProvider.instance.insertPlaceData({
-              //       NewDbProvider.columnPlaceName: 'Place2',
-              //       NewDbProvider.columnPlaceId: '702'
-              //     });
-              //     print(
-              //         'insert id is $i   ->  ${NewDbProvider.columnPlaceId.toString()}');
-              //     print(
-              //         'insert id is $i   ->  ${NewDbProvider.columnPlaceName.toString()}');
-              //   },
-              //   child: const Text('insert'),
-              //   color: Colors.red,
-              // ),
-              FlatButton(
-                onPressed: () async {
-                  // int rowEffected = await NewDbProvider.instance.delete(fl);
-                  // print(rowEffected);
-                },
-                child: const Text('delete'),
-                color: Colors.red,
-              ),
               FlatButton(
                 onPressed: () async {
                  // await getAllRoom();
                   queryRows =
-                  await NewDbProvider.instance.queryAll();
+                  await NewDbProvider.instance.queryPlace();
 
 
                 },
@@ -637,6 +591,17 @@ List floorQueryData2;
                 child: const Text(' PinNames'),
                 color: Colors.red,
               ),
+
+              FlatButton(
+                onPressed: () async {
+                  pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
+                  print(pinStatusQueryRows);
+
+                },
+                child: const Text(' Pin Status'),
+                color: Colors.red,
+              ),
+
               SizedBox(height:30),
               FutureBuilder(
                   future: returnPlaceQuery(),
@@ -688,19 +653,24 @@ List floorQueryData2;
                             );
                           }).toList(),
                           onChanged: (selectedPlace)async {
+                            floorval=null;
+                            floorQueryRows2=null;
+                            print('Floorqwe  ${floorQueryRows2}');
                             var placeid=selectedPlace.substring(7,14);
 
                              aa= await NewDbProvider.instance.getFloorById(placeid.toString());
                             print('AA  ${aa}');
+                            floorval=null;
                             setState(() {
                               floorQueryRows2=aa;
+                              floorval=returnFloorQuery(placeid);
+                              returnFloorQuery(placeid);
                             });
                             print('Floorqwe  ${floorQueryRows2}');
 
 
                              // qwe= ;
-                           floorval=returnFloorQuery(placeid);
-                                  returnFloorQuery(placeid);
+
                                 },
                           // items:snapshot.data
                         ),
@@ -728,7 +698,7 @@ List floorQueryData2;
                               color: Colors.black,
                               width: 0.5,
                             )),
-                        child: DropdownButtonFormField<String>(
+                        child: DropdownButtonFormField(
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(15),
                             focusedBorder: OutlineInputBorder(
@@ -742,6 +712,7 @@ List floorQueryData2;
                               borderRadius: BorderRadius.circular(50),
                             ),
                           ),
+
                           dropdownColor: Colors.white70,
                           icon: Icon(Icons.arrow_drop_down),
                           iconSize: 28,
@@ -751,17 +722,15 @@ List floorQueryData2;
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
-
                           items: floorQueryRows2.map((selectedFloor) {
-
-                            return DropdownMenuItem<String>(
+                            return DropdownMenuItem(
                               value: selectedFloor.toString(),
                               child: Text("${selectedFloor['f_name']}"),
                             );
                           }).toList(),
-                          onChanged: (selectedPlace)async {
-                            print('Floor selected $selectedPlace');
-                            var floorId=selectedPlace.substring(7,14);
+                          onChanged: (selectedFloor)async {
+                            print('Floor selected $selectedFloor');
+                            var floorId=selectedFloor.substring(7,14);
 
                           var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
                             print('AA  ${aa}');
@@ -905,17 +874,18 @@ List floorQueryData2;
 
 
                             devicePinNamesQueryRows=  await NewDbProvider.instance.queryPinNames();
-
+                            pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
                             var deviceId=selectedDevice.substring(31,49);
-                            print('qwedsaqw   $deviceId ');
+                            print('qwedsaqw   $pinStatusQueryRows ');
                             var  aa= await NewDbProvider.instance.getPinNamesByDeviceId(deviceId.toString());
                             var sensor= await NewDbProvider.instance.getSensorByDeviceId(deviceId.toString());
-                            print('poiuy ${sensor}');
+                            // print('poiuy ${sensor}');
                             setState(() {
                               devicePinNamesQueryRows2=aa;
                               sensor2QueryRows=sensor;
                               pinVal=devicePinNamesQueryFunc();
                               sensorVal=devicePinSensorQueryFunc();
+
                             });
                             print('PiNamesCheck   $aa ');
                             print('SensorCheck   $sensor2QueryRows ');

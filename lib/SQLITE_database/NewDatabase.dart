@@ -81,7 +81,7 @@ class NewDbProvider {
   static final pin16Status = 'pin16Status';
   static final pin17Status = 'pin17Status';
   static final pin18Status = 'pin18Status';
-  static final pin19Status = 'pin19Statuse';
+  static final pin19Status = 'pin19Status';
   static final pin20Status = 'pin20Status';
 
 
@@ -243,7 +243,7 @@ class NewDbProvider {
   //   // return ff;
   // }
 
-  queryAll() async {
+  queryPlace() async {
     Database db = await instance.database;
     // tableOfPlace=db.query(_tableName);
     // print(tableOfPlace)
@@ -276,17 +276,20 @@ class NewDbProvider {
 
     return await db.query(_sensorTable);
   }
+
+  queryPinStatus() async {
+    Database db = await instance.database;
+
+    return await db.query(_devicePinStatus);
+  }
+
   Future getFloorById(String id) async {
     final db = await database;
     var result =
         await db.query("floorTable", where: "p_id = ? ", whereArgs: [id]);
     print('result $result');
-    // return result.isNotEmpty?result.first:Null;
-    return result;
-    return result.isNotEmpty ? FloorType.fromJson(result.first) : Null;
 
-    // fromMap(result.first) : Null;
-    // return result;
+    return result;
   }
 
   Future getRoomById(String id) async {
@@ -294,25 +297,16 @@ class NewDbProvider {
     var result =
         await db.query("roomTable", where: "f_id = ? ", whereArgs: [id]);
     print('FlooronCHangesresult $result');
-    // return result.isNotEmpty?result.first:Null;
     return result;
-    return result.isNotEmpty ? FloorType.fromJson(result.first) : Null;
-
-    // fromMap(result.first) : Null;
-    // return result;
   }
 
   Future getDeviceByRId(String id) async {
     final db = await database;
     var result =
         await db.query("deviceTable", where: "r_id = ? ", whereArgs: [id]);
-    print('roomchanges $result');
-    // return result.isNotEmpty?result.first:Null;
-    return result;
-    return result.isNotEmpty ? FloorType.fromJson(result.first) : Null;
+    print('DeviceChanges $result');
 
-    // fromMap(result.first) : Null;
-    // return result;
+    return result;
   }
 
 
