@@ -52,12 +52,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    placeQueryFunc();
+    deviceQueryFunc();
+    returnPlaceQuery();
+    placeQueryFunc().then((value) =>  floorQueryFunc());
+    floorQueryFunc();
+    roomQueryFunc();
+
+
     fetchPlace().then((value) => getAllFloor()).then((value) => getAllRoom()).then((value) =>     getAllDevice());
       // NewDbProvider.instance.dogs();
+
     // readData();
 
-    returnPlaceQuery();
+
+    
     // timer=Timer.periodic(Duration(milliseconds: 5), (timer) { fetchPlace();});
   }
   List placeData;
@@ -160,7 +168,7 @@ List copy=[];
 
 List roomData;
 List deviceData;
-List devicePinData;
+List<dynamic> devicePinNamesData=[];
   var roomQuery;
   var deviceQuery;
   var aa;
@@ -172,11 +180,11 @@ List devicePinData;
     return NewDbProvider.instance.queryFloor();
   }
 
-  Future returnRoomQuery(String pId){
+  Future returnRoomQuery(String fId){
 
     return NewDbProvider.instance.queryRoom();
   }
-  Future returnDeviceQuery(){
+  Future returnDeviceQuery(String rId){
 
     return NewDbProvider.instance.queryDevice();
   }
@@ -217,28 +225,10 @@ print('fId  ${fId}');
 
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
 
-          // NewDbProvider.instance.insertRoomData({
-          //
-          //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-          //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-          //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-          //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-          // });
+
         }
 
-        //
-        // for(int i=0;i<floorData.length;i++) {
-        //   // NewDbProvider.instance.insertRoomData({
-        //   //
-        //   //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-        //   //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-        //   //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-        //   //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-        //   // });
-        //   // }
-        //   // rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-        //   // print("room123-->  ${rm.toString()}");
-        // }
+
 
       } catch (e) {
         print('RoomCatch $e');
@@ -246,160 +236,277 @@ print('fId  ${fId}');
 
       }
     }
-
-    // deviceData=List(roomData.length-roomData.length);
-    // print('RoomIdPrint  ${roomData[0]['r_id']}');
     return Future.value(true);
   }
-
+  List arr=[];
   Future<bool> getAllDevice()async{
     var rId;
-    for(int i=0;i<anotherRoomQueryRows123.length;i++) {
+    for(int i=0;i<roomQueryRows2.length;i++) {
       //   print(NewDbProvider.instance.dogs());
-      rId = anotherRoomQueryRows123[i]['r_id'].toString();
+      rId = roomQueryRows2[i]['r_id'].toString();
       print('roomId  ${rId}');
 
 
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
       String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
-      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id="+rId;
+      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" +
+          rId;
       var response;
       // try {
-        response = await http.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
+      response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
 
-        });
-      List  deviceData = jsonDecode(response.body);
-          // print('deviceData  ${deviceData}');
-        for(int i=0;i<deviceData.length;i++){
-        var  deviceQuery=Device(
+      });
+       deviceData = jsonDecode(response.body);
+      // print('deviceData  ${deviceData}');
+      for (int i = 0; i < deviceData.length; i++) {
+        var deviceQuery = Device(
             user: deviceData[i]['user'],
-            rId:  deviceData[i]['r_id'],
+            rId: deviceData[i]['r_id'],
             dId: deviceData[i]['d_id']
 
-          );
-          print('deviceQuery   ${deviceData[i]['d_id'].runtimeType}' );
+        );
+        print('deviceQueryFunc   ${deviceData}');
 
-          await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
-
-
-
-
-          // NewDbProvider.instance.insertRoomData({
-          //
-          //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-          //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-          //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-          //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-          // });
-        }
-
-        //
-        // for(int i=0;i<floorData.length;i++) {
-        //   // NewDbProvider.instance.insertRoomData({
-        //   //
-        //   //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-        //   //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-        //   //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-        //   //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-        //   // });
-        //   // }
-        //   // rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-        //   // print("room123-->  ${rm.toString()}");
-        // }
-
-      // } catch (e) {
-      //   print('RoomCatch $e');
-      //   // }
-      //
-      // }
+        await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+      }
     }
-
-    // deviceData=List(roomData.length-roomData.length);
-    // print('RoomIdPrint  ${roomData[0]['r_id']}');
     return Future.value(true);
   }
 
 
 
-  Future<bool> getAllPinStatus()async{
+  Future<bool> getAllPinNames()async{
     String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
     var did;
+    print('pinNamesFunction $deviceQueryRows');
     for(int i=0;i<deviceQueryRows.length;i++){
+
       did=deviceQueryRows[i]['d_id'];
-      String url = "http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id="+did;
-      var response;
-      // try {
-        response = await http.get(Uri.parse(url), headers: {
+      print('didqwe ${did}');
+      String url = "http://genorionofficial.herokuapp.com/editpinnames/?d_id="+did;
+           // try {
+      final   response = await http.get(Uri.parse(url), headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Token $token',
 
         });
-        var devicePinData = jsonDecode(response.body);
+        if(response.statusCode==200) {
+         var  devicePinNamesData=json.decode(response.body);
+         DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-      print('devicePin ${devicePinData}');
-        for(int i=0;i<devicePinData.length;i++){
+          List listOfPinNames=[devicePinNamesData,];
+         print('QWERTY  ${listOfPinNames}');
+          for (int i = 0; i < listOfPinNames.length; i++) {
 
+            print('devicePinData ${listOfPinNames}');
 
-         var devicePinQuery=DevicePin(
-              pin1Name: devicePinData['pin1Status'].toString(),
-              // pin2Name: devicePinData['pin2Status'],
-              // pin3Name: devicePinData['pin3Status'],
-              // pin4Name: devicePinData['pin4Status'],
-              // pin5Name: devicePinData['pin5Status'],
-              // pin6Name: devicePinData['pin6Status'],
-              // pin7Name: devicePinData['pin7Status'],
-              // pin8Name: devicePinData['pin8Status'],
-              // pin9Name: devicePinData['pin9Status'],
-              // pin10Name: devicePinData['pin10Status'],
-              // pin11Name: devicePinData['pin11Status'],
-              // pin12Name: devicePinData['pin12Status'],
-          );
-
-          await NewDbProvider.instance.insertDevicePin(devicePinQuery);
-
-          // NewDbProvider.instance.insertRoomData({
-          //
-          //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-          //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-          //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-          //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-          // });
+            var devicePinNamesQuery = DevicePin(
+              id: listOfPinNames[i]['id'],
+              dId: listOfPinNames[i]['d_id'].toString(),
+              pin1Name: listOfPinNames[i]['pin1Name'].toString(),
+              pin2Name: listOfPinNames[i]['pin2Name'].toString(),
+              pin3Name: listOfPinNames[i]['pin3Name'].toString(),
+              pin4Name: listOfPinNames[i]['pin4Name'].toString(),
+              pin5Name: listOfPinNames[i]['pin5Name'].toString(),
+              pin6Name: listOfPinNames[i]['pin6Name'].toString(),
+              pin7Name: listOfPinNames[i]['pin7Name'].toString(),
+              pin8Name: listOfPinNames[i]['pin8Name'].toString(),
+              pin9Name: listOfPinNames[i]['pin9Name'].toString(),
+              pin10Name: listOfPinNames[i]['pin10Name'].toString(),
+              pin11Name: listOfPinNames[i]['pin11Name'].toString(),
+              pin12Name: listOfPinNames[i]['pin12Name'].toString(),
+            );
+            print('devicePinNamesInsertQuery    ${devicePinNamesQuery}');
+            print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
+            await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+          }
         }
+      // print('devicePinDataOutside ${pinData.length}');
 
-        //
-        // for(int i=0;i<floorData.length;i++) {
-        //   // NewDbProvider.instance.insertRoomData({
-        //   //
-        //   //   NewDbProvider.columnRoomName: roomData[i]['r_name'].toString(),
-        //   //   NewDbProvider.columnRoomId: roomData[i]['r_id'],
-        //   //   NewDbProvider.columnRoomFloorId: roomData[i]['f_id'],
-        //   //   // NewDbProvider.columnFloorPlaceId: floorData[i]['p_id']
-        //   // });
-        //   // }
-        //   // rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-        //   // print("room123-->  ${rm.toString()}");
-        // }
+      // print('devicePin123 ${pinData}');
 
-      // } catch (e) {
-      //   print('RoomCatch $e');
-      //   // }
-      //
-      // }
+
+    print('index of ddd  $i');
     }
-    print('did12 ${did}');
+
 
   }
-placeQueryFunc()async{
+
+
+  Future<bool> getSensorData() async {
+    // arr=[arr.length-arr.length];
+    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+
+    var did;
+    print('SensorFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'];
+      print('insideLoop $did');
+      String url = "http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      // final url="http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did;
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+      int index=0;
+if(response.statusCode==200){
+  print('sensorResponse  ${response.statusCode}');
+  index++;
+}      if (response.statusCode ==200) {
+       var arr = jsonDecode(response.body);
+
+
+
+      print('aarrr ${arr}');
+
+
+        for (int i = 0; i < arr.length; i++) {
+          var sensorQuery = SensorData(
+            dId: arr['d_id'],
+            sensor1: arr['sensor1'],
+            sensor2: arr['sensor2'],
+            sensor3: arr['sensor3'],
+            sensor4: arr['sensor4'],
+            sensor5: arr['sensor5'],
+            sensor6: arr['sensor6'],
+            sensor7: arr['sensor7'],
+            sensor8: arr['sensor8'],
+            sensor9: arr['sensor9'],
+            sensor10: arr['sensor10'],
+          );
+          await NewDbProvider.instance.insertSensorData(sensorQuery);
+        }
+      } else {
+        throw Exception(Exception);
+      }
+    }
+  }
+
+
+
+  Future<bool> getPinStatusData() async {
+    // arr=[arr.length-arr.length];
+    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+
+    var did;
+    print('PinStatusFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'];
+      print('insideLoop $did');
+      String url = "http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      // final url="http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did;
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+      int index=0;
+      if(response.statusCode==200){
+        print('sensorResponse  ${response.statusCode}');
+        var pinStatus= jsonDecode(response.body);
+        PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
+        List listOfPinStatusValue=[pinStatus];
+        for (int i = 0; i < listOfPinStatusValue.length; i++) {
+          var pinQuery = PinStatus(
+            dId: listOfPinStatusValue[i]['d_id'],
+            pin1Status: listOfPinStatusValue[i]['pin1Status'],
+            pin2Status: listOfPinStatusValue[i]['pin2Status'],
+            pin3Status: listOfPinStatusValue[i]['pin3Status'],
+            pin4Status: listOfPinStatusValue[i]['pin4Status'],
+            pin5Status: listOfPinStatusValue[i]['pin5Status'],
+            pin6Status: listOfPinStatusValue[i]['pin6Status'],
+            pin7Status: listOfPinStatusValue[i]['pin7Status'],
+            pin8Status: listOfPinStatusValue[i]['pin8Status'],
+            pin9Status: listOfPinStatusValue[i]['pin9Status'],
+            pin10Status: listOfPinStatusValue[i]['pin10Status'],
+            pin11Status: listOfPinStatusValue[i]['pin11Status'],
+            pin12Status: listOfPinStatusValue[i]['pin12Status'],
+            pin13Status: listOfPinStatusValue[i]['pin13Status'],
+            pin14Status: listOfPinStatusValue[i]['pin14Status'],
+            pin15Status: listOfPinStatusValue[i]['pin15Status'],
+            pin16Status: listOfPinStatusValue[i]['pin16Status'],
+            pin17Status: listOfPinStatusValue[i]['pin17Status'],
+            pin18Status: listOfPinStatusValue[i]['pin18Status'],
+            pin19Status: listOfPinStatusValue[i]['pin19Status'],
+            pin20Status: listOfPinStatusValue[i]['pin20Status'],
+          );
+          await NewDbProvider.instance.insertPinStatusData(pinQuery);
+        }
+      }
+
+
+
+    }
+  }
+
+
+
+
+  Future placeQueryFunc()async{
   queryRows =
       await NewDbProvider.instance.queryAll();
 
 }
+ Future floorQueryFunc()async{
+    floorQueryRows =
+    await NewDbProvider.instance.queryFloor();
+    setState(() {
+      floorQueryData=floorQueryRows;
+    });
 
+
+  }
+  roomQueryFunc()async {
+    roomQueryRows =
+    await NewDbProvider.instance.queryRoom();
+    setState(() {
+      roomQueryRows2=roomQueryRows;
+    });
+  }
+
+  deviceQueryFunc()async{
+    deviceQueryRows =
+    await NewDbProvider.instance.queryDevice();
+    // setState(() {
+    //   deviceQueryRows =
+    //        NewDbProvider.instance.queryDevice();
+    // });
+   await getAllPinNames();
+   await getSensorData();
+  }
+  Future devicePinNamesQueryFunc()async{
+    devicePinNamesQueryRows =
+    await NewDbProvider.instance.queryPinNames();
+    print('devicePinQueryFunc  ${devicePinNamesQueryRows}');
+    setState(() {
+
+    });
+    return devicePinNamesQueryRows;
+
+  }
+
+  Future devicePinSensorQueryFunc()async{
+    sensorQueryRows =
+    await NewDbProvider.instance.querySensor();
+    print('devicePinQueryFunc  ${sensorQueryRows}');
+    setState(() {
+
+    });
+    return sensorQueryRows;
+
+  }
+
+
+  Future pinVal;
+  Future sensorVal;
   var ff;
   List qwe;
 readData()async{
@@ -415,11 +522,13 @@ List floorQueryData2;
   List<Map<String, dynamic>> floorQueryRows;
   List<Map<String, dynamic>> roomQueryRows;
   List<Map<String, dynamic>> deviceQueryRows;
+  List<Map<String, dynamic>> sensorQueryRows;
+  List<Map<String, dynamic>> sensor2QueryRows;
   List<Map<String, dynamic>> deviceQueryRows2;
-  List<Map<String, dynamic>> devicePinQueryRows;
-  List<Map<String, dynamic>> anotherFloorQueryRows;
-  List<Map<String, dynamic>> anotherFloorQueryRows123;
-  List<Map<String, dynamic>> anotherRoomQueryRows123;
+  List<Map<String, dynamic>> devicePinNamesQueryRows;
+  List<Map<String, dynamic>> devicePinNamesQueryRows2;
+  List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> roomQueryRows2;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -489,31 +598,45 @@ List floorQueryData2;
                   // getAllRoom();
                   roomQueryRows =
                   await NewDbProvider.instance.queryRoom();
-                  // setState(() {
-                  //   floorQueryData=floorQueryRows;
-                  // });
-                  // int index=0;
                   print(roomQueryRows);
 
                 },
                 child: const Text(' Room Query'),
                 color: Colors.red,
               ),
-              // FlatButton(
-              //   onPressed: () async {
-              //     // anotherFloorQueryRows =
-              //     // await NewDbProvider.instance.queryAnotherFloor();
-              //     // setState(() {
-              //     //   floorQueryData=floorQueryRows;
-              //     // });
-              //     // int index=0;
-              //     // print(anotherFloorQueryRows);
-              //
-              //   },
-              //   child: const Text(' Floor Query2'),
-              //   color: Colors.red,
-              // ),
-              //
+              FlatButton(
+                onPressed: () async {
+                  deviceQueryRows =
+                  await NewDbProvider.instance.queryDevice();
+
+                  print('deviceQueryRows ${deviceQueryRows}');
+
+                },
+                child: const Text(' Device Query'),
+                color: Colors.red,
+              ),
+              FlatButton(
+                onPressed: () async {
+                  sensorQueryRows =
+                  await NewDbProvider.instance.querySensor();
+                  print('sensorQueryRows ${sensorQueryRows}');
+
+                },
+                child: const Text(' Sensor'),
+                color: Colors.red,
+              ),
+              FlatButton(
+                onPressed: () async {
+                  // await getAllPinNames();
+                  // getAllRoom();
+                  devicePinNamesQueryRows =
+                  await NewDbProvider.instance.queryPinNames();
+                  print('devicePinQueryRowsNames ${devicePinNamesQueryRows}');
+
+                },
+                child: const Text(' PinNames'),
+                color: Colors.red,
+              ),
               SizedBox(height:30),
               FutureBuilder(
                   future: returnPlaceQuery(),
@@ -570,45 +693,15 @@ List floorQueryData2;
                              aa= await NewDbProvider.instance.getFloorById(placeid.toString());
                             print('AA  ${aa}');
                             setState(() {
-                              anotherFloorQueryRows123=aa;
+                              floorQueryRows2=aa;
                             });
-                            print('Floorqwe  ${anotherFloorQueryRows123}');
+                            print('Floorqwe  ${floorQueryRows2}');
 
 
                              // qwe= ;
                            floorval=returnFloorQuery(placeid);
-                            // anotherFloorQueryRows=floor as List<Map<String, dynamic>>;
-                            // print(floor);
-                            // aa= floorQueryRows;
-                            // for(int i=0;i<floorQueryRows.length;i++){
-                            //   if(placeid==floorQueryRows[i]['p_id'].toString()){
-                            //
-                            //     var floorQuery=FloorType(
-                            //         fId: floorQueryRows[i]['f_id'],
-                            //         fName: floorQueryRows[i]['f_name'].toString(),
-                            //         pId: floorQueryRows[i]['p_id'].toString(),
-                            //         user: floorQueryRows[i]['user']
-                            //     );
-                            //     await  NewDbProvider.instance.insertAnotherTableData(floorQuery);
-                            //
-                            //     print(floorQuery.fName);
-                            //   }else{
-                            //     // print('mm');
-                            //   }
-                            // }
-                                returnFloorQuery(placeid);
-                            // setState(() {
-                            //   // var pt = selectedPlace ;
-                            //   // fl = null;
-                            //   // pt = selectedPlace;
-                            //   // print('place Selected');
-                            //   // print('After Place Selected ${pt.pId}');
-                            //   // // pt=  DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(pt.pId));
-                            //   floorval =
-                            //       returnFloorQuery(placeid);
-                            //
-                            // });
-                          },
+                                  returnFloorQuery(placeid);
+                                },
                           // items:snapshot.data
                         ),
                       );
@@ -659,7 +752,7 @@ List floorQueryData2;
                             fontWeight: FontWeight.bold,
                           ),
 
-                          items: anotherFloorQueryRows123.map((selectedFloor) {
+                          items: floorQueryRows2.map((selectedFloor) {
 
                             return DropdownMenuItem<String>(
                               value: selectedFloor.toString(),
@@ -673,45 +766,15 @@ List floorQueryData2;
                           var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
                             print('AA  ${aa}');
                             setState(() {
-                              anotherRoomQueryRows123=aa;
+                              roomQueryRows2=aa;
                               roomVal=returnRoomQuery(floorId);
                             });
-                            print('forRoom  ${anotherRoomQueryRows123}');
+                            print('forRoom  ${roomQueryRows2}');
 
 
-                            // qwe= ;
 
-                            // anotherFloorQueryRows=floor as List<Map<String, dynamic>>;
-                            // print(floor);
-                            // aa= floorQueryRows;
-                            // for(int i=0;i<floorQueryRows.length;i++){
-                            //   if(placeid==floorQueryRows[i]['p_id'].toString()){
-                            //
-                            //     var floorQuery=FloorType(
-                            //         fId: floorQueryRows[i]['f_id'],
-                            //         fName: floorQueryRows[i]['f_name'].toString(),
-                            //         pId: floorQueryRows[i]['p_id'].toString(),
-                            //         user: floorQueryRows[i]['user']
-                            //     );
-                            //     await  NewDbProvider.instance.insertAnotherTableData(floorQuery);
-                            //
-                            //     print(floorQuery.fName);
-                            //   }else{
-                            //     // print('mm');
-                            //   }
-                            // }
                             returnFloorQuery(floorId);
-                            // setState(() {
-                            //   // var pt = selectedPlace ;
-                            //   // fl = null;
-                            //   // pt = selectedPlace;
-                            //   // print('place Selected');
-                            //   // print('After Place Selected ${pt.pId}');
-                            //   // // pt=  DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(pt.pId));
-                            //   floorval =
-                            //       returnFloorQuery(placeid);
-                            //
-                            // });
+
                           },
                           // items:snapshot.data
                         ),
@@ -764,29 +827,22 @@ List floorQueryData2;
                             fontWeight: FontWeight.bold,
                           ),
 
-                          items: anotherRoomQueryRows123==null?Text('No Devices'): anotherRoomQueryRows123.map((selectedPlace) {
+                          items:  roomQueryRows2.map((selectedRoom) {
 
                             return DropdownMenuItem<String>(
-                              value: selectedPlace.toString(),
-                              child: Text("${selectedPlace['r_name']}"),
+                              value: selectedRoom.toString(),
+                              child: Text("${selectedRoom['r_name']}"),
                             );
                           }).toList(),
                           onChanged: (selectedRoom)async {
-                            await getAllDevice();
-                            deviceQueryRows= await NewDbProvider.instance.queryDevice();
-                            print('selectedRoom $selectedRoom');
-
-                            var deviceId=selectedRoom.substring(7,14);
-                            print('selectedRoom $deviceId');
-
-
-                            var  aa= await NewDbProvider.instance.getDeviceByRId(deviceId.toString());
-                            print('DeviceCheck  ${deviceQueryRows}');
+                            var roomId=selectedRoom.substring(7,14);
+                            var  aa= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
                             // print('deviceQueryRows ${deviceQueryRows['dId']}');
                                 setState(() {
                                   deviceQueryRows2=aa;
-                                  deviceVal=returnDeviceQuery();
+                                  deviceVal=returnDeviceQuery(roomId);
                                 });
+                            print('DeviceCheck  ${deviceQueryRows2}');
                             },
                           // items:snapshot.data
                         ),
@@ -838,29 +894,127 @@ List floorQueryData2;
                             fontWeight: FontWeight.bold,
                           ),
 
-                          items: deviceQueryRows2.map((selectedPlace) {
+                          items: deviceQueryRows2.map((selectedDevice) {
 
                             return DropdownMenuItem<String>(
-                              value: selectedPlace.toString(),
-                              child: Text("${selectedPlace['d_id']}"),
+                              value: selectedDevice.toString(),
+                              child: Text("${selectedDevice['d_id']}"),
                             );
                           }).toList(),
-                          onChanged: (selectedPlace)async {
-                            await getAllDevice();
-                            deviceQueryRows=  await NewDbProvider.instance.queryDevice();
-                            // print(deviceQueryRows[]['d_id']);
-                            getAllPinStatus();
+                          onChanged: (selectedDevice)async {
 
-                            // devicePinQueryRows=  await NewDbProvider.instance.queryDevicePin();
-                            // print('devicePinQueryRows  ${devicePinQueryRows}');
+
+                            devicePinNamesQueryRows=  await NewDbProvider.instance.queryPinNames();
+
+                            var deviceId=selectedDevice.substring(31,49);
+                            print('qwedsaqw   $deviceId ');
+                            var  aa= await NewDbProvider.instance.getPinNamesByDeviceId(deviceId.toString());
+                            var sensor= await NewDbProvider.instance.getSensorByDeviceId(deviceId.toString());
+                            print('poiuy ${sensor}');
+                            setState(() {
+                              devicePinNamesQueryRows2=aa;
+                              sensor2QueryRows=sensor;
+                              pinVal=devicePinNamesQueryFunc();
+                              sensorVal=devicePinSensorQueryFunc();
+                            });
+                            print('PiNamesCheck   $aa ');
+                            print('SensorCheck   $sensor2QueryRows ');
                           },
-                          // items:snapshot.data
+
                         ),
                       );
                     } else {
                       return CircularProgressIndicator();
                     }
                   }),
+
+              Container(
+                // color: Colors.green,
+                height: 500,
+                width:MediaQuery.of(context).size.width,
+                // height:MediaQuery.of(context).size.height,
+                child: FutureBuilder(
+                    future: pinVal,
+                    builder: ( context,  snapshot){
+                      if(snapshot.hasData){
+                        return Column(
+                          children: [
+                            Expanded(
+                                child: ListView.builder(
+                                    itemCount: devicePinNamesQueryRows2.length,
+                                    itemBuilder: (context,index){
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Card(
+                                          semanticContainer:true,
+                                          shadowColor: Colors.grey,
+                                          child: ListTile(
+                                            title: Text(devicePinNamesQueryRows2[index]['d_id']),
+                                            trailing: Text(devicePinNamesQueryRows2[index]['pin1Name']),
+                                            subtitle: Text(devicePinNamesQueryRows2[index]['pin2Name']),
+
+                                          ),
+                                        ),
+                                      );
+
+                                    }
+                                )),
+
+
+                          ],
+                        );
+                      }else{
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.red,
+                            semanticsLabel: 'Loading...',
+                          ),
+                        );
+                      }
+
+                    }
+
+                ),
+              ),
+              Container(
+                height: 789,
+              color: Colors.red,
+                child: FutureBuilder(
+                  future: sensorVal,
+                  builder: (context,snapshot){
+                    if(snapshot.hasData){
+                      return Column(
+                        children: [
+                          Expanded(
+                              child: ListView.builder(
+                                  itemCount: sensor2QueryRows.length,
+                                  itemBuilder: (context,index){
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        semanticContainer:true,
+                                        shadowColor: Colors.grey,
+                                        child: ListTile(
+                                          title: Text(sensor2QueryRows[index]['d_id']),
+                                          trailing: Text(sensor2QueryRows[index]['sensor2'].toString()),
+                                          subtitle: Text(sensor2QueryRows[index]['sensor1'].toString()),
+
+                                        ),
+                                      ),
+                                    );
+
+                                  }
+                              )),
+
+
+                        ],
+                      );
+                    }else{
+                      return Center(child: Text('No Data'),);
+                    }
+                  },
+                ),
+              )
 
             ],
           ),
