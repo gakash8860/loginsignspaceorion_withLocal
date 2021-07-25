@@ -28,7 +28,7 @@ class _NextPageSSIDState extends State<NextPageSSID> {
             SizedBox(height: 200,),
             Text('Your Network Credentials have been successfully updated'),
             ElevatedButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage(pt: places.last, fl: floors.last, rm: [rm.last], )));
+              // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage(pt: places.last, fl: floors.last, rm: [rm.last], )));
             }, child: Text('Goto Home Page'))
 
           ],

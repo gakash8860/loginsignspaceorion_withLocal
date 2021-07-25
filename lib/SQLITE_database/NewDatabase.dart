@@ -1,5 +1,10 @@
-import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
-import 'package:loginsignspaceorion/dropdown2.dart';
+
+
+
+
+
+
+
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -127,6 +132,10 @@ class NewDbProvider {
          CREATE TABLE $_tableName (  $columnPlaceId INTEGER PRIMARY KEY,
          $columnPlaceName TEXT NOT NULL,$columnPlaceUser INTEGER )
          ''');
+      // await db.execute('''
+      //    CREATE TABLE $_tableName (  ${placeType.pId} INTEGER PRIMARY KEY,
+      //    ${placeType.pType} TEXT NOT NULL,${placeType.user} INTEGER )
+      //    ''');
       await db.execute('''
         CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnPlaceId ));
         ''');
@@ -162,7 +171,7 @@ class NewDbProvider {
       placeType.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    // print('row  ${placeType.pType} ||  ${placeType.pId}');
+
   }
 
   Future<void> insertFloorModelData(FloorType floorType) async {
@@ -173,7 +182,7 @@ class NewDbProvider {
       floorType.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    // print('floorRow  ${floorType.fName} || ${floorType.fId} ');
+
   }
 
   Future<void> insertRoomModelData(RoomType roomType) async {
@@ -194,7 +203,8 @@ class NewDbProvider {
       device.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('_deviceTable  ${_deviceTable}');
+
+    print('_deviceTable  $_deviceTable');
   }
 
   Future<void> insertDevicePinNames(DevicePin devicePin) async {
@@ -216,38 +226,9 @@ class NewDbProvider {
   }
 
 
-
-
-
-// A method that retrieves all the dogs from the dogs table.
-  Future<List<PlaceType>> retrievesPlaces() async {
-    final db = await database;
-
-    // Query the table for all The Dogs.
-    final List<Map<String, dynamic>> maps = await db.query('placeTable');
-
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
-    return List.generate(maps.length, (i) {
-      return PlaceType(
-        pId: maps[i]['p_id'].toString(),
-        pType: maps[i]['p_type'].toString(),
-        user: maps[i]['user'],
-      );
-    });
-  }
-
-  // Future<int> insertRoomData(Map<String, dynamic> row) async {
-  //   Database db = await instance.database;
-  //   print('row $row');
-  //   return await db.insert(_roomTableName, row,conflictAlgorithm: ConflictAlgorithm.replace);
-  //   // return ff;
-  // }
-
   queryPlace() async {
     Database db = await instance.database;
-    // tableOfPlace=db.query(_tableName);
-    // print(tableOfPlace)
-    print(db.query(_tableName).toString());
+
     return await db.query(_tableName);
   }
 
@@ -296,7 +277,7 @@ class NewDbProvider {
     final db = await database;
     var result =
         await db.query("roomTable", where: "f_id = ? ", whereArgs: [id]);
-    print('FlooronCHangesresult $result');
+    print('FlooronChangesResult $result');
     return result;
   }
 
@@ -317,12 +298,18 @@ class NewDbProvider {
     await db.query("devicePinNamesValues", where: "d_id = ? ", whereArgs: [id]);
     print('PinNameResult $result');
     // return result.isNotEmpty?result.first:Null;
-    return result;
-    return result.isNotEmpty ? FloorType.fromJson(result.first) : Null;
+    return result;}
 
-    // fromMap(result.first) : Null;
-    // return result;
-  }
+
+
+  Future getPinStatusByDeviceId(String id) async {
+    final db = await database;
+    var result =
+    await db.query("devicePinStatus", where: "d_id = ? ", whereArgs: [id]);
+    print('PinStatusResult $result');
+    // return result.isNotEmpty?result.first:Null;
+    return result;}
+
 
   Future getSensorByDeviceId(String id) async {
     final db = await database;
@@ -331,10 +318,6 @@ class NewDbProvider {
     print('PinNameResult $result');
     // return result.isNotEmpty?result.first:Null;
     return result;
-    return result.isNotEmpty ? FloorType.fromJson(result.first) : Null;
-
-    // fromMap(result.first) : Null;
-    // return result;
   }
   Future<int> update(Map<String, dynamic> row) async {
     Database db = await instance.database;
@@ -342,4 +325,9 @@ class NewDbProvider {
     return await db
         .update(_tableName, row, where: '$columnPlaceId=?', whereArgs: [id]);
   }
+  Future close()async{
+    final db= await instance.database;
+    db.close();
+  }
+
 }

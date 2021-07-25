@@ -77,23 +77,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   allAwaitFunction()async{
-    await fetchPlace();
+     fetchPlace();
     await placeQueryFunc();
     await returnPlaceQuery();
 
-    await getAllFloor();
+     getAllFloor();
     await floorQueryFunc();
 
-    await getAllRoom();
+     getAllRoom();
     await roomQueryFunc();
 
-    await getAllDevice();
+     getAllDevice();
     await deviceQueryFunc();
-    await getSensorData();
+     getSensorData();
     await devicePinSensorQueryFunc();
-    await getPinStatusData();
+     getPinStatusData();
     await devicePinStatusQueryFunc();
-    await getAllPinNames();
+     getAllPinNames();
     await devicePinNamesQueryFunc();
 
 
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var fido;
   Future<bool> fetchPlace() async {
     // await openPlaceBox();
-    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+    String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
     final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -144,11 +144,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<bool> getAllFloor()async{
     var pId;
 
-    for(int i=0;i<placeData.length;i++){
+    for(int i=0;i<queryRows.length;i++){
       // Box poop;
-      pId=placeData[i]['p_id'].toString();
+      pId=queryRows[i]['p_id'].toString();
       // print(pId);
-      String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+      String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
       final url="http://genorionofficial.herokuapp.com/getallfloors/?p_id="+pId;
       final  response= await http.get(Uri.parse(url),headers: {
           'Content-Type': 'application/json',
@@ -173,7 +173,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
         floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-      // floorData=floorData+floors;
 
 
     }
@@ -194,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
-      String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+      String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
       String url = "http://genorionofficial.herokuapp.com/getallrooms/?f_id="+fId;
       var response;
       try {
@@ -242,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
-      String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+      String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
       String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" +
           rId;
       var response;
@@ -270,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Future.value(true);
   }
   Future<bool> getAllPinNames()async{
-    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+    String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
     var did;
     print('pinNamesFunction $deviceQueryRows');
     for(int i=0;i<deviceQueryRows.length;i++){
@@ -322,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   Future<bool> getSensorData() async {
     // arr=[arr.length-arr.length];
-    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+    String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
 
     var did;
     print('SensorFunction $deviceQueryRows');
@@ -365,7 +364,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   Future<bool> getPinStatusData() async {
     // arr=[arr.length-arr.length];
-    String token = '0bcb23b98322c01d95211af236b4a8d029bdd9f3';
+    String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
 
     var did;
     print('PinStatusFunction $deviceQueryRows');
@@ -523,7 +522,7 @@ List<dynamic> devicePinNamesData=[];
                  // await getAllRoom();
                   queryRows =
                   await NewDbProvider.instance.queryPlace();
-
+                        print(queryRows);
 
                 },
                 child: const Text('Place Query'),
@@ -811,7 +810,7 @@ List<dynamic> devicePinNamesData=[];
                                   deviceQueryRows2=aa;
                                   deviceVal=returnDeviceQuery(roomId);
                                 });
-                            print('DeviceCheck  ${deviceQueryRows2}');
+                            print('DeviceCheck  ${aa}');
                             },
                           // items:snapshot.data
                         ),
@@ -863,7 +862,7 @@ List<dynamic> devicePinNamesData=[];
                             fontWeight: FontWeight.bold,
                           ),
 
-                          items: deviceQueryRows2.map((selectedDevice) {
+                          items: deviceQueryRows.map((selectedDevice) {
 
                             return DropdownMenuItem<String>(
                               value: selectedDevice.toString(),
@@ -899,54 +898,6 @@ List<dynamic> devicePinNamesData=[];
                   }),
 
               Container(
-                // color: Colors.green,
-                height: 500,
-                width:MediaQuery.of(context).size.width,
-                // height:MediaQuery.of(context).size.height,
-                child: FutureBuilder(
-                    future: pinVal,
-                    builder: ( context,  snapshot){
-                      if(snapshot.hasData){
-                        return Column(
-                          children: [
-                            Expanded(
-                                child: ListView.builder(
-                                    itemCount: devicePinNamesQueryRows2.length,
-                                    itemBuilder: (context,index){
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Card(
-                                          semanticContainer:true,
-                                          shadowColor: Colors.grey,
-                                          child: ListTile(
-                                            title: Text(devicePinNamesQueryRows2[index]['d_id']),
-                                            trailing: Text(devicePinNamesQueryRows2[index]['pin1Name']),
-                                            subtitle: Text(devicePinNamesQueryRows2[index]['pin2Name']),
-
-                                          ),
-                                        ),
-                                      );
-
-                                    }
-                                )),
-
-
-                          ],
-                        );
-                      }else{
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.red,
-                            semanticsLabel: 'Loading...',
-                          ),
-                        );
-                      }
-
-                    }
-
-                ),
-              ),
-              Container(
                 height: 789,
               color: Colors.red,
                 child: FutureBuilder(
@@ -965,7 +916,7 @@ List<dynamic> devicePinNamesData=[];
                                         semanticContainer:true,
                                         shadowColor: Colors.grey,
                                         child: ListTile(
-                                          title: Text(sensor2QueryRows[index]['d_id']),
+                                          title: Text(sensor2QueryRows[index]['sensor1'].toString()),
                                           trailing: Text(sensor2QueryRows[index]['sensor2'].toString()),
                                           subtitle: Text(sensor2QueryRows[index]['sensor1'].toString()),
 

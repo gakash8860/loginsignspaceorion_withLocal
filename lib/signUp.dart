@@ -338,35 +338,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                           SizedBox(
                             height: 15,
                           ),
-                          // TextFormField(
-                          //   autofocus: true,
-                          //   textInputAction: TextInputAction.next,
-                          //   onEditingComplete: () => node.nextFocus(),
-                          //   autovalidateMode:
-                          //   AutovalidateMode.onUserInteraction,
-                          //   //validator: nameValid,
-                          //   onSaved: (String value) {
-                          //     this.data.username = value;
-                          //   },
-                          //   style:
-                          //   TextStyle(fontSize: 18, color: Colors.black54),
-                          //   decoration: InputDecoration(
-                          //     prefixIcon: Icon(Icons.person),
-                          //     filled: true,
-                          //     fillColor: Colors.white,
-                          //     hintText: 'username',
-                          //     contentPadding: const EdgeInsets.all(15),
-                          //     focusedBorder: OutlineInputBorder(
-                          //       borderSide: BorderSide(color: Colors.white),
-                          //       borderRadius: BorderRadius.circular(50),
-                          //     ),
-                          //     enabledBorder: UnderlineInputBorder(
-                          //       borderSide: BorderSide(color: Colors.white),
-                          //       borderRadius: BorderRadius.circular(50),
-                          //     ),
-                          //   ),
-                          // ),
-                          SizedBox(height: 15,),
+
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
@@ -446,7 +418,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                               if(data.password.length==data.password2.length){
                                 this.data.password2=value;
                               }else{
-                                return "Password doesn't match";
+                                return Text("Password doesn't match");
                               }
                              // this.data.password2 = value;
                             },

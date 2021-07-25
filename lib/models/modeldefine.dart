@@ -32,6 +32,7 @@ class PlaceType {
     "p_type": pType,
     "user": user,
   };
+
 }
 
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:loginsignspaceorion/home.dart';
+import 'SQLITE_database/testingHome.dart';
 import 'models/modeldefine.dart';
 
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -446,15 +447,15 @@ class _DropDown1State extends State<DropDown1> {
                     });
 
                     print('On Press tabbar --> $tabbarState');
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context)=>  HomePage(
-                              pt: pt,
-                              fl: fl,
-                              rm: rm,
-                              dv: dv,
-                            )));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context)=>  HomePage(
+                    //           // pt: pt,
+                    //           fl: fl,
+                    //           rm: rm,
+                    //           dv: dv,
+                    //         )));
                   },
                 ),
 

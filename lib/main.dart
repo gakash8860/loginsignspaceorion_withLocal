@@ -1,18 +1,19 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
 import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
-import 'package:loginsignspaceorion/home.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/signUp.dart';
 import 'dart:async';
+import 'SQLITE_database/NewDatabase.dart';
 import 'dropdown2.dart';
 import 'login_Screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,7 +34,13 @@ Box deviceBox;
 List roomData;
 List floorData;
 List placeData;
+List placeTypeSingle;
+List floorTypeSingle;
+List roomTypeSingle;
 List deviceData;
+List<Device> dvdata;
+List<Map<String, dynamic>> roomQueryRows;
+List<PlaceType> placeType;
 final storage = new FlutterSecureStorage();
 
 Future<String> getToken() async {
@@ -55,7 +62,9 @@ void main()async {
 
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
-      '/main': (ctx) =>  HomePage(pt: places.last, fl: floors.last, rm: rm, dv: dv,),
+      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,rm: rm,dv: dvdata,),
+      // '/main': (ctx) =>   HomePage(pt: placeData.last,fl: floorData.first,rm: rm,),
+      // '/main': (ctx) =>  DropDown2(),
     },
   ));
 }
@@ -70,13 +79,43 @@ class GettingStartedScreen extends StatefulWidget {
 class _GettingStartedScreenState extends State<GettingStartedScreen> {
   int currentPage = 0;
   var token;
+  List floorData;
+
+  NewDbProvider dbProvider;
+  List copyFloorData;
+  FloorType floorType;
+  Future floorval;
+  Future pinVal;
+  Future sensorVal;
+  var ff;
+  List qwe;
+  List<Map<String, dynamic>> queryRows;
+  List placeQueryData;
+  List floorQueryData;
+  List floorQueryData2;
+  List<Map<String, dynamic>> floorQueryRows;
+  List<Map<String, dynamic>> roomQueryRows;
+  List<Map<String, dynamic>> deviceQueryRows;
+  List<Map<String, dynamic>> pinStatusQueryRows;
+  List<Map<String, dynamic>> sensorQueryRows;
+  List<Map<String, dynamic>> sensor2QueryRows;
+  List<Map<String, dynamic>> deviceQueryRows2;
+  List<Map<String, dynamic>> devicePinNamesQueryRows;
+  List<Map<String, dynamic>> devicePinNamesQueryRows2;
+  List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> roomQueryRows2;
+
+  Future roomVal;
+  Future deviceVal;
+
+
 
   Permission permission;
   PageController pageController = PageController(initialPage: 0);
   DropDown1 down=new DropDown1();
 
-  List<PlaceType> place;
-  List<FloorType> floor;
+  // List<PlaceType> place;
+  // List<FloorType> floor;
 
 
 
@@ -88,31 +127,13 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   @override
   void initState() {
     super.initState();
+
     getUid();
-
-
-    openPlaceBox();
-    openFloorBox();
-    openRoomBox();
-    openDeviceBox();
-    getAllPlace().then((data){
-      data=data;
-    }).then((value) => getAllFloor().then((data){
-      data=data;
-    })).then((value) => getAllRoom().then((data){
-      data=data;
-    } )).then((value) =>getAllDevice().then((data){
-      data=data;
-    } ));
-
-    // print('GetUi Variable-->   ${getUidVariable}');
-    Timer.periodic(Duration(seconds: 5), (timer) {_checkInternetConnectivity();
-
-    });
-
-
+    placeQueryFunc();
+    floorQueryFunc();
+    allAwaitFunction();roomQueryFunc();
     requestPermission();
-    Timer.periodic(Duration(seconds: 5), (Timer timer) {
+    Timer.periodic(Duration(seconds: 1), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;
       } else {
@@ -136,308 +157,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     }
   }
 
-  Future openPlaceBox()async{
-    var dir= await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    placeBox=await Hive.openBox('place');
-    setState(() {
-      // places[0]=placeBox.values.first;
-    });
-    // print('openPlaceBox ${placeBox.values.last}');
-    return;
-  }
-
-  Future putData(data)async{
-    await placeBox.clear();
-    for(var d in data){
-      // print('D-->  $d');
-      placeBox.add(d);
-    }
-
-  }
-
-  Future<bool> getAllPlace()async{
-    await openPlaceBox();
-    String token= await getToken();
-    // String url="http://genorionofficial.herokuapp.com/getallfloors/?p_id=2513962";
-    String url="http://genorionofficial.herokuapp.com/getallplaces/";
-    var response;
-    try{
-      response= await http.get(Uri.parse(url),headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-
-      });
-      // print('Response ${response.body}');
-
-      // var _jsonDecode23=jsonDecode(response.body);
-      // print('PlaceResponse ${_jsonDecode23.toString()}');
-      // await putData(_jsonDecode23);
-      //
-
-      placeData = jsonDecode(response.body);
-      await putData(placeData);
-      print("Place-->  ${placeData}");
-      places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-      places= openPlaceBox() as List<PlaceType>;
-      print("Place123-->  ${places.toString()}");
-    }catch(e){
-      print('PlaceCatch $e');
-
-    }
-
-    var myMap=placeBox.toMap().values.toList();
-    if(myMap.isEmpty){
-      placeData.add('empty');
-
-    }else{
-      placeData=myMap;
-    }
-    // ignore: deprecated_member_use
-
-    // print('PlaceId  ${places[0].pId.toString()}');
-    // ignore: deprecated_member_use
-    floorData=List(placeData.length-placeData.length);
-    return Future.value(true);
-  }
-
-  var pId;
-
-
-
-
-  Future openFloorBox()async{
-
-    var dir= await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    floorBox=await Hive.openBox('floor');
-
-    return;
-  }
-  Future<bool> getAllFloor()async{
-    var myMap;
-    var pId;
-    await openFloorBox();
-
-    // print('floorlength ${floorData.length}');
-    for(int i=0;i<placeData.length;i++){
-      // Box poop;
-      pId=placeData[i]['p_id'].toString();
-      print('dataPlace $pId');
-      // print('floorlength ${floorData.length}');
-      String token= await getToken();
-      print('placeBox ${placeBox.length}');
-      final url="http://genorionofficial.herokuapp.com/getallfloors/?p_id="+pId;
-      var response;
-      try{
-        response= await http.get(Uri.parse(url),headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-
-        });
-        // print('Response ${response.body}');
-        // List _jsonDecode=jsonDecode(response.body);
-        // print('FloorDecode  $floorData');
-        // // floor=_jsonDecode.map((data) => FloorType.fromJson(data)).toList();
-        // await putFloorData(_jsonDecode);
-
-
-        floorData = jsonDecode(response.body);
-        await putFloorData(floorData);
-        print("Floor-->  ${floorData}");
-        floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-        print("Floor123-->  ${floors.toString()}");
-
-
-
-
-      }catch(e){
-        print('Floor Catch $e');
-
-      }
-
-      myMap=floorBox.toMap().values.toList();
-      if(myMap.isEmpty){
-        floorData.add('empty');
-        print('adding Floor zero ${floorData.toString()}');
-
-      }else{
-        floorData=floorData+myMap;
-
-
-      }
-
-    }
-    print('FloorMap  ${myMap.toString()}');
-    print('TooString  ${floorData.length.toString()}');
-    // ignore: deprecated_member_use
-    roomData=List(floorData.length-floorData.length);
-    print('FloorIdPrint  ${floorData[0]['f_id']}');
-    return Future.value(true);
-  }
-  Future putFloorData(data)async{
-    await floorBox.clear();
-    for(var d in data){
-      print('Floor Main-->  $d');
-      floorBox.add(d);
-    }
-
-  }
-
-
-
-  Future openRoomBox()async{
-    var dir= await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    roomBox=await Hive.openBox('room');
-
-    return;
-  }
-  Future<bool> getAllRoom()async{
-    await openRoomBox();
-    print('dataFloorBox ${floorBox.length.toString()}');
-    var fId;
-    var myMap;
-    for(int i=0;i<floorData.length;i++) {
-      fId = floorData[i]['f_id'].toString();
-      print('dataFloor Id $fId');
-
-
-      // String url="http://10.0.2.2:8000/api/data";
-      String token= await getToken();
-      String url = "http://genorionofficial.herokuapp.com/getallrooms/?f_id=" + fId;
-      var response;
-      try {
-        response = await http.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-
-        });
-        // print('Response ${response.body}');
-        // List _jsonDecode = jsonDecode(response.body);
-        // print('RoomResponse  $roomData');
-        //
-        // await putRoomData(_jsonDecode);
-
-
-        roomData = jsonDecode(response.body);
-        await putRoomData(roomData);
-        print("room-->  ${placeData}");
-        rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-        print("room123-->  ${rm.toString()}");
-
-
-      } catch (e) {
-        print('RoomCatch $e');
-      }
-
-      myMap = roomBox.toMap().values.toList();
-      if (myMap.isEmpty) {
-        roomData.add('empty');
-      } else {
-        roomData = roomData+myMap;
-        print('adding room from else ${roomData.toString()}');
-      }
-    }
-    print('MyRoomMap ${myMap.toString()}');
-    print('RoomLength ${roomData.length}');
-    print('RoomBox ${roomBox.length}');
-    deviceData=List(roomData.length-roomData.length);
-    // print('RoomIdPrint  ${roomData[0]['r_id']}');
-    return Future.value(true);
-  }
-  Future putRoomData(data)async{
-    await roomBox.clear();
-    for(var d in data){
-      print('Room main-->  $d');
-      roomBox.add(d);
-    }
-
-  }
-
-
-
-
-
-
-
-
-  Future openDeviceBox()async{
-    var dir= await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    deviceBox=await Hive.openBox('device');
-
-    return;
-  }
-  var rId;
-  Future<bool> getAllDevice()async{
-    await openDeviceBox();
-    var myMap;
-    // String url="http://10.0.2.2:8000/api/data";
-    String token= await getToken();
-    for(int i=0;i<roomData.length;i++) {
-      rId = roomData[i]['r_id'].toString();
-
-
-      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" + rId;
-      var response;
-      try {
-        response = await http.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-
-        });
-        // print('Response ${response.body}');
-        // List _jsonDecode = jsonDecode(response.body);
-        // print('DeviceResponse  $_jsonDecode');
-        //
-        // await putDeviceData(_jsonDecode);
-
-
-
-        deviceData = jsonDecode(response.body);
-        await putDeviceData(deviceData);
-        print("deviceData-->  ${deviceData}");
-        dv = deviceData.map((data) => Device.fromJson(data)).toList();
-        print("devcice123-->  ${dv.toString()}");
-
-      } catch (e) {
-        print('DeviceCatch $e');
-      }
-
-
-      myMap = deviceBox.toMap().values.toList();
-      if (myMap.isEmpty) {
-        deviceBox.add('empty');
-      } else {
-        deviceData = myMap;
-        print('addingdevicefromelse ${deviceData.toString()}');
-      }
-    }
-    print('MyDeviceMap ${myMap.toString()}');
-    print('DeviceLength ${deviceData.length}');
-    print('DeviceBox ${deviceBox.length}');
-    // print("${deviceData[0]['d_id']}");
-    return Future.value(true);
-  }
-
-  Future putDeviceData(data)async{
-    await deviceBox.clear();
-    for(var d in data){
-      print('DeviceD-->  $d');
-      deviceBox.add(d);
-    }
-    // await deviceBox.clear();
-
-  }
-
 
   getUid() async{
-    final url=await 'http://genorionofficial.herokuapp.com/getuid/';
+    final url= 'http://genorionofficial.herokuapp.com/getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -449,80 +171,518 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     if(response.statusCode==200){
       getUidVariable=response.body ;
       getUidVariable2=int.parse(getUidVariable);
-      print('GetUi Variable-->   ${getUidVariable}');
+
     }else{
       print(response.statusCode);
     }
   }
-  _checkInternetConnectivity()async{
-    var result = await Connectivity().checkConnectivity();
-    if(result==ConnectionState.none){
-      return _showDialog();
+
+  allAwaitFunction()async{
+    await placeQueryFunc();
+    fetchPlace();
+
+    await returnPlaceQuery();
+
+    fetchPlace().then((value) => getAllFloor());
+    await floorQueryFunc();
+
+    getAllRoom();
+    await roomQueryFunc();
+
+    getAllDevice();
+    await deviceQueryFunc();
+    getSensorData();
+    await devicePinSensorQueryFunc();
+    getPinStatusData();
+    await devicePinStatusQueryFunc();
+    getAllPinNames();
+    await devicePinNamesQueryFunc();
+
+    print('MainAAAA  $pt');
+  }
+
+
+
+  Future<List<PlaceType>> fetchPlace() async {
+    // await openPlaceBox();
+    String token = await getToken();
+    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+
+    try {
+      if (response.statusCode > 0) {
+        placeData = jsonDecode(response.body);
+        for (int i = 0; i < placeData.length; i++) {
+
+          var placeQuery = PlaceType(
+              pId: placeData[i]['p_id'],
+              pType: placeData[i]['p_type'],
+              user: placeData[i]['user']
+          );
+          NewDbProvider.instance.insertPlaceModelData(placeQuery);
+
+
+        }
+
+
+        places = placeData.map((data) => PlaceType.fromJson(data)).toList();
+
+
+      }
+    } catch (e) {}
+    return places;
+// return PlaceType.fromJson(true);
+
+  }
+
+
+
+
+
+  Future<void> getAllFloor()async{
+    String token = await getToken();
+    var pId;
+
+    for(int i=0;i<placeData.length;i++){
+      // Box poop;
+      pId=placeData[i]['p_id'].toString();
+      // print(pId);
+
+      final url="http://genorionofficial.herokuapp.com/getallfloors/?p_id="+pId;
+      final  response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode>0){
+
+        floorData = jsonDecode(response.body);
+        for(int i=0;i<floorData.length;i++){
+          var floorQuery=FloorType(
+              fId: floorData[i]['f_id'],
+              fName: floorData[i]['f_name'].toString(),
+              pId: floorData[i]['p_id'],
+              user: floorData[i]['user']
+          );
+          await  NewDbProvider.instance.insertFloorModelData(floorQuery);
+        }
+      }
+
+
+      floors = floorData.map((data) => FloorType.fromJson(data)).toList();
+      // floorData=floorData+floors;
+
+
+    }
+    print('lastFloor ${floors.first.toJson()}');
+
+  }
+
+
+  Future<void> getAllRoom()async{
+    String token = await getToken();
+    var fId;
+    for(int i=0;i<floorQueryData.length;i++) {
+      //   print(NewDbProvider.instance.dogs());
+      fId = floorQueryData[i]['f_id'].toString();
+      print('fId123  $fId');
+
+
+      // String url="http://10.0.2.2:8000/api/data";
+      // String token= await getToken();
+
+      String url = "http://genorionofficial.herokuapp.com/getallrooms/?f_id="+fId;
+      var response;
+      try {
+        response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+
+        });
+        roomData = jsonDecode(response.body);
+        print('roomData123 $roomData');
+
+        for(int i=0;i<roomData.length;i++){
+
+
+          roomQuery=RoomType(
+              rId: roomData[i]['r_id'],
+              rName: roomData[i]['r_name'].toString(),
+              fId: roomData[i]['f_id'],
+              user: roomData[i]['user']
+          );
+
+          await NewDbProvider.instance.insertRoomModelData(roomQuery);
+
+
+        }
+
+
+
+      } catch (e) {
+        print('RoomCatch $e');
+        // }
+
+      }
+    }
+    return Future.value(true);
+  }
+  List arr=[];
+  Future<void> getAllDevice()async{
+    String token = await getToken();
+    var rId;
+    for(int i=0;i<roomQueryRows.length;i++) {
+      //   print(NewDbProvider.instance.dogs());
+      rId = roomQueryRows2[i]['r_id'].toString();
+      print('roomId  $rId');
+      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" +
+          rId;
+      var response;
+      // try {
+      response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      deviceData = jsonDecode(response.body);
+      // print('deviceData  ${deviceData}');
+      for (int i = 0; i < deviceData.length; i++) {
+        var deviceQuery = Device(
+            user: deviceData[i]['user'],
+            rId: deviceData[i]['r_id'],
+            dId: deviceData[i]['d_id']
+
+        );
+        print('deviceQueryFunc   $deviceData}');
+
+        await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+
+      }
+    }
+    return Future.value(true);
+  }
+  Future<void> getAllPinNames()async{
+    String token = await getToken();
+    var did;
+    print('pinNamesFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++){
+
+      did=deviceQueryRows[i]['d_id'];
+      print('did $did');
+      String url = "http://genorionofficial.herokuapp.com/editpinnames/?d_id="+did;
+      // try {
+      final   response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode==200) {
+        var  devicePinNamesData=json.decode(response.body);
+        // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
+
+        List listOfPinNames=[devicePinNamesData,];
+        print('QWERTY  $listOfPinNames');
+        for (int i = 0; i < listOfPinNames.length; i++) {
+
+          print('devicePinData $listOfPinNames}');
+
+          var devicePinNamesQuery = DevicePin(
+            id: listOfPinNames[i]['id'],
+            dId: listOfPinNames[i]['d_id'].toString(),
+            pin1Name: listOfPinNames[i]['pin1Name'].toString(),
+            pin2Name: listOfPinNames[i]['pin2Name'].toString(),
+            pin3Name: listOfPinNames[i]['pin3Name'].toString(),
+            pin4Name: listOfPinNames[i]['pin4Name'].toString(),
+            pin5Name: listOfPinNames[i]['pin5Name'].toString(),
+            pin6Name: listOfPinNames[i]['pin6Name'].toString(),
+            pin7Name: listOfPinNames[i]['pin7Name'].toString(),
+            pin8Name: listOfPinNames[i]['pin8Name'].toString(),
+            pin9Name: listOfPinNames[i]['pin9Name'].toString(),
+            pin10Name: listOfPinNames[i]['pin10Name'].toString(),
+            pin11Name: listOfPinNames[i]['pin11Name'].toString(),
+            pin12Name: listOfPinNames[i]['pin12Name'].toString(),
+          );
+          print('devicePinNamesInsertQuery    $devicePinNamesQuery');
+          print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
+          await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+        }
+      }
+    }
+
+
+  }
+  Future<void> getSensorData() async {
+    // arr=[arr.length-arr.length];
+    String token = await getToken();
+
+    var did;
+    print('SensorFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'];
+      print('insideLoop $did');
+      String url = "http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+      if(response.statusCode==200){
+        print('sensorResponse  ${response.statusCode}');
+
+      }
+      var arr = jsonDecode(response.body);
+      List listOfPinSensor=[arr,];
+      for (int i = 0; i < listOfPinSensor.length; i++) {
+        var sensorQuery = SensorData(
+          dId: listOfPinSensor[i]['d_id'],
+          sensor1: listOfPinSensor[i]['sensor1'],
+          sensor2: listOfPinSensor[i]['sensor2'],
+          sensor3: listOfPinSensor[i]['sensor3'],
+          sensor4: listOfPinSensor[i]['sensor4'],
+          sensor5: listOfPinSensor[i]['sensor5'],
+          sensor6: listOfPinSensor[i]['sensor6'],
+          sensor7: listOfPinSensor[i]['sensor7'],
+          sensor8: listOfPinSensor[i]['sensor8'],
+          sensor9: listOfPinSensor[i]['sensor9'],
+          sensor10: listOfPinSensor[i]['sensor10'],
+        );
+        print('deviceSensorJson    ${sensorQuery.toJson()}');
+        await NewDbProvider.instance.insertSensorData(sensorQuery);
+      }
+
     }
   }
 
-  void _showDialog() {
-    // dialog implementation
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("No Internet"),
-        content: Text("Check your internet connection"),
-        actions: <Widget>[FlatButton(child: Text("EXIT"), onPressed: () {})],
-      ),
-    );
+  Future<void> getPinStatusData() async {
+    // arr=[arr.length-arr.length];
+    String token = await getToken();
+
+    var did;
+    print('PinStatusFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'];
+      print('insideLoop $did');
+      String url = "http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      // final url="http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did;
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+
+      if(response.statusCode==200){
+        print('PinStatusResponse  ${response.statusCode}');
+        var pinStatus= jsonDecode(response.body);
+        // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
+        List listOfPinStatusValue=[pinStatus];
+        for (int i = 0; i < listOfPinStatusValue.length; i++) {
+          var pinQuery = PinStatus(
+            dId: listOfPinStatusValue[i]['d_id'],
+            pin1Status: listOfPinStatusValue[i]['pin1Status'],
+            pin2Status: listOfPinStatusValue[i]['pin2Status'],
+            pin3Status: listOfPinStatusValue[i]['pin3Status'],
+            pin4Status: listOfPinStatusValue[i]['pin4Status'],
+            pin5Status: listOfPinStatusValue[i]['pin5Status'],
+            pin6Status: listOfPinStatusValue[i]['pin6Status'],
+            pin7Status: listOfPinStatusValue[i]['pin7Status'],
+            pin8Status: listOfPinStatusValue[i]['pin8Status'],
+            pin9Status: listOfPinStatusValue[i]['pin9Status'],
+            pin10Status: listOfPinStatusValue[i]['pin10Status'],
+            pin11Status: listOfPinStatusValue[i]['pin11Status'],
+            pin12Status: listOfPinStatusValue[i]['pin12Status'],
+            pin13Status: listOfPinStatusValue[i]['pin13Status'],
+            pin14Status: listOfPinStatusValue[i]['pin14Status'],
+            pin15Status: listOfPinStatusValue[i]['pin15Status'],
+            pin16Status: listOfPinStatusValue[i]['pin16Status'],
+            pin17Status: listOfPinStatusValue[i]['pin17Status'],
+            pin18Status: listOfPinStatusValue[i]['pin18Status'],
+            pin19Status: listOfPinStatusValue[i]['pin19Status'],
+            pin20Status: listOfPinStatusValue[i]['pin20Status'],
+          );
+          await NewDbProvider.instance.insertPinStatusData(pinQuery);
+        }
+      }
+
+
+
+    }
   }
+
+
+  List<dynamic> devicePinNamesData=[];
+  var roomQuery;
+  var deviceQuery;
+  var aa;
+  Future returnPlaceQuery(){
+    return NewDbProvider.instance.queryPlace();
+  }
+  Future returnFloorQuery(String pId){
+
+    return NewDbProvider.instance.queryFloor();
+  }
+
+  Future returnRoomQuery(String fId){
+
+    return NewDbProvider.instance.queryRoom();
+  }
+  Future returnDeviceQuery(String rId){
+
+    return NewDbProvider.instance.queryDevice();
+  }
+
+
+
+
+
+
+
+
+  Future placeQueryFunc()async{
+    // placeTypeSingle=  await NewDbProvider.instance.queryPlace();
+    queryRows = await NewDbProvider.instance.queryPlace();
+    placeTypeSingle=queryRows;
+
+    var pids=PlaceType(
+      pId: placeTypeSingle[0]['p_id'].toString(),
+      pType: placeTypeSingle[0]['p_type'].toString(),
+      user: placeTypeSingle[0]['user']
+    );
+
+    pt=pids;
+    print('checkPlaces123654 ${pt}');
+
+  }
+  Future floorQueryFunc()async{
+    // floorTypeSingle=    await NewDbProvider.instance.queryFloor();
+    floorQueryRows = await NewDbProvider.instance.queryFloor();
+    await NewDbProvider.instance.getPinStatusByDeviceId('DIDM12932021AAAAAA');
+    floorQueryData=floorQueryRows;
+    floorTypeSingle=floorQueryRows;
+    var floor=FloorType(
+      fId: floorTypeSingle[0]['f_id'].toString(),
+      fName: floorTypeSingle[0]['f_name'].toString(),
+      user: floorTypeSingle[0]['user'],
+      pId: floorTypeSingle[0]['p_id'].toString()
+    );
+    fl=floor;
+
+    // floors=floorQueryRows;
+    print('floorLocalData ${fl.fName}');
+
+
+
+  }
+  Future roomQueryFunc()async {
+    roomQueryRows = await NewDbProvider.instance.queryRoom();
+    List roomTypeSingle=roomQueryRows;
+
+    var id=roomTypeSingle[0]['f_id'].toString();
+    roomQueryRows2=roomQueryRows;
+    List result= await NewDbProvider.instance.getRoomById(id);
+    for(int i=0;i<result.length;i++){
+      var roomQuery=RoomType(
+          rId: result[i]['r_id'].toString(),
+          fId: result[i]['f_id'].toString(),
+          rName:result[i]['r_name'].toString(),
+          user: result[i]['user'],
+      );
+      var room=roomQuery;
+      rm=[room].toList();
+    }
+    print('roomLocalData ${result.length}');
+
+
+    print('roomLocalData12 ${rm.length}');
+  }
+
+  deviceQueryFunc()async{
+    deviceQueryRows =
+    await NewDbProvider.instance.queryDevice();
+    List dv1= deviceQueryRows;
+    var roomId=dv1[0]['r_id'];
+    // dv=deviceQueryRows;
+    var result= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+    print('dvlouye ${result}');
+    var deviceQuery=Device(
+      dId: dv1[0]['d_id'].toString(),
+      rId: dv1[0]['r_id'].toString(),
+      user: dv1[0]['user']
+    );
+    final device=deviceQuery;
+    dvdata=[device];
+
+  }
+  Future devicePinNamesQueryFunc()async{
+    devicePinNamesQueryRows =
+    await NewDbProvider.instance.queryPinNames();
+    print('devicePinQueryFunc  $devicePinNamesQueryRows');
+
+    return devicePinNamesQueryRows;
+
+  }
+
+  Future devicePinSensorQueryFunc()async{
+    sensorQueryRows =
+    await NewDbProvider.instance.querySensor();
+    print('deviceSensorQueryFunc  $sensorQueryRows');
+
+    return sensorQueryRows;
+
+  }
+  Future devicePinStatusQueryFunc()async{
+    pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
+    print('devicePinStatusLocal  $pinStatusQueryRows');
+    return pinStatusQueryRows;
+
+
+  }
+
+
+  //
+  // _checkInternetConnectivity()async{
+  //   var result = await Connectivity().checkConnectivity();
+  //   if(result==ConnectionState.none){
+  //     return _showDialog();
+  //   }
+  // }
+
+  // void _showDialog() {
+  //   // dialog implementation
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text("No Internet"),
+  //       content: Text("Check your internet connection"),
+  //       actions: <Widget>[FlatButton(child: Text("EXIT"), onPressed: () {})],
+  //     ),
+  //   );
+  // }
   void  read() async {
     final storage = new FlutterSecureStorage();
 
     token = await storage.read(key: "token");
+    placeQueryFunc().then((value) => floorQueryFunc().then((value) => roomQueryFunc())).then((value) => deviceQueryFunc());
+    fetchPlace().then((value) => getAllFloor().then((value) => getAllRoom().then((value) => getAllDevice())));
 
-    openPlaceBox().then((value) => openFloorBox().then((value) => openRoomBox()));
-    await    getAllPlace().then((data){
-      data=data;
-    }).then((value) => getAllFloor().then((data){
-      data=data;
-    })).then((value) => getAllRoom().then((data){
-      data=data;
-    } )).then((value) =>getAllDevice().then((data){
-      data=data;
-    } ));
     print(token);
     if (token != null) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (
-      //           context,
-      //           ) =>
-      //           Container(
-      //             child: HomePage(
-      //                 ),
-      //           )),
-      // );
+
 
       Navigator.popAndPushNamed(context, '/main');
     }
-    // return AlertDialog(
-    //   title: Text(token),
-    //   content: Text('Do you really want to exit'),
-    //   actions: [
-    //     FlatButton(
-    //       child: Text(token),
-    //       onPressed: () => exit(0),
-    //     ),
-    //   ],
-    // );
+
   }
 
-  /* _checkInternetConnectivity() async {
-    var result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
-      return _showDialog("No Internet", "Check Your Internet");
-    }
-  }*/
-
-  // pass = await storage.read(key: "p")
   @override
   void dispose() {
     super.dispose();

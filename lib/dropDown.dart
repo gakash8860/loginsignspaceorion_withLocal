@@ -383,11 +383,11 @@ class _DropDownState extends State<DropDown> {
                                             context,
                                           ) =>
                                                   Container(
-                                                    child: HomePage(
-                                                        pt: pt,
-                                                        fl: fl,
-                                                        rm: rm,
-                                                        dv: dv),
+                                                    // child: HomePage(
+                                                    //     pt: pt,
+                                                    //     fl: fl,
+                                                    //     rm: rm,
+                                                    //     dv: dv),
                                                   )),
                                         );
                                       },

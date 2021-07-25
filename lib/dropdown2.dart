@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
 import 'package:loginsignspaceorion/home.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'dropdown1.dart';
@@ -15,7 +16,7 @@ PlaceType pt;
 FloorType fl;
 RoomType rmtype;
 List<RoomType> rm;
-List<Device> dv;
+List <Device>dv;
 String getUidVariable;
 int getUidVariable2;
 void main()=> runApp(MaterialApp(
@@ -645,11 +646,11 @@ class _DropDown2State extends State<DropDown2> {
                                   context,
                                   ) =>
                                   Container(
-                                    child: HomePage(
-                                        pt: pt,
-                                        fl: fl,
-                                        rm: rm,
-                                        dv: dv),
+                                    // child: HomePage(
+                                    //     // pt: pt,
+                                    //     fl: fl,
+                                    //     rm: rm,
+                                    //     dv: dv),
                                   )),
                         );
                       },
