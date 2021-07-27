@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/utility.dart';
 import 'Setting_Page.dart';
+import 'main.dart';
 import 'models/modeldefine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -174,7 +175,7 @@ print(result);
   Future<bool> getAllUserDataInHive()async{
     await openUserBox();
     // String url="http://10.0.2.2:8000/api/data";
-    String token="0bcb23b98322c01d95211af236b4a8d029bdd9f3";
+    String token=await getToken();
     String url="http://genorionofficial.herokuapp.com/getthedataofuser/?id="+getUidVariable;
     var response;
     try{

@@ -20,13 +20,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-
-//
-// Future  pt;
-// Future <FloorType> fl;
-// Future<RoomType> rm;
-// Future <Device> dv;
-// DropDown1 down=new DropDown1();
 Box placeBox;
 Box floorBox;
 Box roomBox;
@@ -41,6 +34,7 @@ List deviceData;
 List<Device> dvdata;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
+List<RoomType> room;
 final storage = new FlutterSecureStorage();
 
 Future<String> getToken() async {
@@ -62,7 +56,7 @@ void main()async {
 
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
-      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,rm: rm,dv: dvdata,),
+      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,rm: room,dv: dvdata,),
       // '/main': (ctx) =>   HomePage(pt: placeData.last,fl: floorData.first,rm: rm,),
       // '/main': (ctx) =>  DropDown2(),
     },
@@ -484,7 +478,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         print('PinStatusResponse  ${response.statusCode}');
         var pinStatus= jsonDecode(response.body);
         // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
-        List listOfPinStatusValue=[pinStatus];
+        List listOfPinStatusValue=pinStatus;
+        print('printFunction $listOfPinStatusValue}');
         for (int i = 0; i < listOfPinStatusValue.length; i++) {
           var pinQuery = PinStatus(
             dId: listOfPinStatusValue[i]['d_id'],
@@ -586,23 +581,26 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     List roomTypeSingle=roomQueryRows;
 
+
     var id=roomTypeSingle[0]['f_id'].toString();
     roomQueryRows2=roomQueryRows;
     List result= await NewDbProvider.instance.getRoomById(id);
-    for(int i=0;i<result.length;i++){
-      var roomQuery=RoomType(
-          rId: result[i]['r_id'].toString(),
-          fId: result[i]['f_id'].toString(),
-          rName:result[i]['r_name'].toString(),
-          user: result[i]['user'],
-      );
-      var room=roomQuery;
-      rm=[room].toList();
-    }
-    print('roomLocalData ${result.length}');
+    var roomQuery;
+
+    room=List.generate(result.length, (index) => RoomType(
+      rId: result[index]['r_id'].toString(),
+      fId: result[index]['f_id'].toString(),
+      rName:result[index]['r_name'].toString(),
+      user: result[index]['user'],
+    ));
+    print('ListOfRoom ${room}');
 
 
-    print('roomLocalData12 ${rm.length}');
+
+
+
+
+
   }
 
   deviceQueryFunc()async{

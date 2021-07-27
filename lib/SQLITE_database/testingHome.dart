@@ -596,6 +596,7 @@ class _HomeTestState extends State<HomeTest>
         var pinStatus= jsonDecode(response.body);
         // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
         List listOfPinStatusValue=[pinStatus];
+        print('listOfPinStatusValue $listOfPinStatusValue');
         for (int i = 0; i < listOfPinStatusValue.length; i++) {
           var pinQuery = PinStatus(
             dId: listOfPinStatusValue[i]['d_id'],
@@ -617,8 +618,6 @@ class _HomeTestState extends State<HomeTest>
             pin16Status: listOfPinStatusValue[i]['pin16Status'],
             pin17Status: listOfPinStatusValue[i]['pin17Status'],
             pin18Status: listOfPinStatusValue[i]['pin18Status'],
-            pin19Status: listOfPinStatusValue[i]['pin19Status'],
-            pin20Status: listOfPinStatusValue[i]['pin20Status'],
           );
           await NewDbProvider.instance.insertPinStatusData(pinQuery);
         }
@@ -2010,7 +2009,7 @@ class _HomeTestState extends State<HomeTest>
 
   // ignore: missing_return
   Future<IpAddress> fetchIp(String dId) async {
-    while (counter <= dv.length) {
+    while (counter <= widget.dv.length) {
       String token = await getToken();
       final url =
           'http://genorionofficial.herokuapp.com/addipaddress/?d_id=' + dId;
@@ -2909,6 +2908,7 @@ class _HomeTestState extends State<HomeTest>
                                   tabs: widget.rm.map<Widget>((RoomType rm) {
                                     rIdForName = rm.rId;
                                     print('RoomId  $rIdForName');
+                                    print('RoomId  ${rm.rName}');
                                     return Tab(
                                       text: rm.rName,
                                     );
@@ -2918,17 +2918,18 @@ class _HomeTestState extends State<HomeTest>
                                     print("sssssssssssssssssss  \n");
                                     print('Tab Length ${tabC.length}');
                                     await deviceQueryFunc();
+                                    getPinStatusData();
                                     await devicePinNamesQueryFunc();
                                     setState(() {
                                       tabbarState = widget.rm[index].rId;
-                                      dvlenght =dv.length;
                                     });
                                     print('Roomsssss RID-->>>>>>>   ${widget.rm[index]}');
                                      getDevices(tabbarState);
+                                     NewDbProvider.instance.getDeviceByRId(widget.rm[index].rId);
                                     // await fetchIp(dv[index].dId);
 
                                     print("tabbarState Tabs->  $tabbarState");
-                                    print('Device length ${widget.dv[index].dId}');
+                                    print('Device length ${widget.dv.length}');
                                   },
                                 ),
                               ),
@@ -2941,7 +2942,7 @@ class _HomeTestState extends State<HomeTest>
 
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          if (index < widget.dv.length) {
+                                            if (index < widget.dv.length) {
                             Text("Loading",style: TextStyle(fontSize: 44),);
                             if (widget.dv.length == null) {
                               return Text("Loading",style: TextStyle(fontSize: 44),);
@@ -3076,7 +3077,9 @@ class _HomeTestState extends State<HomeTest>
 
   deviceContainer(String dId,int index) async {
     devicePinSensorLocalUsingDeviceId();
+
     catchReturn= await NewDbProvider.instance.getPinStatusByDeviceId(dId);
+    print('catchReturn123 ${catchReturn}');
    var namesDataList12=await NewDbProvider.instance.getPinNamesByDeviceId(dId);
    // var sensorData=
     namesDataList=[
@@ -3097,8 +3100,21 @@ class _HomeTestState extends State<HomeTest>
 
     print('namesList123 ${namesDataList}');
     // catchReturn =  getData(dId);
-    print('catchReturnCheck ${catchReturn[0]["pin1Status"]}');
-    print('catchReturnCheck ${dId}');
+
+    responseGetData = [
+    widget.switch1_get = catchReturn[index]["pin1Status"],
+    widget.switch2_get = catchReturn[index]["pin2Status"],
+    widget.switch3_get = catchReturn[index]["pin3Status"],
+    widget.switch4_get = catchReturn[index]["pin4Status"],
+    widget.switch5_get = catchReturn[index]["pin5Status"],
+    widget.switch6_get = catchReturn[index]["pin6Status"],
+    widget.switch7_get = catchReturn[index]["pin7Status"],
+    widget.switch8_get = catchReturn[index]["pin8Status"],
+    widget.switch9_get = catchReturn[index]["pin9Status"],
+    widget.Slider_get = catchReturn[index]["pin10Status"],
+    widget.Slider_get2 = catchReturn[index]["pin11Status"],
+    widget.Slider_get3 = catchReturn[index]["pin12Status"],
+    ];
     setState(() {
       responseGetData = [
         widget.switch1_get = catchReturn[index]["pin1Status"],
@@ -3211,7 +3227,6 @@ class _HomeTestState extends State<HomeTest>
 
 
   deviceContainer2(String dId, int x) {
-    print('sssdccc $x');
 
     deviceContainer(dId,x);
     fetchIp(dId);
