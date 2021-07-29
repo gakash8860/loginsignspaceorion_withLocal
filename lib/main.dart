@@ -491,11 +491,11 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
             pin13Status: listOfPinStatusValue[i]['pin13Status'],
             pin14Status: listOfPinStatusValue[i]['pin14Status'],
             pin15Status: listOfPinStatusValue[i]['pin15Status'],
-            pin16Status: listOfPinStatusValue[i]['pin16Status'],
-            pin17Status: listOfPinStatusValue[i]['pin17Status'],
-            pin18Status: listOfPinStatusValue[i]['pin18Status'],
-            pin19Status: listOfPinStatusValue[i]['pin19Status'],
-            pin20Status: listOfPinStatusValue[i]['pin20Status'],
+            // pin16Status: listOfPinStatusValue[i]['pin16Status'],
+            // pin17Status: listOfPinStatusValue[i]['pin17Status'],
+            // pin18Status: listOfPinStatusValue[i]['pin18Status'],
+            // pin19Status: listOfPinStatusValue[i]['pin19Status'],
+            // pin20Status: listOfPinStatusValue[i]['pin20Status'],
           );
           await NewDbProvider.instance.insertPinStatusData(pinQuery);
         }
@@ -652,6 +652,7 @@ return room;
     final storage = new FlutterSecureStorage();
 
     token = await storage.read(key: "token");
+    allAwaitFunction();
     placeQueryFunc().then((value) => floorQueryFunc().then((value) => roomQueryFunc())).then((value) => deviceQueryFunc());
     fetchPlace().then((value) => getAllFloor().then((value) => getAllRoom().then((value) => getAllDevice())));
 
