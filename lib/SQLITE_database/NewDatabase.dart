@@ -1,15 +1,9 @@
-
-
-
-
-
-
-
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+import '../main.dart';
 
 Database dataBase;
 List tableOfPlace;
@@ -103,12 +97,6 @@ class NewDbProvider {
   static final sensor8 = 'sensor8';
   static final sensor9 = 'sensor9';
   static final sensor10 = 'sensor10';
-
-
-
-  Database db;
-
-  // static final columnId = 'id';
 
   Future<Database> get database async {
     if (dataBase != null) {
@@ -289,9 +277,38 @@ class NewDbProvider {
 
     return result;
   }
+  Future<List<Device>> getDeviceByRoomId(String id) async {
+    final db = await database;
+    List result =
+    await db.query("deviceTable", where: "r_id = ? ", whereArgs: [id]);
+    print('DeviceChanges $result');
+    dvdata=List.generate(result.length, (index) =>Device(
+      dId: result[index]['d_id'].toString(),
+      rId: result[index]['r_id'].toString(),
+      user: result[index]['user'],
+    ));
+    print('DeviceChanges12 $dvdata');
+    // dvdata = result.map((data) => Device.fromJson(data)).toList();
 
 
+    return dvdata;
+  }
+  Future updatePinStatusData(PinStatus pinStatus,int index) async {
+    final db = await database;
+     var result = await db.update('devicePinStatus', pinStatus.toJson(),
+      where: 'id = ?',
+      whereArgs: [pinStatus.dId,index],
+    );
+  return result;
+  }
+  Future<int> update(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    var id = row[columnPlaceId];
 
+    int aa=await db.update(_tableName, row, where: '$columnPlaceId=?', whereArgs: [id]);
+    print(aa);
+    return aa;
+  }
   Future getPinNamesByDeviceId(String id) async {
     final db = await database;
     var result =
@@ -319,12 +336,7 @@ class NewDbProvider {
     // return result.isNotEmpty?result.first:Null;
     return result;
   }
-  Future<int> update(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    var id = row[columnPlaceId];
-    return await db
-        .update(_tableName, row, where: '$columnPlaceId=?', whereArgs: [id]);
-  }
+
   Future close()async{
     final db= await instance.database;
     db.close();

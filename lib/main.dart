@@ -121,13 +121,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   @override
   void initState() {
     super.initState();
-
-    getUid();
-    placeQueryFunc();
-    floorQueryFunc();
-    allAwaitFunction();roomQueryFunc();
+    allAwaitFunction();
     requestPermission();
-    Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    Timer.periodic(Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;
       } else {
@@ -172,27 +168,19 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   }
 
   allAwaitFunction()async{
+  fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
+      .then((value) => floorQueryFunc()).then((value) => getAllRoom())
+      .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
+      .then((value) => devicePinStatusQueryFunc()).then((value) => getAllPinNames()).then((value) => devicePinNamesQueryFunc())
+      .then((value) => getSensorData()).then((value) => devicePinSensorQueryFunc());
+
     await placeQueryFunc();
-    fetchPlace();
-
-    await returnPlaceQuery();
-
-    fetchPlace().then((value) => getAllFloor());
     await floorQueryFunc();
-
-    getAllRoom();
     await roomQueryFunc();
-
-    getAllDevice();
     await deviceQueryFunc();
-    getSensorData();
     await devicePinSensorQueryFunc();
-    getPinStatusData();
     await devicePinStatusQueryFunc();
-    getAllPinNames();
     await devicePinNamesQueryFunc();
-
-    print('MainAAAA  $pt');
   }
 
 
@@ -281,9 +269,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<void> getAllRoom()async{
     String token = await getToken();
     var fId;
-    for(int i=0;i<floorQueryData.length;i++) {
+    for(int i=0;i<floorQueryRows.length;i++) {
       //   print(NewDbProvider.instance.dogs());
-      fId = floorQueryData[i]['f_id'].toString();
+      fId = floorQueryRows[i]['f_id'].toString();
       print('fId123  $fId');
 
 
@@ -382,7 +370,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         var  devicePinNamesData=json.decode(response.body);
         // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-        List listOfPinNames=[devicePinNamesData,];
+        List listOfPinNames=[devicePinNamesData];
+
         print('QWERTY  $listOfPinNames');
         for (int i = 0; i < listOfPinNames.length; i++) {
 
@@ -404,10 +393,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
             pin11Name: listOfPinNames[i]['pin11Name'].toString(),
             pin12Name: listOfPinNames[i]['pin12Name'].toString(),
           );
-          print('devicePinNamesInsertQuery    $devicePinNamesQuery');
+          print('devicePinNamesInsertQuery    ${devicePinNamesQuery.toJson()}');
           print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
-          await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+              await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+          var check= await NewDbProvider.instance.getPinNamesByDeviceId(listOfPinNames[i]['d_id']);
+          print('check456 ${check}');
         }
+
+
       }
     }
 
@@ -478,7 +471,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         print('PinStatusResponse  ${response.statusCode}');
         var pinStatus= jsonDecode(response.body);
         // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
-        List listOfPinStatusValue=pinStatus;
+        List listOfPinStatusValue=[pinStatus];
         print('printFunction $listOfPinStatusValue}');
         for (int i = 0; i < listOfPinStatusValue.length; i++) {
           var pinQuery = PinStatus(
@@ -518,22 +511,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   var roomQuery;
   var deviceQuery;
   var aa;
-  Future returnPlaceQuery(){
-    return NewDbProvider.instance.queryPlace();
-  }
-  Future returnFloorQuery(String pId){
 
-    return NewDbProvider.instance.queryFloor();
-  }
-
-  Future returnRoomQuery(String fId){
-
-    return NewDbProvider.instance.queryRoom();
-  }
-  Future returnDeviceQuery(String rId){
-
-    return NewDbProvider.instance.queryDevice();
-  }
 
 
 
@@ -577,7 +555,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   }
-  Future roomQueryFunc()async {
+  Future<List<RoomType>> roomQueryFunc()async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     List roomTypeSingle=roomQueryRows;
 
@@ -585,17 +563,15 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     var id=roomTypeSingle[0]['f_id'].toString();
     roomQueryRows2=roomQueryRows;
     List result= await NewDbProvider.instance.getRoomById(id);
-    var roomQuery;
-
     room=List.generate(result.length, (index) => RoomType(
       rId: result[index]['r_id'].toString(),
       fId: result[index]['f_id'].toString(),
       rName:result[index]['r_name'].toString(),
       user: result[index]['user'],
     ));
-    print('ListOfRoom ${room}');
 
 
+return room;
 
 
 
@@ -606,18 +582,25 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   deviceQueryFunc()async{
     deviceQueryRows =
     await NewDbProvider.instance.queryDevice();
+    print('maindeviceQuery $deviceQueryRows');
     List dv1= deviceQueryRows;
     var roomId=dv1[0]['r_id'];
     // dv=deviceQueryRows;
-    var result= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+    List result= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
     print('dvlouye ${result}');
-    var deviceQuery=Device(
-      dId: dv1[0]['d_id'].toString(),
-      rId: dv1[0]['r_id'].toString(),
-      user: dv1[0]['user']
-    );
-    final device=deviceQuery;
-    dvdata=[device];
+    dvdata= List.generate(result.length, (index) => Device(
+        dId: dv1[index]['d_id'].toString(),
+        rId: dv1[index]['r_id'].toString(),
+        user: dv1[index]['user']
+    ));
+
+    // var deviceQuery=Device(
+    //   dId: dv1[0]['d_id'].toString(),
+    //   rId: dv1[0]['r_id'].toString(),
+    //   user: dv1[0]['user']
+    // );
+    // final device=deviceQuery;
+    // dvdata=[device];
 
   }
   Future devicePinNamesQueryFunc()async{

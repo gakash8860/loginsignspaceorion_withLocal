@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeTest(
-        rm: [rm[0]],
+        // rm: [rm[0]],
       ),
     );
   }
@@ -290,45 +290,7 @@ class _HomeTestState extends State<HomeTest>
     return;
   }
 
-  Future<bool> getAllPlace() async {
-    await openPlaceBox();
-    String token = await getToken();
-    // String url="http://genorionofficial.herokuapp.com/getallfloors/?p_id=2513962";
-    String url = "http://genorionofficial.herokuapp.com/getallplaces/";
-    var response;
-    try {
-      response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
 
-      placeData = jsonDecode(response.body);
-      await putData(placeData);
-      print("Place123-->  ${places.toString()}");
-    } catch (e) {
-      print('PlaceCatch $e');
-    }
-
-    var myMap = placeBox.toMap().values.toList();
-    if (myMap.isEmpty) {
-      placeData.add('empty');
-    } else {
-      placeData = myMap;
-    }
-
-    // ignore: deprecated_member_use
-    floorData = List(placeData.length - placeData.length);
-    return Future.value(true);
-  }
-
-  Future putData(data) async {
-    await placeBox.clear();
-    for (var d in data) {
-      // print('D-->  $d');
-      placeBox.add(d);
-    }
-  }
 
   var deviceofI;
   GettingStartedScreen gettingStartedScreen = new GettingStartedScreen();
@@ -499,6 +461,7 @@ class _HomeTestState extends State<HomeTest>
       setState(() {
         widget.pt.pType = postDataPlaceName['p_type'];
       });
+
       print(' Place Response--> $placeResponse');
 // pt.pType=;
       print(' PlaceName--> ${postDataPlaceName['p_type']}');
@@ -568,7 +531,9 @@ class _HomeTestState extends State<HomeTest>
 
   }
 
+Future getPinNamesByDeviceId(String dId){
 
+}
 
 
 
@@ -1785,24 +1750,22 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  var getDataSql;
+  // var getDataSql;
 
   @override
   void initState() {
     print('roomLength ${widget.rm.length}');
-    deviceQueryFunc();
     devicePinNamesQueryFunc();
     placeVal = fetchplace();
     floorval = fetchFloor(placeVal.toString());
     tabbarState = roomResponse;
     timer = Timer.periodic(Duration(minutes: 1), (timer) async {
-
+      print('roomLength ${widget.dv.toString()}');
        getDevices(tabbarState);
        getDatafunc2();
       getPinStatusData();
       await devicePinStatusQueryFunc();
 
-      print("xyz");
 
       // getData(controller.text);
     });
@@ -1857,24 +1820,17 @@ class _HomeTestState extends State<HomeTest>
     getDevices(tabbarState);
     timer.cancel();
   }
-  deviceQueryFunc()async{
-    deviceQueryRows =
-    await NewDbProvider.instance.queryDevice();
-    List dv1= deviceQueryRows;
-    var roomId=dv1[0]['r_id'];
+  Future<List<Device>> deviceQueryFunc(String rId)async{
+    deviceQueryRows = await NewDbProvider.instance.queryDevice();
+    // List dv1= deviceQueryRows;
     // dv=deviceQueryRows;
-    var result= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+    print('UnderTapRoomId $rId');
+    var result= await NewDbProvider.instance.getDeviceByRId(rId);
     print('dvlouyeinitstate ${result}');
-    var deviceQuery=Device(
-        dId: dv1[0]['d_id'].toString(),
-        rId: dv1[0]['r_id'].toString(),
-        user: dv1[0]['user']
-    );
-    dv=[deviceQuery];
-
+    return result;
 
     // var result= await NewDbProvider.instance.getRoomById(id);
-    print('deviceLocalDatais  ${dv.length}');
+    // print('deviceLocalDatais  ${dv.length}');
   }
   Future<String> getToken() async {
     final token = await storage.read(key: "token");
@@ -1930,8 +1886,6 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode > 0) {
       print(response.statusCode);
       deviceData = jsonDecode(response.body);
-      // deviceIdForSensor = deviceData[0]['d_id'];
-      // print('deviceIdForSensor $deviceIdForSensor');
       dv = deviceData.map((data) => Device.fromJson(data)).toList();
       print('Room Id query ================================   $query');
       print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
@@ -1939,7 +1893,7 @@ class _HomeTestState extends State<HomeTest>
       return dv;
     }
   }
-  Future<void> getDeviceOffline(String rId)async{
+  Future<List<Device>> getDeviceOffline(String rId)async{
     String token = await getToken();
     var rId;
     for(int i=0;i<roomQueryRows2.length;i++) {
@@ -1970,7 +1924,8 @@ class _HomeTestState extends State<HomeTest>
         await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
       }
     }
-    return Future.value(true);
+    dv = deviceData.map((data) => Device.fromJson(data)).toList();
+    return dv;
   }
 // List getIpVariable=["10.25.202.11","10.25.202.12"];
   var getVariable;
@@ -2144,10 +2099,12 @@ class _HomeTestState extends State<HomeTest>
 
   }
   var sensorData;
-  Future devicePinSensorLocalUsingDeviceId()async {
-    print('ssse $deviceIdForSensor');
-     sensorData=await NewDbProvider.instance.getSensorByDeviceId('DIDM12932021AAAAAA');
-    print('underConstruction ${sensorData[0]['sensor1'].toString()}');
+  Future devicePinSensorLocalUsingDeviceId(String dId)async {
+    print('ssse $dId');
+     sensorData=await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
+    if(sensorData==null){
+      return Text('No Data');
+    }
     return sensorData;
   }
   List listOfPinNames=[];
@@ -2776,7 +2733,7 @@ class _HomeTestState extends State<HomeTest>
                                     // mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       FutureBuilder(
-                                        future: devicePinSensorLocalUsingDeviceId(),
+                                        future: deviceSensorVal,
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
                                             return Column(
@@ -2914,22 +2871,14 @@ class _HomeTestState extends State<HomeTest>
                                     );
                                   }).toList(),
                                   onTap: (index) async {
-                                    // print(index);
-                                    print("sssssssssssssssssss  \n");
-                                    print('Tab Length ${tabC.length}');
-                                    await deviceQueryFunc();
-                                    getPinStatusData();
-                                    await devicePinNamesQueryFunc();
                                     setState(() {
                                       tabbarState = widget.rm[index].rId;
+                                      devicePinNamesQueryFunc();
                                     });
-                                    print('Roomsssss RID-->>>>>>>   ${widget.rm[index]}');
-                                     getDevices(tabbarState);
-                                     NewDbProvider.instance.getDeviceByRId(widget.rm[index].rId);
-                                    // await fetchIp(dv[index].dId);
-
+                                   widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
+                                     devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
+                                    print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                     print("tabbarState Tabs->  $tabbarState");
-                                    print('Device length ${widget.dv.length}');
                                   },
                                 ),
                               ),
@@ -2942,14 +2891,14 @@ class _HomeTestState extends State<HomeTest>
 
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                                            if (index < widget.dv.length) {
+                        if (index < widget.dv.length) {
                             Text("Loading",style: TextStyle(fontSize: 44),);
-                            if (widget.dv.length == null) {
-                              return Text("Loading",style: TextStyle(fontSize: 44),);
-                            } else {
+
+
                               return Container(
                                 child: Column(
                                   children: [
+
                                     deviceContainer2(widget.dv[index].dId, index),
                                     Container(
                                       //
@@ -2981,7 +2930,7 @@ class _HomeTestState extends State<HomeTest>
                                 ),
                                 // child: Text(dv[index].dId),
                               );
-                            }
+
                           } else {
                             return null;
                           }
@@ -3074,10 +3023,13 @@ class _HomeTestState extends State<HomeTest>
   List responseGetData;
   List responseGetData2;
   var catchReturn;
-
+Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
-    devicePinSensorLocalUsingDeviceId();
 
+    await devicePinSensorLocalUsingDeviceId(dId);
+    setState(() {
+      deviceSensorVal=devicePinSensorLocalUsingDeviceId(dId);
+    });
     catchReturn= await NewDbProvider.instance.getPinStatusByDeviceId(dId);
     print('catchReturn123 ${catchReturn}');
    var namesDataList12=await NewDbProvider.instance.getPinNamesByDeviceId(dId);
@@ -3098,23 +3050,8 @@ class _HomeTestState extends State<HomeTest>
 
     ];
 
-    print('namesList123 ${namesDataList}');
+    print('namesList123 ${namesDataList12}');
     // catchReturn =  getData(dId);
-
-    responseGetData = [
-    widget.switch1_get = catchReturn[index]["pin1Status"],
-    widget.switch2_get = catchReturn[index]["pin2Status"],
-    widget.switch3_get = catchReturn[index]["pin3Status"],
-    widget.switch4_get = catchReturn[index]["pin4Status"],
-    widget.switch5_get = catchReturn[index]["pin5Status"],
-    widget.switch6_get = catchReturn[index]["pin6Status"],
-    widget.switch7_get = catchReturn[index]["pin7Status"],
-    widget.switch8_get = catchReturn[index]["pin8Status"],
-    widget.switch9_get = catchReturn[index]["pin9Status"],
-    widget.Slider_get = catchReturn[index]["pin10Status"],
-    widget.Slider_get2 = catchReturn[index]["pin11Status"],
-    widget.Slider_get3 = catchReturn[index]["pin12Status"],
-    ];
     setState(() {
       responseGetData = [
         widget.switch1_get = catchReturn[index]["pin1Status"],
@@ -3166,11 +3103,9 @@ class _HomeTestState extends State<HomeTest>
               print("True2-->   $result");
               await localUpdate(dId);
               await dataUpdate(dId);
-            } else if (result ==
-                ConnectivityResult.mobile) {
-              print("mobile-->   $result");
-              // await localUpdate(d_id);
+            } else if (result == ConnectivityResult.mobile) {
               await dataUpdate(dId);
+              await NewDbProvider.instance.getPinStatusByDeviceId(dId);
             } else {
               messageSms(context, dId);
             }
@@ -3671,7 +3606,7 @@ class _HomeTestState extends State<HomeTest>
                                           Expanded(
                                             child: TextButton(
                                               child: Text(
-                                                '4index',
+                                                '${namesDataList[index+9].toString()} ',
                                                 // '${namesDataList[index].toString()} ',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,

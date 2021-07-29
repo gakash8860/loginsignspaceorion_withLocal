@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
 import '../home.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'NewDatabase.dart';
 
 void main() {
@@ -69,10 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future roomVal;
   Future deviceVal;
+
   @override
   void initState() {
     super.initState();
-    allAwaitFunction();
+    timer=Timer.periodic(Duration(seconds: 1), (timer) {
+      fetchPlace();
+    });
+    // allAwaitFunction();
   }
 
 
@@ -103,11 +108,20 @@ class _MyHomePageState extends State<MyHomePage> {
   List roomData;
   List deviceData;
   var fido;
+  _launchURL() async {
+    const url = 'https://genorionofficial.herokuapp.com/tempuserautodelete';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
   Future<bool> fetchPlace() async {
     // await openPlaceBox();
-    String token = 'ca12655261cff7dd6a81d7c0dab450ed06d51746';
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
-    final response = await http.get(url, headers: {
+
+    String token = '4d4e2a3d33758ad7fd51c3ba45e819347dc60ea2';
+    final url = 'http://genorion1.herokuapp.com/tempuserautodelete/';
+    final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
@@ -115,22 +129,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       if (response.statusCode > 0) {
-         placeData = jsonDecode(response.body);
-        for (int i = 0; i < placeData.length; i++) {
-
-             var placeQuery = PlaceType(
-                pId: placeData[i]['p_id'],
-                pType: placeData[i]['p_type'],
-                user: placeData[i]['user']
-            );
-             NewDbProvider.instance.insertPlaceModelData(placeQuery);
-
-
-        }
+        var placeData = jsonDecode(response.body);
+        // for (int i = 0; i < placeData.length; i++) {
+        //
+        //     //  var placeQuery = PlaceType(
+        //     //     pId: placeData[i]['p_id'],
+        //     //     pType: placeData[i]['p_type'],
+        //     //     user: placeData[i]['user']
+        //     // );
+        //     //  NewDbProvider.instance.insertPlaceModelData(placeQuery);
+        //
+        //
+        // }
 
 
         // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-
+print(placeData);
       }
     } catch (e) {}
 
@@ -590,6 +604,20 @@ List<dynamic> devicePinNamesData=[];
                 child: const Text(' PinNames'),
                 color: Colors.red,
               ),
+              FlatButton(
+                onPressed: () async {
+                  // NewDbProvider.instance.insertFaltu({
+                  // NewDbProvider.faltuId:4,
+                  // NewDbProvider.faltuName:"aa",
+                  // });
+                  // var aa=await NewDbProvider.instance.queryFaltu();
+                  //
+                  // print(aa);
+
+                },
+                child: const Text(' PinNamesUpdate'),
+                color: Colors.red,
+              ),
 
               FlatButton(
                 onPressed: () async {
@@ -886,7 +914,7 @@ List<dynamic> devicePinNamesData=[];
                               sensorVal=devicePinSensorQueryFunc();
 
                             });
-                            print('PiNamesCheck   $aa ');
+                            print('PiNamesCheck   $devicePinNamesQueryRows2 ');
                             print('SensorCheck   $sensor2QueryRows ');
                           },
 
@@ -896,7 +924,82 @@ List<dynamic> devicePinNamesData=[];
                       return CircularProgressIndicator();
                     }
                   }),
+              FutureBuilder(
+                  future: pinVal,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 2,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: Text('Select Device'),
+                          isExpanded: true,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
 
+                          items: devicePinNamesQueryRows2.map((selectedDevice) {
+
+                            return DropdownMenuItem<String>(
+                              value: selectedDevice.toString(),
+                              child: Text("${selectedDevice['pin1name']}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedDevice)async {
+
+
+                            // devicePinNamesQueryRows=  await NewDbProvider.instance.queryPinNames();
+                            // pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
+                            // var deviceId=selectedDevice.substring(31,49);
+                            // print('qwedsaqw   $pinStatusQueryRows ');
+                            // var  aa= await NewDbProvider.instance.getPinNamesByDeviceId(deviceId.toString());
+                            // var sensor= await NewDbProvider.instance.getSensorByDeviceId(deviceId.toString());
+                            // // print('poiuy ${sensor}');
+                            // setState(() {
+                            //   devicePinNamesQueryRows2=aa;
+                            //   sensor2QueryRows=sensor;
+                            //   pinVal=devicePinNamesQueryFunc();
+                            //   sensorVal=devicePinSensorQueryFunc();
+                            //
+                            // });
+                            // print('PiNamesCheck   $aa ');
+                            // print('SensorCheck   $sensor2QueryRows ');
+                          },
+
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
               Container(
                 height: 789,
               color: Colors.red,
