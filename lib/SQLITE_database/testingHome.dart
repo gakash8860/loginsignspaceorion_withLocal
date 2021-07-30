@@ -531,9 +531,7 @@ class _HomeTestState extends State<HomeTest>
 
   }
 
-Future getPinNamesByDeviceId(String dId){
 
-}
 
 
 
@@ -1764,12 +1762,14 @@ Future getPinNamesByDeviceId(String dId){
        getDevices(tabbarState);
        getDatafunc2();
       getPinStatusData();
+
       await devicePinStatusQueryFunc();
 
 
       // getData(controller.text);
     });
-    getDevices(tabbarState);
+
+    getPinsName();
     tabC = new TabController(length: widget.rm.length, vsync: this);
     tabC.addListener(() {
 
@@ -2107,35 +2107,17 @@ Future getPinNamesByDeviceId(String dId){
     }
     return sensorData;
   }
-  List listOfPinNames=[];
-  Future<DevicePin> getPinNames(String dId) async {
-    String token = await getToken();
-    final response = await http.get(
-        'http://genorionofficial.herokuapp.com/editpinnames/?d_id=' + dId,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-
-// Appropriate action depending upon the
-// server response
-    if (response.statusCode > 0) {
-      print('Sensor ${response.body}');
-      print('SensorStatsCode ${response.statusCode}');
-      pinNames=json.decode(response.body);
-      // for(int i=1;i<listOfPinNames.length;i++){
-      //   listOfPinNames=pinNames;
-      // }
-      setState(() {
-        names[index]=pinNames;
-      });
-      print(' listOfPinNames ${listOfPinNames.toString()}');
-      return DevicePin.fromJson(pinNames[index]);
-    } else {
-      throw Exception('Failed to load Device Pin Name');
+var nameData;
+  Future devicePinNameLocalUsingDeviceId(String dId)async {
+    print('ssse $dId');
+    nameData=await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
+    if(nameData==null){
+      return Text('No Data');
     }
+    return nameData;
   }
+  List listOfPinNames=[];
+
 
 
   // ignore: missing_return
@@ -2873,7 +2855,7 @@ Future getPinNamesByDeviceId(String dId){
                                   onTap: (index) async {
                                     setState(() {
                                       tabbarState = widget.rm[index].rId;
-                                      devicePinNamesQueryFunc();
+                                      getPinsName().then((value) => devicePinNamesQueryFunc());
                                     });
                                    widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
                                      devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
@@ -3025,8 +3007,9 @@ Future getPinNamesByDeviceId(String dId){
   var catchReturn;
 Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
-
+    // getPinsName();
     await devicePinSensorLocalUsingDeviceId(dId);
+    await devicePinNameLocalUsingDeviceId(dId);
     setState(() {
       deviceSensorVal=devicePinSensorLocalUsingDeviceId(dId);
     });

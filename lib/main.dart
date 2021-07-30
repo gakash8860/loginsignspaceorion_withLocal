@@ -122,7 +122,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   void initState() {
     super.initState();
     // allAwaitFunction();
-    requestPermission();
+    // requestPermission();
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;

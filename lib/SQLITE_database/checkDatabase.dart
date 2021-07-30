@@ -76,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     timer=Timer.periodic(Duration(seconds: 1), (timer) {
       fetchPlace();
+      print('uuu');
     });
     // allAwaitFunction();
   }
@@ -606,16 +607,20 @@ List<dynamic> devicePinNamesData=[];
               ),
               FlatButton(
                 onPressed: () async {
+                int aa= await  NewDbProvider.instance.updatePLaceNameLocal(PlaceType(
+                    pId: 4.toString(),
+                    pType: "check"
+                  ));
                   // NewDbProvider.instance.insertFaltu({
                   // NewDbProvider.faltuId:4,
                   // NewDbProvider.faltuName:"aa",
                   // });
                   // var aa=await NewDbProvider.instance.queryFaltu();
                   //
-                  // print(aa);
+                  print(aa);
 
                 },
-                child: const Text(' PinNamesUpdate'),
+                child: const Text('Place Name Update'),
                 color: Colors.red,
               ),
 
