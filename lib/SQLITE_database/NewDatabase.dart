@@ -293,11 +293,11 @@ class NewDbProvider {
 
     return dvdata;
   }
-  Future updatePinStatusData(PinStatus pinStatus,int index) async {
+  Future updatePLaceNameLocal(PlaceType placeType) async {
     final db = await database;
-     var result = await db.update('devicePinStatus', pinStatus.toJson(),
+     var result = await db.update('$_tableName', placeType.toJson(),
       where: 'id = ?',
-      whereArgs: [pinStatus.dId,index],
+      whereArgs: [placeType.pType],
     );
   return result;
   }

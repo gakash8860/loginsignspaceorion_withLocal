@@ -674,24 +674,24 @@ Future getPinNamesByDeviceId(String dId){
   List pinNames=[];
   Future<DevicePin> addPinsName(String data,int index) async {
     String token = await getToken();
-    print('data[index] $index');
+    print('data[index] ${widget.dv[index].dId}');
     final url = 'http://genorionofficial.herokuapp.com/editpinnames/';
     var postDataPinName;
     if(index==0){
       postDataPinName = {
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin1Name": data.toString(),
       };
     }
     else if(index==1){
       postDataPinName = {
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin2Name": data.toString(),
       };
     }else if(index==2){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin3Name": data,
 
       };
@@ -699,7 +699,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==3){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin4Name": data,
 
       };
@@ -707,7 +707,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==4){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin5Name": data,
 
       };
@@ -715,7 +715,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==5){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin6Name": data,
 
       };
@@ -723,7 +723,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==6){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin7Name": data,
 
       };
@@ -731,7 +731,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==7){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin8Name": data,
 
       };
@@ -739,7 +739,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==8){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin9Name": data,
 
       };
@@ -748,7 +748,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==9){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin10Name": data,
 
       };
@@ -757,7 +757,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==10){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin11Name": data,
 
       };
@@ -765,7 +765,7 @@ Future getPinNamesByDeviceId(String dId){
     else if(index==11){
       postDataPinName = {
 
-        "d_id": deviceIdForSensor,
+        "d_id": widget.dv[index].dId,
         "pin12Name": data,
 
       };
@@ -798,8 +798,8 @@ Future getPinNamesByDeviceId(String dId){
       var devicePinResponse = jsonDecode(response.body);
       print(' DevicePinResponse--> $devicePinResponse');
       print(' PinName--> ${postDataPinName['pin2Name']}');
-      pinNames=postDataPinName['pin1Name'];
       namesDataList[index]=postDataPinName[index];
+      print('namesDataList $namesDataList');
       return DevicePin.fromJson(postDataPinName);
     } else {
       throw Exception('Failed to Update Pin Name.');
@@ -1754,7 +1754,7 @@ Future getPinNamesByDeviceId(String dId){
 
   @override
   void initState() {
-    print('roomLength ${widget.rm.length}');
+    // print('roomLength ${widget.rm.length}');
     devicePinNamesQueryFunc();
     placeVal = fetchplace();
     floorval = fetchFloor(placeVal.toString());

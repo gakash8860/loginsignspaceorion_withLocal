@@ -121,7 +121,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   @override
   void initState() {
     super.initState();
-    allAwaitFunction();
+    // allAwaitFunction();
     requestPermission();
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
@@ -558,25 +558,17 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<List<RoomType>> roomQueryFunc()async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     List roomTypeSingle=roomQueryRows;
-
-
     var id=roomTypeSingle[0]['f_id'].toString();
     roomQueryRows2=roomQueryRows;
     List result= await NewDbProvider.instance.getRoomById(id);
-    room=List.generate(result.length, (index) => RoomType(
+    print('listofroomUsingFloor ${result}');
+    room= List.generate(result.length, (index) => RoomType(
       rId: result[index]['r_id'].toString(),
       fId: result[index]['f_id'].toString(),
       rName:result[index]['r_name'].toString(),
       user: result[index]['user'],
     ));
-
-
 return room;
-
-
-
-
-
   }
 
   deviceQueryFunc()async{
@@ -650,11 +642,8 @@ return room;
   // }
   void  read() async {
     final storage = new FlutterSecureStorage();
-
+    await allAwaitFunction();
     token = await storage.read(key: "token");
-    allAwaitFunction();
-    placeQueryFunc().then((value) => floorQueryFunc().then((value) => roomQueryFunc())).then((value) => deviceQueryFunc());
-    fetchPlace().then((value) => getAllFloor().then((value) => getAllRoom().then((value) => getAllDevice())));
 
     print(token);
     if (token != null) {
