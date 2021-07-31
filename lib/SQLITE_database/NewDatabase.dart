@@ -14,6 +14,15 @@ class NewDbProvider {
   PlaceType placeType;
   static final NewDbProvider instance = NewDbProvider._privateConstructor();
 
+  static final _userDetails = 'userDetails';
+  static final email = 'email';
+  static final first_name = 'first_name';
+  static final last_name = 'last_name';
+  static final columnUserName = 'username';
+  static final columnUserPassword = 'password1';
+  static final columnUserPassword2 = 'password2';
+  static final columnUserPhoneNumber = 'phone_no';
+
   static final _tableName = 'placeTable';
   static final columnPlaceId = 'p_id';
   static final columnPlaceName = 'p_type';
@@ -116,15 +125,18 @@ class NewDbProvider {
     final path = join(directory.path, "placeTable.db");
     var database =
         await openDatabase(path, version: 1, onCreate: (db, version) async {
-      await db.execute('''
+
+          await db.execute('''
+         CREATE TABLE $_userDetails (  $email TEXT NOT NULL,
+         $first_name TEXT NOT NULL,$last_name TEXT NOT NULL, $columnUserName TEXT, $columnUserPhoneNumber INTEGER,$columnUserPassword TEXT,
+         $columnUserPassword2 TEXT   )
+         ''');
+
+       await db.execute('''
          CREATE TABLE $_tableName (  $columnPlaceId INTEGER PRIMARY KEY,
          $columnPlaceName TEXT NOT NULL,$columnPlaceUser INTEGER )
          ''');
-      // await db.execute('''
-      //    CREATE TABLE $_tableName (  ${placeType.pId} INTEGER PRIMARY KEY,
-      //    ${placeType.pType} TEXT NOT NULL,${placeType.user} INTEGER )
-      //    ''');
-      await db.execute('''
+        await db.execute('''
         CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnPlaceId ));
         ''');
 
@@ -150,7 +162,26 @@ class NewDbProvider {
 
   var qq;
 
-  // Define a function that inserts dogs into the database
+  // Define a function that inserts Data into the database
+
+  Future<void> insertUserDetailsModelData(User user) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_userDetails',
+      user.toJson(),
+
+    );
+    if(_userDetails==null){
+
+    }else{
+      return;
+    }
+
+
+
+  }
+
   Future<void> insertPlaceModelData(PlaceType placeType) async {
     // Get a reference to the database.
     final db = await database;
@@ -213,7 +244,11 @@ class NewDbProvider {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  userQuery() async {
+    Database db = await instance.database;
 
+    return await db.query(_userDetails);
+  }
   queryPlace() async {
     Database db = await instance.database;
 

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
@@ -19,6 +21,9 @@ class AddTempUser extends StatefulWidget {
 }
 
 class _AddTempUserState extends State<AddTempUser> {
+  DateTime selectedDate = DateTime.now();
+
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm');
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
@@ -27,16 +32,27 @@ class _AddTempUserState extends State<AddTempUser> {
   TempUSerRequirementDetails tempUSerRequirementDetails= new TempUSerRequirementDetails();
   FloorType fl;
   Future placeVal;
-
+  var cutTime;
+  var cutDate;
+  List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> floorQueryRows;
+  List<Map<String, dynamic>> queryRows;
   var floorval;
 
   var assignFloorId;
+
+  DateTime pickedDate;
+  TimeOfDay pickedTime;
 
 
   @override
   void initState() {
     super.initState();
-    placeVal=fetchPlace();
+    pickedDate=DateTime.now();
+    pickedTime=TimeOfDay.now();
+    placeVal=returnPlaceQuery();
+    placeQueryFunc();
+    // placeVal=fetchPlace();
   }
 
 
@@ -58,16 +74,22 @@ class _AddTempUserState extends State<AddTempUser> {
 
 
   Future addTempUser(TempUSerRequirementDetails data)async{
-    String token= await getToken();
-    final url='http://genorionofficial.herokuapp.com/giveaccesstotempuser/';
+    String token = 'aea5b178d26513ea6c5f0edc5f09377a3a958c22';
+    final url='http://genorion1.herokuapp.com/giveaccesstotempuser/';
     var postData={
-      "name": data.name,
-      "user": getUidVariable,
-      "p_id":assignTempUserPlaceId,
-      "email":data.email,
-      "mobile":data.pno
+      "name": data.name.toString(),
+      "user": 1,
+      // "p_id":assignTempUserPlaceId.toString(),
+      "email":data.email.toString(),
+      "mobile":data.pno.toString(),
+      "timing":cutTime.toString(),
+      "date":cutDate.toString(),
+      "f_id":"",
+      "r_id":"",
+      "d_id":""
     };
-    final response= await http.post(url,
+    print('aaaaaa ${postData}');
+    final response= await http.post(Uri.parse(url),
         body: jsonEncode(postData)
         ,headers: {
           'Content-Type': 'application/json',
@@ -82,9 +104,8 @@ class _AddTempUserState extends State<AddTempUser> {
           content: Text('Temp User Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // floorVal= getplaces();
       }else{
-        // _showDialog(context);
+
       }
       print('AddTempUserCode  ${response.statusCode}');
     }
@@ -92,85 +113,66 @@ class _AddTempUserState extends State<AddTempUser> {
 
 
 
-  List placeData;
-  List<PlaceType> places;
-  Future<List<PlaceType>> fetchPlace() async {
-    // await openPlaceBox();
-    String token = await getToken();
-    // final url = 'http://genorionofficial.herokuapp.com/addyourplace/?p_id=' + placeResponse;
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
 
-
-    try{
-      if (response.statusCode >0) {
-        placeData = jsonDecode(response.body);
-        // await putPlaceData(placeData);
-        print("Place-->  ${placeData}");
-        places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-
-        // places = placeData.map((data) {
-        //   PlaceType.fromJson(data).toJson();
-        //   DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(data));
-        // }).toList();
-
-        print('List ${places.toList()}');
-      }
-    }catch(e){
+  Future returnPlaceQuery()async{
+     return NewDbProvider.instance.queryPlace();
 
     }
-
-    // var myMap=placeBox.toMap().values.toList();
-    // if(myMap.isEmpty){
-    //   placeData.add('empty');
-    //   print('adding from 0 ${placeData.toString()}');
-    //
-    // }else{
-    //   placeData=myMap;
-    //   print('adding  ${placeData.toString()}');
-    //
-    //
-    //   setState(() {
-    //     print('adding147  ${placeData.toString()}');
-    //     // pt.pId=placeData[0]['p_id'];
-    //     print('adding1478  ${placeData.toString()}');
-    //     // pt.pId=placeData[0]['p_id'];
-    //   });
-    //
-    //
-    // }
-
-
-    return places;
+  Future placeQueryFunc()async{
+    queryRows =
+    await NewDbProvider.instance.queryPlace();
+    print('qwe123 $queryRows');
 
   }
 
-  Future<List<FloorType>> fetchFloors(String pId) async {
-    var query = {'p_id': pId};
-    String token = await getToken();
-    final url = Uri.https('genorionofficial.herokuapp.com', '/getallfloors/', query);
 
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode>0) {
-      print('place');
-      List<dynamic> data = jsonDecode(response.body);
-      List<FloorType> floors =
-      data.map((data) => FloorType.fromJson(data)).toList();
 
-      // floorVal = getfloors(places[0].p_id);
-
-      return floors;
+  pickDate()async{
+    DateTime date=  await showDatePicker(
+        context: context,
+        initialDate: pickedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if(date!=null){
+      setState(() {
+        pickedDate = date;
+      });
     }
+    String date2=pickedDate.toString();
+    cutDate=date2.substring(0,10);
+    print('pickedDate ${pickedDate}');
+    print('pickedDate ${cutDate}');
   }
 
+
+  pickTime()async{
+    TimeOfDay time=  await showTimePicker(
+        context: context,
+        initialTime: pickedTime
+    );
+    if(time!=null){
+      setState(() {
+        pickedTime = time;
+      });
+
+    }
+String se= pickedTime.toString();
+    cutTime=se.substring(10,15);
+    print('pickedTime ${pickedTime.toString()}');
+    print('pickedTime ${cutTime}');
+  }
+
+
+
+
+
+
+
+  Future returnFloorQuery(String pId){
+
+    return NewDbProvider.instance.queryFloor();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +242,7 @@ class _AddTempUserState extends State<AddTempUser> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40,),
+                          SizedBox(height: 10,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -269,7 +271,7 @@ class _AddTempUserState extends State<AddTempUser> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40,),
+                          SizedBox(height: 10,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -287,7 +289,7 @@ class _AddTempUserState extends State<AddTempUser> {
 
                               filled: true,
                               fillColor: Colors.white,
-                              hintText: 'Enter Phone Number of TempUser',
+                              hintText: 'Enter Phone Number of Temp. User',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white),
@@ -299,173 +301,180 @@ class _AddTempUserState extends State<AddTempUser> {
                               ),
                             ),
                           ),
-                          // SizedBox(height: 10,),
-                          FutureBuilder<List<PlaceType>>(
+                          SizedBox(height: 10,),
+                          Container(
+                              height: MediaQuery.of(context).size.height/18,
+                              width: MediaQuery.of(context).size.width/1.8,
+                              child: Card(
+                                child: GestureDetector(
+                                  onTap: pickDate,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                      child: Text("Date:${pickedDate.day}/${pickedDate.month}/${pickedDate.year}",textAlign: TextAlign.start,)
+                                  ),
+                                ),)),
+                          Container(
+                              height: MediaQuery.of(context).size.height/18,
+                              width: MediaQuery.of(context).size.width/1.8,
+                              child: Card(
+                                child: GestureDetector(
+                                  onTap: pickTime,
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Time :${pickedTime.hour}:${pickedTime.minute}",textAlign: TextAlign.start,)
+                                  ),
+                                ),)),
+
+                          FutureBuilder(
                               future: placeVal,
-                              builder: (context,
-                                  AsyncSnapshot<List<PlaceType>> snapshot) {
+                              builder: (context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
-                                  // print(snapshot.hasData);
-                                  // setState(() {
-                                  //   floorVal = getfloors(snapshot.data[0].p_id);
-                                  // });
-                                  if (snapshot.data.length == 0) {
-                                    return Center(
-                                        child: Text("Please Select"));
-                                  }
                                   return Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(41.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  offset: Offset(20,20)
-                                              )],
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<PlaceType>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            ),
-                                            dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
-                                            iconSize: 28,
-                                            hint: Text('Select Place'),
-                                            isExpanded: true,
-                                            value: pt,
-                                            style: TextStyle(
+                                    width: MediaQuery.of(context).size.width * 2,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
                                               color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: snapshot.data.map((selectedPlace) {
-                                              return DropdownMenuItem<PlaceType>(
-                                                value: selectedPlace,
-                                                child: Text(selectedPlace.pType),
-                                              );
-                                            }).toList(),
-                                            onChanged: ( selectedPlace) {
-                                              setState(() {
-                                                fl = null;
-                                                pt = selectedPlace;
-                                                assignTempUserPlaceId=selectedPlace.pId;
-                                                print('place Selected');
-                                                print('After Place Selected ${pt.pId}');
-                                                // pt=  DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(pt.pId));
-                                                floorval =
-                                                    fetchFloors(selectedPlace.pId);
-                                              });
-                                            },
-                                          ),
+                                              blurRadius: 30,
+                                              offset: Offset(20, 20))
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 0.5,
+                                        )),
+                                    child: DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(50),
                                         ),
                                       ),
-                                    ),
-                                    margin: new EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10),
-                                  );
-                                } else {
-                                  return CircularProgressIndicator(semanticsLabel: "Loading",);
-                                }
-                              }
-                          ),
-                          // SizedBox(height: 10,),
-                          FutureBuilder<List<FloorType>>(
-                              future: floorval,
-                              builder:
-                                  (context, AsyncSnapshot<List<FloorType>> snapshot) {
-                                if (snapshot.hasData) {
-                                  if (snapshot.data.length == 0) {
-                                    return Center(
-                                        child: Text("Please Select"));
-                                  }
-                                  return Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(45.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  // offset for Upward Effect
-                                                  offset: Offset(20,20)
-                                              )],
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<FloorType>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            ),
-                                            dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
-                                            iconSize: 28,
-                                            hint: Text('Select Floor'),
-                                            isExpanded: true,
-                                            value: fl,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: snapshot.data
-                                                .map((selectedFloor) {
-                                              return DropdownMenuItem<FloorType>(
-                                                value: selectedFloor,
-                                                child: Text(selectedFloor.fName),
-                                              );
-                                            }).toList(),
-                                            onChanged: ( selectedFloor) {
-                                              setState(() {
-                                                fl = selectedFloor;
-                                                print(fl.fId);
-                                                assignFloorId=selectedFloor.fId;
-                                                // roomVal=getrooms(selectedFloor.fId);
-                                                // rm2=getDevices(rm2.rId);
-                                                // dv=rm2.rId as List<Device>;
-                                              });
-                                            },
-                                          ),
-                                        ),
+                                      dropdownColor: Colors.white70,
+                                      icon: Icon(Icons.arrow_drop_down),
+                                      iconSize: 28,
+                                      hint: Text('Select Place'),
+                                      isExpanded: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
+
+                                      items: queryRows.map((selectedPlace) {
+
+                                        return DropdownMenuItem<String>(
+                                          value: selectedPlace.toString(),
+                                          child: Text("${selectedPlace['p_type']}"),
+                                        );
+                                      }).toList(),
+                                      onChanged: (selectedPlace)async {
+                                        floorval=null;
+                                        // floorQueryRows2=null;
+                                        // print('Floorqwe  ${floorQueryRows2}');
+                                        var placeId=selectedPlace.substring(7,14);
+                                        assignTempUserPlaceId=placeId;
+                                       var aa= await NewDbProvider.instance.getFloorById(placeId.toString());
+                                        print('AA  ${aa}');
+                                        floorval=null;
+                                        setState(() {
+                                          floorQueryRows2=aa;
+                                          floorval=returnFloorQuery(placeId);
+                                          returnFloorQuery(placeId);
+                                        });
+                                        print('Floorqwe  ${floorQueryRows2}');
+
+
+                                        // qwe= ;
+
+                                      },
+                                      // items:snapshot.data
                                     ),
-                                    // margin: new EdgeInsets.symmetric(
-                                    //     vertical: 10, horizontal: 10),
                                   );
                                 } else {
-                                  return Center(
-                                      child: Text(
-                                          "Loading..."));
+                                  return CircularProgressIndicator();
                                 }
                               }),
+                          SizedBox(height: 10,),
+                          FutureBuilder(
+                              future: floorval,
+                              builder: (context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 2,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              blurRadius: 30,
+                                              offset: Offset(20, 20))
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 0.5,
+                                        )),
+                                    child: DropdownButtonFormField(
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                      ),
+
+                                      dropdownColor: Colors.white70,
+                                      icon: Icon(Icons.arrow_drop_down),
+                                      iconSize: 28,
+                                      hint: Text('Select Floor'),
+                                      isExpanded: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      items: floorQueryRows2.map((selectedFloor) {
+                                        return DropdownMenuItem(
+                                          value: selectedFloor.toString(),
+                                          child: Text("${selectedFloor['f_name']}"),
+                                        );
+                                      }).toList(),
+                                      onChanged: (selectedFloor)async {
+                                        print('Floor selected $selectedFloor');
+                                        var floorId=selectedFloor.substring(7,14);
+
+                                        var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
+                                        print('AA  ${aa}');
+                                        setState(() {
+                                          // roomQueryRows2=aa;
+                                          // roomVal=returnRoomQuery(floorId);
+                                        });
+                                        // print('forRoom  ${roomQueryRows2}');
+
+
+
+                                        returnFloorQuery(floorId);
+
+                                      },
+                                      // items:snapshot.data
+                                    ),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              }),
+                          SizedBox(height: 20,),
                           FlatButton(
                               child: Text(
                                 'Submit',
@@ -516,7 +525,8 @@ class TempUSerRequirementDetails {
   String email = '';
   String pno = '';
   String name = '';
-
+  DateTime date;
+  TimeOfDay time;
 
 
 }

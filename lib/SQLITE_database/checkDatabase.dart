@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await returnPlaceQuery();
 
      getAllFloor();
-    await floorQueryFunc();
+     await floorQueryFunc();
 
      getAllRoom();
     await roomQueryFunc();

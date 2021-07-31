@@ -35,8 +35,12 @@ class _ShowTempUserState extends State<ShowTempUser> {
   List subUserList=[];
   List tempUserDecodeList=[];
 
-
-
+@override
+void initState(){
+  super.initState();
+  getTempUsers();
+  openTempUserBox();
+}
 
   Future openTempUserBox()async{
 
@@ -49,8 +53,8 @@ class _ShowTempUserState extends State<ShowTempUser> {
 
   Future<bool> getTempUsers()async{
     await openTempUserBox();
-    String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/getalldatayouaddedtempuser/';
+    String token = 'aea5b178d26513ea6c5f0edc5f09377a3a958c22';
+    final url = 'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/';
     var response;
     try{
       response= await http.get(Uri.parse(url),headers: {
@@ -207,21 +211,32 @@ class _ShowTempUserState extends State<ShowTempUser> {
                                         child: Card(
                                           semanticContainer:true,
                                           shadowColor: Colors.grey,
-                                          child: ListTile(
-                                            title: Text(tempUserDecodeList[index]['name']),
-                                            trailing: Text(tempUserDecodeList[index]['email']),
-                                            leading: IconButton(
-                                              icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                              onPressed: (){
-                                                print('delete');
-                                                _showDialogForDeleteSubUser(index);
-                                              },
-                                            ),
-                                            onTap: (){
-                                              print('printSubUser ${tempUserDecodeList[index]['name']}');
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserAllDetails: tempUserDecodeList[index]['p_id'],)));
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                title: Text(tempUserDecodeList[index]['name']),
+                                                trailing: Text(tempUserDecodeList[index]['email']),
+                                                leading: IconButton(
+                                                  icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                                  onPressed: (){
+                                                    print('delete');
+                                                    _showDialogForDeleteSubUser(index);
+                                                  },
+                                                ),
+                                                subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
 
-                                            },
+                                                onTap: (){
+                                                  print('printSubUser ${tempUserDecodeList[index]['name']}');
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserAllDetails: tempUserDecodeList[index]['p_id'],)));
+
+                                                },
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
+                                                ],
+                                              )
+                                            ],
                                           ),
                                         ),
                                       );

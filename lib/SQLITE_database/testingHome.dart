@@ -99,7 +99,18 @@ class HomeTest extends StatefulWidget {
 
   // ignore: non_constant_identifier_names
   var switch1_get;
-
+  var switch1Name;
+  var switch2Name;
+  var switch3Name;
+  var switch4Name;
+  var switch5Name;
+  var switch6Name;
+  var switch7Name;
+  var switch8Name;
+  var switch9Name;
+  var switch10Name;
+  var switch11Name;
+  var switch12Name;
   // ignore: non_constant_identifier_names
   var Slider_get = 1;
 
@@ -934,8 +945,8 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: returnPlaceQuery(),
+                    child:FutureBuilder(
+                        future:placeVal,
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             return Container(
@@ -984,7 +995,8 @@ class _HomeTestState extends State<HomeTest>
                                   );
                                 }).toList(),
                                 onChanged: (selectedPlace)async {
-
+                                  floorval=null;
+                                  floorQueryRows2=null;
                                   print('Floorqwe  ${floorQueryRows2}');
                                   var placeid=selectedPlace.substring(7,14);
 
@@ -1015,70 +1027,74 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: getAllFloor(),
+                    child:FutureBuilder(
+                        future: floorval,
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
-                            if (floorData.contains('empty')) {
-                              return Text('No data');
-                            } else {
-                              return Container(
-                                width: MediaQuery.of(context).size.width * 2,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 30,
-                                          offset: Offset(20, 20))
-                                    ],
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 0.5,
-                                    )),
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(15),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                  ),
-                                  dropdownColor: Colors.white70,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 28,
-                                  hint: Text('Select Floor'),
-                                  isExpanded: true,
-                                  style: TextStyle(
+                            return Container(
+                              width: MediaQuery.of(context).size.width * 2,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 30,
+                                        offset: Offset(20, 20))
+                                  ],
+                                  border: Border.all(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                    width: 0.5,
+                                  )),
+                              child: DropdownButtonFormField(
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  items: floorData.map((selectedFloor) {
-                                    return DropdownMenuItem<String>(
-                                      value: selectedFloor.toString(),
-                                      child: Text(
-                                          "${selectedFloor['f_name'].toString()}"),
-                                    );
-                                  }).toList(),
-                                  onChanged: (selectedFloor) {
-                                    setState(() {
-                                      // selectedRoom=[null];
-                                      // selectedFid= selectedFloor!.substring(7,14);
-                                      // selectedFid=selectedFloor['f_id'].toString();
-                                      // selectedFid.hashCode;
-                                      // getAllRoom(selectedFid.toString());
-                                    });
-                                  },
-                                  // items:snapshot.data
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
                                 ),
-                              );
-                            }
+
+                                dropdownColor: Colors.white70,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: Text('Select Floor'),
+                                isExpanded: true,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                items: floorQueryRows2.map((selectedFloor) {
+                                  return DropdownMenuItem(
+                                    value: selectedFloor.toString(),
+                                    child: Text("${selectedFloor['f_name']}"),
+                                  );
+                                }).toList(),
+                                onChanged: (selectedFloor)async {
+                                  print('Floor selected $selectedFloor');
+                                  var floorId=selectedFloor.substring(7,14);
+
+                                  var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
+                                  print('AA  ${aa}');
+                                  setState(() {
+                                    roomQueryRows2=aa;
+                                    // roomVal=returnRoomQuery(floorId);
+                                  });
+                                  print('forRoom  ${roomQueryRows2}');
+
+
+
+                                  returnFloorQuery(floorId);
+
+                                },
+                                // items:snapshot.data
+                              ),
+                            );
                           } else {
                             return CircularProgressIndicator();
                           }
@@ -1754,20 +1770,23 @@ class _HomeTestState extends State<HomeTest>
   void initState() {
     // print('roomLength ${widget.rm.length}');
     devicePinNamesQueryFunc();
-    placeVal = fetchplace();
-    floorval = fetchFloor(placeVal.toString());
+   placeVal= returnPlaceQuery();
+    placeQueryFunc();
+    // placeVal = fetchplace();
+    // floorval = fetchFloor(placeVal.toString());
     tabbarState = roomResponse;
-    timer = Timer.periodic(Duration(minutes: 1), (timer) async {
-      print('roomLength ${widget.dv.toString()}');
-       getDevices(tabbarState);
-       getDatafunc2();
-      getPinStatusData();
-
-      await devicePinStatusQueryFunc();
-
-
-      // getData(controller.text);
-    });
+    // timer = Timer.periodic(Duration(minutes: 10), (timer) async {
+    //   placeVal= returnPlaceQuery();
+    //   placeQueryFunc();
+    //   getDevices(tabbarState);
+    //   getDatafunc2();
+    //   getPinStatusData();
+    //
+    //   await devicePinStatusQueryFunc();
+    //
+    //
+    //   // getData(controller.text);
+    // });
 
     getPinsName();
     tabC = new TabController(length: widget.rm.length, vsync: this);
@@ -1847,6 +1866,7 @@ class _HomeTestState extends State<HomeTest>
   // ignore: non_constant_identifier_names, missing_return
   Future<Device> send_DeviceId(String data) async {
     String token = await getToken();
+    print('getUidVariable $getUidVariable');
     final url = 'http://genorionofficial.herokuapp.com/addyourdevice/';
     postData = {"user": getUidVariable, "r_id": tabbarState, "d_id": data};
     final response = await http.post(
@@ -1860,7 +1880,7 @@ class _HomeTestState extends State<HomeTest>
 
     if (response.statusCode > 0) {
       // print(roomResponse);
-      print(response.statusCode);
+      print("CHECKDEVICE123CODE   ${response.statusCode}");
       print(response.body);
       deviceResponse = jsonDecode(response.body);
       print(postData);
@@ -2101,13 +2121,13 @@ class _HomeTestState extends State<HomeTest>
   var sensorData;
   Future devicePinSensorLocalUsingDeviceId(String dId)async {
     print('ssse $dId');
-     sensorData=await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
+    sensorData=await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
     if(sensorData==null){
       return Text('No Data');
     }
     return sensorData;
   }
-var nameData;
+  var nameData;
   Future devicePinNameLocalUsingDeviceId(String dId)async {
     print('ssse $dId');
     nameData=await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
@@ -2853,14 +2873,16 @@ var nameData;
                                     );
                                   }).toList(),
                                   onTap: (index) async {
+                                    print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                     setState(() {
                                       tabbarState = widget.rm[index].rId;
                                       getPinsName().then((value) => devicePinNamesQueryFunc());
                                     });
-                                   widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
-                                     devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
-                                    print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                     print("tabbarState Tabs->  $tabbarState");
+                                    widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
+                                    devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
+
+
                                   },
                                 ),
                               ),
@@ -2873,45 +2895,45 @@ var nameData;
 
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                        if (index < widget.dv.length) {
+                          if (index < widget.dv.length) {
                             Text("Loading",style: TextStyle(fontSize: 44),);
 
 
-                              return Container(
-                                child: Column(
-                                  children: [
+                            return Container(
+                              child: Column(
+                                children: [
 
-                                    deviceContainer2(widget.dv[index].dId, index),
-                                    Container(
-                                      //
-                                      // color: Colors.green,
-                                        height: 35,
-                                        child: GestureDetector(
-                                          child: RichText(
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: widget.dv[index].dId,
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.black)),
-                                              TextSpan(text: "   "),
-                                              WidgetSpan(
-                                                  child: Icon(
-                                                    Icons.settings,
-                                                    size: 18,
-                                                  ))
-                                            ]),
-                                          ),
-                                          onTap: () {
-                                            _createAlertDialogForSSIDAndEmergencyNumber(context);
-                                            print('on tap');
+                                  deviceContainer2(widget.dv[index].dId, index),
+                                  Container(
+                                    //
+                                    // color: Colors.green,
+                                      height: 35,
+                                      child: GestureDetector(
+                                        child: RichText(
+                                          text: TextSpan(children: [
+                                            TextSpan(
+                                                text: widget.dv[index].dId,
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.black)),
+                                            TextSpan(text: "   "),
+                                            WidgetSpan(
+                                                child: Icon(
+                                                  Icons.settings,
+                                                  size: 18,
+                                                ))
+                                          ]),
+                                        ),
+                                        onTap: () {
+                                          _createAlertDialogForSSIDAndEmergencyNumber(context);
+                                          print('on tap');
 
-                                          },
-                                        )),
-                                  ],
-                                ),
-                                // child: Text(dv[index].dId),
-                              );
+                                        },
+                                      )),
+                                ],
+                              ),
+                              // child: Text(dv[index].dId),
+                            );
 
                           } else {
                             return null;
@@ -3005,35 +3027,21 @@ var nameData;
   List responseGetData;
   List responseGetData2;
   var catchReturn;
-Future deviceSensorVal;
+  Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
     // getPinsName();
-    await devicePinSensorLocalUsingDeviceId(dId);
+    // await devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
     setState(() {
       deviceSensorVal=devicePinSensorLocalUsingDeviceId(dId);
     });
     catchReturn= await NewDbProvider.instance.getPinStatusByDeviceId(dId);
     print('catchReturn123 ${catchReturn}');
-   var namesDataList12=await NewDbProvider.instance.getPinNamesByDeviceId(dId);
-   // var sensorData=
-    namesDataList=[
-      namesDataList12[index]['pin1Name'].toString(),
-      namesDataList12[index]['pin2Name'].toString(),
-      namesDataList12[index]['pin3Name'].toString(),
-      namesDataList12[index]['pin4Name'].toString(),
-      namesDataList12[index]['pin5Name'].toString(),
-      namesDataList12[index]['pin6Name'].toString(),
-      namesDataList12[index]['pin7Name'].toString(),
-      namesDataList12[index]['pin8Name'].toString(),
-      namesDataList12[index]['pin9Name'].toString(),
-      namesDataList12[index]['pin10Name'].toString(),
-      namesDataList12[index]['pin11Name'].toString(),
-      namesDataList12[index]['pin12Name'].toString(),
+    var namesDataList12=await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+    // var sensorData=
 
-    ];
 
-    print('namesList123 ${namesDataList12}');
+    print('namesList123 ${namesDataList}');
     // catchReturn =  getData(dId);
     setState(() {
       responseGetData = [
@@ -3050,17 +3058,25 @@ Future deviceSensorVal;
         widget.Slider_get2 = catchReturn[index]["pin11Status"],
         widget.Slider_get3 = catchReturn[index]["pin12Status"],
       ];
+      namesDataList=[
+        widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
+        widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
+        widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
+        widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
+        widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
+        widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
+        widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
+        widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
+        widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
+        widget.switch10Name= namesDataList12[index]['pin10Name'].toString(),
+        widget.switch11Name= namesDataList12[index]['pin11Name'].toString(),
+        widget.switch12Name= namesDataList12[index]['pin12Name'].toString(),
+      ];
     });
-
-    // responseGetData=  await getData(d_id)   ;
-    print('getResponse--> $responseGetData');
-    print('getResponse Length --> ${responseGetData.length}');
-    print('Device id-> $dId');
   }
 
   _showDialog(String dId) {
     // dialog implementation
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -3151,7 +3167,7 @@ Future deviceSensorVal;
     return Column(
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 1.92,
+          height: MediaQuery.of(context).size.height * 1.75,
           // color: Colors.redAccent,
           child: Column(
             children: [
@@ -3166,7 +3182,7 @@ Future deviceSensorVal;
                       color: _switchValue ? Colors.white : Colors.black, ),),
                   ),
                   Switch(
-                    value: responseGetData[0]==0
+                    value: responseGetData.iterator.current==0
                         ? val2
                         : val1,
                     //boolean value
@@ -3177,7 +3193,7 @@ Future deviceSensorVal;
                 ],
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 1.33,
+                height: MediaQuery.of(context).size.height * 1.18,
                 // color: Colors.amber,
                 child: GridView.count(
                     crossAxisSpacing: 8,
@@ -3219,7 +3235,6 @@ Future deviceSensorVal;
                                                   FlatButton(
                                                     onPressed: () async {
                                                       pickTime(index);
-                                                      // s
                                                       print("index --> $index");
                                                       // var selectedTime = await showTimePicker(
                                                       //   context: context,

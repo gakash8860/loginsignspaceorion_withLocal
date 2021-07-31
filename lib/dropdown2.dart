@@ -17,7 +17,7 @@ FloorType fl;
 RoomType rmtype;
 List<RoomType> rm;
 List <Device>dv;
-String getUidVariable;
+var getUidVariable;
 int getUidVariable2;
 void main()=> runApp(MaterialApp(
   debugShowCheckedModeBanner: false,

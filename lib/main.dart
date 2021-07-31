@@ -32,6 +32,7 @@ List floorTypeSingle;
 List roomTypeSingle;
 List deviceData;
 List<Device> dvdata;
+List<FloorType> lisOfFloor;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
 List<RoomType> room;
@@ -57,7 +58,7 @@ void main()async {
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,rm: room,dv: dvdata,),
-      // '/main': (ctx) =>   HomePage(pt: placeData.last,fl: floorData.first,rm: rm,),
+
       // '/main': (ctx) =>  DropDown2(),
     },
   ));
@@ -168,6 +169,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   }
 
   allAwaitFunction()async{
+   await getUid();
   fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
       .then((value) => floorQueryFunc()).then((value) => getAllRoom())
       .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
@@ -521,31 +523,33 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   Future placeQueryFunc()async{
-    // placeTypeSingle=  await NewDbProvider.instance.queryPlace();
+    placeTypeSingle=  await NewDbProvider.instance.queryPlace();
     queryRows = await NewDbProvider.instance.queryPlace();
     placeTypeSingle=queryRows;
 
     var pids=PlaceType(
-      pId: placeTypeSingle[0]['p_id'].toString(),
-      pType: placeTypeSingle[0]['p_type'].toString(),
-      user: placeTypeSingle[0]['user']
+      pId: placeTypeSingle.last['p_id'].toString(),
+      pType: placeTypeSingle.last['p_type'].toString(),
+      user: placeTypeSingle.last['user']
     );
 
     pt=pids;
-    print('checkPlaces123654 ${pt}');
+    print('checkPlaces123654 ${placeTypeSingle.last}');
 
   }
   Future floorQueryFunc()async{
-    // floorTypeSingle=    await NewDbProvider.instance.queryFloor();
+    floorTypeSingle=    await NewDbProvider.instance.queryFloor();
     floorQueryRows = await NewDbProvider.instance.queryFloor();
-    await NewDbProvider.instance.getPinStatusByDeviceId('DIDM12932021AAAAAA');
     floorQueryData=floorQueryRows;
     floorTypeSingle=floorQueryRows;
+    var pId=placeTypeSingle.last['p_id'].toString();
+    List result= await NewDbProvider.instance.getFloorById(pId);
+    print(' checkResult123456 ${result.first}');
     var floor=FloorType(
-      fId: floorTypeSingle[0]['f_id'].toString(),
-      fName: floorTypeSingle[0]['f_name'].toString(),
-      user: floorTypeSingle[0]['user'],
-      pId: floorTypeSingle[0]['p_id'].toString()
+      fId: result.first['f_id'].toString(),
+      fName: result.first['f_name'].toString(),
+      user: result.first['user'],
+      pId: result.first['p_id'].toString()
     );
     fl=floor;
 
@@ -561,7 +565,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     var id=roomTypeSingle[0]['f_id'].toString();
     roomQueryRows2=roomQueryRows;
     List result= await NewDbProvider.instance.getRoomById(id);
-    print('listofroomUsingFloor ${result}');
     room= List.generate(result.length, (index) => RoomType(
       rId: result[index]['r_id'].toString(),
       fId: result[index]['f_id'].toString(),

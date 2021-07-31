@@ -6,6 +6,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/utility.dart';
 import 'Setting_Page.dart';
@@ -51,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Image setImage;
   Box userDataBox;
   SharedPreferences preferences;
-
+  List<Map<String, dynamic>> userRows;
 
 
 
@@ -120,7 +121,17 @@ File _image;
     // TODO: implement initState
     super.initState();
     loadImageFromPreferences();
-    print(widget.fl.user);
+    getAllUserDataInHive();
+    getUserDataOffline();
+    getUserDetailsSql();
+
+    openUserBox();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+     // NewDbProvider.instance.close();
   }
   var userDataVariable;
   // ignore: deprecated_member_use
@@ -159,8 +170,7 @@ print('null');
     String fileName = _image.path.split('/').last;
     upload(fileName);
   }
-  static final String uploadEndPoint =
-      'https://genorionofficial.herokuapp.com/addprofileimage/?user=3';
+  static final String uploadEndPoint = 'https://genorionofficial.herokuapp.com/addprofileimage/?user=3';
   upload(String fileName) {
     http.post(uploadEndPoint, body: {
       "image": setImage,
@@ -172,11 +182,62 @@ print(result);
     });
   }
 
+  Future<void> getUserDetailsSql()async{
+    String token = await getToken();
+    print(getUidVariable);
+    String url="http://genorionofficial.herokuapp.com/getthedataofuser/?id=2";
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+
+
+      if (response.statusCode >0) {
+        print('responseStatus ${response.statusCode}');
+        userDataVariable=jsonDecode(response.body);
+        print('response $userDataVariable');
+
+        var userQuery=User(
+          email: userDataVariable['email'],
+          firstName: userDataVariable['first_name'],
+          lastName: userDataVariable['last_name'],
+        );
+        await NewDbProvider.instance.insertUserDetailsModelData(userQuery);
+        print('userQuery  ${userQuery.firstName}' );
+        // await NewDbProvider.instance.close();
+
+
+
+      }
+
+
+  }
+  List data;
+var userQuery;
+var email;
+var firstName;
+var lastName;
+getUserDataOffline()async{
+  data= await NewDbProvider.instance.userQuery();
+  var userQuery=User(
+    lastName: data.first['last_name'].toString(),
+    firstName: data.first['first_name'].toString(),
+    email: data.first['email'].toString()
+  );
+    setState(() {
+      email=userQuery.email;
+      firstName=userQuery.firstName;
+      lastName=userQuery.lastName;
+    });
+    print('asasa ${lastName}');
+}
+
   Future<bool> getAllUserDataInHive()async{
     await openUserBox();
     // String url="http://10.0.2.2:8000/api/data";
     String token=await getToken();
-    String url="http://genorionofficial.herokuapp.com/getthedataofuser/?id="+getUidVariable;
+    String url="http://genorionofficial.herokuapp.com/getthedataofuser/?id=2";
     var response;
     try{
       response= await http.get(Uri.parse(url),headers: {
@@ -187,14 +248,21 @@ print(result);
       });
 
       userDataVariable=jsonDecode(response.body);
+      print('gtggg${userDataVariable}');
       userDataList=[
         userDataVariable['first_name'],
         userDataVariable['last_name'],
         userDataVariable['email'],
 
       ];
+      var userQuery=User(
+        email: userDataList[0]['email'],
+        firstName: userDataList[0]['first_name'],
+        lastName: userDataList[0]['last_name'],
+      );
+      // await NewDbProvider.instance.insertUserDetailsModelData(userQuery);
 
-      print('Status Exception $userDataVariable');
+      // print('userQuery $userQuery');
       await putData(userDataList);
 
 
@@ -298,134 +366,44 @@ print(result);
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height*5,
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      SizedBox(height: 1.1,),
 
-                    child:  FutureBuilder(
-                        future: getAllUserDataInHive(),
-                        builder: ( context,  snapshot){
-                          if(snapshot.hasData){
-                            if(userDataList.contains('empty')){
-                              return Text('No data');
-                            }else{
-                              return Column(
-                                children: [
-                                  SizedBox(height: 25,),
-                                  Expanded(child: ListView.builder(
-                                      itemCount: 1,
-                                      itemBuilder: (context,index){
-                                        return
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: <Widget>[
-                                              SizedBox(height: 1.1,),
-                                              // Container(
-                                              //   height: 65,
-                                              //   width: 235,
-                                              //   child:Padding(
-                                              //     padding: const EdgeInsets.all(18.0),
-                                              //     child: Text(userDataList[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                              //   ),
-                                              //   decoration: BoxDecoration(
-                                              //     color: Colors.white,
-                                              //     border: Border.all(
-                                              //       color: Colors.black38 ,
-                                              //       width: 5.0 ,
-                                              //     ),
-                                              //     borderRadius: BorderRadius.circular(20),
-                                              //   ),
-                                              // ),
-                                              // SizedBox(height: 15,),
-                                              //
-                                              // Container(
-                                              //   height: 65,
-                                              //   width: 235,
-                                              //   child:Padding(
-                                              //     padding: const EdgeInsets.all(18.0),
-                                              //     child: Text(userDataList[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                              //   ),
-                                              //   decoration: BoxDecoration(
-                                              //     color: Colors.white,
-                                              //     border: Border.all(
-                                              //       color: Colors.black38 ,
-                                              //       width: 5.0 ,
-                                              //     ),
-                                              //     borderRadius: BorderRadius.circular(20),
-                                              //   ),
-                                              // ),
-                                              // SizedBox(height: 15,),
-                                              // Container(
-                                              //   height: 65,
-                                              //   width: 235,
-                                              //   child:Padding(
-                                              //     padding: const EdgeInsets.all(18.0),
-                                              //     child: Text(userDataList[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                              //   ),
-                                              //   decoration: BoxDecoration(
-                                              //     color: Colors.white,
-                                              //     border: Border.all(
-                                              //       color: Colors.black38 ,
-                                              //       width: 5.0 ,
-                                              //     ),
-                                              //     borderRadius: BorderRadius.circular(20),
-                                              //   ),
-                                              // ),
-                                              textFormField(text: userDataList[0].toString(),),
-                                              SizedBox(height: MediaQuery.of(context).size.height/68,),
-                                              textFormField(text: userDataList[1].toString()),
-                                              SizedBox(height: MediaQuery.of(context).size.height/68,),
-                                              textFormField(text: userDataList[2].toString()),
+                      Container(
+                        height: MediaQuery.of(context).size.height/18,
+                          width: MediaQuery.of(context).size.width/1.8,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(email==null?"Loading":email.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 14),),
+                            ),)),
+                      Container(
+                          height: MediaQuery.of(context).size.height/18,
+                          width: MediaQuery.of(context).size.width/1.8,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(firstName==null?"Loading":firstName.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 14),),
+                            ),)),
+                      Container(
+                          height: MediaQuery.of(context).size.height/18,
+                          width: MediaQuery.of(context).size.width/1.8,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(lastName==null?"Loading":lastName.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 14),),
+                            ),)),
+                      //
+                      // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                      // textformfield(text: userData['last_name'].toString()),
+                      // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                      // textformfield(text: userData['email'].toString()),
 
 
-                                            ],
-                                          );
-
-
-                                        Column(
-                                          children: <Widget>[
-                                            Text("${userDataList[0].toString()}"),
-                                            Text("${userDataList[1]}"),
-                                            Text("${userDataList[2]}"),
-
-                                          ],
-
-                                          // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                          // subtitle: Text("${statusData[index]['id']}"),
-
-                                        );
-                                      }
-                                  ))
-
-                                ],
-                              );
-                            }
-                          }else{
-                            return Text('Loading...',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),);
-                          }
-
-                        }
-
-                    ),
-
-
-
-                    // Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //   children: <Widget>[
-                    //     SizedBox(height: 1.1,),
-                    //
-                    //     // textformfield(text: userData['first_name'].toString()),
-                    //     //
-                    //     // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                    //     // textformfield(text: userData['last_name'].toString()),
-                    //     // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                    //     // textformfield(text: userData['email'].toString()),
-                    //
-                    //
-                    //   ],
-                    // ),
+                    ],
                   ),
                 ),
               ),
@@ -438,3 +416,105 @@ print(result);
     );
   }
 }
+
+
+
+
+
+
+
+
+//
+// FutureBuilder(
+// future: getAllUserDataInHive(),
+// builder: ( context,  snapshot){
+// if(snapshot.hasData){
+// if(userDataList.contains('empty')){
+// return Text('No data');
+// }else{
+// return Column(
+// children: [
+// SizedBox(height: 25,),
+// Expanded(child: ListView.builder(
+// itemCount: 1,
+// itemBuilder: (context,index){
+// return
+// Column(
+// crossAxisAlignment: CrossAxisAlignment.center,
+// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+// children: <Widget>[
+// SizedBox(height: 1.1,),
+// // Container(
+// //   height: 65,
+// //   width: 235,
+// //   child:Padding(
+// //     padding: const EdgeInsets.all(18.0),
+// //     child: Text(userDataList[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+// //   ),
+// //   decoration: BoxDecoration(
+// //     color: Colors.white,
+// //     border: Border.all(
+// //       color: Colors.black38 ,
+// //       width: 5.0 ,
+// //     ),
+// //     borderRadius: BorderRadius.circular(20),
+// //   ),
+// // ),
+// // SizedBox(height: 15,),
+// //
+// // Container(
+// //   height: 65,
+// //   width: 235,
+// //   child:Padding(
+// //     padding: const EdgeInsets.all(18.0),
+// //     child: Text(userDataList[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+// //   ),
+// //   decoration: BoxDecoration(
+// //     color: Colors.white,
+// //     border: Border.all(
+// //       color: Colors.black38 ,
+// //       width: 5.0 ,
+// //     ),
+// //     borderRadius: BorderRadius.circular(20),
+// //   ),
+// // ),
+// // SizedBox(height: 15,),
+// // Container(
+// //   height: 65,
+// //   width: 235,
+// //   child:Padding(
+// //     padding: const EdgeInsets.all(18.0),
+// //     child: Text(userDataList[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+// //   ),
+// //   decoration: BoxDecoration(
+// //     color: Colors.white,
+// //     border: Border.all(
+// //       color: Colors.black38 ,
+// //       width: 5.0 ,
+// //     ),
+// //     borderRadius: BorderRadius.circular(20),
+// //   ),
+// // ),
+// textFormField(text: userDataList[0].toString(),),
+// SizedBox(height: MediaQuery.of(context).size.height/68,),
+// textFormField(text: userDataList[1].toString()),
+// SizedBox(height: MediaQuery.of(context).size.height/68,),
+// textFormField(text: userDataList[2].toString()),
+//
+//
+// ],
+// );
+//
+// }
+// ))
+//
+// ],
+// );
+// }
+// }else{
+// return Text('Loading...',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),);
+// }
+//
+// }
+//
+// ),
