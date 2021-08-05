@@ -34,15 +34,21 @@ class _AddTempUserState extends State<AddTempUser> {
   Future placeVal;
   var cutTime;
   var cutDate;
+  Future flatVal;
+  List<Map<String, dynamic>> flatQueryRows2;
   List<Map<String, dynamic>> floorQueryRows2;
   List<Map<String, dynamic>> floorQueryRows;
   List<Map<String, dynamic>> queryRows;
   var floorval;
-
+  List<Map<String, dynamic>> roomQueryRows2;
   var assignFloorId;
-
+  var assignFlatId;
+  var assignRoomId;
+  http.Response response;
   DateTime pickedDate;
   TimeOfDay pickedTime;
+
+  Future roomVal;
 
 
   @override
@@ -63,10 +69,14 @@ class _AddTempUserState extends State<AddTempUser> {
     formKey.currentState.save();
     print('clear');
     addTempUser(tempUSerRequirementDetails).then((value) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ShowTempUser()),
-      );
+     if(response.statusCode==201){
+       Navigator.push(
+         context,
+         MaterialPageRoute(builder: (context) => ShowTempUser()),
+       );
+     }else{
+       return Center(child: Text('Error'),);
+     }
     }).catchError((e) {
       print(e);
     });
@@ -74,24 +84,26 @@ class _AddTempUserState extends State<AddTempUser> {
 
 
   Future addTempUser(TempUSerRequirementDetails data)async{
-    String token = 'aea5b178d26513ea6c5f0edc5f09377a3a958c22';
-    final url='http://genorion1.herokuapp.com/giveaccesstotempuser/';
-    var postData={
-      "name": data.name.toString(),
-      "user": 1,
-      // "p_id":assignTempUserPlaceId.toString(),
-      "email":data.email.toString(),
-      "mobile":data.pno.toString(),
+    String token = await getToken();
+    final url='https://genorion1.herokuapp.com/giveaccesstotempuser/';
+      int pNo;
+      pNo=int.parse(data.pno);
+      var postData={
+      "name": data.name,
+      "user": getUidVariable2,
+      "p_id":assignTempUserPlaceId.toString(),
+      "email":data.email,
+      "mobile":pNo,
       "timing":cutTime.toString(),
       "date":cutDate.toString(),
-      "f_id":"",
-      "r_id":"",
-      "d_id":""
+      "f_id":assignFloorId.toString(),
+      "flt_id":assignFlatId.toString(),
+      "r_id":assignRoomId.toString(),
+      // "d_id":""
     };
-    print('aaaaaa ${postData}');
-    final response= await http.post(Uri.parse(url),
-        body: jsonEncode(postData)
-        ,headers: {
+
+     response= await http.post(Uri.parse(url),
+        body: jsonEncode(postData),headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Token $token',
@@ -99,6 +111,8 @@ class _AddTempUserState extends State<AddTempUser> {
 
     if(response.statusCode>0){
       print('TempResponse ${response.statusCode}');
+      print('TempResponse ${response.body}');
+      print('aaaaaa ${postData}');
       if(response.statusCode==201){
         final snackBar = SnackBar(
           content: Text('Temp User Added'),
@@ -167,13 +181,19 @@ String se= pickedTime.toString();
 
 
 
+  Future returnFlatQuery(String fId){
 
+    return NewDbProvider.instance.queryFlat();
+  }
 
   Future returnFloorQuery(String pId){
 
     return NewDbProvider.instance.queryFloor();
   }
+  Future returnRoomQuery(String fId){
 
+    return NewDbProvider.instance.queryRoom();
+  }
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
@@ -380,6 +400,7 @@ String se= pickedTime.toString();
                                         // print('Floorqwe  ${floorQueryRows2}');
                                         var placeId=selectedPlace.substring(7,14);
                                         assignTempUserPlaceId=placeId;
+                                        print('PlaceId->  ${assignTempUserPlaceId}');
                                        var aa= await NewDbProvider.instance.getFloorById(placeId.toString());
                                         print('AA  ${aa}');
                                         floorval=null;
@@ -398,10 +419,10 @@ String se= pickedTime.toString();
                                     ),
                                   );
                                 } else {
-                                  return CircularProgressIndicator();
+                                  return Center(child:Text('Please Wait'));
                                 }
                               }),
-                          SizedBox(height: 10,),
+                          SizedBox(height:20),
                           FutureBuilder(
                               future: floorval,
                               builder: (context, AsyncSnapshot snapshot) {
@@ -453,14 +474,15 @@ String se= pickedTime.toString();
                                       onChanged: (selectedFloor)async {
                                         print('Floor selected $selectedFloor');
                                         var floorId=selectedFloor.substring(7,14);
-
-                                        var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
-                                        print('AA  ${aa}');
+                                        assignFloorId=floorId;
+                                        var getFlat= await NewDbProvider.instance.getFlatByFId(floorId.toString());
+                                        print(getFlat);
                                         setState(() {
-                                          // roomQueryRows2=aa;
-                                          // roomVal=returnRoomQuery(floorId);
+                                          flatVal=returnFlatQuery(floorId);
+                                          flatQueryRows2=getFlat;
+
                                         });
-                                        // print('forRoom  ${roomQueryRows2}');
+                                        print('forRoom  ${roomQueryRows2}');
 
 
 
@@ -474,7 +496,150 @@ String se= pickedTime.toString();
                                   return CircularProgressIndicator();
                                 }
                               }),
-                          SizedBox(height: 20,),
+                          SizedBox(height:20),
+                          FutureBuilder(
+                              future: flatVal,
+                              builder: (context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 2,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              blurRadius: 30,
+                                              offset: Offset(20, 20))
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 0.5,
+                                        )),
+                                    child: DropdownButtonFormField(
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                      ),
+
+                                      dropdownColor: Colors.white70,
+                                      icon: Icon(Icons.arrow_drop_down),
+                                      iconSize: 28,
+                                      hint: Text('Select Flat'),
+                                      isExpanded: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      items: flatQueryRows2.map((selectedFlat) {
+                                        return DropdownMenuItem(
+                                          value: selectedFlat.toString(),
+                                          child: Text("${selectedFlat['flt_name']}"),
+                                        );
+                                      }).toList(),
+                                      onChanged: (selectedFlat)async {
+                                        print('Flat selected $selectedFlat');
+                                        var flatId=selectedFlat.substring(9,16);
+                                        assignFlatId=flatId;
+                                        print(flatId);
+                                        var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
+                                        print('AA  ${aa}');
+                                        setState(() {
+                                          roomQueryRows2=aa;
+                                          roomVal=returnRoomQuery(flatId);
+                                        });
+                                        print('forRoom  ${roomQueryRows2}');
+
+
+
+                                        // returnFloorQuery(floorId);
+
+                                      },
+                                      // items:snapshot.data
+                                    ),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              }),
+
+                          SizedBox(height:20),
+                          FutureBuilder(
+                              future: roomVal,
+                              builder: (context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 2,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              blurRadius: 30,
+                                              offset: Offset(20, 20))
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 0.5,
+                                        )),
+                                    child: DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.white),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                      ),
+                                      dropdownColor: Colors.white70,
+                                      icon: Icon(Icons.arrow_drop_down),
+                                      iconSize: 28,
+                                      hint: Text('Select Room'),
+                                      isExpanded: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+
+                                      items:  roomQueryRows2.map((selectedRoom) {
+
+                                        return DropdownMenuItem<String>(
+                                          value: selectedRoom.toString(),
+                                          child: Text("${selectedRoom['r_name']}"),
+                                        );
+                                      }).toList(),
+                                      onChanged: (selectedRoom)async {
+                                        var roomId=selectedRoom.substring(7,14);
+                                        assignRoomId=roomId;
+                                        print('roomId ${roomId}');
+                                        var  aa= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+                                        print('deviceQueryRows ${aa}');
+                                        setState(() {
+                                          // deviceQueryRows2=aa;
+                                          // deviceVal=returnDeviceQuery(roomId);
+                                        });
+                                        print('DeviceCheck  ${aa}');
+                                      },
+                                      // items:snapshot.data
+                                    ),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              }),
                           FlatButton(
                               child: Text(
                                 'Submit',
@@ -492,6 +657,8 @@ String se= pickedTime.toString();
                               textColor: Colors.white,
                               onPressed: ()async {
                                 print("assignTempUserPlaceId->  ${assignTempUserPlaceId}");
+                                print("assignTempUserFloorId->  ${assignFloorId}");
+                                print("assignTempUserRooId->  ${assignRoomId}");
                                 await goToNextPage();
                                 // await addSubUser(emailController.text);
 
@@ -522,9 +689,9 @@ String se= pickedTime.toString();
 
 
 class TempUSerRequirementDetails {
-  String email = '';
-  String pno = '';
-  String name = '';
+  var email;
+  var pno ;
+  var name ;
   DateTime date;
   TimeOfDay time;
 
