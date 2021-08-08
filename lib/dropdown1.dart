@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:json_annotation/json_annotation.dart';
-
-import 'package:loginsignspaceorion/home.dart';
 import 'SQLITE_database/testingHome.dart';
+import 'main.dart';
 import 'models/modeldefine.dart';
 
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -16,6 +14,7 @@ import 'dropdown2.dart';
 
 var placeResponse;
 var floorResponse;
+var flatResponse;
 
 var roomResponse;
 var deviceResponse;
@@ -41,18 +40,20 @@ class _DropDown1State extends State<DropDown1> {
   List<RoomType> rm;
   List<Device> dv;
   FloorType fl;
+  Flat flat;
   PlaceType pt;
   SharedPreferences roomPrefrences;
   bool visible = true;
-  int pla_Variable = 1;
+  var plaVariable = 1;
 
   TextEditingController editingController=new TextEditingController();
   TextEditingController floorEditingController=new TextEditingController();
+  TextEditingController flatEditingController=new TextEditingController();
   TextEditingController roomEditingController=new TextEditingController();
   TextEditingController deviceEditingController=new TextEditingController();
 
 
-  var snackbar;
+  var snackBar;
   bool _isInAsyncCall = false;
 
 
@@ -62,18 +63,18 @@ class _DropDown1State extends State<DropDown1> {
   @override
   void initState(){
     super.initState();
-    roomResponse=send_RoomName(roomEditingController.text);
     getToken();
     getUid();
+    print(getUidVariable);
+    // roomResponse=send_RoomName(roomEditingController.text);
+
   }
-  Future<String> getToken() async {
-    final token = await storage.read(key: "token");
-    return token;
-  }
+
   // ignore: missing_return
-  Future <PlaceType> place_Name(String data) async {
+  Future <PlaceType> placeName(String data) async {
+    print(getUidVariable2);
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourplace/';
+    final url = 'http://genorion1.herokuapp.com/addyourplace/';
     var postData={
       "user":getUidVariable2 ,
       "p_type":data
@@ -96,7 +97,7 @@ class _DropDown1State extends State<DropDown1> {
 
       print(' Place--> $postData');
       setState(() {
-        setPlaceValue();
+        // setPlaceValue();
       });
       // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
       // placeResponsePreference.setInt('p_id', placeResponse);
@@ -110,9 +111,9 @@ class _DropDown1State extends State<DropDown1> {
   }
 
 
-  Future<FloorType> send_FloorName(String data) async {
+  Future<FloorType> sendFloorName(String data) async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourfloor/';
+    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
     var postData={
       "user":getUidVariable2  ,
       "p_id":placeResponse,
@@ -131,12 +132,9 @@ class _DropDown1State extends State<DropDown1> {
       print(response.statusCode);
       // print(response.body);
       floorResponse=jsonDecode(response.body);
-      print(' Floor Response--> ${floorResponse}');
-      print(' postData FLoor--> ${postData}');
+      print(' Floor Response--> $floorResponse');
+      print(' postData FLoor--> $postData');
 
-      setState(() {
-        setFloorValue();
-      });
 
       return FloorType.fromJson(postData);
     } else {
@@ -145,13 +143,13 @@ class _DropDown1State extends State<DropDown1> {
 
   }
 
-  Future<RoomType> send_RoomName(String data) async {
-    String token =await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addroom/';
+  Future<Flat> sendFlatName(String data) async {
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/addyourflat/';
     var postData={
-      "user":getUidVariable2  ,
-      "r_name":data,
+      "user":getUidVariable2,
       "f_id":floorResponse,
+      "flt_name":data
     };
     final response = await http.post(url,
       headers: {
@@ -164,16 +162,49 @@ class _DropDown1State extends State<DropDown1> {
 
     if (response.statusCode >0) {
       print(response.statusCode);
-      print(response.body);
+      // print(response.body);
+      flatResponse=jsonDecode(response.body);
+      print(' Flat Response--> $flatResponse');
+      print(' postData FLat--> $flatResponse');
+
+
+
+      return Flat.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Floor.');
+    }
+
+  }
+
+  Future<RoomType> sendRoomName(String data) async {
+    String token =await getToken();
+    final url = 'http://genorion1.herokuapp.com/addroom/';
+    var postData={
+      "user":getUidVariable2  ,
+      "r_name":data,
+      "flt_id":flatResponse,
+    };
+    final response = await http.post(url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+
+      },
+      body: jsonEncode(postData),
+    );
+
+    if (response.statusCode >0) {
+      print(response.statusCode);
+      print('response.body  ${response.body}');
       roomResponse=jsonDecode(response.body);
       setState(() {
         tabbarState=roomResponse;
-        setRoomValue();
+        // setRoomValue();
         // // final  roomResponse2=roomResponse;
         //   // roomResponsePreference.setInt('r_id', roomResponse2);
       });
-      print(' Room- Tabb-> ${tabbarState}');
-      print(' Room- Response-> ${roomResponse}');
+      print(' Room- Tabb-> $tabbarState');
+      print(' Room- Response-> $roomResponse');
 
 
       return RoomType.fromJson(postData);
@@ -184,11 +215,11 @@ class _DropDown1State extends State<DropDown1> {
   }
 
 
-  Future<Device> send_DeviceId(String data) async {
+  Future<Device> sendDeviceId(String data) async {
     print(roomResponse2);
     // placeType.createState().roomResponse;
     String token =await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourdevice/';
+    final url = 'http://genorion1.herokuapp.com/addyourdevice/';
     var postData={
       "user":getUidVariable2,
       "r_id":roomResponse,
@@ -207,6 +238,7 @@ class _DropDown1State extends State<DropDown1> {
       // print(roomResponse);
       print(response.statusCode);
       print(response.body);
+
       // floorResponse=jsonDecode(response.body);
       // print(' Floor--> ${floorResponse}');N.
       // return Device.fromJson(postData);
@@ -216,7 +248,7 @@ class _DropDown1State extends State<DropDown1> {
 
   }
   getUid() async{
-    final url=await 'http://genorionofficial.herokuapp.com/getuid/';
+    final url= 'http://genorion1.herokuapp.com/getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -228,7 +260,7 @@ class _DropDown1State extends State<DropDown1> {
     if(response.statusCode==200){
       getUidVariable=response.body ;
       getUidVariable2=int.parse(getUidVariable);
-      print('GetUi Variable-->   ${getUidVariable}');
+      print('GetUi Variable-->   $getUidVariable');
     }else{
       print(response.statusCode);
     }
@@ -263,40 +295,6 @@ class _DropDown1State extends State<DropDown1> {
   //   });
   // }
 
-  getsetPlaceValue()async{
-    placeResponsePreference= await SharedPreferences.getInstance();
-    String placeValue=placeResponsePreference.getString("placeValue");
-    return placeValue;
-  }
-  setPlaceValue()async{
-    placeResponsePreference = await SharedPreferences.getInstance();
-    placeResponsePreference.setString("placeValue", placeResponse);
-    print('Setting  $placeResponsePreference');
-  }
-
-  getFloorValue()async{
-    floorResponsePreference= await SharedPreferences.getInstance();
-    String floorValue=floorResponsePreference.getString("floorValue");
-    return floorValue;
-  }
-
-  setFloorValue()async{
-    floorResponsePreference= await SharedPreferences.getInstance();
-    floorResponsePreference.setString("floorValue",floorResponse);
-  }
-
-
-
-  getRoomValue()async{
-    roomResponsePreference= await SharedPreferences.getInstance();
-    String floorValue=floorResponsePreference.getString("roomValue");
-    return floorValue;
-  }
-
-  setRoomValue()async{
-    floorResponsePreference= await SharedPreferences.getInstance();
-    floorResponsePreference.setString("roomValue",floorResponse);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +315,7 @@ class _DropDown1State extends State<DropDown1> {
           progressIndicator:CircularProgressIndicator() ,
           child: Container(
             height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            width: double.maxFinite,
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -384,6 +382,34 @@ class _DropDown1State extends State<DropDown1> {
                     ),
                   ),
                 ),
+                SizedBox(height: 15),
+
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    autofocus: true,
+                    controller: flatEditingController,
+                    textInputAction: TextInputAction.next,
+
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.place),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Enter Flat Name',
+                      contentPadding: const EdgeInsets.all(15),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                  ),
+                ),
 
                 SizedBox(height: 15),
 
@@ -421,10 +447,11 @@ class _DropDown1State extends State<DropDown1> {
                     //   RoomType  room= await send_RoomName(roomEditingController.text);
                     //   Device device= await send_DeviceId(deviceEditingController.text);
 
-                    pt=  await place_Name(editingController.text);
-                    print('After Await  ${placeResponse}');
-                    fl = await send_FloorName(floorEditingController.text);
-                    RoomType room= await send_RoomName(roomEditingController.text);
+                    pt=  await placeName(editingController.text);
+                    print('After Await  $placeResponse');
+                    fl = await sendFloorName(floorEditingController.text);
+                    flat= await sendFlatName(flatEditingController.text);
+                     room=  [await  sendRoomName(roomEditingController.text)];
                     // await send_DeviceId(deviceEditingController.text);
 
 
@@ -437,9 +464,8 @@ class _DropDown1State extends State<DropDown1> {
 
 
                     setState((){
-                      // pt.pId =placeResponse;
-                      // fl=floorResponse ;
-                      rm = [room];
+
+                      rm = room;
                       tabbarState=rm[0].rId;
                       tabbarState=roomResponse;
                       // dv=[deviceResponse] ;
@@ -447,15 +473,16 @@ class _DropDown1State extends State<DropDown1> {
                     });
 
                     print('On Press tabbar --> $tabbarState');
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context)=>  HomePage(
-                    //           // pt: pt,
-                    //           fl: fl,
-                    //           rm: rm,
-                    //           dv: dv,
-                    //         )));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context)=>  HomeTest(
+                              pt: pt,
+                              fl: fl,
+                              flat: flat,
+                              rm: rm,
+                              dv: dv,
+                            )));
                   },
                 ),
 

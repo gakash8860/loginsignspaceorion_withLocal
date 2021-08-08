@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
@@ -8,9 +8,6 @@ import 'package:loginsignspaceorion/TemporaryUser/AddTempUser.dart';
 import 'package:loginsignspaceorion/TemporaryUser/tempUserdetails.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-
-import '../Add SubUser/AddSubUser.dart';
-import '../Add SubUser/SubUserDetailPage.dart';
 
 
 
@@ -24,22 +21,28 @@ class ShowTempUser extends StatefulWidget {
 class _ShowTempUserState extends State<ShowTempUser> {
   Box tempUserBox;
   final storage= new FlutterSecureStorage();
-  var subUserDecode;
-
-
+var deleteData;
+var deleteMobile;
+var deletePid;
+var deleteFid;
+var deleteFlatId;
+var deleteRid;
+Timer timer;
 
   Future<String> getToken() async {
     final token = await storage.read(key: "token");
     return token;
   }
   List subUserList=[];
-  List tempUserDecodeList=[];
+  List tempUserDecodeList;
 
 @override
 void initState(){
   super.initState();
-  getTempUsers();
   openTempUserBox();
+  timer=Timer.periodic(Duration(seconds: 10), (timer) { getTempUsers(); tempAutoDelete();});
+
+
 }
 
   Future openTempUserBox()async{
@@ -50,31 +53,64 @@ void initState(){
     print('tempUserBox  ${tempUserBox.values.toString()}');
     return;
   }
+  Future<bool> tempAutoDelete() async {
+    // await openPlaceBox();
 
-  Future<bool> getTempUsers()async{
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/tempuserautodelete/';
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+
+    try {
+      if (response.statusCode > 0) {
+        var placeData = jsonDecode(response.body);
+        // for (int i = 0; i < placeData.length; i++) {
+        //
+        //     //  var placeQuery = PlaceType(
+        //     //     pId: placeData[i]['p_id'],
+        //     //     pType: placeData[i]['p_type'],
+        //     //     user: placeData[i]['user']
+        //     // );
+        //     //  NewDbProvider.instance.insertPlaceModelData(placeQuery);
+        //
+        //
+        // }
+
+
+        // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
+        print(placeData);
+      }
+    } catch (e) {}
+
+
+  }
+  Future<void> getTempUsers()async{
     await openTempUserBox();
-    String token = 'aea5b178d26513ea6c5f0edc5f09377a3a958c22';
+    String token = await getToken();
     final url = 'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/';
-    var response;
-    try{
-      response= await http.get(Uri.parse(url),headers: {
+        try{
+     final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
 
       });
 
+     await tempUserBox.clear();
+
+     var  tempUserDecode=jsonDecode(response.body);
 
 
-      var  tempUserDecode=jsonDecode(response.body);
+     print('tempResponse ${tempUserDecode}');
       setState(() {
         tempUserDecodeList=tempUserDecode;
+         putTempUser(tempUserDecodeList);
       });
       print('tempUserDecode ${tempUserDecodeList}');
-      print('Number1123->  ${tempUserDecodeList[0]}');
-
-
-      await putTempUser(tempUserDecodeList);
+      print('Number1123->  ${tempUserDecodeList}');
 
 
     }catch(e){
@@ -102,18 +138,30 @@ void initState(){
 
   }
 
+  var postData={
 
+  };
   Future deleteTempUser()async{
-    String token = await getToken();
-    final url= 'http://genorionofficial.herokuapp.com/giveaccesstotempuser/?mobile=7042717549&p_id=7120663';
-    var postData={};
-    final response= await http.delete(url,
 
+    String token = await getToken();
+    String url;
+    if(deletePid!=null){
+      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
+    }else if(deleteFid!=null){
+      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&f_id=$deleteFid';
+    }else if(deleteFlatId!=null){
+      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&flt_id=$deleteFlatId';
+    }else if(deleteRid!=null){
+      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteRid';
+    }
+    // final url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
+    final response= await http.delete(url,
       headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     },
+
     );
     if(response.statusCode>0){
       print('deleteTempUser ${response.statusCode}');
@@ -137,10 +185,21 @@ void initState(){
           // ignore: deprecated_member_use
           FlatButton(child: Text("Yes"),
               onPressed: () async{
+                print('delete');
+
+                print('tempUserBoxDelete ${tempUserDecodeList[index]}   ');
+                deletePid=tempUserDecodeList[index]['p_id'];
+                deleteFid=tempUserDecodeList[index]['f_id'];
+                deleteFlatId=tempUserDecodeList[index]['flt_id'];
+                deleteRid=tempUserDecodeList[index]['r_id'];
+                deleteMobile=tempUserDecodeList[index]['mobile'];
                await Hive.box('tempUser').deleteFromDisk();
+                print('deletePid ${deletePid}');
+                print('deleteFid ${deleteFid}');
+                print('deleteFlatid ${deleteFlatId}');
+                print('deleteRid ${deleteRid}');
                await deleteTempUser();
-                // await deleteSubUser(subUserDecodeList[index]['email'],subUserDecodeList[index]['p_id']);
-                // subUserBox.delete('subUser');
+
 
                 Navigator.of(context).pop();
 
@@ -151,7 +210,7 @@ void initState(){
               }),
           // ignore: deprecated_member_use
 
-          FlatButton(child: Text("No"), onPressed: () {
+          MaterialButton(child: Text("No"), onPressed: () {
             Navigator.of(context).pop();
           }),
 
@@ -191,7 +250,7 @@ void initState(){
                   future: getTempUsers(),
                   builder: ( context,  snapshot){
                     if(snapshot.hasData){
-                      if(tempUserDecodeList.contains('empty')){
+                      if(tempUserDecodeList.isEmpty){
                         return Column(
                           children: [
                             SizedBox(height: 250,),
@@ -219,7 +278,7 @@ void initState(){
                                                 leading: IconButton(
                                                   icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
                                                   onPressed: (){
-                                                    print('delete');
+
                                                     _showDialogForDeleteSubUser(index);
                                                   },
                                                 ),
@@ -227,7 +286,8 @@ void initState(){
 
                                                 onTap: (){
                                                   print('printSubUser ${tempUserDecodeList[index]['name']}');
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserAllDetails: tempUserDecodeList[index]['p_id'],)));
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                    tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
 
                                                 },
                                               ),

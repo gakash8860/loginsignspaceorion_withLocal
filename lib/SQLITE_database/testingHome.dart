@@ -19,6 +19,8 @@ import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
 
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showEmergencyNumber.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showSSID.dart';
+import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
+import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/about_Genorion.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
@@ -89,12 +91,12 @@ class MyApp extends StatelessWidget {
 class HomeTest extends StatefulWidget {
   // ignore: must_be_immutable
   PlaceType pt;
-
   FloorType fl;
+  Flat flat;
   List<RoomType> rm;
   List<Device> dv;
 
-  HomeTest({Key key, this.pt, this.fl, @required this.rm, @required this.dv})
+  HomeTest({Key key, this.pt, this.fl,this.flat, @required this.rm, @required this.dv})
       : super(key: key);
 
   // ignore: non_constant_identifier_names
@@ -119,6 +121,15 @@ class HomeTest extends StatefulWidget {
 
   // ignore: non_constant_identifier_names
   var Slider_get3 = 1;
+  var Slider_get4 ;
+  var Slider_get5 ;
+  var Slider_get6 ;
+  var Slider_get7 ;
+  var Slider_get8 ;
+  var Slider_get9 ;
+  var Slider_get10;
+  var Slider_get11;
+  var Slider_get12;
 
   // ignore: non_constant_identifier_names
   var switch2_get,
@@ -192,6 +203,7 @@ class _HomeTestState extends State<HomeTest>
   List<Map<String, dynamic>> devicePinNamesQueryRows;
   List<Map<String, dynamic>> devicePinNamesQueryRows2;
   List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> flatQueryRows2;
   List<Map<String, dynamic>> roomQueryRows2;
   AlarmHelper _alarmHelper = AlarmHelper();
   int switch_1 = 0,
@@ -224,7 +236,7 @@ class _HomeTestState extends State<HomeTest>
   bool _switchValue = false;
   var data;
   List<int> listDynamic = [];
-
+  var flatId;
   // TextEditingController sendDevice= TextEditingController();
   List names = [
     'Enter Name',
@@ -240,6 +252,8 @@ class _HomeTestState extends State<HomeTest>
   List<int> sliderContainer = [];
   TabController tabC;
   List<dynamic> deviceStatus = [];
+
+  Future flatVal;
 
   // =new TabController(length: widget.rm.length, vsync: null);
 
@@ -328,7 +342,7 @@ class _HomeTestState extends State<HomeTest>
       String token = await getToken();
       print('placeBox ${placeBox.length}');
       final url =
-          "http://genorionofficial.herokuapp.com/getallfloors/?p_id=" + pId;
+          "http://genorion1.herokuapp.com/getallfloors/?p_id=" + pId;
       var response;
       try {
         response = await http.get(Uri.parse(url), headers: {
@@ -385,35 +399,12 @@ class _HomeTestState extends State<HomeTest>
 
   var postDataPlaceName;
 
-  Future<bool> getAllPlace2() async {
-    await openPlaceBox();
-    String token = await getToken();
-    // String url="http://genorionofficial.herokuapp.com/getallfloors/?p_id=2513962";
-    String url = "http://genorionofficial.herokuapp.com/getallplaces/";
-    var response;
-    try {
-      response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-
-      var placeData = jsonDecode(response.body);
-      pt = PlaceType.fromJson(placeData);
-    } catch (e) {
-      print('PlaceCatch $e');
-    }
-
-    // ignore: deprecated_member_use
-
-    return Future.value(true);
-  }
 
 // ignore: missing_return
   Future<PlaceType> getPlaceName() async {
     String token = await getToken();
     print('currentPlaceId ${widget.pt.pId}');
-    final url = 'http://genorionofficial.herokuapp.com/addyourplace/?p_id=' +
+    final url = 'http://genorion1.herokuapp.com/addyourplace/?p_id=' +
         widget.pt.pId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -432,7 +423,7 @@ class _HomeTestState extends State<HomeTest>
   Future<FloorType> getFloorName() async {
     String token = await getToken();
     print('currentFloorId ${widget.fl.fId}');
-    final url = 'http://genorionofficial.herokuapp.com/getallrooms/?f_id=' +
+    final url = 'http://genorion1.herokuapp.com/getallrooms/?f_id=' +
         widget.fl.fId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -449,7 +440,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<PlaceType> addPlaceName(String data) async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourplace/';
+    final url = 'http://genorion1.herokuapp.com/addyourplace/';
     var postDataPlaceName = {
       "p_id": widget.pt.pId,
       "p_type": data,
@@ -488,7 +479,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<FloorType> addFloorName(String data) async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourfloor/';
+    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
     var postDataFloorName = {
       "f_id": widget.fl.fId,
       "f_name": data,
@@ -556,8 +547,8 @@ class _HomeTestState extends State<HomeTest>
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
-      // final url="http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did;
+      String url = "http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -619,56 +610,50 @@ class _HomeTestState extends State<HomeTest>
 
   var statusPinNames;
   List namesDataList=[];
-  Future<bool> getPinsName()async{
-    await openDevicePinNameBox();
-    // String url="http://10.0.2.2:8000/api/data";
-    String token=await getToken();
+  Future getPinsName(String dId)async{
+    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id="+dId;
+    String token = await getToken();
+    // try {
+    final   response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
 
-    String url="http://genorionofficial.herokuapp.com/editpinnames/?d_id=DIDM12932021AAAAAA";
-    var response;
-    try{
-      response= await http.get(Uri.parse(url),headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
+    });
+    if(response.statusCode==200) {
+      var  devicePinNamesData=json.decode(response.body);
+      // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-      });
+      List listOfPinNames=[devicePinNamesData,];
 
-      statusPinNames=jsonDecode(response.body);
-      namesDataList=[
-        statusPinNames['pin1Name'],
-        statusPinNames['pin2Name'],
-        statusPinNames['pin3Name'],
-        statusPinNames['pin4Name'],
-        statusPinNames['pin5Name'],
-        statusPinNames['pin6Name'],
-        statusPinNames['pin7Name'],
-        statusPinNames['pin8Name'],
-        statusPinNames['pin9Name'],
-        statusPinNames['pin10Name'],
-        statusPinNames['pin11Name'],
-        statusPinNames['pin12Name'],
+      print('QWERTY  $listOfPinNames');
+      for (int i = 0; i < listOfPinNames.length; i++) {
 
-      ];
+        print('devicePinData $listOfPinNames}');
 
+        var devicePinNamesQuery = DevicePin(
+          id: listOfPinNames[i]['id'],
+          dId: listOfPinNames[i]['d_id'].toString(),
+          pin1Name: listOfPinNames[i]['pin1Name'].toString(),
+          pin2Name: listOfPinNames[i]['pin2Name'].toString(),
+          pin3Name: listOfPinNames[i]['pin3Name'].toString(),
+          pin4Name: listOfPinNames[i]['pin4Name'].toString(),
+          pin5Name: listOfPinNames[i]['pin5Name'].toString(),
+          pin6Name: listOfPinNames[i]['pin6Name'].toString(),
+          pin7Name: listOfPinNames[i]['pin7Name'].toString(),
+          pin8Name: listOfPinNames[i]['pin8Name'].toString(),
+          pin9Name: listOfPinNames[i]['pin9Name'].toString(),
+          pin10Name: listOfPinNames[i]['pin10Name'].toString(),
+          pin11Name: listOfPinNames[i]['pin11Name'].toString(),
+          pin12Name: listOfPinNames[i]['pin12Name'].toString(),
+        );
+        print('devicePinNamesInsertQuery    ${devicePinNamesQuery.toJson()}');
+        print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
+        await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+      }
 
-      await putPinNames(namesDataList);
-
-
-    }catch(e){
-      // print('Status Exception $e');
-
-    }
-
-    var myMap=namesBox.toMap().values.toList();
-    if(myMap.isEmpty){
-      namesBox.add('empty');
-
-    }else{
-      namesDataList=myMap ;
 
     }
-    return Future.value(true);
   }
 
   Future putPinNames(data)async{
@@ -684,7 +669,7 @@ class _HomeTestState extends State<HomeTest>
   Future<DevicePin> addPinsName(String data,int index) async {
     String token = await getToken();
     print('data[index] ${widget.dv[index].dId}');
-    final url = 'http://genorionofficial.herokuapp.com/editpinnames/';
+    final url = 'http://genorion1.herokuapp.com/editpinnames/';
     var postDataPinName;
     if(index==0){
       postDataPinName = {
@@ -817,7 +802,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<RoomType> addRoomName(String data) async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addroom/';
+    final url = 'http://genorion1.herokuapp.com/addroom/';
     var postDataRoomName = {
       "r_id": rIdForName,
       "f_id": widget.fl.fId,
@@ -932,6 +917,11 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+  Future returnFlatQuery(String fId){
+
+    return NewDbProvider.instance.queryFlat();
+  }
+
   _createAlertDialogDropDown(BuildContext context) {
     return showDialog(
         context: context,
@@ -945,8 +935,8 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child:FutureBuilder(
-                        future:placeVal,
+                    child: FutureBuilder(
+                        future: placeVal,
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             return Container(
@@ -995,12 +985,10 @@ class _HomeTestState extends State<HomeTest>
                                   );
                                 }).toList(),
                                 onChanged: (selectedPlace)async {
-                                  floorval=null;
-                                  floorQueryRows2=null;
-                                  print('Floorqwe  ${floorQueryRows2}');
                                   var placeid=selectedPlace.substring(7,14);
+                                print("SElectedPlace $selectedPlace");
 
-                                  var aa= await NewDbProvider.instance.getFloorById(placeid.toString());
+                                 var aa= await NewDbProvider.instance.getFloorById(placeid.toString());
                                   print('AA  ${aa}');
                                   floorval=null;
                                   setState(() {
@@ -1078,12 +1066,12 @@ class _HomeTestState extends State<HomeTest>
                                 onChanged: (selectedFloor)async {
                                   print('Floor selected $selectedFloor');
                                   var floorId=selectedFloor.substring(7,14);
-
-                                  var  aa= await NewDbProvider.instance.getRoomById(floorId.toString());
-                                  print('AA  ${aa}');
+                                  var getFlat= await NewDbProvider.instance.getFlatByFId(floorId.toString());
+                                  print(getFlat);
                                   setState(() {
-                                    roomQueryRows2=aa;
-                                    // roomVal=returnRoomQuery(floorId);
+                                    flatVal=returnFlatQuery(floorId);
+                                    flatQueryRows2=getFlat;
+
                                   });
                                   print('forRoom  ${roomQueryRows2}');
 
@@ -1105,70 +1093,74 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: getAllFloor(),
+                    child:FutureBuilder(
+                        future: flatVal,
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
-                            if (floorData.contains('empty')) {
-                              return Text('No data');
-                            } else {
-                              return Container(
-                                width: MediaQuery.of(context).size.width * 2,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 30,
-                                          offset: Offset(20, 20))
-                                    ],
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 0.5,
-                                    )),
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(15),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                  ),
-                                  dropdownColor: Colors.white70,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 28,
-                                  hint: Text('Select Flat'),
-                                  isExpanded: true,
-                                  style: TextStyle(
+                            return Container(
+                              width: MediaQuery.of(context).size.width * 2,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 30,
+                                        offset: Offset(20, 20))
+                                  ],
+                                  border: Border.all(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                    width: 0.5,
+                                  )),
+                              child: DropdownButtonFormField(
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  items: floorData.map((selectedFloor) {
-                                    return DropdownMenuItem<String>(
-                                      value: selectedFloor.toString(),
-                                      child: Text(
-                                          "${selectedFloor['f_name'].toString()}"),
-                                    );
-                                  }).toList(),
-                                  onChanged: (selectedFloor) {
-                                    setState(() {
-                                      // selectedRoom=[null];
-                                      // selectedFid= selectedFloor!.substring(7,14);
-                                      // selectedFid=selectedFloor['f_id'].toString();
-                                      // selectedFid.hashCode;
-                                      // getAllRoom(selectedFid.toString());
-                                    });
-                                  },
-                                  // items:snapshot.data
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
                                 ),
-                              );
-                            }
+
+                                dropdownColor: Colors.white70,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: Text('Select Flat'),
+                                isExpanded: true,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                items: flatQueryRows2.map((selectedFlat) {
+                                  return DropdownMenuItem(
+                                    value: selectedFlat.toString(),
+                                    child: Text("${selectedFlat['flt_name']}"),
+                                  );
+                                }).toList(),
+                                onChanged: (selectedFlat)async {
+                                  print('Flat selected $selectedFlat');
+                                   flatId=selectedFlat.substring(9,16);
+                                  print(flatId);
+                                  // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
+                                  // print('AA  ${aa}');
+                                  setState(() {
+                                    // roomQueryRows2=aa;
+                                    // roomVal=returnRoomQuery(flatId);
+                                  });
+                                  print('forRoom  ${roomQueryRows2}');
+
+
+
+                                  // returnFloorQuery(floorId);
+
+                                },
+                                // items:snapshot.data
+                              ),
+                            );
                           } else {
                             return CircularProgressIndicator();
                           }
@@ -1184,20 +1176,31 @@ class _HomeTestState extends State<HomeTest>
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                    rm = await getrooms(fl.fId);
-                    print('hello   ${rm[0].rId}');
-                    setState(() {
-                      tabbarState = rm[0].rId;
-                    });
-                    Navigator.of(context).pop();
-                    print('State   $tabbarState');
-                    print('FID-->   ${fl.fId}');
-                    // dv = await getDevices(tabbarState );
+                    List  result= await NewDbProvider.instance.getRoomById(flatId.toString());
+                    print("SubmitAllDetails  ${result}");
+                    room= List.generate(result.length, (index) => RoomType(
+                      rId: result[index]['r_id'].toString(),
+                      fltId: result[index]['flt_id'].toString(),
+                      rName:result[index]['r_name'].toString(),
+                      user: result[index]['user'],
+                    ));
 
-                    print('On Pressed  ${pt.pId}');
-                    print('On Pressed place response ${pt.pId}');
-                    // print(rm[1]);
-                    //  print(rm[0].r_name);
+
+                    // rm = await getrooms(fl.fId);
+                    // print('hello   ${rm[0].rId}');
+                    // setState(() {
+                    //   tabbarState = rm[0].rId;
+                    // });
+                    // Navigator.of(context).pop();
+                    // print('State   $tabbarState');
+                    // print('FID-->   ${fl.fId}');
+                    // // dv = await getDevices(tabbarState );
+                    //
+                    // print('On Pressed  ${pt.pId}');
+                    // print('On Pressed place response ${pt.pId}');
+                    // // print(rm[1]);
+                    // //  print(rm[0].r_name);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1206,7 +1209,7 @@ class _HomeTestState extends State<HomeTest>
                               ) =>
                               Container(
                                 child: HomeTest(
-                                    pt: widget.pt, fl: fl, rm: rm, dv: dv),
+                                    pt: widget.pt, fl: fl,flat:flt, rm: room, dv: dv),
                               )),
                     );
                   },
@@ -1383,6 +1386,23 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+  Future<List<RoomType>> roomQueryFunc()async {
+    roomQueryRows = await NewDbProvider.instance.queryRoom();
+    print('qqqq ${roomQueryRows}');
+    List roomTypeSingle=roomQueryRows;
+    var id=roomQueryRows[0]['flt_id'].toString();
+
+    roomQueryRows2=roomQueryRows;
+    List result= await NewDbProvider.instance.getRoomById(id);
+    print('roomResult $result');
+    room= List.generate(result.length, (index) => RoomType(
+      rId: result[index]['r_id'].toString(),
+      fltId: result[index]['flt_id'].toString(),
+      rName:result[index]['r_name'].toString(),
+      user: result[index]['user'],
+    ));
+    return room;
+  }
   _createAlertDialogForAddRoom(BuildContext context) {
     return showDialog(
         context: context,
@@ -1432,6 +1452,8 @@ class _HomeTestState extends State<HomeTest>
                     child: Text('Submit'),
                     onPressed: () async {
                       await addRoom(roomEditing.text);
+                      // await getAllRoom();
+                      await roomQueryFunc();
 
                       Navigator.of(context).pop();
                       final snackBar = SnackBar(
@@ -1749,7 +1771,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   getDatafunc2() {
-    // getSensorData(deviceIdForSensor);
+    getSensorData(deviceIdForSensor);
     // getPinsName();
     print('deviceIdForSensor $deviceIdForSensor');
     // getPinNames(deviceIdForSensor);
@@ -1757,7 +1779,7 @@ class _HomeTestState extends State<HomeTest>
       return Text('Loading..');
     } else {
       for (int i = 0; i < dv.length; i++) {
-        getData(dv[i].dId);
+        getData(widget.dv[i].dId);
 
 
       }
@@ -1768,27 +1790,32 @@ class _HomeTestState extends State<HomeTest>
 
   @override
   void initState() {
-    // print('roomLength ${widget.rm.length}');
+    if(roomResponse!=null){
+      tabbarState = roomResponse;
+      print('hahahah $tabbarState');
+    }
+
+    print('roomLength ${widget.fl.fId}');
+    print('flatDetails ${widget.flat.fltId}');
     devicePinNamesQueryFunc();
-   placeVal= returnPlaceQuery();
+    placeVal= returnPlaceQuery();
     placeQueryFunc();
     // placeVal = fetchplace();
     // floorval = fetchFloor(placeVal.toString());
-    tabbarState = roomResponse;
-    // timer = Timer.periodic(Duration(minutes: 10), (timer) async {
-    //   placeVal= returnPlaceQuery();
-    //   placeQueryFunc();
-    //   getDevices(tabbarState);
-    //   getDatafunc2();
-    //   getPinStatusData();
-    //
-    //   await devicePinStatusQueryFunc();
-    //
-    //
-    //   // getData(controller.text);
-    // });
 
-    getPinsName();
+    timer = Timer.periodic(Duration(seconds: 90), (timer) async {
+
+      getDevices(tabbarState);
+      getDatafunc2();
+      getPinStatusData();
+
+      await devicePinStatusQueryFunc();
+
+
+      // getData(controller.text);
+    });
+
+
     tabC = new TabController(length: widget.rm.length, vsync: this);
     tabC.addListener(() {
 
@@ -1867,7 +1894,7 @@ class _HomeTestState extends State<HomeTest>
   Future<Device> send_DeviceId(String data) async {
     String token = await getToken();
     print('getUidVariable $getUidVariable');
-    final url = 'http://genorionofficial.herokuapp.com/addyourdevice/';
+    final url = 'http://genorion1.herokuapp.com/addyourdevice/';
     postData = {"user": getUidVariable, "r_id": tabbarState, "d_id": data};
     final response = await http.post(
       url,
@@ -1896,7 +1923,7 @@ class _HomeTestState extends State<HomeTest>
     print('tabbas ${tabbarState}');
     var query = {'r_id': tabbarState};
     final url =
-    Uri.https('genorionofficial.herokuapp.com', '/getalldevices/', query);
+    Uri.https('genorion1.herokuapp.com', '/addyourdevice/', query);
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -1920,7 +1947,7 @@ class _HomeTestState extends State<HomeTest>
       //   print(NewDbProvider.instance.dogs());
       rId = roomQueryRows2[i]['r_id'].toString();
       print('roomId  $rId');
-      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" +
+      String url = "http://genorion1.herokuapp.com/addyourdevice/?r_id=" +
           rId;
       var response;
       // try {
@@ -1956,7 +1983,7 @@ class _HomeTestState extends State<HomeTest>
     print('no');
     while (counter <= dv.length - 1) {
       print('yes');
-      final url = 'http://genorionofficial.herokuapp.com/addipaddress/?d_id=' +
+      final url = 'http://genorion1.herokuapp.com/addipaddress/?d_id=' +
           dv[counter].dId.toString();
       String token = await getToken();
       final response = await http.get(url, headers: {
@@ -1987,7 +2014,7 @@ class _HomeTestState extends State<HomeTest>
     while (counter <= widget.dv.length) {
       String token = await getToken();
       final url =
-          'http://genorionofficial.herokuapp.com/addipaddress/?d_id=' + dId;
+          'http://genorion1.herokuapp.com/addipaddress/?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -2034,7 +2061,7 @@ class _HomeTestState extends State<HomeTest>
 
   dataUpdate(String dId) async {
     final String url =
-        'http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id=' +
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' +
             dId;
     String token = await getToken();
     Map data = {
@@ -2075,7 +2102,7 @@ class _HomeTestState extends State<HomeTest>
       print('Switch 2 --> $switch_2');
       print('Switch 3 --> $switch_3');
       print('Switch 4 --> $switch_4');
-
+        getData(dId);
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -2088,11 +2115,27 @@ class _HomeTestState extends State<HomeTest>
     final deleteToken = await storage.delete(key: "token");
     return deleteToken;
   }
+  Future<void> _deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+    if (cacheDir.existsSync()) {
+      print('cacheDir.existsSync() ${cacheDir.existsSync()}');
+      cacheDir.deleteSync(recursive: true);
+    }
+  }
 
+  /// this will delete app's storage
+  Future<void> _deleteAppDir() async {
+    final appDir = await getApplicationSupportDirectory();
+
+    if(appDir.existsSync()){
+      print('cacheDir.existsSync() ${appDir.existsSync()}');
+      appDir.deleteSync(recursive: true);
+    }
+  }
   Future<SensorData> getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorionofficial.herokuapp.com/tensensorsdata/?d_id='+dId,
+        'http://genorion1.herokuapp.com/tensensorsdata/?d_id='+dId,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -2104,7 +2147,26 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode > 0) {
       print('Sensor ${response.body}');
       print('SensorStatsCode ${response.statusCode}');
-
+      var arr = jsonDecode(response.body);
+      List listOfPinSensor=[arr,];
+      print('sensorData  ${listOfPinSensor}');
+      for (int i = 0; i < listOfPinSensor.length; i++) {
+        var sensorQuery = SensorData(
+          dId: listOfPinSensor[i]['d_id'],
+          sensor1: listOfPinSensor[i]['sensor1'],
+          sensor2: listOfPinSensor[i]['sensor2'],
+          sensor3: listOfPinSensor[i]['sensor3'],
+          sensor4: listOfPinSensor[i]['sensor4'],
+          sensor5: listOfPinSensor[i]['sensor5'],
+          sensor6: listOfPinSensor[i]['sensor6'],
+          sensor7: listOfPinSensor[i]['sensor7'],
+          sensor8: listOfPinSensor[i]['sensor8'],
+          sensor9: listOfPinSensor[i]['sensor9'],
+          sensor10: listOfPinSensor[i]['sensor10'],
+        );
+        print('deviceSensorJson    ${sensorQuery.toJson()}');
+        await NewDbProvider.instance.updateSensorData(sensorQuery);
+      }
       return SensorData.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to load album');
@@ -2142,13 +2204,13 @@ class _HomeTestState extends State<HomeTest>
 
   // ignore: missing_return
   Future<RoomType> addRoom(String data) async {
-    print('floorwidgetid ${widget.fl.fId}');
-    final url = 'http://genorionofficial.herokuapp.com/addroom/';
+    print('floorwidgetid ${widget.flat.fltId}');
+    final url = 'http://genorion1.herokuapp.com/addroom/';
     String token = await getToken();
     var postData = {
-      "user": getUidVariable,
+      "user": getUidVariable2,
       "r_name": data,
-      "f_id": widget.fl.fId,
+      "flt_id": widget.flat.fltId,
     };
     final response = await http.post(
       url,
@@ -2177,7 +2239,7 @@ class _HomeTestState extends State<HomeTest>
 
   // ignore: missing_return
   Future<RoomType> addRoom2(String data) async {
-    final url = 'http://genorionofficial.herokuapp.com/addroom/';
+    final url = 'http://genorion1.herokuapp.com/addroom/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable,
@@ -2211,7 +2273,7 @@ class _HomeTestState extends State<HomeTest>
   // ignore: missing_return
   Future<FloorType> addFloor(String data) async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/addyourfloor/';
+    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
     var postData = {
       "user": getUidVariable,
       "p_id": widget.pt.pId,
@@ -2247,88 +2309,9 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  // ignore: missing_return
-  Future<List<PlaceType>> fetchplace() async {
-    String token = await getToken();
-    // final url = 'http://genorionofficial.herokuapp.com/addyourplace/?p_id=' + placeResponse;
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      // print('Place response -->  ${response.body}');
-      // print('Place StatusCode -->  ${response.statusCode}');
-      placeData = jsonDecode(response.body);
-      print("Place-->  $placeData");
-      places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-      print(places.toList());
-      // floorval = fetchFloor(places[0].pId);
 
-      return places;
-    } else {
-      print(response.statusCode);
-    }
-  }
 
-  Future<List<FloorType>> fetchFloor(String pId) async {
-    var query = {'p_id': pId};
-    String token = await getToken();
-    // String token ='b6625e2b625e920c1828a8244bdea9b84a6a5ae3';
-    // final url = 'http://genorionofficial.herokuapp.com/addyourfloor/?f_id='+floorResponse;
-    // final url = 'http://genorionofficial.herokuapp.com/addyourfloor/?f_id=3741052';
-    final url =
-    Uri.https('genorionofficial.herokuapp.com', '/getallfloors/', query);
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
 
-    if (response.statusCode > 0) {
-      print('Floor response -->  ${response.body}');
-      print('Floor StatusCode -->  ${response.statusCode}');
-      floorData = jsonDecode(response.body);
-      print("data");
-      floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-      print(floors);
-      return floors;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load Floors');
-    }
-  }
-
-  Future<List<FloorType>> fetchOnlyFloor(String pId) async {
-    var query = {'p_id': widget.pt.pId};
-    String token = await getToken();
-    // String token ='b6625e2b625e920c1828a8244bdea9b84a6a5ae3';
-    // final url = 'http://genorionofficial.herokuapp.com/addyourfloor/?f_id='+floorResponse;
-    // final url = 'http://genorionofficial.herokuapp.com/addyourfloor/?f_id=3741052';
-    final url =
-    Uri.https('genorionofficial.herokuapp.com', '/getallfloors/', query);
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-
-    if (response.statusCode > 0) {
-      print('FloorDrop response -->  ${response.body}');
-      print('FloorDrop StatusCode -->  ${response.statusCode}');
-      floorData = jsonDecode(response.body);
-      print("data");
-      floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-      print(floors);
-      return floors;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load Floors');
-    }
-  }
 
   Future returnPlaceQuery(){
     return NewDbProvider.instance.queryPlace();
@@ -2346,7 +2329,7 @@ class _HomeTestState extends State<HomeTest>
   Future<List<RoomType>> getrooms(String fId) async {
     var query = {'f_id': fId};
     final url =
-    Uri.https('genorionofficial.herokuapp.com', '/getallrooms/', query);
+    Uri.https('genorion1.herokuapp.com', '/getallrooms/', query);
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -2425,6 +2408,7 @@ class _HomeTestState extends State<HomeTest>
         ),
         child: Drawer(
           child: Container(
+            width: double.maxFinite,
             color: change_toDark ? Colors.black : Colors.white,
             height: 100,
             child: ListView(
@@ -2511,10 +2495,10 @@ class _HomeTestState extends State<HomeTest>
                     ),
                   ),
                   onTap: () async {
-                    // await Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => DropDown2()),
-                    // );
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SubAccessList()),
+                    );
                   },
                 ),
                 ListTile(
@@ -2526,10 +2510,10 @@ class _HomeTestState extends State<HomeTest>
                     ),
                   ),
                   onTap: () async {
-                    // await Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => DropDown2()),
-                    // );
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TempAccessPage()),
+                    );
                   },
                 ),
                 ListTile(
@@ -2637,6 +2621,7 @@ class _HomeTestState extends State<HomeTest>
                 maxWidth: MediaQuery.of(context).size.width,
                 maxHeight: MediaQuery.of(context).size.height),
             child: Container(
+              width: double.maxFinite,
               color: change_toDark ? Colors.black : Colors.white,
               // key: key,
               child: DefaultTabController(
@@ -2698,8 +2683,7 @@ class _HomeTestState extends State<HomeTest>
                                                   fontStyle: FontStyle.italic),
                                             ),
                                             onTap: () {
-                                              _createAlertDialogDropDown(
-                                                  context);
+                                              _createAlertDialogDropDown(context);
                                             },
                                           ),
                                           SizedBox(
@@ -2711,7 +2695,7 @@ class _HomeTestState extends State<HomeTest>
                                                   context);
                                             },
                                             child: Text(
-                                              'Flat',
+                                              widget.flat.fltName,
                                               // 'Hello ',
                                               // + widget.fl.user.first_name,
                                               style: TextStyle(
@@ -2747,81 +2731,102 @@ class _HomeTestState extends State<HomeTest>
                                                     SizedBox(
                                                       width: 12,
                                                     ),
-                                                    Container(
-                                                      child: Icon(FontAwesomeIcons.fire,color: Colors.yellow,),
+                                                    Column(
+                                                      children: <Widget>[
+
+                                                        Icon(FontAwesomeIcons.fire,color: Colors.yellow,),
+                                                        SizedBox(
+                                                          height: 32,
+                                                        ),
+                                                        Row(children: <Widget>[
+                                                          Container(
+                                                            child: Text(
+                                                                sensorData[index]['sensor1']
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Colors
+                                                                        .white70)),
+                                                          ),
+                                                        ],),
+                                                      ]
                                                     ),
+
                                                     SizedBox(
-                                                      width: 58,
+                                                      width: 35,
                                                     ),
-                                                    Container(
-                                                        child: Icon(FontAwesomeIcons.temperatureLow,color: Colors.orange,)
+                                                    Column(
+                                                        children: <Widget>[
+
+                                                          Icon(FontAwesomeIcons.temperatureLow,color: Colors.orange,),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(children: <Widget>[
+                                                            Container(
+                                                              child: Text(
+                                                                  sensorData[index]['sensor2']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],),
+                                                        ]
                                                     ),
                                                     SizedBox(
                                                       width: 45,
                                                     ),
-                                                    Container(
-                                                        child: Icon(FontAwesomeIcons.wind,color: Colors.white,)
+                                                    Column(
+                                                        children: <Widget>[
+
+                                                          Icon(FontAwesomeIcons.wind,color: Colors.white,),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(children: <Widget>[
+                                                            Container(
+                                                              child: Text(
+                                                                  sensorData[index]['sensor3']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],),
+                                                        ]
                                                     ),
                                                     SizedBox(
                                                       width: 42,
                                                     ),
-                                                    Container(
-                                                        child: Icon(FontAwesomeIcons.smog,color: Colors.white38,)
+                                                    Column(
+                                                        children: <Widget>[
+
+                                                          Icon(FontAwesomeIcons.cloud,color: Colors.orange,),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(children: <Widget>[
+                                                            Container(
+                                                              child: Text(
+                                                                  sensorData[index]['sensor4']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],),
+                                                        ]
                                                     ),
                                                   ],
                                                 ),
                                                 SizedBox(
                                                   height: 22,
                                                 ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text(
-                                                          sensorData[index]['sensor1']
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                    ),
-                                                    Container(
-                                                      child: Text(
-                                                          sensorData[index]['sensor2']
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                    ),
-                                                    Container(
-                                                      child: Text(
-                                                          sensorData[index]['sensor3']
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                    ),
-                                                    Container(
-                                                      child: Text(
-                                                          sensorData[index]['sensor4']
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                  ],
-                                                )
+
                                               ],
                                             );
                                           } else {
@@ -2876,10 +2881,12 @@ class _HomeTestState extends State<HomeTest>
                                     print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                     setState(() {
                                       tabbarState = widget.rm[index].rId;
-                                      getPinsName().then((value) => devicePinNamesQueryFunc());
+                                      devicePinNamesQueryFunc();
                                     });
+                                    getDevices(tabbarState);
                                     print("tabbarState Tabs->  $tabbarState");
                                     widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
+                                    print('getDevices123 ${widget.dv[index].dId}');
                                     devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
 
 
@@ -3029,7 +3036,7 @@ class _HomeTestState extends State<HomeTest>
   var catchReturn;
   Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
-    // getPinsName();
+    getPinsName(dId);
     // await devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
     setState(() {
@@ -3141,11 +3148,20 @@ class _HomeTestState extends State<HomeTest>
           // ignore: deprecated_member_use
           FlatButton(child: Text("Yes"),
               onPressed: () async{
-                await  _logout().then((value) => Navigator.push(
+            await _logout();
+            await _deleteCacheDir();
+            await _deleteAppDir();
+             CircularProgressIndicator();
+            Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GettingStartedScreen())));
-
+                        builder: (context) => GettingStartedScreen()));
+                // await  _logout()
+                //     .then((value) => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => GettingStartedScreen())));
+                //
 
 
               }),
@@ -3161,7 +3177,6 @@ class _HomeTestState extends State<HomeTest>
 
 
   deviceContainer2(String dId, int x) {
-
     deviceContainer(dId,x);
     fetchIp(dId);
     return Column(
@@ -3366,8 +3381,7 @@ class _HomeTestState extends State<HomeTest>
                                                     } else {
                                                       responseGetData[index] = 0;
                                                     }
-
-                                                    // print('index of $index --> ${listDynamic[index]}');
+                                                    print('yooooooooo ${responseGetData[index]}');
                                                   });
 
                                                   // if Internet is not available then _checkInternetConnectivity = true
@@ -3377,8 +3391,8 @@ class _HomeTestState extends State<HomeTest>
                                                   }
                                                   if (result == ConnectivityResult.wifi) {
                                                     print("True2-->   $result");
-                                                    await localUpdate(dId);
-                                                    await dataUpdate(dId);
+                                                     localUpdate(dId);
+                                                     dataUpdate(dId);
                                                   } else if (result == ConnectivityResult.mobile) {
                                                     print("mobile-->   $result");
                                                     // await localUpdate(d_id);
@@ -3697,16 +3711,46 @@ class _HomeTestState extends State<HomeTest>
     print("Vice Id $dId");
     deviceIdForSensor=dId;
     final String url =
-        'http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id=' +
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' +
             dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
-    if (response.statusCode > 0) {
+    if (response.statusCode == 200) {
       print(data);
       data = jsonDecode(response.body);
+      var arr = jsonDecode(response.body);
+      List listOfPinStatus=[arr,];
+      print('sensorData  ${listOfPinStatus}');
+      for (int i = 0; i < listOfPinStatus.length; i++) {
+        var pinStatus = PinStatus(
+          dId: listOfPinStatus[i]['d_id'],
+          pin1Status: listOfPinStatus[i]['pin1Status'],
+          pin2Status: listOfPinStatus[i]['pin2Status'],
+          pin3Status: listOfPinStatus[i]['pin3Status'],
+          pin4Status: listOfPinStatus[i]['pin4Status'],
+          pin5Status: listOfPinStatus[i]['pin5Status'],
+          pin6Status: listOfPinStatus[i]['pin6Status'],
+          pin7Status: listOfPinStatus[i]['pin7Status'],
+          pin8Status: listOfPinStatus[i]['pin8Status'],
+          pin9Status: listOfPinStatus[i]['pin9Status'],
+          pin10Status: listOfPinStatus[i]['pin10Status'],
+          pin11Status: listOfPinStatus[i]['pin11Status'],
+          pin12Status: listOfPinStatus[i]['pin12Status'],
+          pin13Status: listOfPinStatus[i]['pin13Status'],
+          pin14Status: listOfPinStatus[i]['pin14Status'],
+          pin15Status: listOfPinStatus[i]['pin15Status'],
+          pin16Status: listOfPinStatus[i]['pin16Status'],
+          pin17Status: listOfPinStatus[i]['pin17Status'],
+          pin18Status: listOfPinStatus[i]['pin18Status'],
+          pin19Status: listOfPinStatus[i]['pin19Status'],
+          pin20Status: listOfPinStatus[i]['pin20Status'],
+        );
+        print('deviceSensorJson    ${pinStatus.toJson()}');
+        await NewDbProvider.instance.updatePinStatusData(pinStatus);
+      }
       print("DATA-->  $data");
       print('\n');
       deviceStatus = [
@@ -3723,6 +3767,12 @@ class _HomeTestState extends State<HomeTest>
         widget.Slider_get2 = data["pin11Status"],
         widget.Slider_get3 = data["pin12Status"],
       ];
+      for(int i=0;i<data.length;i++){
+
+      }
+
+
+
       print('Switch 1 --> ${widget.switch1_get}');
       print('Switch 2 --> ${widget.switch2_get}');
       print('Switch 3 --> ${widget.switch3_get}');
@@ -3759,7 +3809,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   _launchURL() async {
-    const url = 'https://genorionofficial.herokuapp.com/change_password_phone';
+    const url = 'https://genorion1.herokuapp.com/change_password_phone';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

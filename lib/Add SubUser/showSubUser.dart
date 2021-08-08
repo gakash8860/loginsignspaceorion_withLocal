@@ -67,7 +67,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
   Future<bool> getSubUsers()async{
     await openSubUserBox();
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/subuserfindall/';
+    final url = 'http://genorion1.herokuapp.com/subuserfindall/';
     var response;
     try{
       response= await http.get(Uri.parse(url),headers: {
@@ -113,7 +113,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
 
   Future getSinglePlaceName()async{
     String token= await getToken();
-    final url='http://genorionofficial.herokuapp.com/getyouplacename/?p_id=7120663';
+    final url='http://genorion1.herokuapp.com/getyouplacename/?p_id=7120663';
     final response = await http.get(url,headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -194,7 +194,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
 
   Future deleteSubUser(String email,String pId)async{
     String token = await getToken();
-    final url= 'http://genorionofficial.herokuapp.com/subuseraccess/?email=$email&p_id='+pId;
+    final url= 'http://genorion1.herokuapp.com/subuseraccess/?email=$email&p_id='+pId;
     final response= await http.delete(url,headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

@@ -33,6 +33,12 @@ class NewDbProvider {
   static final columnFloorName = 'f_name';
   static final columnFloorUser = 'user';
 
+  static final _flatTableName = 'flatTable';
+  static final columnFlatName = 'flt_name';
+  static final columnFlatId = 'flt_id';
+  static final columnFlatUser = 'user';
+
+
   static final _roomTableName = 'roomTable';
   static final columnRoomName = 'r_name';
   static final columnRoomId = 'r_id';
@@ -42,6 +48,19 @@ class NewDbProvider {
   static final columnDeviceId = 'd_id';
   static final columnDeviceUser = 'user';
   static final columnDeviceRoomId = 'r_id';
+
+  static final _tempUserTable = 'tempUserTable';
+  static final columnTempUserMobile = 'mobile';
+  static final columnTempUserEmail = 'email';
+  static final columnTempUserName = 'name';
+  static final columnTempUserDate = 'date';
+  static final columnTempUserTiming = 'timing';
+  static final columnTempUserPlaceId = 'p_id';
+  static final columnTempUserFloorId = 'f_id';
+  static final columnTempUserFlatId = 'flt_id';
+  static final columnTempUserRoomId = 'r_id';
+  static final columnTempUserDeviceId = 'd_id';
+
 
   static final _devicePinNames = 'devicePinNamesValues';
   static final columnDevicePinId = 'id';
@@ -139,9 +158,11 @@ class NewDbProvider {
         await db.execute('''
         CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnPlaceId ));
         ''');
-
+          await db.execute('''
+        CREATE TABLE $_flatTableName($columnFlatId INTEGER NOT NULL PRIMARY KEY , $columnFlatName TEXT NOT NULL ,$columnFloorId INTEGER,$columnFlatUser INTEGER,FOREIGN KEY($columnFlatId) REFERENCES $_tableName ($columnFloorId ));
+        ''');
       await db.execute('''
-        CREATE TABLE $_roomTableName(   $columnRoomId INTEGER NOT NULL PRIMARY KEY , $columnRoomName TEXT NOT NULL ,$columnFloorId INTEGER,$columnRoomUser INTEGER,FOREIGN KEY($columnRoomId) REFERENCES $_floorTableName ($columnFloorId ))
+        CREATE TABLE $_roomTableName(   $columnRoomId INTEGER NOT NULL PRIMARY KEY , $columnRoomName TEXT NOT NULL ,$columnFlatId INTEGER,$columnRoomUser INTEGER,FOREIGN KEY($columnRoomId) REFERENCES $_flatTableName ($columnFlatId ))
         ''');
 
       await db.execute('''
@@ -156,6 +177,10 @@ class NewDbProvider {
       await db.execute('''
         CREATE TABLE $_sensorTable( $columnDeviceId TINYTEXT,$sensor1 FLOAT ,$sensorId INTEGER , $sensor2 FLOAT ,$sensor3 FLOAT,$sensor4 FLOAT,$sensor5 FLOAT ,$sensor6 FLOAT ,$sensor7 FLOAT,$sensor8 FLOAT,$sensor9 FLOAT,$sensor10 FLOAT,FOREIGN KEY($columnDeviceId) REFERENCES $_deviceTable($columnDeviceId))
         ''');
+        //   await db.execute('''
+        // CREATE TABLE $_tempUserTable(   $columnTempUserMobile TEXT NOT  , $columnTempUserEmail TEXT NOT NULL ,$columnTempUserName TEXT,$columnTempUserDate TEXT,
+        //   $columnTempUserTiming TEXT, $columnTempUserPlaceId TEXT,$columnTempUserFloorId TEXT,$columnTempUserFlatId TEXT,$columnTempUserRoomId TEXT,$columnTempUserDeviceId TEXT,)
+        // ''');
     });
     return database;
   }
@@ -203,6 +228,16 @@ class NewDbProvider {
     );
 
   }
+  Future<void> insertFlatModelData(Flat flat) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_flatTableName',
+      flat.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+  }
 
   Future<void> insertRoomModelData(RoomType roomType) async {
     // Get a reference to the database.
@@ -220,6 +255,17 @@ class NewDbProvider {
     await db.insert(
       '$_deviceTable',
       device.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    print('_deviceTable  $_deviceTable');
+  }
+  Future<void> insertTempUserData(TempUser tempUser) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_tempUserTable',
+      tempUser.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
@@ -254,11 +300,21 @@ class NewDbProvider {
 
     return await db.query(_tableName);
   }
+  queryTempUser() async {
+    Database db = await instance.database;
+
+    return await db.query(_tempUserTable);
+  }
 
   queryFloor() async {
     Database db = await instance.database;
 
     return await db.query(_floorTableName);
+  }
+  queryFlat() async {
+    Database db = await instance.database;
+
+    return await db.query(_flatTableName);
   }
 
   queryRoom() async {
@@ -296,10 +352,19 @@ class NewDbProvider {
     return result;
   }
 
+  Future getFlatByFId(String id) async {
+    final db = await database;
+    var result =
+    await db.query("flatTable", where: "f_id = ? ", whereArgs: [id]);
+    print('FlatResult $result');
+
+    return result;
+  }
+
   Future getRoomById(String id) async {
     final db = await database;
     var result =
-        await db.query("roomTable", where: "f_id = ? ", whereArgs: [id]);
+        await db.query("roomTable", where: "flt_id = ? ", whereArgs: [id]);
     print('FlooronChangesResult $result');
     return result;
   }
@@ -336,19 +401,23 @@ class NewDbProvider {
     );
   return result;
   }
-  Future<int> update(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    var id = row[columnPlaceId];
-
-    int aa=await db.update(_tableName, row, where: '$columnPlaceId=?', whereArgs: [id]);
-    print(aa);
-    return aa;
+  Future updatePinStatusData(PinStatus pinStatus)async{
+    var db = await database;
+    return db.update('$_devicePinStatus', pinStatus.toJson());
+  }
+  Future updateSensorData(SensorData sensorData)async{
+    var db = await database;
+    return db.update('$_sensorTable', sensorData.toJson());
+  }
+  Future updatePinName(DevicePin devicePin)async{
+    var db = await database;
+    return db.update('$_devicePinNames', devicePin.toJson());
   }
   Future getPinNamesByDeviceId(String id) async {
     final db = await database;
     var result =
     await db.query("devicePinNamesValues", where: "d_id = ? ", whereArgs: [id]);
-    print('PinNameResult $result');
+    print('PinNameResultName $result');
     // return result.isNotEmpty?result.first:Null;
     return result;}
 
@@ -360,7 +429,8 @@ class NewDbProvider {
     await db.query("devicePinStatus", where: "d_id = ? ", whereArgs: [id]);
     print('PinStatusResult $result');
     // return result.isNotEmpty?result.first:Null;
-    return result;}
+    return result;
+  }
 
 
   Future getSensorByDeviceId(String id) async {
@@ -375,6 +445,12 @@ class NewDbProvider {
   Future close()async{
     final db= await instance.database;
     db.close();
+  }
+  Future delete()async{
+    var db= await instance.database;
+    int result = await db.rawDelete('DELETE FROM $_devicePinStatus WHERE $pin1Status,$pin2Status,$pin3Status,$pin4Status,$pin5Status,$pin6Status,$pin7Status,$pin8Status,$pin9Status,$pin10Status,$pin11Status,$pin12Status,$pin13Status,$pin14Status,$pin15Status,$pin16Status,$pin17Status,$pin18Status,$pin19Status,$pin20Status');
+    print('delete $result');
+    return result;
   }
 
 }

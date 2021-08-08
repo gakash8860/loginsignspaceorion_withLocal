@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isVisible=true;
     });
     // final url = 'https://genorion.herokuapp.com/api-token-auth/';
-    final url = 'https://genorionofficial.herokuapp.com/api-token-auth/';
+    final url = 'https://genorion1.herokuapp.com/api-token-auth/';
     print(getToken());
     var map = new Map<String, dynamic>();
     map['username'] = data.email;
@@ -241,11 +241,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         dragStartBehavior: DragStartBehavior.down,
                         physics: BouncingScrollPhysics(),
                         child: Container(
+                          width: double.maxFinite,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 30,
                           ),
                           // color: Theme.of(context).primaryColor,
-                          width: double.infinity,
+
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               minHeight: viewportConstraints.maxHeight,

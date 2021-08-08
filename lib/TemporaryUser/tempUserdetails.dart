@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import '../main.dart';
 
 class TempUserDetails extends StatefulWidget {
-  final tempUserAllDetails;
-  const TempUserDetails({Key key, this.tempUserAllDetails}) : super(key: key);
+  final tempUserPlaceName;
+  final tempUserFloorName;
+  const TempUserDetails({Key key, this.tempUserPlaceName, this.tempUserFloorName}) : super(key: key);
 
   @override
   _TempUserDetailsState createState() => _TempUserDetailsState();
@@ -28,7 +29,7 @@ void initState(){
 
   Future getSinglePlaceName()async{
     String token= await getToken();
-    final url='http://genorionofficial.herokuapp.com/getyouplacename/?p_id='+widget.tempUserAllDetails.toString();
+    final url='http://genorion1.herokuapp.com/getyouplacename/?p_id='+widget.tempUserPlaceName.toString();
     final response = await http.get(url,headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

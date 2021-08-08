@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/dropdown1.dart';
+import 'package:loginsignspaceorion/login_Screen.dart';
 
 import 'package:string_validator/string_validator.dart';
 
@@ -48,6 +49,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   String acceptemail;
   String rejectemail;
   bool isVisible=false;
+  http.Response response;
   SignupData data = new SignupData();
   // User dataUser=new User();
   goToNextPage() {
@@ -57,16 +59,23 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     formKey.currentState.save();
     print('clear');
     checkDetails(data).then((value) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => DropDown1()),
-      );
+      if(response.statusCode==200){
+        final snackBar = SnackBar(
+          content: Text('Please Login'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
+     
     }).catchError((e) {
       print(e);
     });
   }
   checkDetails(SignupData data) async {
-    final url = 'https://genorionofficial.herokuapp.com/regflu';
+    final url = 'https://genorion1.herokuapp.com/regflu';
     var map = new Map<String, dynamic>();
     map['username'] = data.email;
     map['password1'] = data.password;
@@ -75,7 +84,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     map['last_name'] = data.lname;
     map['email'] = data.email;
     map['phone_no'] = data.pno;
-    http.Response response = await http.post(url, body: map,encoding: Encoding.getByName("utf-8"));
+    response = await http.post(url, body: map,encoding: Encoding.getByName("utf-8"));
     if (response.statusCode == 200) {
       print(response.body);
       print(data.email);
@@ -237,6 +246,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       ),
       body: isVisible?Container(color: Colors.blueAccent,child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,),),):
       Container(
+        width: double.maxFinite,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,

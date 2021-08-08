@@ -71,6 +71,11 @@ class FloorType {
 }
 
 
+// To parse this JSON data, do
+//
+//     final roomType = roomTypeFromJson(jsonString);
+
+
 
 List<RoomType> roomTypeFromJson(String str) => List<RoomType>.from(json.decode(str).map((x) => RoomType.fromJson(x)));
 
@@ -81,26 +86,26 @@ class RoomType {
     this.rId,
     this.rName,
     this.user,
-    this.fId,
+    this.fltId,
   });
 
   String rId;
   String rName;
   int user;
-  String fId;
+  String fltId;
 
   factory RoomType.fromJson(Map<String, dynamic> json) => RoomType(
     rId: json["r_id"],
     rName: json["r_name"],
     user: json["user"],
-    fId: json["f_id"],
+    fltId: json["flt_id"],
   );
 
   Map<String, dynamic> toJson() => {
     "r_id": rId,
     "r_name": rName,
     "user": user,
-    "f_id": fId,
+    "flt_id": fltId,
   };
 }
 
@@ -575,8 +580,8 @@ class PinStatus {
   int pin16Status;
   int pin17Status;
   int pin18Status;
-  int pin19Status;
-  int pin20Status;
+  String pin19Status;
+  String pin20Status;
   String dId;
 
   factory PinStatus.fromJson(Map<String, dynamic> json) => PinStatus(
@@ -629,3 +634,114 @@ class PinStatus {
     "d_id": dId,
   };
 }
+// To parse this JSON data, do
+//
+//     final flat = flatFromJson(jsonString);
+
+
+Flat flatFromJson(String str) => Flat.fromJson(json.decode(str));
+
+String flatToJson(Flat data) => json.encode(data.toJson());
+
+class Flat {
+  Flat({
+    this.fltId,
+    this.fltName,
+    this.user,
+    this.fId,
+  });
+
+  String fltId;
+  String fltName;
+  int user;
+  String fId;
+
+  factory Flat.fromJson(Map<String, dynamic> json) => Flat(
+    fltId: json["flt_id"],
+    fltName: json["flt_name"],
+    user: json["user"],
+    fId: json["f_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "flt_id": fltId,
+    "flt_name": fltName,
+    "user": user,
+    "f_id": fId,
+  };
+}
+
+
+// To parse this JSON data, do
+//
+//     final tempUser = tempUserFromJson(jsonString);
+
+
+List<TempUser> tempUserFromJson(String str) => List<TempUser>.from(json.decode(str).map((x) => TempUser.fromJson(x)));
+
+String tempUserToJson(List<TempUser> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class TempUser {
+  TempUser({
+    this.id,
+    this.ownerName,
+    this.mobile,
+    this.email,
+    this.name,
+    this.date,
+    this.timing,
+    this.user,
+    this.pId,
+    this.fId,
+    this.fltId,
+    this.rId,
+    this.dId,
+  });
+
+  int id;
+  String ownerName;
+  String mobile;
+  String email;
+  String name;
+  DateTime date;
+  String timing;
+  int user;
+  dynamic pId;
+  String fId;
+  dynamic fltId;
+  dynamic rId;
+  dynamic dId;
+
+  factory TempUser.fromJson(Map<String, dynamic> json) => TempUser(
+    id: json["id"],
+    ownerName: json["owner_name"],
+    mobile: json["mobile"],
+    email: json["email"],
+    name: json["name"],
+    date: DateTime.parse(json["date"]),
+    timing: json["timing"],
+    user: json["user"],
+    pId: json["p_id"],
+    fId: json["f_id"],
+    fltId: json["flt_id"],
+    rId: json["r_id"],
+    dId: json["d_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "owner_name": ownerName,
+    "mobile": mobile,
+    "email": email,
+    "name": name,
+    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "timing": timing,
+    "user": user,
+    "p_id": pId,
+    "f_id": fId,
+    "flt_id": fltId,
+    "r_id": rId,
+    "d_id": dId,
+  };
+}
+

@@ -24,7 +24,7 @@ class _AddSubUserState extends State<AddSubUser> {
 
   Future addSubUser(String data)async{
     String token= await getToken();
-    final url='http://genorionofficial.herokuapp.com/subuseraccess/';
+    final url='http://genorion1.herokuapp.com/subuseraccess/';
     var postData={
       "emailtest": data,
       "email":data
@@ -57,7 +57,7 @@ class _AddSubUserState extends State<AddSubUser> {
     String token = await getToken();
     print('token123 $token');
     // final url = 'https://genorion.herokuapp.com/place/';
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
+    final url = 'http://genorion1.herokuapp.com/getallplaces/';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ class _AddSubUserState extends State<AddSubUser> {
 
   Future _assignPlace()async{
     String token= await getToken();
-    final url='http://genorionofficial.herokuapp.com/subuserpalceaccess/';
+    final url='http://genorion1.herokuapp.com/subuserpalceaccess/';
     var postData={
       "user":getUidVariable,
       "email":emailController.text,

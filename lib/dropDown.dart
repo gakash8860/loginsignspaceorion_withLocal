@@ -65,7 +65,7 @@ class _DropDownState extends State<DropDown> {
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
+    final url = 'http://genorion1.herokuapp.com/getallplaces/';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ class _DropDownState extends State<DropDown> {
   // ignore: missing_return
   Future<List<FloorType>> getfloors(String pId) async {
     var query = {'p_id': pId};
-    final url = Uri.https('genorionofficial.herokuapp.com', '/getallfloors/', query);
+    final url = Uri.https('genorion1.herokuapp.com', '/getallfloors/', query);
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ class _DropDownState extends State<DropDown> {
   // ignore: missing_return
   Future<List<RoomType>> getrooms(String fId) async {
     var query = {'f_id': fId};
-    final url = Uri.https('genorionofficial.herokuapp.com', '/getallrooms/', query);
+    final url = Uri.https('genorion1.herokuapp.com', '/getallrooms/', query);
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',

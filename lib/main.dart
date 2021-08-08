@@ -29,17 +29,19 @@ List floorData;
 List placeData;
 List placeTypeSingle;
 List floorTypeSingle;
+List flatTypeSingle;
 List roomTypeSingle;
 List deviceData;
 List<Device> dvdata;
 List<FloorType> lisOfFloor;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
-List<RoomType> room;
+List<RoomType>  room;
 final storage = new FlutterSecureStorage();
 
 Future<String> getToken() async {
   final token = await storage.read(key: "token");
+  print(token);
   return token;
 }
 
@@ -57,7 +59,7 @@ void main()async {
 
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
-      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,rm: room,dv: dvdata,),
+      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
 
       // '/main': (ctx) =>  DropDown2(),
     },
@@ -89,6 +91,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   List floorQueryData;
   List floorQueryData2;
   List<Map<String, dynamic>> floorQueryRows;
+  List<Map<String, dynamic>> flatQueryRows;
   List<Map<String, dynamic>> roomQueryRows;
   List<Map<String, dynamic>> deviceQueryRows;
   List<Map<String, dynamic>> pinStatusQueryRows;
@@ -99,7 +102,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   List<Map<String, dynamic>> devicePinNamesQueryRows2;
   List<Map<String, dynamic>> floorQueryRows2;
   List<Map<String, dynamic>> roomQueryRows2;
-
+  List flatQueryData;
   Future roomVal;
   Future deviceVal;
 
@@ -119,11 +122,13 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   Timer timer;
+
+  var status_of_device;
   @override
   void initState() {
     super.initState();
     // allAwaitFunction();
-    // requestPermission();
+    requestPermission();
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;
@@ -150,7 +155,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   getUid() async{
-    final url= 'http://genorionofficial.herokuapp.com/getuid/';
+    final url= 'http://genorion1.herokuapp.com/getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -160,29 +165,32 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           'Authorization': 'Token $token',
         });
     if(response.statusCode==200){
+      print('UiD ${response.body}');
       getUidVariable=response.body ;
       getUidVariable2=int.parse(getUidVariable);
-
+      getUserDetailsSql();
     }else{
       print(response.statusCode);
     }
   }
 
   allAwaitFunction()async{
-   await getUid();
-  fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
-      .then((value) => floorQueryFunc()).then((value) => getAllRoom())
+    getUid();
+    fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
+      .then((value) => floorQueryFunc()).then((value) => getAllFlat().then((value) => flatQueryFunc())).then((value) => getAllRoom())
       .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
       .then((value) => devicePinStatusQueryFunc()).then((value) => getAllPinNames()).then((value) => devicePinNamesQueryFunc())
       .then((value) => getSensorData()).then((value) => devicePinSensorQueryFunc());
 
     await placeQueryFunc();
     await floorQueryFunc();
+    await flatQueryFunc();
     await roomQueryFunc();
-    await deviceQueryFunc();
-    await devicePinSensorQueryFunc();
-    await devicePinStatusQueryFunc();
-    await devicePinNamesQueryFunc();
+
+    // await deviceQueryFunc();
+    // await devicePinSensorQueryFunc();
+    // await devicePinStatusQueryFunc();
+    // await devicePinNamesQueryFunc();
   }
 
 
@@ -190,7 +198,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<List<PlaceType>> fetchPlace() async {
     // await openPlaceBox();
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
+    final url = 'https://genorion1.herokuapp.com/addyourplace/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -236,7 +244,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       pId=placeData[i]['p_id'].toString();
       // print(pId);
 
-      final url="http://genorionofficial.herokuapp.com/getallfloors/?p_id="+pId;
+      final url="https://genorion1.herokuapp.com/addyourfloor/?p_id="+pId;
       final  response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -246,6 +254,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       if(response.statusCode>0){
 
         floorData = jsonDecode(response.body);
+        print('floorData12 ${floorData}');
         for(int i=0;i<floorData.length;i++){
           var floorQuery=FloorType(
               fId: floorData[i]['f_id'],
@@ -253,6 +262,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
               pId: floorData[i]['p_id'],
               user: floorData[i]['user']
           );
+          print('floorData12 ${floorQuery}');
           await  NewDbProvider.instance.insertFloorModelData(floorQuery);
         }
       }
@@ -263,24 +273,61 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
     }
-    print('lastFloor ${floors.first.toJson()}');
+    print('lastFloor ${floorData.iterator.current}');
 
   }
 
 
-  Future<void> getAllRoom()async{
-    String token = await getToken();
+  Future<bool> getAllFlat()async{
     var fId;
-    for(int i=0;i<floorQueryRows.length;i++) {
+
+    String token=await getToken();
+    for(int i=0;i<floorQueryRows.length;i++){
+      fId=floorQueryRows[i]['f_id'].toString();
+      print("AllFlatFloorId $fId");
+      String url='https://genorion1.herokuapp.com/addyourflat/?f_id='+fId;
+      final  response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode>0){
+
+        List flatData = jsonDecode(response.body);
+        print('flatData ${flatData}');
+        for(int i=0;i<flatData.length;i++){
+
+          var flatQuery=Flat(
+              fId: flatData[i]['f_id'],
+              fltId: flatData[i]['flt_id'],
+              fltName: flatData[i]['flt_name'],
+              user: flatData[i]['user']
+          );
+          await  NewDbProvider.instance.insertFlatModelData(flatQuery);
+          print('FlatFlatQuery  ${flatQuery.fltName}');
+        }
+
+      }
+
+
+      // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
+
+
+    }
+  }
+  Future<bool> getAllRoom()async{
+    var fId;
+    for(int i=0;i<flatQueryRows.length;i++) {
       //   print(NewDbProvider.instance.dogs());
-      fId = floorQueryRows[i]['f_id'].toString();
-      print('fId123  $fId');
+      fId = flatQueryRows[i]['flt_id'].toString();
+      print('flt_id  ${fId}');
 
 
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
-
-      String url = "http://genorionofficial.herokuapp.com/getallrooms/?f_id="+fId;
+      String token=await getToken();
+      String url = "https://genorion1.herokuapp.com/addroom/?flt_id="+fId;
       var response;
       try {
         response = await http.get(Uri.parse(url), headers: {
@@ -290,15 +337,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
         });
         roomData = jsonDecode(response.body);
-        print('roomData123 $roomData');
-
+        print('checkRoomData $roomData');
         for(int i=0;i<roomData.length;i++){
 
 
           roomQuery=RoomType(
               rId: roomData[i]['r_id'],
               rName: roomData[i]['r_name'].toString(),
-              fId: roomData[i]['f_id'],
+              fltId: roomData[i]['flt_id'],
               user: roomData[i]['user']
           );
 
@@ -317,15 +363,15 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     }
     return Future.value(true);
   }
+
   List arr=[];
   Future<void> getAllDevice()async{
     String token = await getToken();
     var rId;
     for(int i=0;i<roomQueryRows.length;i++) {
-      //   print(NewDbProvider.instance.dogs());
       rId = roomQueryRows2[i]['r_id'].toString();
       print('roomId  $rId');
-      String url = "http://genorionofficial.herokuapp.com/getalldevices/?r_id=" +
+      String url = "https://genorion1.herokuapp.com/addyourdevice/?r_id=" +
           rId;
       var response;
       // try {
@@ -336,7 +382,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
       });
       deviceData = jsonDecode(response.body);
-      // print('deviceData  ${deviceData}');
+      print('deviceData  ${deviceData}');
       for (int i = 0; i < deviceData.length; i++) {
         var deviceQuery = Device(
             user: deviceData[i]['user'],
@@ -359,8 +405,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++){
 
       did=deviceQueryRows[i]['d_id'];
-      print('did $did');
-      String url = "http://genorionofficial.herokuapp.com/editpinnames/?d_id="+did;
+      print('diddevice $did');
+      String url = "http://genorion1.herokuapp.com/editpinnames/?d_id="+did;
       // try {
       final   response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -372,7 +418,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         var  devicePinNamesData=json.decode(response.body);
         // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-        List listOfPinNames=[devicePinNamesData];
+        List listOfPinNames=[devicePinNamesData,];
 
         print('QWERTY  $listOfPinNames');
         for (int i = 0; i < listOfPinNames.length; i++) {
@@ -408,6 +454,44 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   }
+  var userDataVariable;
+  Future<void> getUserDetailsSql()async{
+    String token = await getToken();
+    print(getUidVariable);
+    String url="http://genorion1.herokuapp.com/getthedataofuser/?id="+getUidVariable;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+
+
+    if (response.statusCode >0) {
+      print('responseStatus ${response.statusCode}');
+      userDataVariable=jsonDecode(response.body);
+      print('response $userDataVariable');
+
+      var userQuery=User(
+        email: userDataVariable['email'],
+        firstName: userDataVariable['first_name'],
+        lastName: userDataVariable['last_name'],
+      );
+      await NewDbProvider.instance.insertUserDetailsModelData(userQuery);
+      print('userQuery  ${userQuery.firstName}' );
+      // await NewDbProvider.instance.close();
+
+
+
+    }
+
+
+  }
+
+
+
+
+
+
   Future<void> getSensorData() async {
     // arr=[arr.length-arr.length];
     String token = await getToken();
@@ -417,7 +501,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      String url = "http://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -430,6 +514,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       }
       var arr = jsonDecode(response.body);
       List listOfPinSensor=[arr,];
+      print('sensorData  ${listOfPinSensor}');
       for (int i = 0; i < listOfPinSensor.length; i++) {
         var sensorQuery = SensorData(
           dId: listOfPinSensor[i]['d_id'],
@@ -446,22 +531,20 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         );
         print('deviceSensorJson    ${sensorQuery.toJson()}');
         await NewDbProvider.instance.insertSensorData(sensorQuery);
+        await NewDbProvider.instance.updateSensorData(sensorQuery);
       }
 
     }
   }
 
   Future<void> getPinStatusData() async {
-    // arr=[arr.length-arr.length];
     String token = await getToken();
-
     var did;
     print('PinStatusFunction $deviceQueryRows');
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
-      // final url="http://genorionofficial.herokuapp.com/tensensorsdata/?d_id="+did;
+      String url = "http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -472,8 +555,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       if(response.statusCode==200){
         print('PinStatusResponse  ${response.statusCode}');
         var pinStatus= jsonDecode(response.body);
-        // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
-        List listOfPinStatusValue=[pinStatus];
+        // var pinStatus2=pinStatus;
+        List listOfPinStatusValue=[pinStatus,];
         print('printFunction $listOfPinStatusValue}');
         for (int i = 0; i < listOfPinStatusValue.length; i++) {
           var pinQuery = PinStatus(
@@ -493,13 +576,30 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
             pin13Status: listOfPinStatusValue[i]['pin13Status'],
             pin14Status: listOfPinStatusValue[i]['pin14Status'],
             pin15Status: listOfPinStatusValue[i]['pin15Status'],
-            // pin16Status: listOfPinStatusValue[i]['pin16Status'],
-            // pin17Status: listOfPinStatusValue[i]['pin17Status'],
-            // pin18Status: listOfPinStatusValue[i]['pin18Status'],
-            // pin19Status: listOfPinStatusValue[i]['pin19Status'],
-            // pin20Status: listOfPinStatusValue[i]['pin20Status'],
+            pin16Status: listOfPinStatusValue[i]['pin16Status'],
+            pin17Status: listOfPinStatusValue[i]['pin17Status'],
+            pin18Status: listOfPinStatusValue[i]['pin18Status'],
+            pin19Status: listOfPinStatusValue[i]['pin19Status'],
+            pin20Status: listOfPinStatusValue[i]['pin20Status'],
           );
           await NewDbProvider.instance.insertPinStatusData(pinQuery);
+          await NewDbProvider.instance.updatePinStatusData(pinQuery);
+          print('check1234567}');
+          // //print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
+          // print('check1234567 ${listOfPinStatusValue[18]['pin20Status']}');
+        }
+        print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
+        String a=listOfPinStatusValue[i]['pin20Status'];
+        // double aa=double.parse(a);
+        int aa=int.parse(a);
+
+        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19900;
+        if (aa.compareTo(ms) > 0) {
+          print('ifelse');
+          status_of_device = 0;
+        } else {
+          print('ifelse2');
+          status_of_device = 1;
         }
       }
 
@@ -528,28 +628,30 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     placeTypeSingle=queryRows;
 
     var pids=PlaceType(
-      pId: placeTypeSingle.last['p_id'].toString(),
-      pType: placeTypeSingle.last['p_type'].toString(),
-      user: placeTypeSingle.last['user']
+      pId: queryRows[0]['p_id'].toString(),
+      pType: queryRows[0]['p_type'].toString(),
+      user: queryRows[0]['user']
     );
 
     pt=pids;
     print('checkPlaces123654 ${placeTypeSingle.last}');
 
   }
+List resultFloor;
   Future floorQueryFunc()async{
     floorTypeSingle=    await NewDbProvider.instance.queryFloor();
     floorQueryRows = await NewDbProvider.instance.queryFloor();
     floorQueryData=floorQueryRows;
     floorTypeSingle=floorQueryRows;
-    var pId=placeTypeSingle.last['p_id'].toString();
-    List result= await NewDbProvider.instance.getFloorById(pId);
-    print(' checkResult123456 ${result.first}');
+    var pId=placeTypeSingle[0]['p_id'].toString();
+    print('placeId $pId');
+    resultFloor= await NewDbProvider.instance.getFloorById(pId);
+    print(' checkResult123456 ${resultFloor.first}');
     var floor=FloorType(
-      fId: result.first['f_id'].toString(),
-      fName: result.first['f_name'].toString(),
-      user: result.first['user'],
-      pId: result.first['p_id'].toString()
+      fId: resultFloor[0]['f_id'].toString(),
+      fName: resultFloor[0]['f_name'].toString(),
+      user: resultFloor[0]['user'],
+      pId: resultFloor[0]['p_id'].toString()
     );
     fl=floor;
 
@@ -559,15 +661,40 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   }
+  List resultFlat;
+  Future flatQueryFunc()async{
+    flatTypeSingle=    await NewDbProvider.instance.queryFlat();
+    flatQueryRows = await NewDbProvider.instance.queryFlat();
+      print("Query $flatQueryRows");
+      flatQueryData=flatQueryRows;
+
+    floorTypeSingle=floorQueryRows;
+    var fId=resultFloor[0]['f_id'].toString();
+    print(fId);
+    resultFlat= await NewDbProvider.instance.getFlatByFId(fId.toString());
+    print('checkFlat123  ${resultFlat}');
+    var flat=Flat(
+      fId: resultFlat[0]['f_id'].toString(),
+      fltName: resultFlat[0]['flt_name'].toString(),
+      fltId: resultFlat[0]['flt_id'].toString(),
+      user: resultFlat[0]['user']
+    );
+    flt=flat;
+
+
+  }
   Future<List<RoomType>> roomQueryFunc()async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
+    print('qqqq ${roomQueryRows}');
     List roomTypeSingle=roomQueryRows;
-    var id=roomTypeSingle[0]['f_id'].toString();
+    var id=resultFlat[0]['flt_id'].toString();
+
     roomQueryRows2=roomQueryRows;
     List result= await NewDbProvider.instance.getRoomById(id);
+    print('roomResult $result');
     room= List.generate(result.length, (index) => RoomType(
       rId: result[index]['r_id'].toString(),
-      fId: result[index]['f_id'].toString(),
+      fltId: result[index]['flt_id'].toString(),
       rName:result[index]['r_name'].toString(),
       user: result[index]['user'],
     ));
