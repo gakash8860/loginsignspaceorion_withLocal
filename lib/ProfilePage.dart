@@ -174,38 +174,45 @@ class _ProfilePageState extends State<ProfilePage> {
 
   }
 
-    final String url = 'https://genorion1.herokuapp.com/testimages123/?user=';
+
 
   imageUpload() async {
     // String token = "b8bd2e8bc8f9541d031f03217cf9ac0153048a97";
     String token = await getToken();
-      // final url = 'https://genorion1.herokuapp.com/testimages123/?user=' + getUidVariable;
+      final url = 'https://genorion1.herokuapp.com/testimages123/';
       // final url = 'http://192.168.0.105:8000/testimages123/?user=1';
 
       var postData = {
       "file":base64String,
-      "user":1,
+      "user":getUidVariable,
       };
       var flag=0;
       var response;
-      if(flag==0){
-        flag=1;
-         response = await http.post(url, body: jsonEncode(postData), headers: {
-          'Content-Type': 'application/json',
-          // 'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-
-         print('flag $flag');
-      }else if(flag==1){
-        response = await http.put(url, body: jsonEncode(postData), headers: {
-          'Content-Type': 'application/json',
-          // 'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-        print('ElseIfFlag $flag');
-      }
-
+//       if(flag==0){
+//         flag=1;
+//          response = await http.post(url, body: jsonEncode(postData), headers: {
+//           'Content-Type': 'application/json',
+//           // 'Accept': 'application/json',
+//           'Authorization': 'Token $token',
+//         });
+// print('response123 ${response.statusCode}');
+//          print('flag $flag');
+//       }else if(flag==1){
+//         response = await http.put(url, body: jsonEncode(postData), headers: {
+//           'Content-Type': 'application/json',
+//           // 'Accept': 'application/json',
+//           'Authorization': 'Token $token',
+//         });
+//         print('response123 ${response.statusCode}');
+//         print('ElseIfFlag $flag');
+//       }
+    response = await http.put(url, body: jsonEncode(postData), headers: {
+      'Content-Type': 'application/json',
+      // 'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('response123 ${response.statusCode}');
+    print('ElseIfFlag $flag');
 
     if (response.statusCode > 0) {
       print('ImageResponseStatusCode  ${response.statusCode}');
@@ -214,11 +221,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
 
-
+var convertImage;
   getImage() async {
     String token = await getToken();
     // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
-    final url = 'https://genorion1.herokuapp.com/testimages123/?user=' + getUidVariable;
+    final url = 'https://genorion1.herokuapp.com/testimages123/?user='+getUidVariable;
     // final url = 'http://192.168.0.105:8000/testimages123/?user=1';;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -226,11 +233,16 @@ class _ProfilePageState extends State<ProfilePage> {
       'Authorization': 'Token $token',
     });
     if (response.statusCode > 0) {
-     var imageData = json.decode(response.body);
       print('statusCode ${response.statusCode}');
-      // print('statusCode ${imageData['file']}');
-      var qq=base64Decode(imageData['file']);
-      print('ConvertImage ${qq}');
+      print('statusCode ${response.body}');
+     var imageData = json.decode(response.body);
+      print('statusCode ${response.body}');
+    setState(() {
+      convertImage=base64Decode(imageData['file']);
+      // setImage=convertImage;
+    });
+      print('ConvertImage ${convertImage}');
+      print('ConvertImage ${imageData['file']}');
     }
   }
 
@@ -385,8 +397,8 @@ class _ProfilePageState extends State<ProfilePage> {
               // ),
               CircularProfileAvatar(
                 '',
-                child: setImage == null
-                    ? Image.asset('assets/images/blank.png')
+                child: convertImage == null
+                    ?Image.asset('assets/images/blank.png')
                     : setImage,
                 // '',child: Image.network(imageData['images']),
                 radius: 90,

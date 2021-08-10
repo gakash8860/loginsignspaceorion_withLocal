@@ -396,7 +396,7 @@ class NewDbProvider {
   Future updatePLaceNameLocal(PlaceType placeType) async {
     final db = await database;
      var result = await db.update('$_tableName', placeType.toJson(),
-      where: 'p_id = ?',
+      where: 'p_type = ?',
       whereArgs: [placeType.pType],
     );
   return result;

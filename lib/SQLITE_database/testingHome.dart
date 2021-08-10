@@ -158,6 +158,7 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController textEditingController = TextEditingController();
   TextEditingController deviceNameEditing = TextEditingController();
   TextEditingController roomEditing = TextEditingController();
+  TextEditingController pin19Controller = TextEditingController();
   TextEditingController floorEditing = TextEditingController();
   TextEditingController controller = TextEditingController();
   GlobalKey key;
@@ -463,14 +464,6 @@ class _HomeTestState extends State<HomeTest>
       setState(() {
         widget.pt.pType = postDataPlaceName['p_type'];
       });
-
-      print(' Place Response--> $placeResponse');
-// pt.pType=;
-      print(' PlaceName--> ${postDataPlaceName['p_type']}');
-
-      // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
-      // placeResponsePreference.setInt('p_id', placeResponse);
-
       return PlaceType.fromJson(postDataPlaceName);
     } else {
       throw Exception('Failed to create Place.');
@@ -538,60 +531,7 @@ class _HomeTestState extends State<HomeTest>
 
 
 
-  Future<void> getPinStatusData() async {
-    // arr=[arr.length-arr.length];
-    String token = await getToken();
 
-    var did;
-    print('PinStatusFunction $deviceQueryRows');
-    for(int i=0;i<deviceQueryRows.length;i++) {
-      did=deviceQueryRows[i]['d_id'];
-      print('insideLoop $did');
-      String url = "http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
-
-      final response = await http.get(Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Token $token',
-          });
-
-      if(response.statusCode==200){
-        print('PinStatusResponse  ${response.statusCode}');
-        var pinStatus= jsonDecode(response.body);
-        // PinStatus devicePinStatus=PinStatus.fromJson(pinStatus);
-        List listOfPinStatusValue=[pinStatus];
-        print('listOfPinStatusValue $listOfPinStatusValue');
-        for (int i = 0; i < listOfPinStatusValue.length; i++) {
-          var pinQuery = PinStatus(
-            dId: listOfPinStatusValue[i]['d_id'],
-            pin1Status: listOfPinStatusValue[i]['pin1Status'],
-            pin2Status: listOfPinStatusValue[i]['pin2Status'],
-            pin3Status: listOfPinStatusValue[i]['pin3Status'],
-            pin4Status: listOfPinStatusValue[i]['pin4Status'],
-            pin5Status: listOfPinStatusValue[i]['pin5Status'],
-            pin6Status: listOfPinStatusValue[i]['pin6Status'],
-            pin7Status: listOfPinStatusValue[i]['pin7Status'],
-            pin8Status: listOfPinStatusValue[i]['pin8Status'],
-            pin9Status: listOfPinStatusValue[i]['pin9Status'],
-            pin10Status: listOfPinStatusValue[i]['pin10Status'],
-            pin11Status: listOfPinStatusValue[i]['pin11Status'],
-            pin12Status: listOfPinStatusValue[i]['pin12Status'],
-            pin13Status: listOfPinStatusValue[i]['pin13Status'],
-            pin14Status: listOfPinStatusValue[i]['pin14Status'],
-            pin15Status: listOfPinStatusValue[i]['pin15Status'],
-            pin16Status: listOfPinStatusValue[i]['pin16Status'],
-            pin17Status: listOfPinStatusValue[i]['pin17Status'],
-            pin18Status: listOfPinStatusValue[i]['pin18Status'],
-          );
-          await NewDbProvider.instance.insertPinStatusData(pinQuery);
-        }
-      }
-
-
-
-    }
-  }
 
 
 
@@ -1466,6 +1406,68 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+  _createAlertDialogForPin19(BuildContext context,String dId) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Any Text For Pin 19'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                TextFormField(
+                  autofocus: true,
+                  controller: pin19Controller,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter ANy Text ',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await dataUpdateforPin19(dId);
+                      // await getAllRoom();
+                      // roomQueryFunc();
+
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
   _createAlertDialogForFloor(BuildContext context) {
     return showDialog(
         context: context,
@@ -1799,7 +1801,7 @@ class _HomeTestState extends State<HomeTest>
     // placeVal = fetchplace();
     // floorval = fetchFloor(placeVal.toString());
 
-    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
+    timer = Timer.periodic(Duration(minutes: 5), (timer) async {
 
       getDevices(tabbarState);
       getDatafunc2();
@@ -2075,14 +2077,13 @@ class _HomeTestState extends State<HomeTest>
       'pin10Status': responseGetData[9],
       'pin11Status': responseGetData[10],
       'pin12Status': responseGetData[11],
-      'pin13Status': m,
-      'pin14Status': n,
-      'pin15Status': o,
-      'pin16Status': p,
-      'pin17Status': q,
-      'pin18Status': r,
-      'pin19Status': s,
-      'pin20Status': t
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': q,
+      // 'pin18Status': r,
+      // 'pin19Status': s,
     };
     http.Response response =
     await http.post(url, body: jsonEncode(data), headers: {
@@ -2106,7 +2107,57 @@ class _HomeTestState extends State<HomeTest>
       throw Exception('Failed to Update data');
     }
   }
+  dataUpdateforPin19(String dId) async {
+    final String url =
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' +
+            dId;
+    String token = await getToken();
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseGetData[0],
+      'pin2Status': responseGetData[1],
+      'pin3Status': responseGetData[2],
+      'pin4Status': responseGetData[3],
+      'pin5Status': responseGetData[4],
+      'pin6Status': responseGetData[5],
+      'pin7Status': responseGetData[6],
+      'pin8Status': responseGetData[7],
+      'pin9Status': responseGetData[8],
+      'pin10Status': responseGetData[9],
+      'pin11Status': responseGetData[10],
+      'pin12Status': responseGetData[11],
+      'pin13Status': m,
+      'pin14Status': n,
+      'pin15Status': o,
+      'pin16Status': p,
+      'pin17Status': q,
+      'pin18Status': r,
+      'pin19Status': pin19Controller.text,
+      'pin20Status': t
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+      // print(switch_1);
+      // print(switch_2);
 
+      print('Switch 1 --> $switch_1');
+      print('Switch 2 --> $switch_2');
+      print('Switch 3 --> $switch_3');
+      print('Switch 4 --> $switch_4');
+      getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
   _logout() async {
     final deleteToken = await storage.delete(key: "token");
     return deleteToken;
@@ -3109,7 +3160,7 @@ class _HomeTestState extends State<HomeTest>
   Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
     getData(dId);
-    getPinStatusData();
+    // getPinStatusData();
     getPinsName(dId);
      // devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
@@ -3275,7 +3326,7 @@ class _HomeTestState extends State<HomeTest>
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                        color: statusOfDevice==0?Colors.green:Colors.grey,
+                        color: statusOfDevice==1?Colors.green:Colors.grey,
                         shape: BoxShape.circle
                     ),
                     // child: ...
@@ -3501,6 +3552,10 @@ class _HomeTestState extends State<HomeTest>
                                             //       },
                                             //       child: Text('Click'),
                                             //     )),
+                                            GestureDetector(
+                                              child: Icon(Icons.add),
+                                              onTap: (){_createAlertDialogForPin19(context,dId);},
+                                            )
                                           ],
                                         ),
                                       ],
@@ -3837,6 +3892,20 @@ class _HomeTestState extends State<HomeTest>
           pin20Status: listOfPinStatus[i]['pin20Status'],
         );
         print('deviceSensorJson    ${pinStatus.toJson()}');
+        String a=listOfPinStatus[i]['pin20Status'].toString();
+        print('ForLoop123 ${a}');
+        int aa= int.parse(a);
+        print('double $aa');
+        // int aa=int.parse(a);
+
+        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
+        if (aa.compareTo(ms) > 0) {
+          print('ifelse');
+          statusOfDevice = 1;
+        } else {
+          print('ifelse2');
+          statusOfDevice = 0;
+        }
         await NewDbProvider.instance.updatePinStatusData(pinStatus);
       }
       print("DATA-->  $data");

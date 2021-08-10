@@ -134,6 +134,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     var now = DateTime.now();
     print('now $now');
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
+
       if (currentPage < 2) {
         currentPage++;
       } else {
@@ -338,27 +339,18 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Token $token',
-
         });
         roomData = jsonDecode(response.body);
         print('checkRoomData $roomData');
         for(int i=0;i<roomData.length;i++){
-
-
           roomQuery=RoomType(
               rId: roomData[i]['r_id'],
               rName: roomData[i]['r_name'].toString(),
               fltId: roomData[i]['flt_id'],
               user: roomData[i]['user']
           );
-
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
-
-
         }
-
-
-
       } catch (e) {
         print('RoomCatch $e');
         // }
@@ -589,31 +581,22 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           await NewDbProvider.instance.insertPinStatusData(pinQuery);
           await NewDbProvider.instance.updatePinStatusData(pinQuery);
           print('check1234567}');
-          // //print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
-          // print('check1234567 ${listOfPinStatusValue[18]['pin20Status']}');
         }
-        // print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
-
-
-
 
 
         String a=listOfPinStatusValue[i]['pin20Status'].toString();
         print('aaaaaaaaaa ${a}');
-        // var date1 = DateTime.parse(a);
-        // float aaaaa=10:56:10.579486;
-        // print('aaaaaaaaaa ${date1.runtimeType}');
-        var aa=double.parse(a.toString());
+          int aa= int.parse(a);
         print('double $aa');
         // int aa=int.parse(a);
 
-        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19900;
+        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
         if (aa.compareTo(ms) > 0) {
           print('ifelse');
-          statusOfDevice = 0;
+          statusOfDevice = 1;
         } else {
           print('ifelse2');
-          statusOfDevice = 1;
+          statusOfDevice = 0;
         }
       }
 
