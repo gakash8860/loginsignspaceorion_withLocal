@@ -53,7 +53,7 @@ final storage= new FlutterSecureStorage();
   var number5;
   getEmergencyNumber()async{
     String token = "0bcb23b98322c01d95211af236b4a8d029bdd9f3";
-    final url = 'http://genorionofficial.herokuapp.com/getpostemergencynumber/?d_id=DIDM12932021AAAAAD';
+    final url = 'http://genorion1.herokuapp.com/getpostemergencynumber/?d_id=DIDM12932021AAAAAD';
     final response= await http.get(Uri.parse(url),headers: {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json; charset=UTF-8',
@@ -81,7 +81,7 @@ final storage= new FlutterSecureStorage();
   updateEmergencyNumber(EmergencyRequirementField data) async {
     String token =await getToken();
     print('idd ${widget.deviceId.toString()}');
-    final url = 'http://genorionofficial.herokuapp.com/getpostemergencynumber/?d_id='+widget.deviceId.toString();
+    final url = 'http://genorion1.herokuapp.com/getpostemergencynumber/?d_id='+widget.deviceId.toString();
     var postData={
       "user":getUidVariable,
       "d_id":widget.deviceId,

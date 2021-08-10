@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 // import 'allClasses.dart';
 PlaceType pt;
 Flat flt;
+SensorData sensorData;
 FloorType fl;
 RoomType rmtype;
 List<RoomType> rm;

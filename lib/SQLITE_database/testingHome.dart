@@ -95,8 +95,8 @@ class HomeTest extends StatefulWidget {
   Flat flat;
   List<RoomType> rm;
   List<Device> dv;
-
-  HomeTest({Key key, this.pt, this.fl,this.flat, @required this.rm, @required this.dv})
+  SensorData sensorData;
+  HomeTest({Key key, this.pt, this.fl,this.flat, @required this.rm, @required this.dv,this.sensorData})
       : super(key: key);
 
   // ignore: non_constant_identifier_names
@@ -649,7 +649,7 @@ class _HomeTestState extends State<HomeTest>
         );
         print('devicePinNamesInsertQuery    ${devicePinNamesQuery.toJson()}');
         print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
-        await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
+        await NewDbProvider.instance.updatePinName(devicePinNamesQuery);
       }
 
 
@@ -827,7 +827,6 @@ class _HomeTestState extends State<HomeTest>
         rm.first.rName = postDataRoomName['r_name'];
       });
       print(' Room Response--> $roomResponse');
-// pt.pType=;
       print(' RoomName--> ${postDataRoomName['r_name'].toString()}');
 
       // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
@@ -1316,7 +1315,7 @@ class _HomeTestState extends State<HomeTest>
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                    rm = await getrooms(fl.fId);
+                    // rm = await getrooms(fl.fId);
                     print('hello   ${rm[0].rId}');
                     setState(() {
                       tabbarState = rm[0].rId;
@@ -1401,6 +1400,8 @@ class _HomeTestState extends State<HomeTest>
       rName:result[index]['r_name'].toString(),
       user: result[index]['user'],
     ));
+    // widget.rm=room;
+    print('roomCheck123 ${widget.rm}');
     return room;
   }
   _createAlertDialogForAddRoom(BuildContext context) {
@@ -1412,7 +1413,6 @@ class _HomeTestState extends State<HomeTest>
             title: Text('Enter the Name of Room'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 // Image.asset(
                 //   'assets/images/signin.png',
@@ -1453,13 +1453,9 @@ class _HomeTestState extends State<HomeTest>
                     onPressed: () async {
                       await addRoom(roomEditing.text);
                       // await getAllRoom();
-                      await roomQueryFunc();
+                      roomQueryFunc();
 
                       Navigator.of(context).pop();
-                      final snackBar = SnackBar(
-                        content: Text('Room Added'),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                   ),
                 )
@@ -1771,30 +1767,30 @@ class _HomeTestState extends State<HomeTest>
   }
 
   getDatafunc2() {
-    getSensorData(deviceIdForSensor);
+    // getSensorData(deviceIdForSensor);
     // getPinsName();
+
+    for (int i = 0; i < dv.length; i++) {
+      print('yoooooooooooo');
+      getData(widget.dv[i].dId);
+
+
+    }
     print('deviceIdForSensor $deviceIdForSensor');
     // getPinNames(deviceIdForSensor);
-    if (dv.length == null) {
-      return Text('Loading..');
-    } else {
-      for (int i = 0; i < dv.length; i++) {
-        getData(widget.dv[i].dId);
 
-
-      }
-    }
   }
 
   // var getDataSql;
 
   @override
   void initState() {
+
     if(roomResponse!=null){
       tabbarState = roomResponse;
       print('hahahah $tabbarState');
     }
-
+    getDevices(tabbarState);
     print('roomLength ${widget.fl.fId}');
     print('flatDetails ${widget.flat.fltId}');
     devicePinNamesQueryFunc();
@@ -1803,11 +1799,11 @@ class _HomeTestState extends State<HomeTest>
     // placeVal = fetchplace();
     // floorval = fetchFloor(placeVal.toString());
 
-    timer = Timer.periodic(Duration(seconds: 90), (timer) async {
+    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
 
       getDevices(tabbarState);
       getDatafunc2();
-      getPinStatusData();
+
 
       await devicePinStatusQueryFunc();
 
@@ -1936,7 +1932,7 @@ class _HomeTestState extends State<HomeTest>
       dv = deviceData.map((data) => Device.fromJson(data)).toList();
       print('Room Id query ================================   $query');
       print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
-
+      getDatafunc2();
       return dv;
     }
   }
@@ -2132,7 +2128,7 @@ class _HomeTestState extends State<HomeTest>
       appDir.deleteSync(recursive: true);
     }
   }
-  Future<SensorData> getSensorData(String dId) async {
+  Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
         'http://genorion1.herokuapp.com/tensensorsdata/?d_id='+dId,
@@ -2192,6 +2188,8 @@ class _HomeTestState extends State<HomeTest>
   var nameData;
   Future devicePinNameLocalUsingDeviceId(String dId)async {
     print('ssse $dId');
+    await devicePinSensorLocalUsingDeviceId(dId);
+
     nameData=await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
     if(nameData==null){
       return Text('No Data');
@@ -2224,7 +2222,16 @@ class _HomeTestState extends State<HomeTest>
       print("body");
       print(response.statusCode);
       print(response.body);
-      tabbarState = jsonDecode(response.body);
+      if(response.statusCode ==200||response.statusCode ==201){
+        tabbarState = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Room Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        getAllRoom();
+      }
+
       // setState(() {
       //   roomResponse2=roomResponse;
       //   // roomResponsePreference.setInt('r_id', roomResponse2);
@@ -2236,6 +2243,52 @@ class _HomeTestState extends State<HomeTest>
       throw Exception('Failed to create Room.');
     }
   }
+
+
+  Future<bool> getAllRoom()async{
+
+
+      // String url="http://10.0.2.2:8000/api/data";
+      // String token= await getToken();
+      String token=await getToken();
+      String url = "https://genorion1.herokuapp.com/addroom/?flt_id="+widget.flat.fltId;
+      var response;
+
+        response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+
+        });
+        roomData = jsonDecode(response.body);
+        print('checkRoomData $roomData');
+        for(int i=0;i<roomData.length;i++){
+
+
+         var roomQuery=RoomType(
+              rId: roomData[i]['r_id'],
+              rName: roomData[i]['r_name'].toString(),
+              fltId: roomData[i]['flt_id'],
+              user: roomData[i]['user']
+          );
+
+          await NewDbProvider.instance.insertRoomModelData(roomQuery);
+          await roomQueryFunc();
+
+
+
+
+
+
+
+    }
+    return Future.value(true);
+  }
+
+
+
+
+
 
   // ignore: missing_return
   Future<RoomType> addRoom2(String data) async {
@@ -2723,13 +2776,11 @@ class _HomeTestState extends State<HomeTest>
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
                                             return Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Row(
                                                   children: <Widget>[
                                                     SizedBox(
-                                                      width: 12,
+                                                      width: 8,
                                                     ),
                                                     Column(
                                                       children: <Widget>[
@@ -2852,52 +2903,73 @@ class _HomeTestState extends State<HomeTest>
                         floating: true,
                         pinned: true,
                         backgroundColor: Colors.white,
-                        // flexibleSpace: F,
-                        title: Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onLongPress: () {
-                                  print('longPress');
-                                  _editRoomNameAlertDialog(context);
-                                },
-                                child: TabBar(
-                                  indicatorColor: Colors.blueAccent,
-                                  controller: tabC,
-                                  labelColor: Colors.blueAccent,
-                                  indicatorWeight: 2.0,
-                                  isScrollable: true,
-                                  tabs: widget.rm.map<Widget>((RoomType rm) {
-                                    rIdForName = rm.rId;
-                                    print('RoomId  $rIdForName');
-                                    print('RoomId  ${rm.rName}');
-                                    return Tab(
-                                      text: rm.rName,
-                                    );
-                                  }).toList(),
-                                  onTap: (index) async {
-                                    print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                                    setState(() {
-                                      tabbarState = widget.rm[index].rId;
-                                      devicePinNamesQueryFunc();
-                                    });
-                                    getDevices(tabbarState);
-                                    print("tabbarState Tabs->  $tabbarState");
-                                    widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
-                                    print('getDevices123 ${widget.dv[index].dId}');
-                                    devicePinSensorLocalUsingDeviceId(widget.dv[index].dId);
+
+                        title:Container(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child:Row(
+
+                                children: [
+                                  GestureDetector(
+                                    onLongPress: () {
+                                      print('longPress');
+                                      _editRoomNameAlertDialog(context);
+                                    },
+                                    child: TabBar(
+                                      indicatorColor: Colors.blueAccent,
+                                      controller: tabC,
+                                      labelColor: Colors.blueAccent,
+                                      indicatorWeight: 2.0,
+                                      isScrollable: true,
+
+                                      tabs: widget.rm.map<Widget>((RoomType rm) {
+                                        rIdForName = rm.rId;
+                                        print('RoomId  $rIdForName');
+                                        print('RoomId  ${rm.rName}');
+                                        return Tab(
+                                          text: rm.rName,
+                                        );
+                                      }).toList(),
+                                      onTap: (index) async {
+                                        print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                                        setState(() {
+                                          tabbarState = widget.rm[index].rId;
+                                          devicePinNamesQueryFunc();
+                                        });
+                                        // getDevices(tabbarState);
+                                        print("tabbarState Tabs->  $tabbarState");
+                                        widget.dv= await  NewDbProvider.instance.getDeviceByRoomId(tabbarState);
+                                        getAllRoom();
+                                       // widget.rm =await roomQueryFunc();
+                                        print('getDevices123 }');
 
 
-                                  },
-                                ),
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10,bottom: 2),
+                                    child: GestureDetector(
+                                      // color: Colors.black,
+                                      child: Icon(Icons.add,color: Colors.black,),
+                                      onTap: (){
+                                        _createAlertDialogForAddRoom(context);
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
+                            ),
 
-                              // SizedBox(height: 45,),
-                            ],
-                          ),
+
+                            // SizedBox(height: 45,),
+                          ],
                         ),
+                      ),
                       ),
 
                       SliverList(
@@ -3036,8 +3108,10 @@ class _HomeTestState extends State<HomeTest>
   var catchReturn;
   Future deviceSensorVal;
   deviceContainer(String dId,int index) async {
+    getData(dId);
+    getPinStatusData();
     getPinsName(dId);
-    // await devicePinSensorLocalUsingDeviceId(dId);
+     // devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
     setState(() {
       deviceSensorVal=devicePinSensorLocalUsingDeviceId(dId);
@@ -3196,6 +3270,16 @@ class _HomeTestState extends State<HomeTest>
                       fontWeight: FontWeight.bold,
                       color: _switchValue ? Colors.white : Colors.black, ),),
                   ),
+                  SizedBox(width: 14,),
+                  Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                        color: statusOfDevice==0?Colors.green:Colors.grey,
+                        shape: BoxShape.circle
+                    ),
+                    // child: ...
+                  ),
                   Switch(
                     value: responseGetData.iterator.current==0
                         ? val2
@@ -3205,6 +3289,8 @@ class _HomeTestState extends State<HomeTest>
                       _showDialog(dId);
                     },
                   ),
+
+
                 ],
               ),
               Container(
@@ -3710,6 +3796,8 @@ class _HomeTestState extends State<HomeTest>
   getData(String dId) async {
     print("Vice Id $dId");
     deviceIdForSensor=dId;
+    print('getDataFunction $deviceIdForSensor');
+    getSensorData(deviceIdForSensor);
     final String url =
         'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' +
             dId;

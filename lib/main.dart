@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -33,12 +34,13 @@ List flatTypeSingle;
 List roomTypeSingle;
 List deviceData;
 List<Device> dvdata;
+
 List<FloorType> lisOfFloor;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
 List<RoomType>  room;
 final storage = new FlutterSecureStorage();
-
+var statusOfDevice;
 Future<String> getToken() async {
   final token = await storage.read(key: "token");
   print(token);
@@ -123,12 +125,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
   Timer timer;
 
-  var status_of_device;
+
   @override
   void initState() {
     super.initState();
     // allAwaitFunction();
     requestPermission();
+    var now = DateTime.now();
+    print('now $now');
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;
@@ -187,10 +191,10 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     await flatQueryFunc();
     await roomQueryFunc();
 
-    // await deviceQueryFunc();
-    // await devicePinSensorQueryFunc();
-    // await devicePinStatusQueryFunc();
-    // await devicePinNamesQueryFunc();
+    await deviceQueryFunc();
+    await devicePinSensorQueryFunc();
+    await devicePinStatusQueryFunc();
+    await devicePinNamesQueryFunc();
   }
 
 
@@ -588,18 +592,28 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           // //print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
           // print('check1234567 ${listOfPinStatusValue[18]['pin20Status']}');
         }
-        print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
-        String a=listOfPinStatusValue[i]['pin20Status'];
-        // double aa=double.parse(a);
-        int aa=int.parse(a);
+        // print('check1234567 ${listOfPinStatusValue[i]['pin20Status']}');
+
+
+
+
+
+        String a=listOfPinStatusValue[i]['pin20Status'].toString();
+        print('aaaaaaaaaa ${a}');
+        // var date1 = DateTime.parse(a);
+        // float aaaaa=10:56:10.579486;
+        // print('aaaaaaaaaa ${date1.runtimeType}');
+        var aa=double.parse(a.toString());
+        print('double $aa');
+        // int aa=int.parse(a);
 
         int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19900;
         if (aa.compareTo(ms) > 0) {
           print('ifelse');
-          status_of_device = 0;
+          statusOfDevice = 0;
         } else {
           print('ifelse2');
-          status_of_device = 1;
+          statusOfDevice = 1;
         }
       }
 
@@ -683,6 +697,7 @@ List resultFloor;
 
 
   }
+  List resultRoom;
   Future<List<RoomType>> roomQueryFunc()async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     print('qqqq ${roomQueryRows}');
@@ -690,39 +705,30 @@ List resultFloor;
     var id=resultFlat[0]['flt_id'].toString();
 
     roomQueryRows2=roomQueryRows;
-    List result= await NewDbProvider.instance.getRoomById(id);
-    print('roomResult $result');
-    room= List.generate(result.length, (index) => RoomType(
-      rId: result[index]['r_id'].toString(),
-      fltId: result[index]['flt_id'].toString(),
-      rName:result[index]['r_name'].toString(),
-      user: result[index]['user'],
+     resultRoom= await NewDbProvider.instance.getRoomById(id);
+    print('roomResult $resultRoom');
+    room= List.generate(resultRoom.length, (index) => RoomType(
+      rId: resultRoom[index]['r_id'].toString(),
+      fltId: resultRoom[index]['flt_id'].toString(),
+      rName:resultRoom[index]['r_name'].toString(),
+      user: resultRoom[index]['user'],
     ));
 return room;
   }
-
+List deviceResult;
   deviceQueryFunc()async{
-    deviceQueryRows =
-    await NewDbProvider.instance.queryDevice();
+    deviceQueryRows = await NewDbProvider.instance.queryDevice();
     print('maindeviceQuery $deviceQueryRows');
     List dv1= deviceQueryRows;
-    var roomId=dv1[0]['r_id'];
+    var roomId=resultRoom[0]['r_id'];
     // dv=deviceQueryRows;
-    List result= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
-    print('dvlouye ${result}');
-    dvdata= List.generate(result.length, (index) => Device(
-        dId: dv1[index]['d_id'].toString(),
-        rId: dv1[index]['r_id'].toString(),
-        user: dv1[index]['user']
+     deviceResult= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+    print('dvlouye ${deviceResult}');
+    dvdata= List.generate(deviceResult.length, (index) => Device(
+        dId: deviceResult[index]['d_id'].toString(),
+        rId: deviceResult[index]['r_id'].toString(),
+        user: deviceResult[index]['user']
     ));
-
-    // var deviceQuery=Device(
-    //   dId: dv1[0]['d_id'].toString(),
-    //   rId: dv1[0]['r_id'].toString(),
-    //   user: dv1[0]['user']
-    // );
-    // final device=deviceQuery;
-    // dvdata=[device];
 
   }
   Future devicePinNamesQueryFunc()async{
@@ -735,10 +741,17 @@ return room;
   }
 
   Future devicePinSensorQueryFunc()async{
-    sensorQueryRows =
-    await NewDbProvider.instance.querySensor();
+    sensorQueryRows = await NewDbProvider.instance.querySensor();
     print('deviceSensorQueryFunc  $sensorQueryRows');
-
+    // var deviceId= deviceResult[0]['d_id'];
+    // List result= await NewDbProvider.instance.getSensorByDeviceId(deviceId);
+    // var sensorDataSend= SensorData(
+    //   sensor1: result[0]['sensor1'],
+    //   sensor2: result[0]['sensor2'],
+    //   sensor3: result[0]['sensor3'],
+    //   sensor4: result[0]['sensor4'],
+    // );
+    // sensorData= sensorDataSend;
     return sensorQueryRows;
 
   }

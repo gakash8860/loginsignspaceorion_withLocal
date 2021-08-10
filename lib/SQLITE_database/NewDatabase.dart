@@ -401,9 +401,15 @@ class NewDbProvider {
     );
   return result;
   }
+
   Future updatePinStatusData(PinStatus pinStatus)async{
     var db = await database;
     return db.update('$_devicePinStatus', pinStatus.toJson());
+  }
+
+  Future updateRoom(RoomType roomType)async{
+    var db = await database;
+    return db.update('$_roomTableName', roomType.toJson());
   }
   Future updateSensorData(SensorData sensorData)async{
     var db = await database;
