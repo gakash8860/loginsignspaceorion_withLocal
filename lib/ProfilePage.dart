@@ -385,10 +385,7 @@ var convertImage;
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height / 18,
+                height: MediaQuery.of(context).size.height / 18,
               ),
               // Container(
               //   decoration: BoxDecoration(

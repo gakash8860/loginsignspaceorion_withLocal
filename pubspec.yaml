@@ -107,6 +107,7 @@ flutter:
     - assets/images/qwe.png
     - assets/images/space.jpeg
     - assets/images/blank.png
+    - assets/images/backgroundweb.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

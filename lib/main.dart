@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
-import 'dart:ffi';
+
 import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
@@ -20,7 +21,7 @@ import 'login_Screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
 Box roomBox;
@@ -61,6 +62,7 @@ void main()async {
 
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
+
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
 
       // '/main': (ctx) =>  DropDown2(),
@@ -584,20 +586,20 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         }
 
 
-        String a=listOfPinStatusValue[i]['pin20Status'].toString();
-        print('aaaaaaaaaa ${a}');
-          int aa= int.parse(a);
-        print('double $aa');
-        // int aa=int.parse(a);
-
-        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
-        if (aa.compareTo(ms) > 0) {
-          print('ifelse');
-          statusOfDevice = 1;
-        } else {
-          print('ifelse2');
-          statusOfDevice = 0;
-        }
+        // String a=listOfPinStatusValue[i]['pin20Status'].toString();
+        // print('aaaaaaaaaa ${a}');
+        //   int aa= int.parse(a);
+        // print('double $aa');
+        // // int aa=int.parse(a);
+        //
+        // int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
+        // if (aa.compareTo(ms) > 0) {
+        //   print('ifelse');
+        //   statusOfDevice = 1;
+        // } else {
+        //   print('ifelse2');
+        //   statusOfDevice = 0;
+        // }
       }
 
 
@@ -809,104 +811,214 @@ List deviceResult;
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomCenter,
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                if(viewportConstraints.maxWidth>600){
+                  return Column(
                     children: <Widget>[
-                      PageView.builder(
-                        scrollDirection: Axis.horizontal,
-                        onPageChanged: onPageChanged,
-                        controller: pageController,
-                        itemCount: slideList.length,
-                        itemBuilder: (ctx, i) => SlideItem(i),
-                      ),
-                      Stack(
-                        alignment: AlignmentDirectional.topStart,
-                        children: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 35),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                for (int i = 0; i < slideList.length; i++)
-                                  if (i == currentPage)
-                                    SlideDots(true)
-                                  else
-                                    SlideDots(false)
-                              ],
+                      Expanded(
+                        child: Stack(
+                          alignment: AlignmentDirectional.bottomCenter,
+                          children: <Widget>[
+                            PageView.builder(
+                              scrollDirection: Axis.horizontal,
+                              onPageChanged: onPageChanged,
+                              controller: pageController,
+                              itemCount: slideList.length,
+                              itemBuilder: (ctx, i) => SlideItem(i),
                             ),
+                            Stack(
+                              alignment: AlignmentDirectional.topStart,
+                              children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 35),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      for (int i = 0; i < slideList.length; i++)
+                                        if (i == currentPage)
+                                          SlideDots(true)
+                                        else
+                                          SlideDots(false)
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Column(
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          // ignore: deprecated_member_use
+                          Container(
+                            width: 300,
+                            child: FlatButton(
+                              child: Text(
+                                'Getting Started',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                              color: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.all(15),
+                              textColor: Colors.white,
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(SignUpScreen1.routeName);
+                              },
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Have an account',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              // ignore: deprecated_member_use
+                              FlatButton(
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(LoginScreen.routeName);
+                                },
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Temporary User',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              // ignore: deprecated_member_use
+                              FlatButton(
+                                child: Text(
+                                  'Click Here !',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
+                                },
+                              )
+                            ],
                           )
+
                         ],
                       )
                     ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    // ignore: deprecated_member_use
-                    FlatButton(
-                      child: Text(
-                        'Getting Started',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(500),
-                      ),
-                      color: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.all(15),
-                      textColor: Colors.white,
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(SignUpScreen1.routeName);
-                      },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Have an account',
-                          style: TextStyle(fontSize: 18),
+                  );
+                }else{
+                  return Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: Stack(
+                          alignment: AlignmentDirectional.bottomCenter,
+                          children: <Widget>[
+                            PageView.builder(
+                              scrollDirection: Axis.horizontal,
+                              onPageChanged: onPageChanged,
+                              controller: pageController,
+                              itemCount: slideList.length,
+                              itemBuilder: (ctx, i) => SlideItem(i),
+                            ),
+                            Stack(
+                              alignment: AlignmentDirectional.topStart,
+                              children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 35),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      for (int i = 0; i < slideList.length; i++)
+                                        if (i == currentPage)
+                                          SlideDots(true)
+                                        else
+                                          SlideDots(false)
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
                         ),
-                        // ignore: deprecated_member_use
-                        FlatButton(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(fontSize: 18),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          // ignore: deprecated_member_use
+                          FlatButton(
+                            child: Text(
+                              'Getting Started',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(500),
+                            ),
+                            color: Theme.of(context).primaryColor,
+                            padding: const EdgeInsets.all(15),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(SignUpScreen1.routeName);
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(LoginScreen.routeName);
-                          },
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Temporary User',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        // ignore: deprecated_member_use
-                        FlatButton(
-                          child: Text(
-                            'Click Here !',
-                            style: TextStyle(fontSize: 14),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Have an account',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              // ignore: deprecated_member_use
+                              FlatButton(
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(LoginScreen.routeName);
+                                },
+                              )
+                            ],
                           ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
-                          },
-                        )
-                      ],
-                    )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Temporary User',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              // ignore: deprecated_member_use
+                              FlatButton(
+                                child: Text(
+                                  'Click Here !',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
+                                },
+                              )
+                            ],
+                          )
 
-                  ],
-                )
-              ],
+                        ],
+                      )
+                    ],
+                  );
+                }
+              }
+
             ),
           ),
         ),

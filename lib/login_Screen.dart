@@ -227,7 +227,12 @@ class _LoginScreenState extends State<LoginScreen> {
             inAsyncCall: _isInAsyncCall,
             progressIndicator:CircularProgressIndicator() ,
             child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("")
+                    ),
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -237,6 +242,201 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: LayoutBuilder(
                     builder: (BuildContext context,
                         BoxConstraints viewportConstraints) {
+
+                          if(viewportConstraints.maxWidth>600){
+                            return Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                              ),
+                              // color: Theme.of(context).primaryColor,
+
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: viewportConstraints.maxHeight,
+                                ),
+                                child: ClipPath(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: <Widget>[
+                                      // Image.asset(
+                                      //   'assets/images/signin.png',
+                                      //   height: 130,
+                                      // ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+
+                                      Container(
+                                        width: 275,
+                                        child: TextFormField(
+                                          autofocus: true,
+                                          keyboardType: TextInputType.emailAddress,
+                                          textInputAction: TextInputAction.next,
+                                          onEditingComplete: () => node.nextFocus(),
+                                          autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                          validator: validateEmail,
+                                          onSaved: (String value) {
+                                            this.data.email = value;
+                                          },
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.black54),
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.email),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'Enter your Email',
+                                            errorText: this.error,
+                                            errorStyle: TextStyle(),
+                                            focusedErrorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Container(
+                                        width: 275,
+                                        child: TextFormField(
+                                          textInputAction: TextInputAction.next,
+                                          onEditingComplete: () => node.nextFocus(),
+                                          autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                          validator: validatePass,
+                                          onSaved: (String value) {
+                                            this.data.password = value;
+                                          },
+                                          obscureText: isHiddenPassword,
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.black54),
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.security),
+                                            errorText: this.error,
+                                            errorStyle: TextStyle(),
+                                            focusedErrorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'Enter your password',
+                                            suffixIcon: InkWell(
+                                                onTap: _tooglePassword,
+                                                child: Icon(isHiddenPassword
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off)),
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      // ignore: deprecated_member_use
+                                      Container(
+                                        width: 275,
+                                        child: FlatButton(
+                                            child: Text(
+                                              'Login',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,),),
+                                            shape: OutlineInputBorder(
+                                              borderSide: BorderSide(color:
+                                              Colors.white, width: 2),
+                                              borderRadius: BorderRadius.circular(90),),
+                                            padding: const EdgeInsets.all(15),
+                                            textColor: Colors.white,
+                                            onPressed: () async {
+
+                                              if (formKey.currentState.validate()) {
+
+                                                goToNextPage();
+
+                                              } else {
+                                                print("not validated");
+                                              }
+                                            }),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        mainAxisSize: MainAxisSize.max,
+                                        verticalDirection: VerticalDirection.down,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                            children: <Widget>[
+                                              GestureDetector(
+                                                child: Text(
+                                                  'Create new Account ?? ',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SignUpScreen1()));
+                                                },
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
                       return SingleChildScrollView(
                         dragStartBehavior: DragStartBehavior.down,
                         physics: BouncingScrollPhysics(),
@@ -254,7 +454,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: ClipPath(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                // crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
                                   // Image.asset(
                                   //   'assets/images/signin.png',
@@ -362,28 +562,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 15,
                                   ),
                                   // ignore: deprecated_member_use
-                                  FlatButton(
-                                      child: Text(
-                                        'Login',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,),),
-                                      shape: OutlineInputBorder(
-                                        borderSide: BorderSide(color:
-                                        Colors.white, width: 2),
-                                        borderRadius: BorderRadius.circular(90),),
-                                      padding: const EdgeInsets.all(15),
-                                      textColor: Colors.white,
-                                      onPressed: () async {
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: FlatButton(
+                                        child: Text(
+                                          'Login',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,),),
+                                        shape: OutlineInputBorder(
+                                          borderSide: BorderSide(color:
+                                          Colors.white, width: 2),
+                                          borderRadius: BorderRadius.circular(90),),
+                                        padding: const EdgeInsets.all(15),
+                                        textColor: Colors.white,
+                                        onPressed: () async {
 
-                                        if (formKey.currentState.validate()) {
+                                          if (formKey.currentState.validate()) {
 
-                                          goToNextPage();
+                                            goToNextPage();
 
-                                        } else {
-                                          print("not validated");
-                                        }
-                                      }),
+                                          } else {
+                                            print("not validated");
+                                          }
+                                        }),
+                                  ),
                                   Column(
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
