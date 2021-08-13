@@ -54,17 +54,17 @@ Future<String> getToken() async {
 }
 
 void main()async {
-  var pathToBuild = join(dirname(Platform.script.toFilePath()), '..', 'build');
-
-  var handler = createStaticHandler(pathToBuild, defaultDocument: 'index.html');
-
-  var portEnv = Platform.environment['PORT'];
-  var port = portEnv == null ? 9999 : int.parse(portEnv);
-
-  runZoned(() {
-    io.serve(handler, '0.0.0.0', port);
-    print("Serving $pathToBuild on port $port");
-  }, onError: (e, stackTrace) => print('Oh noes! $e $stackTrace'));
+  // var pathToBuild = join(dirname(Platform.script.toFilePath()), '..', 'build');
+  //
+  // var handler = createStaticHandler(pathToBuild, defaultDocument: 'index.html');
+  //
+  // var portEnv = Platform.environment['PORT'];
+  // var port = portEnv == null ? 9999 : int.parse(portEnv);
+  //
+  // runZoned(() {
+  //   io.serve(handler, '0.0.0.0', port);
+  //   print("Serving $pathToBuild on port $port");
+  // }, onError: (e, stackTrace) => print('Oh noes! $e $stackTrace'));
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   runApp(MaterialApp(
