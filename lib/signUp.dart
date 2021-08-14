@@ -5,10 +5,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/login_Screen.dart';
+import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:string_validator/string_validator.dart';
-import 'models/modeldefine.dart';
 
 
 void main()=>runApp(MaterialApp(home: SignUpScreen1(),));
@@ -44,12 +43,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   File imageFile;
   bool isHiddenPassword = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String acceptemail;
-  String rejectemail;
   bool isVisible=false;
   http.Response response;
   SignupData data = new SignupData();
-  // User dataUser=new User();
   goToNextPage() {
       setState(() {
         isVisible=true;
@@ -62,10 +58,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
           content: Text('Please Login'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
+        // Navigator.of(context)
+        //     .pushNamed(LoginScreen.routeName);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
       }
      
     }).catchError((e) {
@@ -91,12 +86,14 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       if (response.statusCode == 400) {
         print(response.body);
         print(response.statusCode);
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
         throw ("Details Error");
       }
       if (response.statusCode == 500) {
         print(response.statusCode);
         print(response.body);
         print(response.headers);
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
         throw ("Internal Server Error");
       }
     }

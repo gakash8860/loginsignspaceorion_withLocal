@@ -10,6 +10,7 @@ import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 
 import 'package:loginsignspaceorion/signUp.dart';
+import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -74,8 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     print(data);
     checkDetails(data).then((value) {
       print(data);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => DropDown1()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>DropDown1()));
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => DropDown1()));
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => NewDropDown(
@@ -85,7 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print(e);
       setState(() {
-
         this.error = "Wrong Credentials";
       });
     });
@@ -96,24 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return token;
   }
 
-  // ignore: missing_return
-  Future<List<RoomType>> getrooms(String fId) async {
-    var query = {'f_id': fId};
-    final url = Uri.https('genorion.herokuapp.com', '/room/', query);
-    // String token = await getToken();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
 
-    });
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      List<RoomType> rooms = data.map((data) => RoomType.fromJson(data)).toList();
-      print(rooms);
-      return rooms;
-    }
-  }
 
 
 
@@ -146,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode == 400) {
       //  final snackBar=SnackBar(content: Text('Login Successful')
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
 
       throw ("Wrong Credentials");
     }

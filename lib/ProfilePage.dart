@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -13,8 +12,6 @@ import 'models/modeldefine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'dart:io' as Io;
-
 void main() => runApp(MaterialApp(
       home: ProfilePage(
           // fl: null,

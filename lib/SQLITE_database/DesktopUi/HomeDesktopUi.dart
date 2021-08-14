@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,7 +11,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
 class DesktopHome extends StatefulWidget {
-   DesktopHome({Key key}) : super(key: key);
+   // DesktopHome({Key key}) : super(key: key);
   var switch1_get;
   var switch1Name;
   var switch2Name;

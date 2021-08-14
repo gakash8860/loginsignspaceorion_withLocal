@@ -90,6 +90,7 @@ class MyApp extends StatelessWidget {
 // ignore: must_be_immutable
 class HomeTest extends StatefulWidget {
   // ignore: must_be_immutable
+  static const routeName = '/homeTest';
   PlaceType pt;
   FloorType fl;
   Flat flat;
@@ -2477,6 +2478,216 @@ class _HomeTestState extends State<HomeTest>
                     },
                   ),
                 ],
+              ),
+              drawer: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor:change_toDark ? Colors.black : Colors.white, //This will change the drawer background to blue.
+                  //other styles
+                ),
+                child: Drawer(
+                  child: Container(
+                    width: double.maxFinite,
+                    color: change_toDark ? Colors.black : Colors.white,
+                    height: 100,
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          //padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [Color(0xff669df4), Color(0xff4e80f3)]),
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(30),
+                                bottomLeft: Radius.circular(30),
+                              )),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                                ),
+                                CircularProfileAvatar(
+                                  '',
+                                  child: setImage == null
+                                      ? Image.asset('assets/images/blank.png')
+                                      : setImage,
+                                  radius: 60,
+                                  elevation: 5,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfilePage(
+                                              fl: widget.fl,
+                                            )));
+                                  },
+                                  cacheImage: true,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  "Hello",
+                                  // + widget.fl.user.first_name,
+                                  style: TextStyle(
+
+                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.home_work_rounded),
+                          title: Text(
+                            'Add Place',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => DropDown1()),
+                                ModalRoute.withName("/Home"));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => DropDown1()),
+                            // );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.supervised_user_circle),
+                          title: Text(
+                            'Sub Access',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SubAccessList()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.supervised_user_circle),
+                          title: Text(
+                            'Temp Access',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TempAccessPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                            leading: Icon(Icons.perm_identity),
+                            title: Text(
+                              'Add Members',
+                              style: TextStyle(
+                                color: change_toDark ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            onTap: () {
+                              _createAlertDialogForAddMembers(context);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ReadContacts(),
+                              //   ),
+                              // );
+                            }),
+                        ListTile(
+                            leading: Icon(Icons.power_rounded),
+                            title: Text('Bill Prediction',
+                                style: TextStyle(
+                                  color: change_toDark ? Colors.white : Colors.black,
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BillPrediction(),
+                                ),
+                              );
+                            }),
+                        ListTile(
+                          leading: Icon(Icons.settings),
+                          title: Text(
+                            'Settings',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SettingPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.help),
+                          title: Text(
+                            'Help',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => WhatsNew()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.info),
+                          title: Text(
+                            'About GenOrion',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AboutGen()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.logout),
+                          title: Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            _showDialogForLogOut();
+
+                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())).then((_logout()));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               body: Container(
                 width: double.maxFinite,

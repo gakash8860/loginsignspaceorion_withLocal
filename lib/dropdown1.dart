@@ -23,11 +23,9 @@ void main() => runApp(MaterialApp(
       home: DropDown1(),
     ));
 String roomResponse2;
-SharedPreferences placeResponsePreference;
-SharedPreferences floorResponsePreference;
-SharedPreferences roomResponsePreference;
 
 class DropDown1 extends StatefulWidget {
+  static const routeName = '/dropDown1';
   const DropDown1({Key key}) : super(key: key);
 
   @override
