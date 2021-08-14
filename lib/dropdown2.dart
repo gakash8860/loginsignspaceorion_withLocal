@@ -17,6 +17,7 @@ PlaceType pt;
 Flat flt;
 SensorData sensorData;
 FloorType fl;
+Flat flat;
 RoomType rmtype;
 List<RoomType> rm;
 List <Device>dv;

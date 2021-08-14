@@ -85,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print(e);
       setState(() {
+
         this.error = "Wrong Credentials";
       });
     });
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<List<RoomType>> getrooms(String fId) async {
     var query = {'f_id': fId};
     final url = Uri.https('genorion.herokuapp.com', '/room/', query);
-    String token = await getToken();
+    // String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

@@ -178,7 +178,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   getUid() async{
-    final url= 'http://genorion1.herokuapp.com/getuid/';
+    final url= 'https://genorion1.herokuapp.com/getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -420,7 +420,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
       did=deviceQueryRows[i]['d_id'];
       print('diddevice $did');
-      String url = "http://genorion1.herokuapp.com/editpinnames/?d_id="+did;
+      String url = "https://genorion1.herokuapp.com/editpinnames/?d_id="+did;
       // try {
       final   response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -472,7 +472,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<void> getUserDetailsSql()async{
     String token = await getToken();
     print(getUidVariable);
-    String url="http://genorion1.herokuapp.com/getthedataofuser/?id="+getUidVariable;
+    String url="https://genorion1.herokuapp.com/getthedataofuser/?id="+getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -515,7 +515,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "http://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      String url = "https://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -558,7 +558,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      String url = "https://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',

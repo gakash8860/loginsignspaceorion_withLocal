@@ -7,9 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/login_Screen.dart';
-
 import 'package:string_validator/string_validator.dart';
-
 import 'models/modeldefine.dart';
 
 
