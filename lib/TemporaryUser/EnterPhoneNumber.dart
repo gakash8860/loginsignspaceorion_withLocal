@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,119 +41,29 @@ Future submitMobile()async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('GenOrion'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.blue, Colors.lightBlueAccent])),
-          child: LayoutBuilder(
-            builder: (BuildContext context,
-                BoxConstraints viewportConstraints) {
-              if(viewportConstraints.maxWidth>600){
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                  ),
-                  // color: Theme.of(context).primaryColor,
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      // Image.asset(
-                      //   'assets/images/signin.png',
-                      //   height: 130,
-                      // ),
-                      Container(
-                        width: 300,
-                        child: TextFormField(
-                          autofocus: true,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
-                          controller: phoneController,
-                          autovalidateMode:
-                          AutovalidateMode.onUserInteraction,
-                          style: TextStyle(
-                              fontSize: 18, color: Colors.black54),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.phone),
 
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Enter your Phone Number',
-                            errorStyle: TextStyle(),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            contentPadding: const EdgeInsets.all(15),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                              BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                              BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      // ignore: deprecated_member_use
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Container(
-                          width: 300,
-                          child: FlatButton(
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,),),
-                              shape: OutlineInputBorder(
-                                borderSide: BorderSide(color:
-                                Colors.white, width: 2),
-                                borderRadius: BorderRadius.circular(90),),
-                              padding: const EdgeInsets.all(15),
-                              textColor: Colors.white,
-                              onPressed: () async {
-                                await submitMobile();
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpPageForTempUser(mobileNumber: phoneController.text,)));
-                              }),
-                        ),
-                      ),
-
-                    ],
-                  ),
-                );
-              }
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                ),
-                // color: Theme.of(context).primaryColor,
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    // Image.asset(
-                    //   'assets/images/signin.png',
-                    //   height: 130,
-                    // ),
-                    TextFormField(
+      body: LayoutBuilder(
+        builder: (BuildContext context,
+            BoxConstraints viewportConstraints) {
+          if(viewportConstraints.maxWidth>600){
+            return Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.blue, Colors.lightBlueAccent])),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+              ),
+              // color: Theme.of(context).primaryColor,
+              width: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                    width: 300,
+                    child: TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
@@ -192,12 +100,15 @@ Future submitMobile()async{
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    // ignore: deprecated_member_use
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  // ignore: deprecated_member_use
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Container(
+                      width: 300,
                       child: FlatButton(
                           child: Text(
                             'Submit',
@@ -215,12 +126,101 @@ Future submitMobile()async{
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpPageForTempUser(mobileNumber: phoneController.text,)));
                           }),
                     ),
+                  ),
 
-                  ],
-                ),
-              );
-            },
-          )
+                ],
+              ),
+            );
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('GenOrion'),
+            ),
+            body: Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.blue, Colors.lightBlueAccent])),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+              ),
+              // color: Theme.of(context).primaryColor,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // Image.asset(
+                  //   'assets/images/signin.png',
+                  //   height: 130,
+                  // ),
+                  TextFormField(
+                    autofocus: true,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.next,
+                    controller: phoneController,
+                    autovalidateMode:
+                    AutovalidateMode.onUserInteraction,
+                    style: TextStyle(
+                        fontSize: 18, color: Colors.black54),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.phone),
+
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Enter your Phone Number',
+                      errorStyle: TextStyle(),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      contentPadding: const EdgeInsets.all(15),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  // ignore: deprecated_member_use
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: FlatButton(
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,),),
+                        shape: OutlineInputBorder(
+                          borderSide: BorderSide(color:
+                          Colors.white, width: 2),
+                          borderRadius: BorderRadius.circular(90),),
+                        padding: const EdgeInsets.all(15),
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          await submitMobile();
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpPageForTempUser(mobileNumber: phoneController.text,)));
+                        }),
+                  ),
+
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

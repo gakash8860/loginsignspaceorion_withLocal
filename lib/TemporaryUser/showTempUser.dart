@@ -224,17 +224,7 @@ void initState(){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Temporary Users'),
-        actions: [
 
-          MaterialButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
-          }, child: Text('Add TempUser',style: TextStyle(
-              fontSize: 15
-          ),)),
-        ],
-      ),
       body:  RefreshIndicator(
         onRefresh: getTempUsers,
         child: SingleChildScrollView(
@@ -369,121 +359,134 @@ void initState(){
                   );
                 }
                 else{
-                  return Container(
-                    // color: Colors.green,
-                    // height: 789,
-                    width:MediaQuery.of(context).size.width,
-                    height:MediaQuery.of(context).size.height,
-                    child: FutureBuilder(
-                        future: getTempUsers(),
-                        builder: ( context,  snapshot){
-                          if(snapshot.hasData){
-                            if(tempUserDecodeList.isEmpty){
-                              return Column(
-                                children: [
-                                  SizedBox(height: 250,),
-                                  Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
-                                ],
-                              );
-                            }else{
-                              return Column(
-                                children: [
-                                  SizedBox(height: 25,),
-                                  Expanded(
-                                      child: ListView.builder(
-                                          itemCount: tempUserDecodeList.length,
-                                          itemBuilder: (context,index){
-                                            return Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Card(
-                                                semanticContainer:true,
-                                                shadowColor: Colors.grey,
-                                                child: Column(
-                                                  children: [
-                                                    ListTile(
-                                                      title: Text(tempUserDecodeList[index]['name']),
-                                                      trailing: Text(tempUserDecodeList[index]['email']),
-                                                      leading: IconButton(
-                                                        icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                                        onPressed: (){
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text('Temporary Users'),
+                      actions: [
 
-                                                          _showDialogForDeleteSubUser(index);
+                        MaterialButton(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
+                        }, child: Text('Add TempUser',style: TextStyle(
+                            fontSize: 15
+                        ),)),
+                      ],
+                    ),
+                    body: Container(
+                      // color: Colors.green,
+                      // height: 789,
+                      width:MediaQuery.of(context).size.width,
+                      height:MediaQuery.of(context).size.height,
+                      child: FutureBuilder(
+                          future: getTempUsers(),
+                          builder: ( context,  snapshot){
+                            if(snapshot.hasData){
+                              if(tempUserDecodeList.isEmpty){
+                                return Column(
+                                  children: [
+                                    SizedBox(height: 250,),
+                                    Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                                  ],
+                                );
+                              }else{
+                                return Column(
+                                  children: [
+                                    SizedBox(height: 25,),
+                                    Expanded(
+                                        child: ListView.builder(
+                                            itemCount: tempUserDecodeList.length,
+                                            itemBuilder: (context,index){
+                                              return Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Card(
+                                                  semanticContainer:true,
+                                                  shadowColor: Colors.grey,
+                                                  child: Column(
+                                                    children: [
+                                                      ListTile(
+                                                        title: Text(tempUserDecodeList[index]['name']),
+                                                        trailing: Text(tempUserDecodeList[index]['email']),
+                                                        leading: IconButton(
+                                                          icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                                          onPressed: (){
+
+                                                            _showDialogForDeleteSubUser(index);
+                                                          },
+                                                        ),
+                                                        subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
+
+                                                        onTap: (){
+                                                          print('printSubUser ${tempUserDecodeList[index]['name']}');
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                            tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+
                                                         },
                                                       ),
-                                                      subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
-
-                                                      onTap: (){
-                                                        print('printSubUser ${tempUserDecodeList[index]['name']}');
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                          tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-
-                                                      },
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
-                                                      ],
-                                                    )
-                                                  ],
+                                                      Row(
+                                                        children: [
+                                                          Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
+                                              );
 
 
-                                            //   Column(
-                                            //   children: <Widget>[
-                                            //     SizedBox(height: 100,),
-                                            //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                            //     SizedBox(height: 15,),
-                                            //     Row(
-                                            //       children: [
-                                            //         SizedBox(width: 55,),
-                                            //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                            //         SizedBox(width: 15,),
-                                            //         Container(
-                                            //           height: 45,
-                                            //           width: 195,
-                                            //           child:Padding(
-                                            //             padding: const EdgeInsets.all(8.0),
-                                            //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                            //           ),
-                                            //           decoration: BoxDecoration(
-                                            //             color: Colors.white,
-                                            //             border: Border.all(
-                                            //               color: Colors.black38 ,
-                                            //               width: 5.0 ,
-                                            //             ),
-                                            //             borderRadius: BorderRadius.circular(20),
-                                            //           ),
-                                            //         ),
-                                            //       ],
-                                            //     ),
-                                            //
-                                            //
-                                            //   ],
-                                            //
-                                            //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                            //   // subtitle: Text("${statusData[index]['id']}"),
-                                            //
-                                            // );
-                                          }
-                                      )),
+                                              //   Column(
+                                              //   children: <Widget>[
+                                              //     SizedBox(height: 100,),
+                                              //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                              //     SizedBox(height: 15,),
+                                              //     Row(
+                                              //       children: [
+                                              //         SizedBox(width: 55,),
+                                              //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                              //         SizedBox(width: 15,),
+                                              //         Container(
+                                              //           height: 45,
+                                              //           width: 195,
+                                              //           child:Padding(
+                                              //             padding: const EdgeInsets.all(8.0),
+                                              //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                              //           ),
+                                              //           decoration: BoxDecoration(
+                                              //             color: Colors.white,
+                                              //             border: Border.all(
+                                              //               color: Colors.black38 ,
+                                              //               width: 5.0 ,
+                                              //             ),
+                                              //             borderRadius: BorderRadius.circular(20),
+                                              //           ),
+                                              //         ),
+                                              //       ],
+                                              //     ),
+                                              //
+                                              //
+                                              //   ],
+                                              //
+                                              //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                                              //   // subtitle: Text("${statusData[index]['id']}"),
+                                              //
+                                              // );
+                                            }
+                                        )),
 
 
-                                ],
+                                  ],
+                                );
+                              }
+                            }else{
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.red,
+                                  semanticsLabel: 'Loading...',
+                                ),
                               );
                             }
-                          }else{
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.red,
-                                semanticsLabel: 'Loading...',
-                              ),
-                            );
+
                           }
 
-                        }
-
+                      ),
                     ),
                   );
                 }

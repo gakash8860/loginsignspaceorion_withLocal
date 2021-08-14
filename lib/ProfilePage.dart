@@ -14,14 +14,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' as Io;
-void main() =>
-    runApp(MaterialApp(
+
+void main() => runApp(MaterialApp(
       home: ProfilePage(
-        // fl: null,
-        // pt: null,
-        // rm: null,
-        // dv: null,
-      ),
+          // fl: null,
+          // pt: null,
+          // rm: null,
+          // dv: null,
+          ),
       debugShowCheckedModeBanner: false,
     ));
 
@@ -66,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text('Gallery'),
                     onTap: () async {
                       await pickImage(ImageSource.gallery);
-                     await startUpload();
+                      await startUpload();
                       print('Gallery');
                       Navigator.pop(context);
                     },
@@ -91,6 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
   var base64String;
   var bytes;
   String baseConvertPath;
+
   pickImage(ImageSource source) async {
     // ignore: deprecated_member_use
     _image = await ImagePicker.pickImage(source: source);
@@ -99,13 +100,13 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Pick ${_image.path}');
       setState(() {
         setImage = Image.file(_image);
-        baseConvertPath=_image.path;
+        baseConvertPath = _image.path;
       });
       base64String = base64Encode(_image.readAsBytesSync());
-       Utility.saveImage(base64String
-        // Utility.base64String(_image.readAsBytesSync()),
-      );
-       // bytes = Io.File(base64String).readAsBytesSync();
+      Utility.saveImage(base64String
+          // Utility.base64String(_image.readAsBytesSync()),
+          );
+      // bytes = Io.File(base64String).readAsBytesSync();
       print("ssssssssssssssssssssssssssssssss $base64String  ");
     } else {
       print('Error');
@@ -166,28 +167,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String base64Image;
 
-  startUpload()async {
+  startUpload() async {
     if (null == _image) {
       return;
     }
     imageUpload();
-
   }
-
-
 
   imageUpload() async {
     // String token = "b8bd2e8bc8f9541d031f03217cf9ac0153048a97";
     String token = await getToken();
-      final url = 'https://genorion1.herokuapp.com/testimages123/';
-      // final url = 'http://192.168.0.105:8000/testimages123/?user=1';
+    final url = 'https://genorion1.herokuapp.com/testimages123/';
+    // final url = 'http://192.168.0.105:8000/testimages123/?user=1';
 
-      var postData = {
-      "file":base64String,
-      "user":getUidVariable,
-      };
-      var flag=0;
-      var response;
+    var postData = {
+      "file": base64String,
+      "user": getUidVariable,
+    };
+    var flag = 0;
+    var response;
 //       if(flag==0){
 //         flag=1;
 //          response = await http.post(url, body: jsonEncode(postData), headers: {
@@ -220,12 +218,13 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  var convertImage;
 
-var convertImage;
   getImage() async {
     String token = await getToken();
     // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
-    final url = 'https://genorion1.herokuapp.com/testimages123/?user='+getUidVariable;
+    final url =
+        'https://genorion1.herokuapp.com/testimages123/?user=' + getUidVariable;
     // final url = 'http://192.168.0.105:8000/testimages123/?user=1';;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -235,12 +234,12 @@ var convertImage;
     if (response.statusCode > 0) {
       print('statusCode ${response.statusCode}');
       print('statusCode ${response.body}');
-     var imageData = json.decode(response.body);
+      var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-    setState(() {
-      convertImage=base64Decode(imageData['file']);
-      // setImage=convertImage;
-    });
+      setState(() {
+        convertImage = base64Decode(imageData['file']);
+        // setImage=convertImage;
+      });
       print('ConvertImage ${convertImage}');
       print('ConvertImage ${imageData['file']}');
     }
@@ -321,10 +320,7 @@ var convertImage;
 
     }
 
-    var myMap = userDataBox
-        .toMap()
-        .values
-        .toList();
+    var myMap = userDataBox.toMap().values.toList();
     if (myMap.isEmpty) {
       userDataBox.add('empty');
     } else {
@@ -361,243 +357,261 @@ var convertImage;
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: _switchValue?Colors.white12:Colors.white,
-      appBar: AppBar(
-        title: Text('GenOrion'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+
       body: Container(
         // color: change_toDark ? Colors.black : Colors.white,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [Colors.blueGrey, Colors.blueAccent, Colors.blueGrey])),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 18,
-              ),
-              // Container(
-              //   decoration: BoxDecoration(
-              //   image:   setimage==null? AssetImage('assets/images/blank.png'):setimage
-              //   ),
-              // ),
-              CircularProfileAvatar(
-                '',
-                child: convertImage == null
-                    ?Image.asset('assets/images/blank.png')
-                    : setImage,
-                // '',child: Image.network(imageData['images']),
-                radius: 90,
-                elevation: 5,
-                onTap: () {
-                  print('Full Screen');
-                },
-                cacheImage: true,
-              ),
+        child: LayoutBuilder(builder:
+                (BuildContext context, BoxConstraints viewportConstraints) {
+          if (viewportConstraints.maxWidth > 600) {
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 18,
+                  ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //   image:   setimage==null? AssetImage('assets/images/blank.png'):setimage
+                  //   ),
+                  // ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          SizedBox(width: 140,),
+                          CircularProfileAvatar(
+                            '',
+                            child: convertImage == null
+                                ? Image.network('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png')
+                                : setImage,
+                            // '',child: Image.network(imageData['images']),
+                            radius: 90,
+                            elevation: 5,
+                            onTap: () {
+                              print('Full Screen');
+                            },
+                            cacheImage: true,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 40,
+                            child:CircleAvatar(
+                              maxRadius: MediaQuery.of(context).size.width * 0.05,
+                              child: IconButton(
+                                icon: Icon(Icons.edit),
+                                color: Colors.black54,
+                                onPressed: () {
+                                  _showChoiceDialog(context);
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
 
-              CircleAvatar(
-                maxRadius: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.05,
-                child: IconButton(
-                  icon: Icon(Icons.edit),
-                  color: Colors.black54,
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 1.1,
+                          ),
+
+                          Container(
+                            width: 300,
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    email == null
+                                        ? "Loading"
+                                        : email.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              )),
+                          Container(
+                              width: 300,
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    firstName == null
+                                        ? "Loading"
+                                        : firstName.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              )),
+                          Container(
+                              width: 300,
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    lastName == null
+                                        ? "Loading"
+                                        : lastName.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              )),
+                          //
+                          // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                          // textformfield(text: userData['last_name'].toString()),
+                          // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                          // textformfield(text: userData['email'].toString()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('GenOrion'),
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
                   onPressed: () {
-                    _showChoiceDialog(context);
+                    Navigator.pop(context);
                   },
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
+              body: Container(
+                // color: change_toDark ? Colors.black : Colors.white,
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [Colors.blueGrey, Colors.blueAccent, Colors.blueGrey])),
+                child: Center(
                   child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       SizedBox(
-                        height: 1.1,
+                        height: MediaQuery.of(context).size.height / 18,
+                      ),
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //   image:   setimage==null? AssetImage('assets/images/blank.png'):setimage
+                      //   ),
+                      // ),
+                      CircularProfileAvatar(
+                        '',
+                        child: convertImage == null
+                            ? Image.asset('assets/images/blank.png')
+                            : setImage,
+                        // '',child: Image.network(imageData['images']),
+                        radius: 90,
+                        elevation: 5,
+                        onTap: () {
+                          print('Full Screen');
+                        },
+                        cacheImage: true,
                       ),
 
-                      Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 18,
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.8,
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                email == null ? "Loading" : email.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
+                      CircleAvatar(
+                        maxRadius: MediaQuery.of(context).size.width * 0.05,
+                        child: IconButton(
+                          icon: Icon(Icons.edit),
+                          color: Colors.black54,
+                          onPressed: () {
+                            _showChoiceDialog(context);
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 1.1,
                               ),
-                            ),
-                          )),
-                      Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 18,
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.8,
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                firstName == null
-                                    ? "Loading"
-                                    : firstName.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                          )),
-                      Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 18,
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.8,
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                lastName == null
-                                    ? "Loading"
-                                    : lastName.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                          )),
-                      //
-                      // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                      // textformfield(text: userData['last_name'].toString()),
-                      // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                      // textformfield(text: userData['email'].toString()),
+
+                              Container(
+                                  height: MediaQuery.of(context).size.height / 18,
+                                  width: MediaQuery.of(context).size.width / 1.8,
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        email == null
+                                            ? "Loading"
+                                            : email.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                  height: MediaQuery.of(context).size.height / 18,
+                                  width: MediaQuery.of(context).size.width / 1.8,
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        firstName == null
+                                            ? "Loading"
+                                            : firstName.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                  height: MediaQuery.of(context).size.height / 18,
+                                  width: MediaQuery.of(context).size.width / 1.8,
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        lastName == null
+                                            ? "Loading"
+                                            : lastName.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  )),
+                              //
+                              // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                              // textformfield(text: userData['last_name'].toString()),
+                              // SizedBox(height: MediaQuery.of(context).size.height/68,),
+                              // textformfield(text: userData['email'].toString()),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            );
+          }
+        }
+            // child:
+            ),
       ),
     );
   }
 }
 
-//
-// FutureBuilder(
-// future: getAllUserDataInHive(),
-// builder: ( context,  snapshot){
-// if(snapshot.hasData){
-// if(userDataList.contains('empty')){
-// return Text('No data');
-// }else{
-// return Column(
-// children: [
-// SizedBox(height: 25,),
-// Expanded(child: ListView.builder(
-// itemCount: 1,
-// itemBuilder: (context,index){
-// return
-// Column(
-// crossAxisAlignment: CrossAxisAlignment.center,
-// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-// children: <Widget>[
-// SizedBox(height: 1.1,),
-// // Container(
-// //   height: 65,
-// //   width: 235,
-// //   child:Padding(
-// //     padding: const EdgeInsets.all(18.0),
-// //     child: Text(userDataList[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-// //   ),
-// //   decoration: BoxDecoration(
-// //     color: Colors.white,
-// //     border: Border.all(
-// //       color: Colors.black38 ,
-// //       width: 5.0 ,
-// //     ),
-// //     borderRadius: BorderRadius.circular(20),
-// //   ),
-// // ),
-// // SizedBox(height: 15,),
-// //
-// // Container(
-// //   height: 65,
-// //   width: 235,
-// //   child:Padding(
-// //     padding: const EdgeInsets.all(18.0),
-// //     child: Text(userDataList[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-// //   ),
-// //   decoration: BoxDecoration(
-// //     color: Colors.white,
-// //     border: Border.all(
-// //       color: Colors.black38 ,
-// //       width: 5.0 ,
-// //     ),
-// //     borderRadius: BorderRadius.circular(20),
-// //   ),
-// // ),
-// // SizedBox(height: 15,),
-// // Container(
-// //   height: 65,
-// //   width: 235,
-// //   child:Padding(
-// //     padding: const EdgeInsets.all(18.0),
-// //     child: Text(userDataList[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-// //   ),
-// //   decoration: BoxDecoration(
-// //     color: Colors.white,
-// //     border: Border.all(
-// //       color: Colors.black38 ,
-// //       width: 5.0 ,
-// //     ),
-// //     borderRadius: BorderRadius.circular(20),
-// //   ),
-// // ),
-// textFormField(text: userDataList[0].toString(),),
-// SizedBox(height: MediaQuery.of(context).size.height/68,),
-// textFormField(text: userDataList[1].toString()),
-// SizedBox(height: MediaQuery.of(context).size.height/68,),
-// textFormField(text: userDataList[2].toString()),
-//
-//
-// ],
-// );
-//
-// }
-// ))
-//
-// ],
-// );
-// }
-// }else{
-// return Text('Loading...',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),);
-// }
-//
-// }
-//
-// ),
+

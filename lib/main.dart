@@ -814,165 +814,57 @@ List deviceResult;
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            'GenOrion',
-            style: TextStyle(letterSpacing: 0.5, fontFamily: 'Volvo-Regular'),
-          ),
-        ),
-        body: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints viewportConstraints) {
-                if(viewportConstraints.maxWidth>600){
-                  return Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Stack(
-                          alignment: AlignmentDirectional.bottomCenter,
-                          children: <Widget>[
-                            PageView.builder(
-                              scrollDirection: Axis.horizontal,
-                              onPageChanged: onPageChanged,
-                              controller: pageController,
-                              itemCount: slideList.length,
-                              itemBuilder: (ctx, i) => SlideItem(i),
-                            ),
-                            Stack(
-                              alignment: AlignmentDirectional.topStart,
-                              children: <Widget>[
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 35),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      for (int i = 0; i < slideList.length; i++)
-                                        if (i == currentPage)
-                                          SlideDots(true)
-                                        else
-                                          SlideDots(false)
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Column(
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Scaffold(
+
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          if(viewportConstraints.maxWidth>600){
+            return Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomCenter,
                         children: <Widget>[
-                          // ignore: deprecated_member_use
-                          Container(
-                            width: 300,
-                            child: FlatButton(
-                              child: Text(
-                                'Getting Started',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(500),
-                              ),
-                              color: Theme.of(context).primaryColor,
-                              padding: const EdgeInsets.all(15),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(SignUpScreen1.routeName);
-                              },
-                            ),
+                          PageView.builder(
+                            scrollDirection: Axis.horizontal,
+                            onPageChanged: onPageChanged,
+                            controller: pageController,
+                            itemCount: slideList.length,
+                            itemBuilder: (ctx, i) => SlideItem(i),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Stack(
+                            alignment: AlignmentDirectional.topStart,
                             children: <Widget>[
-                              Text(
-                                'Have an account',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              // ignore: deprecated_member_use
-                              FlatButton(
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 18),
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 35),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    for (int i = 0; i < slideList.length; i++)
+                                      if (i == currentPage)
+                                        SlideDots(true)
+                                      else
+                                        SlideDots(false)
+                                  ],
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(LoginScreen.routeName);
-                                },
-                              )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Temporary User',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              // ignore: deprecated_member_use
-                              FlatButton(
-                                child: Text(
-                                  'Click Here !',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
-                                },
                               )
                             ],
                           )
-
                         ],
-                      )
-                    ],
-                  );
-                }else{
-                  return Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Stack(
-                          alignment: AlignmentDirectional.bottomCenter,
-                          children: <Widget>[
-                            PageView.builder(
-                              scrollDirection: Axis.horizontal,
-                              onPageChanged: onPageChanged,
-                              controller: pageController,
-                              itemCount: slideList.length,
-                              itemBuilder: (ctx, i) => SlideItem(i),
-                            ),
-                            Stack(
-                              alignment: AlignmentDirectional.topStart,
-                              children: <Widget>[
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 35),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      for (int i = 0; i < slideList.length; i++)
-                                        if (i == currentPage)
-                                          SlideDots(true)
-                                        else
-                                          SlideDots(false)
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          // ignore: deprecated_member_use
-                          FlatButton(
+                    ),
+                    Column(
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        // ignore: deprecated_member_use
+                        Container(
+                          width: 300,
+                          child: FlatButton(
                             child: Text(
                               'Getting Started',
                               style: TextStyle(fontSize: 18),
@@ -988,59 +880,176 @@ List deviceResult;
                                   .pushNamed(SignUpScreen1.routeName);
                             },
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Have an account',
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Have an account',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            // ignore: deprecated_member_use
+                            FlatButton(
+                              child: Text(
+                                'Login',
                                 style: TextStyle(fontSize: 18),
                               ),
-                              // ignore: deprecated_member_use
-                              FlatButton(
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(LoginScreen.routeName);
-                                },
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(LoginScreen.routeName);
+                              },
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Temporary User',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            // ignore: deprecated_member_use
+                            FlatButton(
+                              child: Text(
+                                'Click Here !',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
+                              },
+                            )
+                          ],
+                        )
+
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          }else{
+            return WillPopScope(
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  title: Text(
+                    'GenOrion',
+                    style: TextStyle(letterSpacing: 0.5, fontFamily: 'Volvo-Regular'),
+                  ),
+                ),
+                body: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Stack(
+                            alignment: AlignmentDirectional.bottomCenter,
+                            children: <Widget>[
+                              PageView.builder(
+                                scrollDirection: Axis.horizontal,
+                                onPageChanged: onPageChanged,
+                                controller: pageController,
+                                itemCount: slideList.length,
+                                itemBuilder: (ctx, i) => SlideItem(i),
+                              ),
+                              Stack(
+                                alignment: AlignmentDirectional.topStart,
+                                children: <Widget>[
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 35),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        for (int i = 0; i < slideList.length; i++)
+                                          if (i == currentPage)
+                                            SlideDots(true)
+                                          else
+                                            SlideDots(false)
+                                      ],
+                                    ),
+                                  )
+                                ],
                               )
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Temporary User',
-                                style: TextStyle(fontSize: 14),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            // ignore: deprecated_member_use
+                            FlatButton(
+                              child: Text(
+                                'Getting Started',
+                                style: TextStyle(fontSize: 18),
                               ),
-                              // ignore: deprecated_member_use
-                              FlatButton(
-                                child: Text(
-                                  'Click Here !',
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                              color: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.all(15),
+                              textColor: Colors.white,
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(SignUpScreen1.routeName);
+                              },
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Have an account',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                // ignore: deprecated_member_use
+                                FlatButton(
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed(LoginScreen.routeName);
+                                  },
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Temporary User',
                                   style: TextStyle(fontSize: 14),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
-                                },
-                              )
-                            ],
-                          )
+                                // ignore: deprecated_member_use
+                                FlatButton(
+                                  child: Text(
+                                    'Click Here !',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
+                                  },
+                                )
+                              ],
+                            )
 
-                        ],
-                      )
-                    ],
-                  );
-                }
-              }
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              onWillPop: () =>
+                  showDialog(context: context, builder: (c) => backPopPage(context)),
+            );
+          }
+        }
 
-            ),
-          ),
-        ),
       ),
-      onWillPop: () =>
-          showDialog(context: context, builder: (c) => backPopPage(context)),
     );
   }
 
