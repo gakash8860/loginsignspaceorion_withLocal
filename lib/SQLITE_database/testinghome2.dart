@@ -179,6 +179,7 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController roomEditing = TextEditingController();
   TextEditingController pin19Controller = TextEditingController();
   TextEditingController floorEditing = TextEditingController();
+  TextEditingController flatEditing = TextEditingController();
   TextEditingController controller = TextEditingController();
   GlobalKey key;
 
@@ -717,6 +718,7 @@ class _HomeTestState extends State<HomeTest>
   Future<RoomType> addRoomName(String data) async {
     String token = await getToken();
     final url = 'http://genorion1.herokuapp.com/addroom/';
+    print(rIdForName);
     var postDataRoomName = {
       "r_id": rIdForName,
       "f_id": widget.fl.fId,
@@ -1526,7 +1528,96 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+  _createAlertDialogForFlat(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Name of Flat'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
 
+                TextFormField(
+                  autofocus: true,
+                  controller: flatEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Flat Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                SizedBox(
+                  height: 15,
+                ),
+                // TextFormField(
+                //   autofocus: true,
+                //   controller: roomEditing,
+                //   textInputAction: TextInputAction.next,
+                //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                //   style: TextStyle(fontSize: 18, color: Colors.black54),
+                //   decoration: InputDecoration(
+                //     prefixIcon: Icon(Icons.place),
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     hintText: 'Enter Room Name',
+                //     contentPadding: const EdgeInsets.all(15),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.white),
+                //       borderRadius: BorderRadius.circular(50),
+                //     ),
+                //     enabledBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.white),
+                //       borderRadius: BorderRadius.circular(50),
+                //     ),
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await addFlat(flatEditing.text);
+                      //  await addRoom2(roomEditing.text);
+                      //   Navigator.of(context).push(
+                      //       MaterialPageRoute(builder: (context) => DropDown2()));
+                      Navigator.of(context).pop();
+                      final snackBar = SnackBar(
+                        content: Text('Floor Added'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
   TextEditingController pinNameController = new TextEditingController();
 
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
@@ -1650,6 +1741,55 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
+  _createAlertDialogForAddRoomDeleteDevices(BuildContext context,String rId) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              height: 105,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Text(
+                      'Edit Room Name',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _editRoomNameAlertDialog(context);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowSubUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Delete Room',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
 
   readId() {
     // Navigator.push(context, MaterialPageRoute(builder: (context)=>addDynamic())).then((value) => addSlider());
@@ -1920,6 +2060,49 @@ class _HomeTestState extends State<HomeTest>
     }
     dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
+  }
+
+  Future <void> deleteDevice(String rId,String dId)async{
+    String token = await getToken();
+    final url='http://genorion1.herokuapp.com/addyourdevice/?r_id=${rId}&d_id=${dId}';
+    final response = await http.delete(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if(response.statusCode==200){
+      final snackBar = SnackBar(
+        content: Text('Device Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }else{
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+  }
+
+  Future<void> deleteRoomWithAllDevice(String rId)async{
+    String token= await getToken();
+    final url='http://genorion1.herokuapp.com/addroom/?r_id='+rId;
+    final response = await http.delete(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if(response.statusCode==200){
+      final snackBar = SnackBar(
+        content: Text('Device Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }else{
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
 // List getIpVariable=["10.25.202.11","10.25.202.12"];
@@ -2251,7 +2434,7 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future<RoomType> addFlat(String data) async {
+  Future<void> addFlat(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
     final url = 'http://genorion1.herokuapp.com/addyourflat/';
     String token = await getToken();
@@ -2776,6 +2959,7 @@ class _HomeTestState extends State<HomeTest>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
+
                                         Column(
                                           children: <Widget>[
                                             GestureDetector(
@@ -2800,23 +2984,40 @@ class _HomeTestState extends State<HomeTest>
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            GestureDetector(
-                                              onLongPress: () {
-                                                _editFloorNameAlertDialog(context);
-                                              },
-                                              child: Text(
-                                                widget.flat.fltName,
-                                                // 'Hello ',
-                                                // + widget.fl.user.first_name,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 22),
-                                              ),
-                                              onTap: () {
-                                                _createAlertDialogDropDown(context);
-                                              },
+
+                                            Column(
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    GestureDetector(
+                                                      onLongPress: () {
+                                                        _editFloorNameAlertDialog(context);
+                                                      },
+                                                      child: Text(
+                                                        widget.flat.fltName,
+                                                        // 'Hello ',
+                                                        // + widget.fl.user.first_name,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 22),
+                                                      ),
+                                                      onTap: () {
+                                                        _createAlertDialogDropDown(context);
+                                                      },
+                                                    ),
+                                                    SizedBox(width:15),
+                                                    GestureDetector(
+                                                        onTap: (){
+                                                          _createAlertDialogForFlat(context);
+                                                        },
+                                                        child: Icon(Icons.add)),
+                                                  ],
+                                                )
+
+                                              ],
                                             ),
+
                                           ],
                                         ),
                                       ],
@@ -2996,7 +3197,8 @@ class _HomeTestState extends State<HomeTest>
                                       GestureDetector(
                                         onLongPress: () {
                                           print('longPress');
-                                          _editRoomNameAlertDialog(context);
+                                          print('longpress ${tabbarState}');
+                                          _createAlertDialogForAddRoomDeleteDevices(context,tabbarState);
                                         },
                                         child: TabBar(
                                           indicatorColor: Colors.blueAccent,
@@ -3270,7 +3472,31 @@ class _HomeTestState extends State<HomeTest>
       ),
     );
   }
-
+  _showDialogForDeleteRoomWithAllDevices(String rId) {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Alert"),
+        content: Text("Are your sure to delete room with all devices"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                  deleteRoomWithAllDevice(rId);
+              }
+              ),
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                // Navigator.of(context).pop();
+              }),
+        ],
+      ),
+    );
+  }
   _showDialogForLogOut() {
     // dialog implementation
 
@@ -3500,6 +3726,15 @@ class _HomeTestState extends State<HomeTest>
                                       children: [
                                         Row(
                                           children: [
+                                            GestureDetector(
+                                              onTap:(){
+                                                print('tabbarstateDelete ${tabbarState}');
+                                                print('tabbarstateDelete ${dId}');
+
+                                                deleteDevice(tabbarState,dId);
+                                              },
+                                              child:Icon(Icons.auto_delete)
+                                            ),
                                             Expanded(
                                               child: TextButton(
                                                 child: Text(

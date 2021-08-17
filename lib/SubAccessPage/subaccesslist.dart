@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:loginsignspaceorion/SubAccessPage/subaccesshomepage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -176,8 +176,11 @@ class _SubAccessListState extends State<SubAccessList> {
 
                                                 subtitle: Text(subUserDecodeList[index]['p_id'].toString()),
 
-                                                onTap: (){
-                                                  print('printSubUser ${subUserDecodeList[index]['name']}');
+                                                onTap: ()async{
+                                                  print('printSubUser ${subUserDecodeList[index]['p_id']}');
+                                                 await Navigator.push(context, MaterialPageRoute(builder: (context)=>SubAccessHome(
+                                                    email:subUserDecodeList[index]['email'] ,
+                                                  pt: subUserDecodeList[index]['p_id'].toString(),)));
                                                   // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
                                                   //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
 
