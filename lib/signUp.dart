@@ -270,6 +270,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                       child: ClipPath(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           // crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             Row(
@@ -285,7 +286,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                               height: 15,
                             ),
                             Container(
-                              width: 300,
+                              width: 700,
                               child: TextFormField(
                                 autofocus: true,
                                 textInputAction: TextInputAction.next,

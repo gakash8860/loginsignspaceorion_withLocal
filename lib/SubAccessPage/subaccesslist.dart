@@ -100,7 +100,7 @@ class _SubAccessListState extends State<SubAccessList> {
     }
 
   }
-var placeName;
+  var placeName;
 
   Future getSinglePlaceName()async{
     String token ='fc8a8de66981014125077cadbf12bb12cbfe95fb';
@@ -204,12 +204,12 @@ var placeName;
                       }
                     }else{
                       return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child:Shimmer.fromColors(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child:Shimmer.fromColors(
                             baseColor: Colors.red,
                             highlightColor: Colors.yellow,
-                          child: Text('Wait'),)
+                            child: Text('Wait'),)
                       );
                       return Center(
                         child: Column(

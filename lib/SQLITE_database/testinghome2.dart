@@ -1481,28 +1481,28 @@ class _HomeTestState extends State<HomeTest>
                 SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  autofocus: true,
-                  controller: roomEditing,
-                  textInputAction: TextInputAction.next,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Enter Room Name',
-                    contentPadding: const EdgeInsets.all(15),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                ),
+                // TextFormField(
+                //   autofocus: true,
+                //   controller: roomEditing,
+                //   textInputAction: TextInputAction.next,
+                //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                //   style: TextStyle(fontSize: 18, color: Colors.black54),
+                //   decoration: InputDecoration(
+                //     prefixIcon: Icon(Icons.place),
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     hintText: 'Enter Room Name',
+                //     contentPadding: const EdgeInsets.all(15),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.white),
+                //       borderRadius: BorderRadius.circular(50),
+                //     ),
+                //     enabledBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.white),
+                //       borderRadius: BorderRadius.circular(50),
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
@@ -1510,12 +1510,12 @@ class _HomeTestState extends State<HomeTest>
                     child: Text('Submit'),
                     onPressed: () async {
                       await addFloor(floorEditing.text);
-                      await addRoom2(roomEditing.text);
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => DropDown2()));
-
+                    //  await addRoom2(roomEditing.text);
+                    //   Navigator.of(context).push(
+                    //       MaterialPageRoute(builder: (context) => DropDown2()));
+                      Navigator.of(context).pop();
                       final snackBar = SnackBar(
-                        content: Text('Name Added'),
+                        content: Text('Floor Added'),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
@@ -2251,6 +2251,50 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
+  Future<RoomType> addFlat(String data) async {
+    print('floorwidgetid ${widget.fl.fId}');
+    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    String token = await getToken();
+    var postData = {
+      "user": getUidVariable2,
+      "flt_name": data,
+      "f_id": widget.fl.fId,
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // tabbarState = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Flat Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // getAllRoom();
+      }
+
+      // setState(() {
+      //   roomResponse2=roomResponse;
+      //   // roomResponsePreference.setInt('r_id', roomResponse2);
+      // });
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+
+
   Future<bool> getAllRoom() async {
     // String url="http://10.0.2.2:8000/api/data";
     // String token= await getToken();
@@ -2935,7 +2979,20 @@ class _HomeTestState extends State<HomeTest>
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
+
                                     children: [
+                                      Column(
+                                        children: <Widget>[
+                                          Container(
+                                              color: Colors.yellow,
+                                              child: GestureDetector(
+                                                  onTap: (){
+                                                  _createAlertDialogForAddRoom(context);
+                                                  },
+                                                  child: Icon(Icons.add))),
+                                        ],
+                                      ),
+
                                       GestureDetector(
                                         onLongPress: () {
                                           print('longPress');
@@ -2975,20 +3032,7 @@ class _HomeTestState extends State<HomeTest>
                                           },
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 10, bottom: 2),
-                                        child: GestureDetector(
-                                          // color: Colors.black,
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.black,
-                                          ),
-                                          onTap: () {
-                                            _createAlertDialogForAddRoom(context);
-                                          },
-                                        ),
-                                      )
+
                                     ],
                                   ),
                                 ),
