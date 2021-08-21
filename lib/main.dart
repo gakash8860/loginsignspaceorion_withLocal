@@ -40,7 +40,7 @@ List flatTypeSingle;
 List roomTypeSingle;
 List deviceData;
 List<Device> dvdata;
-
+var userDataVariable;
 List<FloorType> lisOfFloor;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
@@ -301,7 +301,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   }
 
 
-  Future<bool> getAllFlat()async{
+  Future<void> getAllFlat()async{
     var fId;
 
     String token=await getToken();
@@ -339,7 +339,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
     }
   }
-  Future<bool> getAllRoom()async{
+  Future<void> getAllRoom()async{
     var fId;
     for(int i=0;i<flatQueryRows.length;i++) {
       //   print(NewDbProvider.instance.dogs());
@@ -359,7 +359,31 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           'Authorization': 'Token $token',
         });
         roomData = jsonDecode(response.body);
-        print('checkRoomData $roomData');
+        // roomData.sort();
+       List roomQueryRows= await NewDbProvider.instance.queryRoom();
+        // if(roomData.length==roomQueryRows.length){
+        //   for(int i=0;i<roomData.length;i++){
+        //     roomQuery=RoomType(
+        //         rId: roomData[i]['r_id'],
+        //         rName: roomData[i]['r_name'].toString(),
+        //         fltId: roomData[i]['flt_id'],
+        //         user: roomData[i]['user']
+        //     );
+        //     await NewDbProvider.instance.updateRoom(roomQuery);
+        //   }
+        // }else{
+        //   await NewDbProvider.instance.deleteRoomModel();
+        //
+        //   for(int i=0;i<roomData.length;i++){
+        //     roomQuery=RoomType(
+        //         rId: roomData[i]['r_id'],
+        //         rName: roomData[i]['r_name'].toString(),
+        //         fltId: roomData[i]['flt_id'],
+        //         user: roomData[i]['user']
+        //     );
+        //     await NewDbProvider.instance.insertRoomModelData(roomQuery);
+        //   }
+        // }
         for(int i=0;i<roomData.length;i++){
           roomQuery=RoomType(
               rId: roomData[i]['r_id'],
@@ -369,6 +393,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           );
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
         }
+       rm = roomData.map((data) => RoomType.fromJson(data)).toList();
+        print('checkRoomData $roomData');
+
       } catch (e) {
         print('RoomCatch $e');
         // }
@@ -468,7 +495,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   }
-  var userDataVariable;
+
   Future<void> getUserDetailsSql()async{
     String token = await getToken();
     print(getUidVariable);

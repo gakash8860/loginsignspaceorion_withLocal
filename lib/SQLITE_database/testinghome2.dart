@@ -64,7 +64,7 @@ List<RoomType> rooms;
 
 List floorData;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 void main() async {
   await Hive.initFlutter();
@@ -81,8 +81,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeTest(
-          // rm: [rm[0]],
-          ),
+        // rm: [rm[0]],
+      ),
     );
   }
 }
@@ -99,16 +99,16 @@ class HomeTest extends StatefulWidget {
   SensorData sensorData;
   final int currentIndex;
   final Function(int selectedIndex) onTapped;
-  HomeTest(
-      {Key key,
-      this.pt,
-      this.fl,
-        this.currentIndex,
-      this.flat,
-        this.onTapped,
-      @required this.rm,
-      @required this.dv,
-      this.sensorData})
+
+  HomeTest({Key key,
+    this.pt,
+    this.fl,
+    this.currentIndex,
+    this.flat,
+    this.onTapped,
+    @required this.rm,
+    @required this.dv,
+    this.sensorData})
       : super(key: key);
 
   // ignore: non_constant_identifier_names
@@ -152,19 +152,19 @@ class HomeTest extends StatefulWidget {
 
   // ignore: non_constant_identifier_names
   var switch2_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch3_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch4_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch5_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch6_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch7_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch8_get,
-      // ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
       switch9_get;
 
   @override
@@ -178,11 +178,13 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController deviceNameEditing = TextEditingController();
   TextEditingController roomEditing = TextEditingController();
   TextEditingController pin19Controller = TextEditingController();
+  TextEditingController pin17Controller = TextEditingController();
   TextEditingController floorEditing = TextEditingController();
   TextEditingController flatEditing = TextEditingController();
   TextEditingController controller = TextEditingController();
   GlobalKey key;
 
+  // List<RoomType> rm;
   // AudioCache _player;
   var postData;
   bool isVisible = false;
@@ -200,7 +202,10 @@ class _HomeTestState extends State<HomeTest>
   int _currentIndex = 0;
   var imageString;
   int index = 0;
-  PlaceType pt;
+
+  // PlaceType pt;
+  // Flat flat;
+  // FloorType fl;
   TimeOfDay time;
   TimeOfDay time23;
   TimeOfDay picked;
@@ -210,7 +215,7 @@ class _HomeTestState extends State<HomeTest>
   Future<List<AlarmInfo>> _alarms;
   List<AlarmInfo> _currentAlarms;
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Map<String, dynamic>> queryRows;
+  List<Map<String, dynamic>> placeRows;
   List placeQueryData;
   List floorQueryData;
   List floorQueryData2;
@@ -236,11 +241,19 @@ class _HomeTestState extends State<HomeTest>
       switch_7 = 0,
       switch_8 = 0,
       switch_9 = 0;
-  int slider1, slider2 = 0;
+  int slider1,
+      slider2 = 0;
   int slider3 = 1;
   var dvlenght;
 
-  int m = 0, n = 0, o = 0, p = 0, q = 0, r = 0, s = 0, t = 0;
+  int m = 0,
+      n = 0,
+      o = 0,
+      p = 0,
+      q = 0,
+      r = 0,
+      s = 0,
+      t = 0;
   int c = 0;
   List<dynamic> deviceData;
 
@@ -343,78 +356,19 @@ class _HomeTestState extends State<HomeTest>
   @override
   void initState() {
     super.initState();
+    timer=Timer.periodic(Duration(seconds: 10), (timer) {
+      print('10seconds');
+      fetchPlace();
+      // getAllFloor();
+    });
     _index = widget.currentIndex;
   }
-  Future openFloorBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    floorBox = await Hive.openBox('floor');
 
-    return;
-  }
 
-  Future<bool> getAllFloor() async {
-    var myMap;
-    var pId;
-    await openFloorBox();
-
-    // print('floorlength ${floorData.length}');
-    for (int i = 0; i < placeData.length; i++) {
-      // Box poop;
-      pId = placeData[i]['p_id'].toString();
-      print('dataPlace $pId');
-      // print('floorlength ${floorData.length}');
-      String token = await getToken();
-      print('placeBox ${placeBox.length}');
-      final url = "http://genorion1.herokuapp.com/getallfloors/?p_id=" + pId;
-      var response;
-      try {
-        response = await http.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-        // print('Response ${response.body}');
-        // List _jsonDecode=jsonDecode(response.body);
-        // print('FloorDecode  $floorData');
-        // // floor=_jsonDecode.map((data) => FloorType.fromJson(data)).toList();
-        // await putFloorData(_jsonDecode);
-
-        floorData = jsonDecode(response.body);
-        await putFloorData(floorData);
-        print("Floor-->  $floorData");
-        floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-        print("Floor123-->  ${floors.toString()}");
-      } catch (e) {
-        print('Floor Catch $e');
-      }
-
-      myMap = floorBox.toMap().values.toList();
-      if (myMap.isEmpty) {
-        floorData.add('empty');
-        print('adding Floor zero ${floorData.toString()}');
-      } else {
-        floorData = floorData + myMap;
-      }
-    }
-    print('FloorMap  ${myMap.toString()}');
-    print('TooString  ${floorData.length.toString()}');
-    // ignore: deprecated_member_use
-    roomData = List(floorData.length - floorData.length);
-    // print('FloorIdPrint  ${floorData[i]['f_id']}');
-    return Future.value(true);
-  }
-
-  Future putFloorData(data) async {
-    await floorBox.clear();
-    for (var d in data) {
-      print('Floor Main-->  $d');
-      floorBox.add(d);
-    }
-  }
 
   TextEditingController placeEditing = new TextEditingController();
   TextEditingController floorNameEditing = new TextEditingController();
+  TextEditingController flatNameEditing = new TextEditingController();
   TextEditingController roomNameEditing = new TextEditingController();
 
   Future<void> update() async {
@@ -443,23 +397,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   // ignore: missing_return
-  Future<FloorType> getFloorName() async {
-    String token = await getToken();
-    print('currentFloorId ${widget.fl.fId}');
-    final url =
-        'http://genorion1.herokuapp.com/getallrooms/?f_id=' + widget.fl.fId;
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      var p12t = jsonDecode(response.body);
-      fl = FloorType.fromJson(p12t);
-      print("GetPlaceName  ${response.statusCode}");
-      print("GetPlaceNameResponseBody  ${response.body}");
-    }
-  }
+
 
   Future<PlaceType> addPlaceName(String data) async {
     String token = await getToken();
@@ -517,6 +455,7 @@ class _HomeTestState extends State<HomeTest>
       setState(() {
         widget.fl.fName = postDataFloorName['f_name'];
       });
+      getAllFloor();
       print(' Floor Response--> $floorResponse');
 // pt.pType=;
       print(' FloorName--> ${postDataFloorName['f_name']}');
@@ -530,14 +469,43 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Box namesBox;
+  Future<FloorType> addFlatName(String data) async {
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    var postDataFlatName = {
+      "flt_id": widget.flat.fltId,
+      "flt_name": data,
+      "user": getUidVariable2,
+    };
+    final response = await http.put(
+      url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postDataFlatName),
+    );
 
-  Future openDevicePinNameBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    namesBox = await Hive.openBox('status');
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      print(response.body);
 
-    return;
+      var flatResponse = jsonDecode(response.body);
+      setState(() {
+        widget.flat.fltName = postDataFlatName['flt_name'];
+      });
+      getAllFlat();
+      print(' Flat Response--> $flatResponse');
+// pt.pType=;
+      print(' FlatName--> ${postDataFlatName['flt_name']}');
+
+      // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
+      // placeResponsePreference.setInt('p_id', placeResponse);
+
+      return FloorType.fromJson(postDataFlatName);
+    } else {
+      throw Exception('Failed to create Floor.');
+    }
   }
 
   Future devicePinNamesQueryFunc() async {
@@ -604,12 +572,7 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future putPinNames(data) async {
-    await namesBox.clear();
-    for (var d in data) {
-      namesBox.add(d);
-    }
-  }
+
 
   List pinNames = [];
 
@@ -806,6 +769,34 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+
+  _editFlatNameAlertDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Enter Flat Name"),
+            content: TextField(
+              controller: flatNameEditing,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+                    addFlatName(flatNameEditing.text);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+
   _editRoomNameAlertDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -845,228 +836,296 @@ class _HomeTestState extends State<HomeTest>
             title: Text('Change Place'),
             content: Container(
               height: 390,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: placeVal,
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width * 2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 30,
-                                        offset: Offset(20, 20))
-                                  ],
-                                  border: Border.all(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: returnPlaceQuery(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Place'),
+                                  isExpanded: true,
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
+
+                                  items: placeRows.map((selectedPlace) {
+                                    return DropdownMenuItem<String>(
+                                      value: selectedPlace.toString(),
+                                      child: Text("${selectedPlace['p_type']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedPlace) async {
+                                    var check = selectedPlace;
+                                    print('check ${check.toString()}');
+                                    var placeid = selectedPlace.substring(
+                                        7, 14);
+                                    var placeName = selectedPlace.substring(
+                                        24, 31);
+                                    var user = selectedPlace.substring(38, 40);
+                                    int user2 = int.parse(user);
+                                    print('placeName $user');
+                                    // pt=as.map((e) => PlaceType.fromJson(json));
+                                    var pids = PlaceType(
+                                        pId: placeid,
+                                        pType: placeName,
+                                        user: user2
+                                    );
+                                    pt = pids;
+                                    // pt=as.map((data) => PlaceType.fromJson(data)).toList();
+                                    print("SElectedPlace ${selectedPlace}");
+
+                                    var aa = await NewDbProvider.instance
+                                        .getFloorById(placeid.toString());
+                                    print('AA  ${aa}');
+                                    floorval = null;
+                                    setState(() {
+                                      floorQueryRows2 = aa;
+                                      floorval = returnFloorQuery(placeid);
+                                      returnFloorQuery(placeid);
+                                    });
+                                    print('Floorqwe  ${floorQueryRows2}');
+
+                                    // qwe= ;
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: floorval,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
                                   ),
-                                ),
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Place'),
-                                isExpanded: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
 
-                                items: queryRows.map((selectedPlace) {
-                                  return DropdownMenuItem<String>(
-                                    value: selectedPlace.toString(),
-                                    child: Text("${selectedPlace['p_type']}"),
-                                  );
-                                }).toList(),
-                                onChanged: (selectedPlace) async {
-                                  var placeid = selectedPlace.substring(7, 14);
-                                  print("SElectedPlace $selectedPlace");
-
-                                  var aa = await NewDbProvider.instance
-                                      .getFloorById(placeid.toString());
-                                  print('AA  ${aa}');
-                                  floorval = null;
-                                  setState(() {
-                                    floorQueryRows2 = aa;
-                                    floorval = returnFloorQuery(placeid);
-                                    returnFloorQuery(placeid);
-                                  });
-                                  print('Floorqwe  ${floorQueryRows2}');
-
-                                  // qwe= ;
-                                },
-                                // items:snapshot.data
-                              ),
-                            );
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        }),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: floorval,
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width * 2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 30,
-                                        offset: Offset(20, 20))
-                                  ],
-                                  border: Border.all(
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Floor'),
+                                  isExpanded: true,
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
+                                  items: floorQueryRows2.map((selectedFloor) {
+                                    return DropdownMenuItem(
+                                      value: selectedFloor.toString(),
+                                      child: Text("${selectedFloor['f_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFloor) async {
+                                    print('Floor selected $selectedFloor');
+                                    var check = selectedFloor;
+                                    var floorId = selectedFloor.substring(
+                                        7, 14);
+                                    var floorName = selectedFloor.substring(
+                                        24, 32);
+                                    var placeId = selectedFloor.substring(
+                                        39, 46);
+                                    // var user =selectedFloor.substring(54,55);
+                                    // int user2 =int.parse(user);
+                                    // print('floorName $user');
+                                    var floor = FloorType(
+                                        fId: floorId,
+                                        fName: floorName,
+                                        pId: placeId,
+                                        user: getUidVariable2
+                                    );
+                                    fl = floor;
+                                    var getFlat = await NewDbProvider.instance
+                                        .getFlatByFId(floorId.toString());
+                                    print(getFlat);
+                                    setState(() {
+                                      flatVal = returnFlatQuery(floorId);
+                                      flatQueryRows2 = getFlat;
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    returnFloorQuery(floorId);
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: flatVal,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
                                   ),
-                                ),
 
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Floor'),
-                                isExpanded: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                items: floorQueryRows2.map((selectedFloor) {
-                                  return DropdownMenuItem(
-                                    value: selectedFloor.toString(),
-                                    child: Text("${selectedFloor['f_name']}"),
-                                  );
-                                }).toList(),
-                                onChanged: (selectedFloor) async {
-                                  print('Floor selected $selectedFloor');
-                                  var floorId = selectedFloor.substring(7, 14);
-                                  var getFlat = await NewDbProvider.instance
-                                      .getFlatByFId(floorId.toString());
-                                  print(getFlat);
-                                  setState(() {
-                                    flatVal = returnFlatQuery(floorId);
-                                    flatQueryRows2 = getFlat;
-                                  });
-                                  print('forRoom  ${roomQueryRows2}');
-
-                                  returnFloorQuery(floorId);
-                                },
-                                // items:snapshot.data
-                              ),
-                            );
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        }),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: FutureBuilder(
-                        future: flatVal,
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width * 2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 30,
-                                        offset: Offset(20, 20))
-                                  ],
-                                  border: Border.all(
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Flat'),
+                                  isExpanded: true,
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
+                                  items: flatQueryRows2.map((selectedFlat) {
+                                    return DropdownMenuItem(
+                                      value: selectedFlat.toString(),
+                                      child: Text(
+                                          "${selectedFlat['flt_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFlat) async {
+                                    flatId = selectedFlat.substring(9, 16);
+                                    // var flatId = selectedFlat.substring(7, 14);
+                                    var flatName = selectedFlat.substring(
+                                        28, 35);
+                                    var floorId = selectedFlat.substring(
+                                        39, 46);
+                                    // var user =selectedFlat.substring(58,59);
 
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Flat'),
-                                isExpanded: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                items: flatQueryRows2.map((selectedFlat) {
-                                  return DropdownMenuItem(
-                                    value: selectedFlat.toString(),
-                                    child: Text("${selectedFlat['flt_name']}"),
-                                  );
-                                }).toList(),
-                                onChanged: (selectedFlat) async {
-                                  print('Flat selected $selectedFlat');
-                                  flatId = selectedFlat.substring(9, 16);
-                                  print(flatId);
-                                  // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
-                                  // print('AA  ${aa}');
-                                  setState(() {
-                                    // roomQueryRows2=aa;
-                                    // roomVal=returnRoomQuery(flatId);
-                                  });
-                                  print('forRoom  ${roomQueryRows2}');
+                                    print('flatName $selectedFlat');
+                                    // print('flatName $user');
+                                    // int user2 =int.parse(user);
+                                    // int user2=int.parse(user.toString());
+                                    var flt = Flat(
+                                        fId: floorId,
+                                        fltId: flatId,
+                                        fltName: flatName,
+                                        user: getUidVariable2
+                                    );
+                                    flat = flt;
+                                    print(flatId);
 
-                                  // returnFloorQuery(floorId);
-                                },
-                                // items:snapshot.data
-                              ),
-                            );
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        }),
-                  ),
-                ],
+                                    // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
+                                    // print('AA  ${aa}');
+                                    setState(() {
+                                      // roomQueryRows2=aa;
+                                      // roomVal=returnRoomQuery(flatId);
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    // returnFloorQuery(floorId);
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
             ),
             actions: <Widget>[
@@ -1081,18 +1140,20 @@ class _HomeTestState extends State<HomeTest>
                     print("SubmitAllDetails  ${result}");
                     room = List.generate(
                         result.length,
-                        (index) => RoomType(
+                            (index) =>
+                            RoomType(
                               rId: result[index]['r_id'].toString(),
                               fltId: result[index]['flt_id'].toString(),
                               rName: result[index]['r_name'].toString(),
                               user: result[index]['user'],
-                            ));
-
+                            )
+                    );
+                    rm = room;
                     // rm = await getrooms(fl.fId);
-                    // print('hello   ${rm[0].rId}');
-                    // setState(() {
-                    //   tabbarState = rm[0].rId;
-                    // });
+                    // print('hello   ${rm[0].rId}') ;
+                    setState(() {
+                      // tabbarState = rm[0].rId;
+                    });
                     // Navigator.of(context).pop();
                     // print('State   $tabbarState');
                     // print('FID-->   ${fl.fId}');
@@ -1106,16 +1167,15 @@ class _HomeTestState extends State<HomeTest>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (
-                        context,
-                      ) =>
+                          builder: (context,) =>
                               Container(
                                 child: HomeTest(
-                                    pt: widget.pt,
-                                    fl: fl,
-                                    flat: flt,
-                                    rm: room,
-                                    dv: dv),
+                                  pt: pt,
+                                  fl: fl,
+                                  flat: flat,
+                                  rm: rm,
+                                  // dv: dv
+                                ),
                               )),
                     );
                   },
@@ -1126,133 +1186,6 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  _createAlertDialogDropDownForFloor(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Change Floor'),
-            content: Container(
-              height: 310,
-              child: Column(
-                children: [
-                  FutureBuilder(
-                      future: getAllFloor(),
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          if (placeData.contains('empty')) {
-                            return Text('No data');
-                          } else {
-                            return Container(
-                              width: MediaQuery.of(context).size.width * 2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 30,
-                                        offset: Offset(20, 20))
-                                  ],
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Floor'),
-                                isExpanded: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                items: floorData.map((selectedPlace) {
-                                  int i = 0;
-                                  while (i < floorData.length) {
-                                    i++;
-                                  }
-                                  return DropdownMenuItem(
-                                    value: selectedPlace,
-                                    child:
-                                        Text("${floorData[index]['f_name']}"),
-                                  );
-                                }).toList(),
-                                onChanged: (selectedPlace) {
-                                  print('Place selected $selectedPlace');
-
-                                  setState(() {
-                                    // var pt = selectedPlace ;
-                                    // fl = null;
-                                    // pt = selectedPlace;
-                                    // print('place Selected');
-                                    // print('After Place Selected ${pt.pId}');
-                                    // // pt=  DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(pt.pId));
-                                    // floorval =
-                                    //     fetchFloor(selectedPlace.pId);
-                                  });
-                                },
-                                // items:snapshot.data
-                              ),
-                            );
-                          }
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      }),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MaterialButton(
-                  // elevation: 5.0,
-                  child: Text('Submit'),
-                  onPressed: () async {
-                    // rm = await getrooms(fl.fId);
-                    print('hello   ${rm[0].rId}');
-                    setState(() {
-                      // tabbarState = rm[0].rId;
-                    });
-                    Navigator.of(context).pop();
-                    print('State   $tabbarState');
-                    print('FID-->   ${fl.fId}');
-                    // dv = await getDevices(tabbarState );
-
-                    // print('On Pressed  ${pt.pId}');
-                    // print('On Pressed place response ${pt.pId}');
-                    // print(rm[1]);
-                    //  print(rm[0].r_name);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (
-                        context,
-                      ) =>
-                              Container(
-                                child: HomeTest(pt: pt, fl: fl, rm: rm, dv: dv),
-                              )),
-                    );
-                  },
-                ),
-              )
-            ],
-          );
-        });
-  }
 
   _createAlertDialog(BuildContext context) {
     return showDialog(
@@ -1303,7 +1236,8 @@ class _HomeTestState extends State<HomeTest>
     print('roomResult $result');
     room = List.generate(
         result.length,
-        (index) => RoomType(
+            (index) =>
+            RoomType(
               rId: result[index]['r_id'].toString(),
               fltId: result[index]['flt_id'].toString(),
               rName: result[index]['r_name'].toString(),
@@ -1437,7 +1371,67 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+  _createAlertDialogForPin17(BuildContext context, String dId) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Cell Number of your Device'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
 
+                TextFormField(
+                  autofocus: true,
+                  controller: pin17Controller,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Mobile Number ',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await dataUpdateforPin19(dId);
+                      // await getAllRoom();
+                      // roomQueryFunc();
+
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
   _createAlertDialogForFloor(BuildContext context) {
     return showDialog(
         context: context,
@@ -1479,32 +1473,56 @@ class _HomeTestState extends State<HomeTest>
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 15,
                 ),
-                // TextFormField(
-                //   autofocus: true,
-                //   controller: roomEditing,
-                //   textInputAction: TextInputAction.next,
-                //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                //   style: TextStyle(fontSize: 18, color: Colors.black54),
-                //   decoration: InputDecoration(
-                //     prefixIcon: Icon(Icons.place),
-                //     filled: true,
-                //     fillColor: Colors.white,
-                //     hintText: 'Enter Room Name',
-                //     contentPadding: const EdgeInsets.all(15),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Colors.white),
-                //       borderRadius: BorderRadius.circular(50),
-                //     ),
-                //     enabledBorder: UnderlineInputBorder(
-                //       borderSide: BorderSide(color: Colors.white),
-                //       borderRadius: BorderRadius.circular(50),
-                //     ),
-                //   ),
-                // ),
+                TextFormField(
+                  autofocus: true,
+                  controller: flatEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Flat Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autofocus: true,
+                  controller: roomEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Room Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
@@ -1512,9 +1530,11 @@ class _HomeTestState extends State<HomeTest>
                     child: Text('Submit'),
                     onPressed: () async {
                       await addFloor(floorEditing.text);
-                    //  await addRoom2(roomEditing.text);
-                    //   Navigator.of(context).push(
-                    //       MaterialPageRoute(builder: (context) => DropDown2()));
+                      await addFlat2(flatEditing.text);
+                      await addRoom2(roomEditing.text);
+                      //  await addRoom2(roomEditing.text);
+                      //   Navigator.of(context).push(
+                      //       MaterialPageRoute(builder: (context) => DropDown2()));
                       Navigator.of(context).pop();
                       final snackBar = SnackBar(
                         content: Text('Floor Added'),
@@ -1528,6 +1548,7 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
   _createAlertDialogForFlat(BuildContext context) {
     return showDialog(
         context: context,
@@ -1573,28 +1594,28 @@ class _HomeTestState extends State<HomeTest>
                 SizedBox(
                   height: 15,
                 ),
-                // TextFormField(
-                //   autofocus: true,
-                //   controller: roomEditing,
-                //   textInputAction: TextInputAction.next,
-                //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                //   style: TextStyle(fontSize: 18, color: Colors.black54),
-                //   decoration: InputDecoration(
-                //     prefixIcon: Icon(Icons.place),
-                //     filled: true,
-                //     fillColor: Colors.white,
-                //     hintText: 'Enter Room Name',
-                //     contentPadding: const EdgeInsets.all(15),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: Colors.white),
-                //       borderRadius: BorderRadius.circular(50),
-                //     ),
-                //     enabledBorder: UnderlineInputBorder(
-                //       borderSide: BorderSide(color: Colors.white),
-                //       borderRadius: BorderRadius.circular(50),
-                //     ),
-                //   ),
-                // ),
+                TextFormField(
+                  autofocus: true,
+                  controller: roomEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Room Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
@@ -1602,7 +1623,7 @@ class _HomeTestState extends State<HomeTest>
                     child: Text('Submit'),
                     onPressed: () async {
                       await addFlat(flatEditing.text);
-                      //  await addRoom2(roomEditing.text);
+                      await addRoom2(roomEditing.text);
                       //   Navigator.of(context).push(
                       //       MaterialPageRoute(builder: (context) => DropDown2()));
                       Navigator.of(context).pop();
@@ -1618,6 +1639,7 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
   TextEditingController pinNameController = new TextEditingController();
 
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
@@ -1643,7 +1665,8 @@ class _HomeTestState extends State<HomeTest>
                     //
 
                     print(
-                        'Device Name ----->>>> ${names.map((e) => addPinsName(pinNameController.text, index))}');
+                        'Device Name ----->>>> ${names.map((e) =>
+                            addPinsName(pinNameController.text, index))}');
                     final snackBar = SnackBar(
                       content: Text('Name Added'),
                     );
@@ -1671,7 +1694,8 @@ class _HomeTestState extends State<HomeTest>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ShowSsid(
+                                builder: (context) =>
+                                    ShowSsid(
                                       deviceId: dv[index].dId,
                                     )));
                       },
@@ -1684,7 +1708,8 @@ class _HomeTestState extends State<HomeTest>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ShowEmergencyNumber(
+                                builder: (context) =>
+                                    ShowEmergencyNumber(
                                       deviceId: dv[index].dId,
                                     )));
                       },
@@ -1742,7 +1767,19 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  _createAlertDialogForAddRoomDeleteDevices(BuildContext context,String rId) {
+  List listOfAllFloor;
+  List listOfAllFlat;
+
+  allFloor() async {
+    listOfAllFloor = await NewDbProvider.instance.queryFloor();
+  }
+
+
+  allFlat() async {
+    listOfAllFlat = await NewDbProvider.instance.queryFlat();
+  }
+
+  _createAlertDialogForAddRoomDeleteDevices(BuildContext context, String rId) {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -1753,7 +1790,7 @@ class _HomeTestState extends State<HomeTest>
               style: TextStyle(fontSize: 20),
             ),
             content: Container(
-              height: 105,
+              height: 90,
               child: Column(
                 children: [
                   TextButton(
@@ -1763,10 +1800,6 @@ class _HomeTestState extends State<HomeTest>
                     ),
                     onPressed: () {
                       _editRoomNameAlertDialog(context);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => ShowSubUser()));
                     },
                   ),
                   TextButton(
@@ -1776,6 +1809,209 @@ class _HomeTestState extends State<HomeTest>
                     ),
                     onPressed: () {
                       _showDialogForDeleteRoomWithAllDevices(rId);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
+  alertDialogExistingFloor(BuildContext context){
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context){
+        return AlertDialog(
+          title: Text('Oops',),
+          content: Container(
+            color: Colors.blueGrey,
+            child: MaterialButton(
+                child: Text('Ok'),
+                onPressed: (){
+              Navigator.pop(context);
+            }),
+          ),
+        );
+      }
+    );
+  }
+
+  deleteFloorOption(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Select Floor'),
+            content: Container(
+              color: Colors.amber,
+              width: 78,
+              child: ListView.builder(
+                  itemCount: listOfAllFloor.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      color: Colors.blueGrey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          semanticContainer: true,
+                          shadowColor: Colors.grey,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(listOfAllFloor[index]['f_name']),
+                              ),
+                              RaisedButton(
+                                child: Text('Delete Floor'),
+                                onPressed: () async{
+                                  var floorId=widget.fl.fId.toString();
+                                  var selectDelete=listOfAllFloor[index]['f_id'].toString();
+                                  if(floorId.contains(selectDelete)){
+                                    print('true');
+                                     alertDialogExistingFloor(context);
+                                  }
+                                  deleteFloor(listOfAllFloor[index]['f_id'].toString());
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          );
+        }
+    );
+  }
+
+  deleteFlatOption(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Select Flat'),
+            content: Container(
+              color: Colors.amber,
+              width: 78,
+              child: ListView.builder(
+                  itemCount: listOfAllFlat.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      color: Colors.blueGrey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          semanticContainer: true,
+                          shadowColor: Colors.grey,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(listOfAllFlat[index]['flt_name']),
+                              ),
+                              RaisedButton(
+                                child: Text('Delete Floor'),
+                                onPressed: () {
+                                  print(listOfAllFlat[index]['flt_id']);
+                                  var selectedFlat=listOfAllFlat[index]['flt_id'].toString();
+                                  var flatId=widget.flat.fltId.toString();
+                                  if(flatId.contains(selectedFlat)){
+
+                                    alertDialogExistingFloor(context);
+                                  }
+                                  deleteFlat(listOfAllFlat[index]['flt_id'].toString());
+                                  Navigator.pop(context);
+                                  // deleteFloor(listOfAllFloor[index]['f_id']);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          );
+        }
+    );
+  }
+
+  _createAlertDialogForDeleteFloorAndAddFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One For Floor',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              // height: MediaQuery
+              //     .of(context)
+              //     .size
+              //     .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Add Floor',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _createAlertDialogForFloor(context);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowSubUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Delete Floor',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      deleteFloorOption(context);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Edit Floor Name',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _editFloorNameAlertDialog(context);
+                      // deleteFloorOption(context);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
@@ -1790,6 +2026,73 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+
+  _createAlertDialogForDeleteFlatAndAddFlat(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Text(
+                      'Add Flat',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _createAlertDialogForFlat(context);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowSubUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Delete Flat',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      deleteFlatOption(context);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Edit Flat Name',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _editFlatNameAlertDialog(context);
+                      // deleteFloorOption(context);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
 
   readId() {
     // Navigator.push(context, MaterialPageRoute(builder: (context)=>addDynamic())).then((value) => addSlider());
@@ -2000,7 +2303,7 @@ class _HomeTestState extends State<HomeTest>
       print("CHECKDEVICE123CODE   ${response.statusCode}");
       print(response.body);
       deviceResponse = jsonDecode(response.body);
-      getDevices(tabbarState);
+      getDeviceOffline(tabbarState);
       print(postData);
     } else {
       throw Exception('Failed to create Device.');
@@ -2026,6 +2329,7 @@ class _HomeTestState extends State<HomeTest>
       widget.dv = deviceData.map((data) => Device.fromJson(data)).toList();
       print('Room Id query ================================   $query');
       print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
+
       getDatafunc2();
       return dv;
     }
@@ -2034,9 +2338,9 @@ class _HomeTestState extends State<HomeTest>
   Future<List<Device>> getDeviceOffline(String rId) async {
     String token = await getToken();
     var rId;
-    for (int i = 0; i < roomQueryRows2.length; i++) {
+    for (int i = 0; i < roomQueryRows.length; i++) {
       //   print(NewDbProvider.instance.dogs());
-      rId = roomQueryRows2[i]['r_id'].toString();
+      rId = roomQueryRows[i]['r_id'].toString();
       print('roomId  $rId');
       String url = "http://genorion1.herokuapp.com/addyourdevice/?r_id=" + rId;
       var response;
@@ -2056,48 +2360,96 @@ class _HomeTestState extends State<HomeTest>
         print('deviceQueryFunc   $deviceData}');
 
         await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+        await NewDbProvider.instance.updateDevice(deviceQuery);
       }
     }
     dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
   }
 
-  Future <void> deleteDevice(String rId,String dId)async{
+  Future <void> deleteDevice(String rId, String dId) async {
     String token = await getToken();
-    final url='http://genorion1.herokuapp.com/addyourdevice/?r_id=${rId}&d_id=${dId}';
-    final response = await http.delete(url,headers: {
+    final url = 'http://genorion1.herokuapp.com/addyourdevice/?r_id=${rId}&d_id=${dId}';
+    final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       final snackBar = SnackBar(
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }else{
+    } else {
       final snackBar = SnackBar(
         content: Text('Something went wrong'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
 
-  Future<void> deleteRoomWithAllDevice(String rId)async{
-    String token= await getToken();
-    final url='http://genorion1.herokuapp.com/addroom/?r_id='+rId;
-    final response = await http.delete(url,headers: {
+  Future<void> deleteRoomWithAllDevice(String rId) async {
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/addroom/?r_id=' + rId;
+    final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
+      print('delete ${response.body}');
       final snackBar = SnackBar(
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }else{
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+
+  Future<void> deleteFloor(String fId) async {
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/addyourfloor/?f_id=' + fId;
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      print('deleteFloor ${response.body}');
+      final snackBar = SnackBar(
+        content: Text('Floor Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      getAllFloor();
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> deleteFlat(String flt_Id) async {
+    String token = await getToken();
+    final url = 'http://genorion1.herokuapp.com/addyourflat/?flt_id=' + flt_Id;
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      print('deleteFloor ${response.body}');
+      final snackBar = SnackBar(
+        content: Text('Flat Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      getAllFlat();
+    } else {
       final snackBar = SnackBar(
         content: Text('Something went wrong'),
       );
@@ -2152,7 +2504,9 @@ class _HomeTestState extends State<HomeTest>
       });
 
       if (response.statusCode == 200) {
-        ip = IpAddress.fromJson(jsonDecode(response.body)).ipaddress;
+        ip = IpAddress
+            .fromJson(jsonDecode(response.body))
+            .ipaddress;
         print('IPCheck  ${ip.toString()}');
       }
       counter++;
@@ -2217,7 +2571,7 @@ class _HomeTestState extends State<HomeTest>
       // 'pin19Status': s,
     };
     http.Response response =
-        await http.post(url, body: jsonEncode(data), headers: {
+    await http.post(url, body: jsonEncode(data), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
@@ -2262,12 +2616,12 @@ class _HomeTestState extends State<HomeTest>
       'pin14Status': n,
       'pin15Status': o,
       'pin16Status': p,
-      'pin17Status': q,
+      'pin17Status': pin17Controller.text,
       'pin18Status': r,
       'pin19Status': pin19Controller.text,
     };
     http.Response response =
-        await http.post(url, body: jsonEncode(data), headers: {
+    await http.post(url, body: jsonEncode(data), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
@@ -2367,7 +2721,7 @@ class _HomeTestState extends State<HomeTest>
   Future devicePinSensorLocalUsingDeviceId(String dId) async {
     print('ssse $dId');
     sensorData =
-        await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
+    await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
     if (sensorData == null) {
       return Text('No Data');
     }
@@ -2381,7 +2735,7 @@ class _HomeTestState extends State<HomeTest>
     await devicePinSensorLocalUsingDeviceId(dId);
 
     nameData =
-        await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
+    await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
     if (nameData == null) {
       return Text('No Data');
     }
@@ -2434,6 +2788,8 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
+  var flatResponseForRoom;
+
   Future<void> addFlat(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
     final url = 'http://genorion1.herokuapp.com/addyourflat/';
@@ -2456,7 +2812,7 @@ class _HomeTestState extends State<HomeTest>
       print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // tabbarState = jsonDecode(response.body);
+        flatResponse = jsonDecode(response.body);
 
         final snackBar = SnackBar(
           content: Text('Flat Added'),
@@ -2477,34 +2833,291 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-
-  Future<bool> getAllRoom() async {
-    // String url="http://10.0.2.2:8000/api/data";
-    // String token= await getToken();
+  Future<void> addFlat2(String data) async {
+    print('floorwidgetid ${widget.fl.fId}');
+    final url = 'http://genorion1.herokuapp.com/addyourflat/';
     String token = await getToken();
-    String url =
-        "https://genorion1.herokuapp.com/addroom/?flt_id=" + widget.flat.fltId;
-    var response;
+    var postData = {
+      "user": getUidVariable2,
+      "flt_name": data,
+      "f_id": floorResponse,
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print('  Flat Created ${response.body}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        flatResponse = jsonDecode(response.body);
 
-    response = await http.get(Uri.parse(url), headers: {
+        final snackBar = SnackBar(
+          content: Text('Flat Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // getAllRoom();
+      }
+
+      // setState(() {
+      //   roomResponse2=roomResponse;
+      //   // roomResponsePreference.setInt('r_id', roomResponse2);
+      // });
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+
+  var roomQuery;
+
+
+
+  Future<void> fetchPlace() async {
+    // await openPlaceBox();
+    String token = await getToken();
+    final url = 'https://genorion1.herokuapp.com/addyourplace/';
+    final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    roomData = jsonDecode(response.body);
-    print('checkRoomData $roomData');
-    widget.rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-    for (int i = 0; i < roomData.length; i++) {
-      var roomQuery = RoomType(
-          rId: roomData[i]['r_id'],
-          rName: roomData[i]['r_name'].toString(),
-          fltId: roomData[i]['flt_id'],
-          user: roomData[i]['user']);
-      print('roomQuery147 ${roomQuery.rName} ${roomQuery.fltId}');
-      await NewDbProvider.instance.insertRoomModelData(roomQuery);
-      // await roomQueryFunc();
+
+    try {
+      if (response.statusCode > 0) {
+       List placeData = jsonDecode(response.body);
+       placeRows= await NewDbProvider.instance.queryPlace();
+        if(placeData.length==placeRows.length){
+          for (int i = 0; i < placeData.length; i++) {
+            var placeQuery = PlaceType(
+                pId: placeData[i]['p_id'],
+                pType: placeData[i]['p_type'],
+                user: placeData[i]['user']
+            );
+            NewDbProvider.instance.updatePlace(placeQuery);
+          }
+        }else{
+            await NewDbProvider.instance.deletePlaceModel();
+          for (int i = 0; i < placeData.length; i++) {
+
+            var placeQuery = PlaceType(
+                pId: placeData[i]['p_id'],
+                pType: placeData[i]['p_type'],
+                user: placeData[i]['user']
+            );
+            NewDbProvider.instance.insertPlaceModelData(placeQuery);
+
+
+          }
+        }
+getAllFloor();
+
+
+
+        // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
+
+
+      }
+    } catch (e) {}
+    return places;
+// return PlaceType.fromJson(true);
+
+  }
+
+
+
+
+  Future<void> getAllFloor() async {
+    String token = await getToken();
+    placeRows= await NewDbProvider.instance.queryPlace();
+    print('pId  $placeRows');
+    var pId;
+    var floorQuery;
+    for (int i = 0; i < placeRows.length; i++) {
+      // Box poop;
+      pId = placeRows[i]['p_id'].toString();
+      print('pId  $pId');
+
+      final url = "https://genorion1.herokuapp.com/addyourfloor/?p_id=" + pId;
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if (response.statusCode > 0) {
+        List floorData = jsonDecode(response.body);
+        floorQueryRows = await NewDbProvider.instance.queryFloor();
+        if (floorData.length == floorQueryRows.length) {
+          print('updateFloor');
+          for (int i = 0; i < floorData.length; i++) {
+            floorQuery = FloorType(
+              fId: floorData[i]['f_id'],
+              pId: floorData[i]['p_id'],
+              fName: floorData[i]['f_name'],
+              user: floorData[i]['user'],
+            );
+            await NewDbProvider.instance.updateFloor(floorQuery);
+          }
+        } else {
+          print('insertFloor');
+          await NewDbProvider.instance.deleteFloorModel();
+          for (int i = 0; i < floorData.length; i++) {
+            floorQuery = FloorType(
+              fId: floorData[i]['f_id'],
+              pId: floorData[i]['p_id'],
+              fName: floorData[i]['f_name'],
+              user: floorData[i]['user'],
+            );
+            await NewDbProvider.instance.insertFloorModelData(floorQuery);
+          }
+        }
+        print('floorData12 ${floorData}');
+        for (int i = 0; i < floorData.length; i++) {
+          var floorQuery = FloorType(
+              fId: floorData[i]['f_id'],
+              fName: floorData[i]['f_name'].toString(),
+              pId: floorData[i]['p_id'],
+              user: floorData[i]['user']
+          );
+          print('floorData12 ${floorQuery}');
+          await NewDbProvider.instance.updateFloor(floorQuery);
+        }
+      }
+      getAllFlat();
+      floors = floorData.map((data) => FloorType.fromJson(data)).toList();
+      // floorData=floorData+floors;
+// getAllFlat();
 
     }
+  }
+
+  Future<void> getAllFlat()async{
+    var fId;
+    floorQueryRows= await NewDbProvider.instance.queryFloor();
+    String token=await getToken();
+    for(int i=0;i<floorQueryRows.length;i++){
+      fId=floorQueryRows[i]['f_id'].toString();
+      print("AllFlatFloorId $fId");
+      String url='https://genorion1.herokuapp.com/addyourflat/?f_id='+fId;
+      final  response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode>0){
+
+        List flatData = jsonDecode(response.body);
+        flatQueryRows2=await NewDbProvider.instance.queryFlat();
+        if(flatQueryRows2.length==flatData.length){
+          for(int i=0;i<flatData.length;i++){
+
+            var flatQuery=Flat(
+                fId: flatData[i]['f_id'],
+                fltId: flatData[i]['flt_id'],
+                fltName: flatData[i]['flt_name'],
+                user: flatData[i]['user']
+            );
+            await  NewDbProvider.instance.updateFlat(flatQuery);
+            print('FlatFlatQuery  ${flatQuery.fltName}');
+          }
+        }else{
+          await NewDbProvider.instance.deleteFlatModel();
+          for(int i=0;i<flatData.length;i++){
+
+            var flatQuery=Flat(
+                fId: flatData[i]['f_id'],
+                fltId: flatData[i]['flt_id'],
+                fltName: flatData[i]['flt_name'],
+                user: flatData[i]['user']
+            );
+            await  NewDbProvider.instance.insertFlatModelData(flatQuery);
+            print('FlatFlatQuery  ${flatQuery.fltName}');
+          }
+        }
+          getAllRoom();
+        print('flatData ${flatData}');
+
+
+      }
+
+
+      // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
+
+
+    }
+  }
+
+
+
+
+
+
+  Future<bool> getAllRoom() async {
+    // String url="http://10.0.2.2:8000/api/data";
+    // String token= await getToken();
+    var flatId;
+    flatQueryRows2=await NewDbProvider.instance.queryFlat();
+    String token = await getToken();
+    for(int i =0;i<flatQueryRows2.length;i++) {
+      flatId = flatQueryRows2[i]['flt_id'].toString();
+
+      String url =
+          "https://genorion1.herokuapp.com/addroom/?flt_id=" + flatId;
+      var response;
+
+      response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      roomData = jsonDecode(response.body);
+      print('checkRoomData $roomData');
+      widget.rm = roomData.map((data) => RoomType.fromJson(data)).toList();
+      List roomQueryRows = await NewDbProvider.instance.queryRoom();
+      if (roomData.length == roomQueryRows.length) {
+        for (int i = 0; i < roomData.length; i++) {
+          roomQuery = RoomType(
+              rId: roomData[i]['r_id'],
+              rName: roomData[i]['r_name'].toString(),
+              fltId: roomData[i]['flt_id'],
+              user: roomData[i]['user']
+          );
+          await NewDbProvider.instance.updateRoom(roomQuery);
+        }
+      } else {
+        await NewDbProvider.instance.deleteRoomModel();
+
+        for (int i = 0; i < roomData.length; i++) {
+          roomQuery = RoomType(
+              rId: roomData[i]['r_id'],
+              rName: roomData[i]['r_name'].toString(),
+              fltId: roomData[i]['flt_id'],
+              user: roomData[i]['user']
+          );
+          await NewDbProvider.instance.insertRoomModelData(roomQuery);
+        }
+      }
+    }
+    // for (int i = 0; i < roomData.length; i++) {
+    //    roomQuery = RoomType(
+    //       rId: roomData[i]['r_id'],
+    //       rName: roomData[i]['r_name'].toString(),
+    //       fltId: roomData[i]['flt_id'],
+    //       user: roomData[i]['user']);
+    //   print('roomQuery147 ${roomQuery.rName} ${roomQuery.fltId}');
+    //   await NewDbProvider.instance.insertRoomModelData(roomQuery);
+    //   // await roomQueryFunc();
+    //
+    // }
     return Future.value(true);
   }
 
@@ -2515,7 +3128,7 @@ class _HomeTestState extends State<HomeTest>
     var postData = {
       "user": getUidVariable,
       "r_name": data,
-      "f_id": floorResponse,
+      "flt_id": flatResponse,
     };
     final response = await http.post(
       url,
@@ -2533,7 +3146,7 @@ class _HomeTestState extends State<HomeTest>
       //   roomResponse2=roomResponse;
       //   // roomResponsePreference.setInt('r_id', roomResponse2);
       // });
-      print(' Room--> $roomResponse');
+      print(' RoomCrated --> $roomResponse');
 
       // return RoomType.fromJson(postData);
     } else {
@@ -2542,6 +3155,8 @@ class _HomeTestState extends State<HomeTest>
   }
 
   // ignore: missing_return
+  var flatResponse;
+
   Future<FloorType> addFloor(String data) async {
     String token = await getToken();
     final url = 'http://genorion1.herokuapp.com/addyourfloor/';
@@ -2561,6 +3176,7 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode > 0) {
       print(response.statusCode);
       floorResponse = jsonDecode(response.body);
+      getAllFloor();
       print(' Floor--> $floorResponse');
     } else {
       throw Exception('Failed to create Floor.');
@@ -2580,13 +3196,14 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future returnPlaceQuery() {
+  Future returnPlaceQuery() async {
+    placeVal = await placeQueryFunc();
     return NewDbProvider.instance.queryPlace();
   }
 
   Future placeQueryFunc() async {
-    queryRows = await NewDbProvider.instance.queryPlace();
-    print('qwe123 $queryRows');
+    placeRows = await NewDbProvider.instance.queryPlace();
+    print('qwe123 $placeRows');
   }
 
   Future returnFloorQuery(String pId) {
@@ -2648,7 +3265,8 @@ class _HomeTestState extends State<HomeTest>
                     flex: 2,
                     child: IndexedStack(
                       index: _index,
-                      children: allDestinations.map<Widget>((Destination destination) {
+                      children: allDestinations.map<Widget>((
+                          Destination destination) {
                         // print('large');
                         return DestinationView(destination);
                       }).toList(),
@@ -2666,8 +3284,17 @@ class _HomeTestState extends State<HomeTest>
                   onLongPress: () {
                     _editPlaceNameAlertDialog(context);
                   },
-                  child: Text(widget.pt.pType),
-                  onTap: () {
+                  child: Row(
+                    children: [
+                      Text('Place- ', style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),),
+                      Text(widget.pt.pType),
+                      Icon(Icons.arrow_drop_down)
+                    ],
+                  ),
+                  onTap: () async {
+                    // placeVal=await NewDbProvider.instance.queryPlace();
                     _createAlertDialogDropDown(context);
                   },
                 ),
@@ -2684,10 +3311,12 @@ class _HomeTestState extends State<HomeTest>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ProfilePage(
-                                fl: widget.fl,
-                                // fl: widget.fl,
-                              ))).then((value) => loadImageFromPreferences()
+                              builder: (context) =>
+                                  ProfilePage(
+                                    // fl: widget.fl,
+                                    // fl: widget.fl,
+                                  ))).then((value) =>
+                      loadImageFromPreferences()
                           ? _deleteImage()
                           : loadImageFromPreferences());
                     },
@@ -2708,7 +3337,8 @@ class _HomeTestState extends State<HomeTest>
               ),
               drawer: Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor:change_toDark ? Colors.black : Colors.white, //This will change the drawer background to blue.
+                  canvasColor: change_toDark ? Colors.black : Colors
+                      .white, //This will change the drawer background to blue.
                   //other styles
                 ),
                 child: Drawer(
@@ -2725,7 +3355,10 @@ class _HomeTestState extends State<HomeTest>
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [Color(0xff669df4), Color(0xff4e80f3)]),
+                                  colors: [
+                                    Color(0xff669df4),
+                                    Color(0xff4e80f3)
+                                  ]),
                               borderRadius: BorderRadius.only(
                                 bottomRight: Radius.circular(30),
                                 bottomLeft: Radius.circular(30),
@@ -2748,26 +3381,23 @@ class _HomeTestState extends State<HomeTest>
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => ProfilePage(
-                                              fl: widget.fl,
-                                            )));
+                                            builder: (context) =>
+                                                ProfilePage(
+                                                  // fl: widget.fl,
+                                                )));
                                   },
                                   cacheImage: true,
                                 ),
                                 SizedBox(
                                   height: 8,
                                 ),
-                                Text(
-                                  "Hello",
-                                  // + widget.fl.user.first_name,
-                                  style: TextStyle(
+                                Text('Hello  ', style: TextStyle(
 
-                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white
-                                  ),
-                                ),
+                                  // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                ),),
                               ],
                             ),
                           ),
@@ -2777,13 +3407,15 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Add Place',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () {
                             Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(builder: (context) => DropDown1()),
+                                MaterialPageRoute(
+                                    builder: (context) => DropDown1()),
                                 ModalRoute.withName("/Home"));
                             // Navigator.push(
                             //   context,
@@ -2796,13 +3428,15 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Sub Access',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () async {
                             await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SubAccessList()),
+                              MaterialPageRoute(
+                                  builder: (context) => SubAccessList()),
                             );
                           },
                         ),
@@ -2811,13 +3445,15 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Temp Access',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () async {
                             await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => TempAccessPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => TempAccessPage()),
                             );
                           },
                         ),
@@ -2826,7 +3462,8 @@ class _HomeTestState extends State<HomeTest>
                             title: Text(
                               'Add Members',
                               style: TextStyle(
-                                color: change_toDark ? Colors.white : Colors.black,
+                                color: change_toDark ? Colors.white : Colors
+                                    .black,
                               ),
                             ),
                             onTap: () {
@@ -2842,7 +3479,8 @@ class _HomeTestState extends State<HomeTest>
                             leading: Icon(Icons.power_rounded),
                             title: Text('Bill Prediction',
                                 style: TextStyle(
-                                  color: change_toDark ? Colors.white : Colors.black,
+                                  color: change_toDark ? Colors.white : Colors
+                                      .black,
                                 )),
                             onTap: () {
                               Navigator.push(
@@ -2853,17 +3491,34 @@ class _HomeTestState extends State<HomeTest>
                               );
                             }),
                         ListTile(
+                            leading: Icon(Icons.schedule),
+                            title: Text('Scheduled device /pins ',
+                                style: TextStyle(
+                                  color: change_toDark ? Colors.white : Colors
+                                      .black,
+                                )),
+                            onTap: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => BillPrediction(),
+                              //   ),
+                              // );
+                            }),
+                        ListTile(
                           leading: Icon(Icons.settings),
                           title: Text(
                             'Settings',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SettingPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => SettingPage()),
                             );
                           },
                         ),
@@ -2872,13 +3527,15 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Help',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => WhatsNew()),
+                              MaterialPageRoute(
+                                  builder: (context) => WhatsNew()),
                             );
                           },
                         ),
@@ -2887,13 +3544,15 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'About GenOrion',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AboutGen()),
+                              MaterialPageRoute(
+                                  builder: (context) => AboutGen()),
                             );
                           },
                         ),
@@ -2902,7 +3561,8 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Logout',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors.black,
+                              color: change_toDark ? Colors.white : Colors
+                                  .black,
                             ),
                           ),
                           onTap: () {
@@ -2922,17 +3582,23 @@ class _HomeTestState extends State<HomeTest>
                 child: DefaultTabController(
                   length: widget.rm.length,
                   child: CustomScrollView(
-                      // key: key,
+                    // key: key,
 
-                      // controller: _scrollController,
+                    // controller: _scrollController,
                       slivers: <Widget>[
                         //Upper Widget
                         SliverToBoxAdapter(
                           child: Column(
                             children: <Widget>[
                               Container(
-                                height: MediaQuery.of(context).size.height * 0.35,
-                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.38,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                       begin: Alignment.topCenter,
@@ -2948,68 +3614,123 @@ class _HomeTestState extends State<HomeTest>
                                 padding: EdgeInsets.only(
                                   top: 40,
                                   bottom: 10,
-                                  left: 30,
+                                  left: 28,
                                   right: 30,
                                 ),
-                                alignment: Alignment.topLeft,
+                                // alignment: Alignment.topLeft,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
 
                                         Column(
                                           children: <Widget>[
-                                            GestureDetector(
-                                              onLongPress: () {
-                                                _editFloorNameAlertDialog(context);
-                                              },
-                                              child: Text(
-                                                widget.fl.fName,
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onLongPress: () {
+                                                    _editFloorNameAlertDialog(
+                                                        context);
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text('Floor -',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 22,
+                                                            fontWeight: FontWeight
+                                                                .bold,
+                                                            fontStyle: FontStyle
+                                                                .italic),),
+                                                      Text(
+                                                        widget.fl.fName,
 
-                                                // 'Hello ',
-                                                // + widget.fl.user.first_name,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle: FontStyle.italic),
-                                              ),
-                                              onTap: () {
-                                                _createAlertDialogDropDown(context);
-                                              },
+                                                        // 'Hello ',
+                                                        // + widget.fl.user.first_name,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 22,
+                                                            // fontWeight: FontWeight.bold,
+                                                            fontStyle: FontStyle
+                                                                .italic),
+                                                      ),
+                                                      Icon(Icons
+                                                          .arrow_drop_down),
+                                                      SizedBox(width: 10,),
+                                                    ],
+                                                  ),
+                                                  onTap: () {
+                                                    _createAlertDialogDropDown(
+                                                        context);
+                                                  },
+                                                ),
+                                                SizedBox(width: 10,),
+                                                GestureDetector(
+                                                  child: Icon(Icons.add),
+                                                  onTap: () async {
+                                                    await allFloor();
+                                                    _createAlertDialogForDeleteFloorAndAddFloor(
+                                                        context);
+                                                    // _createAlertDialogForFloor(context);
+                                                  },
+                                                )
+                                              ],
                                             ),
                                             SizedBox(
                                               height: 12,
                                             ),
 
                                             Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
                                               children: <Widget>[
                                                 Row(
                                                   children: <Widget>[
                                                     GestureDetector(
                                                       onLongPress: () {
-                                                        _editFloorNameAlertDialog(context);
+                                                        _editFloorNameAlertDialog(
+                                                            context);
                                                       },
-                                                      child: Text(
-                                                        widget.flat.fltName,
-                                                        // 'Hello ',
-                                                        // + widget.fl.user.first_name,
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 22),
+                                                      child: Row(
+                                                        children: [
+                                                          Text('Flat- ',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight: FontWeight
+                                                                    .bold,
+                                                                fontSize: 22),),
+                                                          Text(
+                                                            widget.flat.fltName,
+                                                            // 'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle: FontStyle
+                                                                    .italic,
+                                                                fontSize: 22),
+                                                          ),
+                                                          Icon(Icons
+                                                              .arrow_drop_down),
+                                                          SizedBox(width: 10,),
+                                                        ],
                                                       ),
                                                       onTap: () {
-                                                        _createAlertDialogDropDown(context);
+                                                        _createAlertDialogDropDown(
+                                                            context);
                                                       },
                                                     ),
-                                                    SizedBox(width:15),
+                                                    SizedBox(width: 35),
                                                     GestureDetector(
-                                                        onTap: (){
-                                                          _createAlertDialogForFlat(context);
+                                                        onTap: () async {
+                                                          await allFlat();
+                                                          _createAlertDialogForDeleteFlatAndAddFlat(
+                                                              context);
                                                         },
                                                         child: Icon(Icons.add)),
                                                   ],
@@ -3036,6 +3757,15 @@ class _HomeTestState extends State<HomeTest>
                                                 children: <Widget>[
                                                   Row(
                                                     children: <Widget>[
+                                                      Text('Sensors- ',
+                                                        style: TextStyle(
+
+                                                          // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight
+                                                                .bold,
+                                                            color: Colors.white
+                                                        ),),
                                                       SizedBox(
                                                         width: 8,
                                                       ),
@@ -3045,14 +3775,14 @@ class _HomeTestState extends State<HomeTest>
                                                           color: Colors.yellow,
                                                         ),
                                                         SizedBox(
-                                                          height: 32,
+                                                          height: 25,
                                                         ),
                                                         Row(
                                                           children: <Widget>[
                                                             Container(
                                                               child: Text(
                                                                   sensorData[index][
-                                                                          'sensor1']
+                                                                  'sensor1']
                                                                       .toString(),
                                                                   style: TextStyle(
                                                                       fontSize: 14,
@@ -3079,7 +3809,7 @@ class _HomeTestState extends State<HomeTest>
                                                             Container(
                                                               child: Text(
                                                                   sensorData[index][
-                                                                          'sensor2']
+                                                                  'sensor2']
                                                                       .toString(),
                                                                   style: TextStyle(
                                                                       fontSize: 14,
@@ -3105,7 +3835,7 @@ class _HomeTestState extends State<HomeTest>
                                                             Container(
                                                               child: Text(
                                                                   sensorData[index][
-                                                                          'sensor3']
+                                                                  'sensor3']
                                                                       .toString(),
                                                                   style: TextStyle(
                                                                       fontSize: 14,
@@ -3120,7 +3850,8 @@ class _HomeTestState extends State<HomeTest>
                                                       ),
                                                       Column(children: <Widget>[
                                                         Icon(
-                                                          FontAwesomeIcons.cloud,
+                                                          FontAwesomeIcons
+                                                              .cloud,
                                                           color: Colors.orange,
                                                         ),
                                                         SizedBox(
@@ -3131,7 +3862,7 @@ class _HomeTestState extends State<HomeTest>
                                                             Container(
                                                               child: Text(
                                                                   sensorData[index][
-                                                                          'sensor4']
+                                                                  'sensor4']
                                                                       .toString(),
                                                                   style: TextStyle(
                                                                       fontSize: 14,
@@ -3184,13 +3915,32 @@ class _HomeTestState extends State<HomeTest>
                                     children: [
                                       Column(
                                         children: <Widget>[
-                                          Container(
-                                              color: Colors.yellow,
-                                              child: GestureDetector(
-                                                  onTap: (){
-                                                  _createAlertDialogForAddRoom(context);
-                                                  },
-                                                  child: Icon(Icons.add))),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  color: Colors.yellow,
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        _createAlertDialogForAddRoom(
+                                                            context);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Text('Rooms-',
+                                                            style: TextStyle(
+
+                                                              // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight
+                                                                    .bold,
+                                                                color: Colors
+                                                                    .white
+                                                            ),),
+                                                          Icon(Icons.add),
+                                                        ],
+                                                      ))),
+                                            ],
+                                          ),
                                         ],
                                       ),
 
@@ -3198,7 +3948,8 @@ class _HomeTestState extends State<HomeTest>
                                         onLongPress: () {
                                           print('longPress');
                                           print('longpress ${tabbarState}');
-                                          _createAlertDialogForAddRoomDeleteDevices(context,tabbarState);
+                                          _createAlertDialogForAddRoomDeleteDevices(
+                                              context, tabbarState);
                                         },
                                         child: TabBar(
                                           indicatorColor: Colors.blueAccent,
@@ -3206,8 +3957,8 @@ class _HomeTestState extends State<HomeTest>
                                           labelColor: Colors.blueAccent,
                                           indicatorWeight: 2.0,
                                           isScrollable: true,
-                                          tabs:
-                                              widget.rm.map<Widget>((RoomType rm) {
+                                          tabs: widget.rm.map<Widget>((
+                                              RoomType rm) {
                                             rIdForName = rm.rId;
                                             print('RoomId  $rIdForName');
                                             print('RoomId  ${rm.rName}');
@@ -3217,16 +3968,19 @@ class _HomeTestState extends State<HomeTest>
                                           }).toList(),
                                           onTap: (index) async {
                                             print(
-                                                'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                                                'Roomsssss RID-->>>>>>>   ${widget
+                                                    .rm[index].rId}');
                                             tabbarState = widget.rm[index].rId;
                                             setState(() {
-                                              tabbarState = widget.rm[index].rId;
+                                              tabbarState =
+                                                  widget.rm[index].rId;
                                               // devicePinNamesQueryFunc();
                                             });
                                             // getDevices(tabbarState);
                                             print(
                                                 "tabbarState Tabs->  $tabbarState");
-                                            widget.dv = await NewDbProvider.instance
+                                            widget.dv =
+                                            await NewDbProvider.instance
                                                 .getDeviceByRoomId(tabbarState);
                                             getAllRoom();
                                             // widget.rm =await roomQueryFunc();
@@ -3246,7 +4000,8 @@ class _HomeTestState extends State<HomeTest>
                         ),
 
                         SliverList(
-                          delegate: SliverChildBuilderDelegate((context, index) {
+                          delegate: SliverChildBuilderDelegate((context,
+                              index) {
                             if (index < widget.dv.length) {
                               Text(
                                 "Loading",
@@ -3256,10 +4011,11 @@ class _HomeTestState extends State<HomeTest>
                               return Container(
                                 child: Column(
                                   children: [
-                                    deviceContainer2(widget.dv[index].dId, index),
+                                    deviceContainer2(
+                                        widget.dv[index].dId, index),
                                     Container(
-                                        //
-                                        // color: Colors.green,
+                                      //
+                                      // color: Colors.green,
                                         height: 35,
                                         child: GestureDetector(
                                           child: RichText(
@@ -3272,9 +4028,9 @@ class _HomeTestState extends State<HomeTest>
                                               TextSpan(text: "   "),
                                               WidgetSpan(
                                                   child: Icon(
-                                                Icons.settings,
-                                                size: 18,
-                                              ))
+                                                    Icons.settings,
+                                                    size: 18,
+                                                  ))
                                             ]),
                                           ),
                                           onTap: () {
@@ -3374,7 +4130,8 @@ class _HomeTestState extends State<HomeTest>
   }
 
   List responseGetData;
-  List responseGetData2;
+
+  // List responseGetData2;
   var catchReturn;
   Future deviceSensorVal;
 
@@ -3390,7 +4147,7 @@ class _HomeTestState extends State<HomeTest>
     catchReturn = await NewDbProvider.instance.getPinStatusByDeviceId(dId);
     print('catchReturn123 ${catchReturn}');
     var namesDataList12 =
-        await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+    await NewDbProvider.instance.getPinNamesByDeviceId(dId);
     // var sensorData=
 
     print('namesList123 ${namesDataList}');
@@ -3431,108 +4188,114 @@ class _HomeTestState extends State<HomeTest>
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Alert"),
-        content: Text("Would to like to turn off all the appliances ?"),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("Yes"),
-              onPressed: () async {
-                for (int i = 0; i < responseGetData.length; i++) {
-                  setState(() {
-                    // responseGetData[newIndex - 1]=0 ;
-                    if (responseGetData[i] > 0) {
-                      responseGetData[i] = 0;
-                      print('AllChange ${responseGetData.toString()}');
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Alert"),
+            content: Text("Would to like to turn off all the appliances ?"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    for (int i = 0; i < responseGetData.length; i++) {
+                      setState(() {
+                        // responseGetData[newIndex - 1]=0 ;
+                        if (responseGetData[i] > 0) {
+                          responseGetData[i] = 0;
+                          print('AllChange ${responseGetData.toString()}');
+                        }
+                      });
                     }
-                  });
-                }
-                var result = await Connectivity().checkConnectivity();
-                if (result == ConnectivityResult.wifi) {
-                  print("True2-->   $result");
-                  // await localUpdate(dId);
-                  await dataUpdate(dId);
-                } else if (result == ConnectivityResult.mobile) {
-                  await dataUpdate(dId);
-                  await NewDbProvider.instance.getPinStatusByDeviceId(dId);
-                } else {
-                  messageSms(context, dId);
-                }
+                    var result = await Connectivity().checkConnectivity();
+                    if (result == ConnectivityResult.wifi) {
+                      print("True2-->   $result");
+                      // await localUpdate(dId);
+                      await dataUpdate(dId);
+                    } else if (result == ConnectivityResult.mobile) {
+                      await dataUpdate(dId);
+                      await NewDbProvider.instance.getPinStatusByDeviceId(dId);
+                    } else {
+                      messageSms(context, dId);
+                    }
 
-                Navigator.of(context).pop();
-              }),
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-        ],
-      ),
+                    Navigator.of(context).pop();
+                  }),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          ),
     );
   }
+
   _showDialogForDeleteRoomWithAllDevices(String rId) {
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Alert"),
-        content: Text("Are your sure to delete room with all devices"),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("Yes"),
-              onPressed: () async {
-                  deleteRoomWithAllDevice(rId);
-              }
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Alert"),
+            content: Text("Are your sure to delete room with all devices"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    await deleteRoomWithAllDevice(rId);
+                    Navigator.pop(context);
+                  }
               ),
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                // Navigator.of(context).pop();
-              }),
-        ],
-      ),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    // Navigator.of(context).pop();
+                  }),
+            ],
+          ),
     );
   }
+
   _showDialogForLogOut() {
     // dialog implementation
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("LogOut"),
-        content: Text("Would to like to Log Out from this App ?"),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("Yes"),
-              onPressed: () async {
-                await _logout();
-                await _deleteCacheDir();
-                await _deleteAppDir();
-                CircularProgressIndicator();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GettingStartedScreen()));
-                // await  _logout()
-                //     .then((value) => Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => GettingStartedScreen())));
-                //
-              }),
-          // ignore: deprecated_member_use
-          FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-        ],
-      ),
+      builder: (context) =>
+          AlertDialog(
+            title: Text("LogOut"),
+            content: Text("Would to like to Log Out from this App ?"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    await _logout();
+                    await _deleteCacheDir();
+                    await _deleteAppDir();
+                    CircularProgressIndicator();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GettingStartedScreen()));
+                    // await  _logout()
+                    //     .then((value) => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => GettingStartedScreen())));
+                    //
+                  }),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          ),
     );
   }
 
@@ -3542,7 +4305,10 @@ class _HomeTestState extends State<HomeTest>
     return Column(
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 1.75,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height * 1.75,
           // color: Colors.redAccent,
           child: Column(
             children: [
@@ -3562,6 +4328,15 @@ class _HomeTestState extends State<HomeTest>
                   SizedBox(
                     width: 14,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: GestureDetector(
+                      child: Icon(Icons.mobile_screen_share_sharp),
+                      onTap: () {
+                        _createAlertDialogForPin17(context, dId);
+                      },
+                    ),
+                  ),
                   Container(
                     width: 14,
                     height: 14,
@@ -3571,7 +4346,7 @@ class _HomeTestState extends State<HomeTest>
                     // child: ...
                   ),
                   Switch(
-                    value: responseGetData[x] == 0 ? val2 : val1,
+                    value: responseGetData == 0 ? val2 : val1,
                     //boolean value
                     onChanged: (val) async {
                       _showDialog(dId);
@@ -3589,7 +4364,10 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 1.18,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 1.18,
                 // color: Colors.amber,
                 child: GridView.count(
                     crossAxisSpacing: 8,
@@ -3599,7 +4377,7 @@ class _HomeTestState extends State<HomeTest>
                     // shrinkWrap: true,
                     crossAxisCount: 2,
                     children:
-                        List.generate(responseGetData.length - 3, (index) {
+                    List.generate(responseGetData.length - 3, (index) {
                       print('Something');
                       print('catch return --> $catchReturn');
 
@@ -3625,72 +4403,73 @@ class _HomeTestState extends State<HomeTest>
                                     builder: (context) {
                                       return StatefulBuilder(
                                           builder: (context, setModalState) {
-                                        return Container(
-                                            padding: const EdgeInsets.all(32),
-                                            child: Column(children: [
-                                              // ignore: deprecated_member_use
-                                              FlatButton(
-                                                onPressed: () async {
-                                                  pickTime(index);
-                                                  print("index --> $index");
-                                                  // var selectedTime = await showTimePicker(
-                                                  //   context: context,
-                                                  //   initialTime: TimeOfDay.now(),
-                                                  // );
-                                                  // if (selectedTime != null) {
-                                                  //   final now = DateTime.now();
-                                                  //   var selectedDateTime = DateTime(
-                                                  //       now.year,
-                                                  //       now.month,
-                                                  //       now.day,
-                                                  //       selectedTime.hour,
-                                                  //       selectedTime.minute);
-                                                  //   _alarmTime = selectedDateTime;
-                                                  //   setModalState(() {
-                                                  //     _alarmTimeString =
-                                                  //         DateFormat('HH:mm')
-                                                  //             .format(selectedDateTime);
-                                                  //   });
-                                                  // }
-                                                },
-                                                child: Text(
-                                                  _alarmTimeString,
-                                                  style:
+                                            return Container(
+                                                padding: const EdgeInsets.all(
+                                                    32),
+                                                child: Column(children: [
+                                                  // ignore: deprecated_member_use
+                                                  FlatButton(
+                                                    onPressed: () async {
+                                                      pickTime(index);
+                                                      print("index --> $index");
+                                                      // var selectedTime = await showTimePicker(
+                                                      //   context: context,
+                                                      //   initialTime: TimeOfDay.now(),
+                                                      // );
+                                                      // if (selectedTime != null) {
+                                                      //   final now = DateTime.now();
+                                                      //   var selectedDateTime = DateTime(
+                                                      //       now.year,
+                                                      //       now.month,
+                                                      //       now.day,
+                                                      //       selectedTime.hour,
+                                                      //       selectedTime.minute);
+                                                      //   _alarmTime = selectedDateTime;
+                                                      //   setModalState(() {
+                                                      //     _alarmTimeString =
+                                                      //         DateFormat('HH:mm')
+                                                      //             .format(selectedDateTime);
+                                                      //   });
+                                                      // }
+                                                    },
+                                                    child: Text(
+                                                      _alarmTimeString,
+                                                      style:
                                                       TextStyle(fontSize: 32),
-                                                ),
-                                              ),
-                                              ListTile(
-                                                title:
+                                                    ),
+                                                  ),
+                                                  ListTile(
+                                                    title:
                                                     Text('What Do You Want ??'),
-                                                trailing: Icon(Icons.timer),
-                                              ),
-                                              ListTile(
-                                                title: ToggleSwitch(
-                                                  initialLabelIndex: 0,
-                                                  labels: ['On', 'Off'],
-                                                  onToggle: (index) {
-                                                    print(
-                                                        'switched to: $index');
-
-                                                    setState(() {
-                                                      changeIndex(index);
-                                                    });
-                                                  },
-                                                ),
-                                                // trailing: Icon(Icons.arrow_forward_ios),
-                                              ),
-                                              FloatingActionButton.extended(
-                                                onPressed: () {
-                                                  pickTime(index);
-                                                  Navigator.pop(context);
-
-                                                  print('Sceduled');
-                                                },
-                                                icon: Icon(Icons.alarm),
-                                                label: Text('Save'),
-                                              ),
-                                            ]));
-                                      });
+                                                    trailing: Icon(Icons.timer),
+                                                  ),
+                                                  ListTile(
+                                                    title: ToggleSwitch(
+                                                      initialLabelIndex: 0,
+                                                      labels: ['On', 'Off'],
+                                                      onToggle: (index) {
+                                                        print(
+                                                            'switched to: $index');
+                                                        changeIndex(index);
+                                                        // setState(() {
+                                                        //
+                                                        // });
+                                                      },
+                                                    ),
+                                                    // trailing: Icon(Icons.arrow_forward_ios),
+                                                  ),
+                                                  FloatingActionButton.extended(
+                                                    onPressed: () {
+                                                      pickTime(index);
+                                                      Navigator.pop(context);
+                                                      
+                                                      print('Sceduled');
+                                                    },
+                                                    icon: Icon(Icons.alarm),
+                                                    label: Text('Save'),
+                                                  ),
+                                                ]));
+                                          });
                                     });
                               },
                               child: Padding(
@@ -3704,7 +4483,7 @@ class _HomeTestState extends State<HomeTest>
                                     margin: index % 2 == 0
                                         ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
                                         : EdgeInsets.fromLTRB(
-                                            7.5, 7.5, 15, 7.5),
+                                        7.5, 7.5, 15, 7.5),
                                     // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                     decoration: BoxDecoration(
                                         boxShadow: <BoxShadow>[
@@ -3719,7 +4498,7 @@ class _HomeTestState extends State<HomeTest>
                                             style: BorderStyle.solid,
                                             color: Color(0xffa3a3a3)),
                                         borderRadius:
-                                            BorderRadius.circular(20)),
+                                        BorderRadius.circular(20)),
                                     child: Column(
                                       // crossAxisAlignment:
                                       // CrossAxisAlignment.stretch,
@@ -3727,24 +4506,28 @@ class _HomeTestState extends State<HomeTest>
                                         Row(
                                           children: [
                                             GestureDetector(
-                                              onTap:(){
-                                                print('tabbarstateDelete ${tabbarState}');
-                                                print('tabbarstateDelete ${dId}');
+                                                onTap: () {
+                                                  print(
+                                                      'tabbarstateDelete ${tabbarState}');
+                                                  print(
+                                                      'tabbarstateDelete ${dId}');
 
-                                                deleteDevice(tabbarState,dId);
-                                              },
-                                              child:Icon(Icons.auto_delete)
+                                                  deleteDevice(
+                                                      tabbarState, dId);
+                                                },
+                                                child: Icon(Icons.auto_delete)
                                             ),
                                             Expanded(
                                               child: TextButton(
                                                 child: Text(
                                                   // '$index',
-                                                  '${namesDataList[index].toString()} ',
+                                                  '${namesDataList[index]
+                                                      .toString()} ',
                                                   overflow:
-                                                      TextOverflow.ellipsis,
+                                                  TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   style:
-                                                      TextStyle(fontSize: 10),
+                                                  TextStyle(fontSize: 10),
                                                 ),
                                                 onPressed: () {
                                                   print(
@@ -3770,22 +4553,22 @@ class _HomeTestState extends State<HomeTest>
                                               ),
                                               child: Switch(
                                                 value:
-                                                    responseGetData[index] == 0
-                                                        ? val2
-                                                        : val1,
+                                                responseGetData[index] == 0
+                                                    ? val2
+                                                    : val1,
                                                 //boolean value
                                                 onChanged: (val) async {
                                                   print(
                                                       '12365 ${responseGetData[index]}');
                                                   setState(() {
                                                     if (responseGetData[
-                                                            index] ==
+                                                    index] ==
                                                         0) {
                                                       responseGetData[index] =
-                                                          1;
+                                                      1;
                                                     } else {
                                                       responseGetData[index] =
-                                                          0;
+                                                      0;
                                                     }
                                                     print(
                                                         'yooooooooo ${responseGetData[index]}');
@@ -3793,8 +4576,8 @@ class _HomeTestState extends State<HomeTest>
 
                                                   // if Internet is not available then _checkInternetConnectivity = true
                                                   var result =
-                                                      await Connectivity()
-                                                          .checkConnectivity();
+                                                  await Connectivity()
+                                                      .checkConnectivity();
                                                   if (result ==
                                                       ConnectivityResult.none) {
                                                     messageSms(context, dId);
@@ -3842,7 +4625,10 @@ class _HomeTestState extends State<HomeTest>
               ),
               Flexible(
                 child: Container(
-                  height: MediaQuery.of(context).size.height - 45,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height - 45,
                   // color: Colors.black,
                   // color: Colors.amber,
                   child: GridView.count(
@@ -3853,7 +4639,7 @@ class _HomeTestState extends State<HomeTest>
                       // shrinkWrap: true,
                       crossAxisCount: 2,
                       children:
-                          List.generate(responseGetData.length - 9, (index) {
+                      List.generate(responseGetData.length - 9, (index) {
                         print('Slider Start');
                         print('catch return --> $catchReturn');
                         var newIndex = index + 10;
@@ -3879,73 +4665,77 @@ class _HomeTestState extends State<HomeTest>
                                       builder: (context) {
                                         return StatefulBuilder(
                                             builder: (context, setModalState) {
-                                          return Container(
-                                              padding: const EdgeInsets.all(32),
-                                              child: Column(children: [
-                                                // ignore: deprecated_member_use
-                                                FlatButton(
-                                                  onPressed: () async {
-                                                    pickTime(index);
-                                                    // s
-                                                    print("index --> $index");
-                                                    // var selectedTime = await showTimePicker(
-                                                    //   context: context,
-                                                    //   initialTime: TimeOfDay.now(),
-                                                    // );
-                                                    // if (selectedTime != null) {
-                                                    //   final now = DateTime.now();
-                                                    //   var selectedDateTime = DateTime(
-                                                    //       now.year,
-                                                    //       now.month,
-                                                    //       now.day,
-                                                    //       selectedTime.hour,
-                                                    //       selectedTime.minute);
-                                                    //   _alarmTime = selectedDateTime;
-                                                    //   setModalState(() {
-                                                    //     _alarmTimeString =
-                                                    //         DateFormat('HH:mm')
-                                                    //             .format(selectedDateTime);
-                                                    //   });
-                                                    // }
-                                                  },
-                                                  child: Text(
-                                                    _alarmTimeString,
-                                                    style:
+                                              return Container(
+                                                  padding: const EdgeInsets.all(
+                                                      32),
+                                                  child: Column(children: [
+                                                    // ignore: deprecated_member_use
+                                                    FlatButton(
+                                                      onPressed: () async {
+                                                        pickTime(index);
+                                                        // s
+                                                        print(
+                                                            "index --> $index");
+                                                        // var selectedTime = await showTimePicker(
+                                                        //   context: context,
+                                                        //   initialTime: TimeOfDay.now(),
+                                                        // );
+                                                        // if (selectedTime != null) {
+                                                        //   final now = DateTime.now();
+                                                        //   var selectedDateTime = DateTime(
+                                                        //       now.year,
+                                                        //       now.month,
+                                                        //       now.day,
+                                                        //       selectedTime.hour,
+                                                        //       selectedTime.minute);
+                                                        //   _alarmTime = selectedDateTime;
+                                                        //   setModalState(() {
+                                                        //     _alarmTimeString =
+                                                        //         DateFormat('HH:mm')
+                                                        //             .format(selectedDateTime);
+                                                        //   });
+                                                        // }
+                                                      },
+                                                      child: Text(
+                                                        _alarmTimeString,
+                                                        style:
                                                         TextStyle(fontSize: 32),
-                                                  ),
-                                                ),
-                                                ListTile(
-                                                  title: Text(
-                                                      'What Do You Want ??'),
-                                                  trailing: Icon(Icons.timer),
-                                                ),
-                                                ListTile(
-                                                  title: ToggleSwitch(
-                                                    initialLabelIndex: 0,
-                                                    labels: ['On', 'Off'],
-                                                    onToggle: (index) {
-                                                      print(
-                                                          'switched to: $index');
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          'What Do You Want ??'),
+                                                      trailing: Icon(
+                                                          Icons.timer),
+                                                    ),
+                                                    ListTile(
+                                                      title: ToggleSwitch(
+                                                        initialLabelIndex: 0,
+                                                        labels: ['On', 'Off'],
+                                                        onToggle: (index) {
+                                                          print(
+                                                              'switched to: $index');
 
-                                                      setState(() {
-                                                        changeIndex(index);
-                                                      });
-                                                    },
-                                                  ),
-                                                  // trailing: Icon(Icons.arrow_forward_ios),
-                                                ),
-                                                FloatingActionButton.extended(
-                                                  onPressed: () {
-                                                    pickTime(index);
-                                                    Navigator.pop(context);
+                                                          setState(() {
+                                                            changeIndex(index);
+                                                          });
+                                                        },
+                                                      ),
+                                                      // trailing: Icon(Icons.arrow_forward_ios),
+                                                    ),
+                                                    FloatingActionButton
+                                                        .extended(
+                                                      onPressed: () {
+                                                        pickTime(index);
+                                                        Navigator.pop(context);
 
-                                                    print('Sceduled');
-                                                  },
-                                                  icon: Icon(Icons.alarm),
-                                                  label: Text('Save'),
-                                                ),
-                                              ]));
-                                        });
+                                                        print('Sceduled');
+                                                      },
+                                                      icon: Icon(Icons.alarm),
+                                                      label: Text('Save'),
+                                                    ),
+                                                  ]));
+                                            });
                                       });
                                 },
                                 child: Padding(
@@ -3958,9 +4748,9 @@ class _HomeTestState extends State<HomeTest>
                                           horizontal: 1, vertical: 10),
                                       margin: index % 2 == 0
                                           ? EdgeInsets.fromLTRB(
-                                              15, 7.5, 7.5, 7.5)
+                                          15, 7.5, 7.5, 7.5)
                                           : EdgeInsets.fromLTRB(
-                                              7.5, 7.5, 15, 7.5),
+                                          7.5, 7.5, 15, 7.5),
                                       // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                       decoration: BoxDecoration(
                                           boxShadow: <BoxShadow>[
@@ -3975,10 +4765,10 @@ class _HomeTestState extends State<HomeTest>
                                               style: BorderStyle.solid,
                                               color: Color(0xffa3a3a3)),
                                           borderRadius:
-                                              BorderRadius.circular(20)),
+                                          BorderRadius.circular(20)),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
+                                        CrossAxisAlignment.stretch,
                                         children: [
                                           Row(
                                             children: [
@@ -3988,7 +4778,7 @@ class _HomeTestState extends State<HomeTest>
                                                   // value: 5.0,
                                                   value: double.parse(
                                                       responseGetData[
-                                                              newIndex - 1]
+                                                      newIndex - 1]
                                                           .toString()),
                                                   min: 0,
                                                   max: 10,
@@ -3996,13 +4786,17 @@ class _HomeTestState extends State<HomeTest>
                                                   activeColor: Colors.blue,
                                                   inactiveColor: Colors.black,
                                                   label:
-                                                      '${double.parse(responseGetData[newIndex - 1].toString())}',
+                                                  '${double.parse(
+                                                      responseGetData[newIndex -
+                                                          1].toString())}',
                                                   onChanged:
                                                       (double newValue) async {
                                                     print(
-                                                        'index of data $index --> ${responseGetData[newIndex - 1]}');
+                                                        'index of data $index --> ${responseGetData[newIndex -
+                                                            1]}');
                                                     print(
-                                                        'index of $index --> ${newIndex - 1}');
+                                                        'index of $index --> ${newIndex -
+                                                            1}');
 
                                                     setState(() {
                                                       // if (responseGetData[newIndex-1] != null) {
@@ -4010,21 +4804,23 @@ class _HomeTestState extends State<HomeTest>
                                                       // }
 
                                                       print(
-                                                          "Round-->  ${newValue.round()}");
+                                                          "Round-->  ${newValue
+                                                              .round()}");
                                                       var roundVar =
-                                                          newValue.round();
+                                                      newValue.round();
                                                       print(
                                                           "Round 2-->  $roundVar");
                                                       responseGetData[newIndex -
                                                           1] = roundVar;
                                                       print(
-                                                          "Response Round-->  ${responseGetData[newIndex - 1]}");
+                                                          "Response Round-->  ${responseGetData[newIndex -
+                                                              1]}");
                                                     });
 
                                                     // if Internet is not available then _checkInternetConnectivity = true
                                                     var result =
-                                                        await Connectivity()
-                                                            .checkConnectivity();
+                                                    await Connectivity()
+                                                        .checkConnectivity();
                                                     if (result ==
                                                         ConnectivityResult
                                                             .wifi) {
@@ -4053,7 +4849,8 @@ class _HomeTestState extends State<HomeTest>
                                           Expanded(
                                             child: TextButton(
                                               child: Text(
-                                                '${namesDataList[index + 9].toString()} ',
+                                                '${namesDataList[index + 9]
+                                                    .toString()} ',
                                                 // '${namesDataList[index].toString()} ',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
@@ -4094,8 +4891,8 @@ class _HomeTestState extends State<HomeTest>
     if (mounted) setState(() {});
   }
 
-  void scheduleAlarm(
-      DateTime scheduledNotificationDateTime, AlarmInfo alarmInfo) async {
+  void scheduleAlarm(DateTime scheduledNotificationDateTime,
+      AlarmInfo alarmInfo) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
@@ -4194,8 +4991,14 @@ class _HomeTestState extends State<HomeTest>
         // int aa=int.parse(a);
 
         int ms =
-            ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
-        if (aa.compareTo(ms) > 0) {
+        // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
+        ((DateTime
+            .now()
+            .millisecondsSinceEpoch) / 1000).round() -
+            100; // -100 for checking a difference for 100 seconds in current time
+        print('CheckMs ${ms}');
+        print('Checkaa ${aa}');
+        if (aa >= ms) {
           print('ifelse');
           statusOfDevice = 1;
         } else {

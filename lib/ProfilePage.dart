@@ -38,7 +38,7 @@ class ProfilePage extends StatefulWidget {
   ProfilePage({
     Key key,
     // @required this.pt,
-    @required this.fl,
+    // @required this.fl,
     // @required this.rm,
     // @required this.dv
   }) : super(key: key);
@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //         print('response123 ${response.statusCode}');
 //         print('ElseIfFlag $flag');
 //       }
-    response = await http.put(url, body: jsonEncode(postData), headers: {
+    response = await http.post(url, body: jsonEncode(postData), headers: {
       'Content-Type': 'application/json',
       // 'Accept': 'application/json',
       'Authorization': 'Token $token',

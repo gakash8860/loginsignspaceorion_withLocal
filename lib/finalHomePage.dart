@@ -116,7 +116,7 @@ class _HomePageFinalState extends State<HomePageFinal> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProfilePage(fl: floorResponse,)));
+                                  builder: (context) => ProfilePage()));
                         },
                         cacheImage: true,
                       ),
@@ -276,7 +276,7 @@ class _HomePageFinalState extends State<HomePageFinal> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ProfilePage(fl: null,
+                                builder: (context) => ProfilePage(
                                   // fl: widget.fl,
                                 )
                             )

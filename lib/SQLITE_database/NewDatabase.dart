@@ -11,7 +11,7 @@ List tableOfPlace;
 class NewDbProvider {
   NewDbProvider._privateConstructor();
 
-  PlaceType placeType;
+
   static final NewDbProvider instance = NewDbProvider._privateConstructor();
 
   static final _userDetails = 'userDetails';
@@ -23,7 +23,7 @@ class NewDbProvider {
   static final columnUserPassword2 = 'password2';
   static final columnUserPhoneNumber = 'phone_no';
 
-  static final _tableName = 'placeTable';
+  static final _placeTableName = 'placeTable';
   static final columnPlaceId = 'p_id';
   static final columnPlaceName = 'p_type';
   static final columnPlaceUser = 'user';
@@ -152,14 +152,14 @@ class NewDbProvider {
          ''');
 
        await db.execute('''
-         CREATE TABLE $_tableName (  $columnPlaceId INTEGER PRIMARY KEY,
+         CREATE TABLE $_placeTableName (  $columnPlaceId INTEGER PRIMARY KEY,
          $columnPlaceName TEXT NOT NULL,$columnPlaceUser INTEGER )
          ''');
         await db.execute('''
-        CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_tableName ($columnPlaceId ));
+        CREATE TABLE $_floorTableName($columnFloorId INTEGER NOT NULL PRIMARY KEY , $columnFloorName TEXT NOT NULL ,$columnPlaceId INTEGER,$columnFloorUser INTEGER,FOREIGN KEY($columnFloorId) REFERENCES $_placeTableName ($columnPlaceId ));
         ''');
           await db.execute('''
-        CREATE TABLE $_flatTableName($columnFlatId INTEGER NOT NULL PRIMARY KEY , $columnFlatName TEXT NOT NULL ,$columnFloorId INTEGER,$columnFlatUser INTEGER,FOREIGN KEY($columnFlatId) REFERENCES $_tableName ($columnFloorId ));
+        CREATE TABLE $_flatTableName($columnFlatId INTEGER NOT NULL PRIMARY KEY , $columnFlatName TEXT NOT NULL ,$columnFloorId INTEGER,$columnFlatUser INTEGER,FOREIGN KEY($columnFlatId) REFERENCES $_floorTableName ($columnFloorId ));
         ''');
       await db.execute('''
         CREATE TABLE $_roomTableName(   $columnRoomId INTEGER NOT NULL PRIMARY KEY , $columnRoomName TEXT NOT NULL ,$columnFlatId INTEGER,$columnRoomUser INTEGER,FOREIGN KEY($columnRoomId) REFERENCES $_flatTableName ($columnFlatId ))
@@ -211,7 +211,7 @@ class NewDbProvider {
     // Get a reference to the database.
     final db = await database;
     await db.insert(
-      '$_tableName',
+      '$_placeTableName',
       placeType.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -290,6 +290,26 @@ class NewDbProvider {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> deleteRoomModel()async{
+    final db= await database;
+    print('delete');
+    await db.delete(_roomTableName);
+  }
+  Future<void> deleteFloorModel()async{
+    final db= await database;
+    print('delete');
+    await db.delete(_floorTableName);
+  }
+  Future<void> deleteFlatModel()async{
+    final db= await database;
+    print('delete');
+    await db.delete(_flatTableName);
+  }
+  Future<void> deletePlaceModel()async{
+    final db= await database;
+    print('delete');
+    await db.delete(_placeTableName);
+  }
   userQuery() async {
     Database db = await instance.database;
 
@@ -298,7 +318,7 @@ class NewDbProvider {
   queryPlace() async {
     Database db = await instance.database;
 
-    return await db.query(_tableName);
+    return await db.query(_placeTableName);
   }
   queryTempUser() async {
     Database db = await instance.database;
@@ -395,7 +415,7 @@ class NewDbProvider {
   }
   Future updatePLaceNameLocal(PlaceType placeType) async {
     final db = await database;
-     var result = await db.update('$_tableName', placeType.toJson(),
+     var result = await db.update('$_placeTableName', placeType.toJson(),
       where: 'p_type = ?',
       whereArgs: [placeType.pType],
     );
@@ -410,6 +430,27 @@ class NewDbProvider {
   Future updateRoom(RoomType roomType)async{
     var db = await database;
     return db.update('$_roomTableName', roomType.toJson());
+  }
+  Future updateFloor(FloorType floorType)async{
+    var db = await database;
+    return db.update('$_floorTableName', floorType.toJson());
+  }
+
+  Future updatePlace(PlaceType placeType)async{
+    var db = await database;
+    return db.update('$_placeTableName', placeType.toJson());
+  }
+
+  Future updateFlat(Flat flat)async{
+    var db = await database;
+    return db.update('$_flatTableName', flat.toJson());
+  }
+
+
+
+  Future updateDevice(Device device)async{
+    var db = await database;
+    return db.update('$_deviceTable', device.toJson());
   }
   Future updateSensorData(SensorData sensorData)async{
     var db = await database;

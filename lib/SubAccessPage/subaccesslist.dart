@@ -5,6 +5,8 @@ import 'package:loginsignspaceorion/SubAccessPage/subaccesshomepage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
+
+import '../main.dart';
 void main()=>runApp(MaterialApp(
   home: SubAccessList(),
 ));
@@ -21,13 +23,13 @@ class _SubAccessListState extends State<SubAccessList> {
   var listOfFloorId;
   List data;
   Box subUserBox;
-
-
+  var placeId;
+  Future futureSubUser;
 
 
   void initState(){
     super.initState();
-    getSubUsers();
+   futureSubUser= getSubUsers();
   }
 
 
@@ -50,10 +52,10 @@ class _SubAccessListState extends State<SubAccessList> {
 
 
   Future<void> getSubUsers()async{
-    String token ='fc8a8de66981014125077cadbf12bb12cbfe95fb';
+    String token =await getToken();
     await openSubUserBox();
 
-    final url ='http://genorion1.herokuapp.com/subfindsubdata/?email=test@gmail.com';
+    final url ='http://genorion1.herokuapp.com/getalldatayouadded/';
     try{
       final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
@@ -70,9 +72,10 @@ class _SubAccessListState extends State<SubAccessList> {
       print('tempResponse ${subUserDecode}');
       setState(() {
         subUserDecodeList=subUserDecode;
+        placeId=subUserDecodeList[0]['p_id'].toString();
         putSubUser(subUserDecodeList);
       });
-      print('subUserDecode ${subUserDecodeList}');
+      print('subUserDecode ${placeId}');
       print('Number1123->  ${subUserDecodeList}');
 
 
@@ -100,27 +103,7 @@ class _SubAccessListState extends State<SubAccessList> {
     }
 
   }
-  var placeName;
 
-  Future getSinglePlaceName()async{
-    String token ='fc8a8de66981014125077cadbf12bb12cbfe95fb';
-    final url='http://genorion1.herokuapp.com/getyouplacename/?p_id=8746347';
-    final response = await http.get(url,headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if(response.statusCode>0){
-      print('getSinglePlaceName${response.statusCode}');
-      print('getSinglePlaceName${response.body}');
-      var placeDecode=  jsonDecode(response.body);
-      setState(() {
-        placeName=placeDecode;
-      });
-      print('placeName${placeName}');
-    }
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +126,7 @@ class _SubAccessListState extends State<SubAccessList> {
               width:MediaQuery.of(context).size.width,
               height:MediaQuery.of(context).size.height,
               child: FutureBuilder(
-                  future: getSubUsers(),
+                  future: futureSubUser,
                   builder: ( context,  snapshot){
                     // getSinglePlaceName();
                     if(snapshot.hasData){
@@ -180,6 +163,7 @@ class _SubAccessListState extends State<SubAccessList> {
                                                   print('printSubUser ${subUserDecodeList[index]['p_id']}');
                                                  await Navigator.push(context, MaterialPageRoute(builder: (context)=>SubAccessHome(
                                                     email:subUserDecodeList[index]['email'] ,
+                                                  ownerName: subUserDecodeList[index]['owner_name'],
                                                   pt: subUserDecodeList[index]['p_id'].toString(),)));
                                                   // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
                                                   //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
@@ -212,7 +196,7 @@ class _SubAccessListState extends State<SubAccessList> {
                           child:Shimmer.fromColors(
                             baseColor: Colors.red,
                             highlightColor: Colors.yellow,
-                            child: Text('Wait'),)
+                            child: Center(child: Text('Wait')),)
                       );
                       return Center(
                         child: Column(
