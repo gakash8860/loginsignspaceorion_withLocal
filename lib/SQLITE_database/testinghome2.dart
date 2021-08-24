@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillPrediction.dart';
+import 'package:loginsignspaceorion/SETTINGS.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
 
@@ -23,6 +24,7 @@ import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/about_Genorion.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
+import 'package:loginsignspaceorion/information.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,6 +54,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loginsignspaceorion/ProfilePage.dart';
 
 import '../Setting_Page.dart';
+import '../billprediction2.dart';
 import 'DesktopUi/desktopMenu.dart';
 import 'DesktopUi/destination.dart';
 import 'DesktopUi/destinationview.dart';
@@ -1684,14 +1687,14 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  _createAlertDialogForSSIDAndEmergencyNumber(BuildContext context) {
+  _createAlertDialogForSSIDAndEmergencyNumber(BuildContext context,String dId) {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             content: Container(
-              height: 105,
+              height: 165,
               child: Column(
                 children: [
                   TextButton(
@@ -1701,7 +1704,7 @@ class _HomeTestState extends State<HomeTest>
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ShowSsid(
-                                      deviceId: dv[index].dId,
+                                      deviceId: dId,
                                     )));
                       },
                       child: Text(
@@ -1715,13 +1718,28 @@ class _HomeTestState extends State<HomeTest>
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ShowEmergencyNumber(
-                                      deviceId: dv[index].dId,
+                                      deviceId: dId,
                                     )));
                       },
                       child: Text(
                         'Emergency Number',
                         style: TextStyle(fontSize: 20),
-                      ))
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        _createAlertDialogForPin17(context, dId);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             ShowEmergencyNumber(
+                        //               deviceId: widget.dv[index].dId,
+                        //             )));
+                      },
+                      child: Text(
+                        'Add Device Cell Number',
+                        style: TextStyle(fontSize: 20),
+                      )),
                 ],
               ),
             ),
@@ -3587,7 +3605,7 @@ class _HomeTestState extends State<HomeTest>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BillPrediction(),
+                                  builder: (context) => BillPrediction2(),
                                 ),
                               );
                             }),
@@ -3619,7 +3637,7 @@ class _HomeTestState extends State<HomeTest>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SettingPage()),
+                                  builder: (context) => SETTINGS()),
                             );
                           },
                         ),
@@ -3653,7 +3671,7 @@ class _HomeTestState extends State<HomeTest>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AboutGen()),
+                                  builder: (context) => Information()),
                             );
                           },
                         ),
@@ -4132,8 +4150,7 @@ class _HomeTestState extends State<HomeTest>
                                             ]),
                                           ),
                                           onTap: () {
-                                            _createAlertDialogForSSIDAndEmergencyNumber(
-                                                context);
+                                            _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
                                             print('on tap');
                                           },
                                         )),
@@ -4405,7 +4422,7 @@ class _HomeTestState extends State<HomeTest>
       postData = {
         "user": getUidVariable2,
         "date1": cutDate.toString(),
-        "timing1": _alarmTimeString.toString(),
+        "timing1": cutTime.toString(),
         "pin1Status": checkSwitch,
         "d_id": dId,
       };
@@ -4421,7 +4438,7 @@ class _HomeTestState extends State<HomeTest>
       postData = {
         "user": getUidVariable2,
         "date1": cutDate.toString(),
-        "timing1": "17:58:00",
+        "timing1": _alarmTimeString,
         "pin2Status": checkSwitch,
         "d_id": dId.toString(),
       };
@@ -4537,21 +4554,26 @@ class _HomeTestState extends State<HomeTest>
     print('pickedDate ${cutDate}');
   }
 
-  // pickTime() async {
-  //   TimeOfDay time = await showTimePicker(
-  //       context: context,
-  //       initialTime: pickedTime
-  //   );
-  //   if (time != null) {
-  //     setState(() {
-  //       pickedTime = time;
-  //     });
-  //   }
-  //   String se = pickedTime.toString();
-  //   cutTime = se.substring(10, 16);
-  //   print('pickedTime ${pickedTime.toString()}');
-  //   print('pickedTime ${cutTime}');
-  // }
+  pickTime(index) async {
+    time23 = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (BuildContext context, Widget child) {
+          return Theme(data: ThemeData(), child: child);
+        });
+    // print(time23);
+    String time12;
+    if (time23 != null) {
+      setState(() {
+        time = time23;
+        print('Time ${time}');
+
+      });
+      time12=time.toString();
+      cutTime=time12.substring(10,15);
+      print('cutTime ${cutTime}');
+    }
+  }
   double _value = 0.0;
   int checkSwitch;
   int sliderValue;
@@ -4587,15 +4609,15 @@ class _HomeTestState extends State<HomeTest>
                   SizedBox(
                     width: 14,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: GestureDetector(
-                      child: Icon(Icons.mobile_screen_share_sharp),
-                      onTap: () {
-                        _createAlertDialogForPin17(context, dId);
-                      },
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(12),
+                  //   child: GestureDetector(
+                  //     child: Icon(Icons.mobile_screen_share_sharp),
+                  //     onTap: () {
+                  //       _createAlertDialogForPin17(context, dId);
+                  //     },
+                  //   ),
+                  // ),
                   Container(
                     width: 14,
                     height: 14,
@@ -5334,21 +5356,7 @@ class _HomeTestState extends State<HomeTest>
     return data;
   }
 
-  pickTime(index) async {
-    time23 = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-        builder: (BuildContext context, Widget child) {
-          return Theme(data: ThemeData(), child: child);
-        });
-    // print(time23);
-    if (time23 != null) {
-      setState(() {
-        time = time23;
-        print(time);
-      });
-    }
-  }
+
 
   _launchURL() async {
     const url = 'https://genorion1.herokuapp.com/change_password_phone';
