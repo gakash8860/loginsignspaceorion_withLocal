@@ -93,8 +93,8 @@ void initState(){
   }
   Future<void> getTempUsers()async{
     await openTempUserBox();
-    // String token = await getToken();
-    String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
+    String token = await getToken();
+    // String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
     final url = 'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/';
         try{
      final response= await http.get(Uri.parse(url),headers: {
@@ -246,7 +246,7 @@ void initState(){
                     future: getTempUsers(),
                     builder: ( context,  snapshot){
                       if(snapshot.hasData){
-                        if(tempUserDecodeList.isEmpty){
+                        if(tempUserDecodeList.length==null){
                           return Column(
                             children: [
                               SizedBox(height: 250,),
@@ -380,7 +380,7 @@ void initState(){
                       future: getTempUsers(),
                       builder: ( context,  snapshot){
                         if(snapshot.hasData){
-                          if(tempUserDecodeList.isEmpty){
+                          if(tempUserDecodeList.length==null){
                             return Column(
                               children: [
                                 SizedBox(height: 250,),

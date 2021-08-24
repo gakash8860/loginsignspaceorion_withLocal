@@ -24,8 +24,10 @@ import 'package:loginsignspaceorion/about_Genorion.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -183,6 +185,7 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController flatEditing = TextEditingController();
   TextEditingController controller = TextEditingController();
   GlobalKey key;
+  DateTime pickedDate;
 
   // List<RoomType> rm;
   // AudioCache _player;
@@ -211,6 +214,7 @@ class _HomeTestState extends State<HomeTest>
   TimeOfDay picked;
   String tabbarState = "";
   String _alarmTimeString;
+  String _dateString = "";
   DateTime _alarmTime;
   Future<List<AlarmInfo>> _alarms;
   List<AlarmInfo> _currentAlarms;
@@ -356,14 +360,14 @@ class _HomeTestState extends State<HomeTest>
   @override
   void initState() {
     super.initState();
-    timer=Timer.periodic(Duration(seconds: 10), (timer) {
+    pickedDate = DateTime.now();
+    timer = Timer.periodic(Duration(seconds: 10), (timer) {
       print('10seconds');
       fetchPlace();
       // getAllFloor();
     });
     _index = widget.currentIndex;
   }
-
 
 
   TextEditingController placeEditing = new TextEditingController();
@@ -571,7 +575,6 @@ class _HomeTestState extends State<HomeTest>
       }
     }
   }
-
 
 
   List pinNames = [];
@@ -1371,6 +1374,7 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
   _createAlertDialogForPin17(BuildContext context, String dId) {
     return showDialog(
         context: context,
@@ -1432,6 +1436,7 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
   _createAlertDialogForFloor(BuildContext context) {
     return showDialog(
         context: context,
@@ -1819,23 +1824,23 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  alertDialogExistingFloor(BuildContext context){
+  alertDialogExistingFloor(BuildContext context) {
     return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context){
-        return AlertDialog(
-          title: Text('Oops',),
-          content: Container(
-            color: Colors.blueGrey,
-            child: MaterialButton(
-                child: Text('Ok'),
-                onPressed: (){
-              Navigator.pop(context);
-            }),
-          ),
-        );
-      }
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Oops',),
+            content: Container(
+              color: Colors.blueGrey,
+              child: MaterialButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ),
+          );
+        }
     );
   }
 
@@ -1866,14 +1871,16 @@ class _HomeTestState extends State<HomeTest>
                               ),
                               RaisedButton(
                                 child: Text('Delete Floor'),
-                                onPressed: () async{
-                                  var floorId=widget.fl.fId.toString();
-                                  var selectDelete=listOfAllFloor[index]['f_id'].toString();
-                                  if(floorId.contains(selectDelete)){
+                                onPressed: () async {
+                                  var floorId = widget.fl.fId.toString();
+                                  var selectDelete = listOfAllFloor[index]['f_id']
+                                      .toString();
+                                  if (floorId.contains(selectDelete)) {
                                     print('true');
-                                     alertDialogExistingFloor(context);
+                                    alertDialogExistingFloor(context);
                                   }
-                                  deleteFloor(listOfAllFloor[index]['f_id'].toString());
+                                  deleteFloor(
+                                      listOfAllFloor[index]['f_id'].toString());
                                   Navigator.pop(context);
                                 },
                               )
@@ -1918,13 +1925,14 @@ class _HomeTestState extends State<HomeTest>
                                 child: Text('Delete Floor'),
                                 onPressed: () {
                                   print(listOfAllFlat[index]['flt_id']);
-                                  var selectedFlat=listOfAllFlat[index]['flt_id'].toString();
-                                  var flatId=widget.flat.fltId.toString();
-                                  if(flatId.contains(selectedFlat)){
-
+                                  var selectedFlat = listOfAllFlat[index]['flt_id']
+                                      .toString();
+                                  var flatId = widget.flat.fltId.toString();
+                                  if (flatId.contains(selectedFlat)) {
                                     alertDialogExistingFloor(context);
                                   }
-                                  deleteFlat(listOfAllFlat[index]['flt_id'].toString());
+                                  deleteFlat(listOfAllFlat[index]['flt_id']
+                                      .toString());
                                   Navigator.pop(context);
                                   // deleteFloor(listOfAllFloor[index]['f_id']);
                                 },
@@ -2026,6 +2034,98 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
+  _createAlertDialogForlocalUpdateAndMessage(BuildContext context,String dId) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Column(
+              children: [
+                Text(
+                  'Your Internet Connection is not working... ',
+                  style: TextStyle(fontSize: 20),
+                ),
+                Text(
+                  'Are you Connected On ?? ',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+            content: Container(
+              // height: MediaQuery
+              //     .of(context)
+              //     .size
+              //     .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Local Update',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      localUpdate(dId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowSubUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Message',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      messageSms(context, dId);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Edit Floor Name',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _editFloorNameAlertDialog(context);
+                      // deleteFloorOption(context);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
 
   _createAlertDialogForDeleteFlatAndAddFlat(BuildContext context) {
     return showDialog(
@@ -2352,18 +2452,34 @@ class _HomeTestState extends State<HomeTest>
       });
       deviceData = jsonDecode(response.body);
       // print('deviceData  ${deviceData}');
-      for (int i = 0; i < deviceData.length; i++) {
-        var deviceQuery = Device(
-            user: deviceData[i]['user'],
-            rId: deviceData[i]['r_id'],
-            dId: deviceData[i]['d_id']);
-        print('deviceQueryFunc   $deviceData}');
+      deviceQueryRows=await NewDbProvider.instance.queryDevice();
+      if(deviceData.length==deviceQueryRows.length){
+        for (int i = 0; i < deviceData.length; i++) {
+          var deviceQuery = Device(
+              user: deviceData[i]['user'],
+              rId: deviceData[i]['r_id'],
+              dId: deviceData[i]['d_id']);
+          print('deviceQueryFunc   $deviceData}');
 
-        await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
-        await NewDbProvider.instance.updateDevice(deviceQuery);
+          // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+          await NewDbProvider.instance.updateDevice(deviceQuery);
+        }
+      }else{
+           await NewDbProvider.instance.deleteDeviceModel();
+        for (int i = 0; i < deviceData.length; i++) {
+          var deviceQuery = Device(
+              user: deviceData[i]['user'],
+              rId: deviceData[i]['r_id'],
+              dId: deviceData[i]['d_id']);
+          print('deviceQueryFunc   $deviceData}');
+
+          await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+          // await NewDbProvider.instance.updateDevice(deviceQuery);
+        }
       }
+
     }
-    dv = deviceData.map((data) => Device.fromJson(data)).toList();
+    // dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
   }
 
@@ -2879,7 +2995,6 @@ class _HomeTestState extends State<HomeTest>
   var roomQuery;
 
 
-
   Future<void> fetchPlace() async {
     // await openPlaceBox();
     String token = await getToken();
@@ -2892,9 +3007,9 @@ class _HomeTestState extends State<HomeTest>
 
     try {
       if (response.statusCode > 0) {
-       List placeData = jsonDecode(response.body);
-       placeRows= await NewDbProvider.instance.queryPlace();
-        if(placeData.length==placeRows.length){
+        List placeData = jsonDecode(response.body);
+        placeRows = await NewDbProvider.instance.queryPlace();
+        if (placeData.length == placeRows.length) {
           for (int i = 0; i < placeData.length; i++) {
             var placeQuery = PlaceType(
                 pId: placeData[i]['p_id'],
@@ -2903,22 +3018,18 @@ class _HomeTestState extends State<HomeTest>
             );
             NewDbProvider.instance.updatePlace(placeQuery);
           }
-        }else{
-            await NewDbProvider.instance.deletePlaceModel();
+        } else {
+          await NewDbProvider.instance.deletePlaceModel();
           for (int i = 0; i < placeData.length; i++) {
-
             var placeQuery = PlaceType(
                 pId: placeData[i]['p_id'],
                 pType: placeData[i]['p_type'],
                 user: placeData[i]['user']
             );
             NewDbProvider.instance.insertPlaceModelData(placeQuery);
-
-
           }
         }
-getAllFloor();
-
+        getAllFloor();
 
 
         // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
@@ -2932,11 +3043,9 @@ getAllFloor();
   }
 
 
-
-
   Future<void> getAllFloor() async {
     String token = await getToken();
-    placeRows= await NewDbProvider.instance.queryPlace();
+    placeRows = await NewDbProvider.instance.queryPlace();
     print('pId  $placeRows');
     var pId;
     var floorQuery;
@@ -2992,61 +3101,56 @@ getAllFloor();
         }
       }
       getAllFlat();
-      floors = floorData.map((data) => FloorType.fromJson(data)).toList();
+      // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
       // floorData=floorData+floors;
 // getAllFlat();
 
     }
   }
 
-  Future<void> getAllFlat()async{
+  Future<void> getAllFlat() async {
     var fId;
-    floorQueryRows= await NewDbProvider.instance.queryFloor();
-    String token=await getToken();
-    for(int i=0;i<floorQueryRows.length;i++){
-      fId=floorQueryRows[i]['f_id'].toString();
+    floorQueryRows = await NewDbProvider.instance.queryFloor();
+    String token = await getToken();
+    for (int i = 0; i < floorQueryRows.length; i++) {
+      fId = floorQueryRows[i]['f_id'].toString();
       print("AllFlatFloorId $fId");
-      String url='https://genorion1.herokuapp.com/addyourflat/?f_id='+fId;
-      final  response= await http.get(Uri.parse(url),headers: {
+      String url = 'https://genorion1.herokuapp.com/addyourflat/?f_id=' + fId;
+      final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
 
       });
-      if(response.statusCode>0){
-
+      if (response.statusCode > 0) {
         List flatData = jsonDecode(response.body);
-        flatQueryRows2=await NewDbProvider.instance.queryFlat();
-        if(flatQueryRows2.length==flatData.length){
-          for(int i=0;i<flatData.length;i++){
-
-            var flatQuery=Flat(
+        flatQueryRows2 = await NewDbProvider.instance.queryFlat();
+        if (flatQueryRows2.length == flatData.length) {
+          for (int i = 0; i < flatData.length; i++) {
+            var flatQuery = Flat(
                 fId: flatData[i]['f_id'],
                 fltId: flatData[i]['flt_id'],
                 fltName: flatData[i]['flt_name'],
                 user: flatData[i]['user']
             );
-            await  NewDbProvider.instance.updateFlat(flatQuery);
+            await NewDbProvider.instance.updateFlat(flatQuery);
             print('FlatFlatQuery  ${flatQuery.fltName}');
           }
-        }else{
+        } else {
           await NewDbProvider.instance.deleteFlatModel();
-          for(int i=0;i<flatData.length;i++){
-
-            var flatQuery=Flat(
+          for (int i = 0; i < flatData.length; i++) {
+            var flatQuery = Flat(
                 fId: flatData[i]['f_id'],
                 fltId: flatData[i]['flt_id'],
                 fltName: flatData[i]['flt_name'],
                 user: flatData[i]['user']
             );
-            await  NewDbProvider.instance.insertFlatModelData(flatQuery);
+            await NewDbProvider.instance.insertFlatModelData(flatQuery);
             print('FlatFlatQuery  ${flatQuery.fltName}');
           }
         }
-          getAllRoom();
+        getAllRoom();
         print('flatData ${flatData}');
-
-
       }
 
 
@@ -3057,17 +3161,13 @@ getAllFloor();
   }
 
 
-
-
-
-
   Future<bool> getAllRoom() async {
     // String url="http://10.0.2.2:8000/api/data";
     // String token= await getToken();
     var flatId;
-    flatQueryRows2=await NewDbProvider.instance.queryFlat();
+    flatQueryRows2 = await NewDbProvider.instance.queryFlat();
     String token = await getToken();
-    for(int i =0;i<flatQueryRows2.length;i++) {
+    for (int i = 0; i < flatQueryRows2.length; i++) {
       flatId = flatQueryRows2[i]['flt_id'].toString();
 
       String url =
@@ -3107,6 +3207,7 @@ getAllFloor();
         }
       }
     }
+    getDeviceOffline(tabbarState);
     // for (int i = 0; i < roomData.length; i++) {
     //    roomQuery = RoomType(
     //       rId: roomData[i]['r_id'],
@@ -3498,12 +3599,12 @@ getAllFloor();
                                       .black,
                                 )),
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => BillPrediction(),
-                              //   ),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ScheduledPin(),
+                                ),
+                              );
                             }),
                         ListTile(
                           leading: Icon(Icons.settings),
@@ -3957,8 +4058,7 @@ getAllFloor();
                                           labelColor: Colors.blueAccent,
                                           indicatorWeight: 2.0,
                                           isScrollable: true,
-                                          tabs: widget.rm.map<Widget>((
-                                              RoomType rm) {
+                                          tabs: widget.rm.map<Widget>((RoomType rm) {
                                             rIdForName = rm.rId;
                                             print('RoomId  $rIdForName');
                                             print('RoomId  ${rm.rName}');
@@ -3967,16 +4067,14 @@ getAllFloor();
                                             );
                                           }).toList(),
                                           onTap: (index) async {
-                                            print(
-                                                'Roomsssss RID-->>>>>>>   ${widget
-                                                    .rm[index].rId}');
+                                            print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                             tabbarState = widget.rm[index].rId;
                                             setState(() {
                                               tabbarState =
                                                   widget.rm[index].rId;
                                               // devicePinNamesQueryFunc();
                                             });
-                                            // getDevices(tabbarState);
+                                            getDevices(tabbarState);
                                             print(
                                                 "tabbarState Tabs->  $tabbarState");
                                             widget.dv =
@@ -4299,16 +4397,177 @@ getAllFloor();
     );
   }
 
+  Future schedulingDevicePin(String dId, index) async {
+    final url = 'http://genorion1.herokuapp.com/schedulingpinsalltheway/';
+    String token = await getToken();
+    var postData;
+    if (index == 0) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": _alarmTimeString.toString(),
+        "pin1Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 1) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": _alarmTimeString.toString(),
+        "pin2Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 2) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": "17:58:00",
+        "pin2Status": checkSwitch,
+        "d_id": dId.toString(),
+      };
+    } else if (index == 3) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin4Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 4) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin5Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 5) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin6Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 6) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin7Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 7) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin8Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 8) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin9Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 9) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin10Status": sliderValue,
+        "d_id": dId,
+      };
+    } else if (index == 10) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin11Status": sliderValue,
+        "d_id": dId,
+      };
+    }else if (index == 11) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin12Status": sliderValue,
+        "d_id": dId,
+      };
+    }
+    final response = await http.post(url, body: jsonEncode(postData), headers: {
+      'Content-Type': 'application/json',
+      // 'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print("SchedulingStatus ${response.statusCode}");
+      print("SchedulingStatus ${response.body}");
+    }
+  }
+
+  var cutDate;
+  TimeOfDay pickedTime;
+  var cutTime;
+
+  pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      initialDate: pickedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (date != null) {
+      setState(() {
+        pickedDate = date;
+      });
+    }
+    String date2 = pickedDate.toString();
+    setState(() {
+      cutDate = date2.substring(0, 10);
+    });
+
+    print('pickedDate ${date2}');
+    print('pickedDate ${cutDate}');
+  }
+
+  // pickTime() async {
+  //   TimeOfDay time = await showTimePicker(
+  //       context: context,
+  //       initialTime: pickedTime
+  //   );
+  //   if (time != null) {
+  //     setState(() {
+  //       pickedTime = time;
+  //     });
+  //   }
+  //   String se = pickedTime.toString();
+  //   cutTime = se.substring(10, 16);
+  //   print('pickedTime ${pickedTime.toString()}');
+  //   print('pickedTime ${cutTime}');
+  // }
+  double _value = 0.0;
+  int checkSwitch;
+  int sliderValue;
+
   deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
+    // schedulingDevicePin(dId,x);
     fetchIp(dId);
     return Column(
       children: [
         Container(
+          color:Colors.red,
           height: MediaQuery
               .of(context)
               .size
-              .height * 1.75,
+              .height * 1.95,
           // color: Colors.redAccent,
           child: Column(
             children: [
@@ -4364,10 +4623,11 @@ getAllFloor();
                 ],
               ),
               Container(
+                color: Colors.yellow,
                 height: MediaQuery
                     .of(context)
                     .size
-                    .height * 1.18,
+                    .height * 1.32,
                 // color: Colors.amber,
                 child: GridView.count(
                     crossAxisSpacing: 8,
@@ -4391,6 +4651,8 @@ getAllFloor();
                               onLongPress: () async {
                                 _alarmTimeString =
                                     DateFormat('HH:mm').format(DateTime.now());
+                                cutDate = DateFormat('dd-MM-yyyy').format(
+                                    DateTime.now());
                                 showModalBottomSheet(
                                     useRootNavigator: true,
                                     context: context,
@@ -4408,6 +4670,21 @@ getAllFloor();
                                                     32),
                                                 child: Column(children: [
                                                   // ignore: deprecated_member_use
+                                                  Container(
+                                                    width: 145,
+                                                    child: GestureDetector(
+                                                        child: Text(cutDate
+                                                            .toString() == null
+                                                            ? _dateString
+                                                            : cutDate.toString()
+                                                            .toString()),
+                                                        onTap: () {
+                                                          pickDate();
+                                                        }
+
+                                                    ),
+                                                  ),
+
                                                   FlatButton(
                                                     onPressed: () async {
                                                       pickTime(index);
@@ -4446,11 +4723,12 @@ getAllFloor();
                                                   ListTile(
                                                     title: ToggleSwitch(
                                                       initialLabelIndex: 0,
-                                                      labels: ['On', 'Off'],
+                                                      labels: ['Off', 'On'],
                                                       onToggle: (index) {
                                                         print(
                                                             'switched to: $index');
-                                                        changeIndex(index);
+                                                        checkSwitch = index;
+                                                        // changeIndex(index);
                                                         // setState(() {
                                                         //
                                                         // });
@@ -4458,11 +4736,13 @@ getAllFloor();
                                                     ),
                                                     // trailing: Icon(Icons.arrow_forward_ios),
                                                   ),
+
                                                   FloatingActionButton.extended(
-                                                    onPressed: () {
-                                                      pickTime(index);
+                                                    onPressed: () async {
+                                                      await schedulingDevicePin(
+                                                          dId, index);
                                                       Navigator.pop(context);
-                                                      
+
                                                       print('Sceduled');
                                                     },
                                                     icon: Icon(Icons.alarm),
@@ -4512,8 +4792,7 @@ getAllFloor();
                                                   print(
                                                       'tabbarstateDelete ${dId}');
 
-                                                  deleteDevice(
-                                                      tabbarState, dId);
+                                                  deleteDevice(tabbarState, dId);
                                                 },
                                                 child: Icon(Icons.auto_delete)
                                             ),
@@ -4561,41 +4840,31 @@ getAllFloor();
                                                   print(
                                                       '12365 ${responseGetData[index]}');
                                                   setState(() {
-                                                    if (responseGetData[
-                                                    index] ==
-                                                        0) {
+                                                    if (responseGetData[index] == 0) {
                                                       responseGetData[index] =
                                                       1;
                                                     } else {
-                                                      responseGetData[index] =
-                                                      0;
+                                                      responseGetData[index] = 0;
                                                     }
-                                                    print(
-                                                        'yooooooooo ${responseGetData[index]}');
+                                                    print('yooooooooo ${responseGetData[index]}');
                                                   });
 
                                                   // if Internet is not available then _checkInternetConnectivity = true
-                                                  var result =
-                                                  await Connectivity()
+                                                  var result = await Connectivity()
                                                       .checkConnectivity();
                                                   if (result ==
                                                       ConnectivityResult.none) {
                                                     messageSms(context, dId);
                                                   }
-                                                  if (result ==
-                                                      ConnectivityResult.wifi) {
+                                                  if (result == ConnectivityResult.wifi && statusOfDevice == 1) {
                                                     print("True2-->   $result");
                                                     localUpdate(dId);
                                                     dataUpdate(dId);
-                                                  } else if (result ==
-                                                      ConnectivityResult
-                                                          .mobile) {
-                                                    print(
-                                                        "mobile-->   $result");
-                                                    // await localUpdate(d_id);
-                                                    await dataUpdate(dId);
-                                                  } else {
-                                                    messageSms(context, dId);
+                                                  } else if (result == ConnectivityResult.mobile && result ==ConnectivityResult.none && statusOfDevice == 1) {
+                                                    dataUpdate(dId);
+                                                  } else if(result==ConnectivityResult.wifi && result ==ConnectivityResult.none && statusOfDevice == 1){
+                                                    _createAlertDialogForlocalUpdateAndMessage(context,dId);
+
                                                   }
                                                 },
                                               ),
@@ -4625,12 +4894,13 @@ getAllFloor();
               ),
               Flexible(
                 child: Container(
+
                   height: MediaQuery
                       .of(context)
                       .size
-                      .height - 45,
+                      .height *1.92,
                   // color: Colors.black,
-                  // color: Colors.amber,
+                  color: Colors.amber,
                   child: GridView.count(
                       crossAxisSpacing: 8,
                       childAspectRatio: 2 / 1.8,
@@ -4653,6 +4923,8 @@ getAllFloor();
                                 onLongPress: () async {
                                   _alarmTimeString = DateFormat('HH:mm')
                                       .format(DateTime.now());
+                                  _dateString = DateFormat('dd-MM-yyyy').format(
+                                      DateTime.now());
                                   showModalBottomSheet(
                                       useRootNavigator: true,
                                       context: context,
@@ -4666,75 +4938,102 @@ getAllFloor();
                                         return StatefulBuilder(
                                             builder: (context, setModalState) {
                                               return Container(
-                                                  padding: const EdgeInsets.all(
-                                                      32),
-                                                  child: Column(children: [
+                                                padding: const EdgeInsets.all(
+                                                    32),
+                                                child: Column(children: [
+                                                  Container(
+                                                    width: 145,
+                                                    child: GestureDetector(
+                                                        child: Text(cutDate
+                                                            .toString() == null
+                                                            ? _dateString
+                                                            : cutDate
+                                                            .toString()),
+                                                        onTap: () {
+                                                          pickDate();
+                                                        }
+
+                                                    ),
+                                                  ),
                                                     // ignore: deprecated_member_use
                                                     FlatButton(
-                                                      onPressed: () async {
-                                                        pickTime(index);
-                                                        // s
-                                                        print(
-                                                            "index --> $index");
-                                                        // var selectedTime = await showTimePicker(
-                                                        //   context: context,
-                                                        //   initialTime: TimeOfDay.now(),
-                                                        // );
-                                                        // if (selectedTime != null) {
-                                                        //   final now = DateTime.now();
-                                                        //   var selectedDateTime = DateTime(
-                                                        //       now.year,
-                                                        //       now.month,
-                                                        //       now.day,
-                                                        //       selectedTime.hour,
-                                                        //       selectedTime.minute);
-                                                        //   _alarmTime = selectedDateTime;
-                                                        //   setModalState(() {
-                                                        //     _alarmTimeString =
-                                                        //         DateFormat('HH:mm')
-                                                        //             .format(selectedDateTime);
-                                                        //   });
-                                                        // }
-                                                      },
-                                                      child: Text(
-                                                        _alarmTimeString,
-                                                        style:
-                                                        TextStyle(fontSize: 32),
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      title: Text(
-                                                          'What Do You Want ??'),
-                                                      trailing: Icon(
-                                                          Icons.timer),
-                                                    ),
-                                                    ListTile(
-                                                      title: ToggleSwitch(
-                                                        initialLabelIndex: 0,
-                                                        labels: ['On', 'Off'],
-                                                        onToggle: (index) {
-                                                          print(
-                                                              'switched to: $index');
+                                                    onPressed: () async {
+                                              pickTime(index);
+                                              // s
+                                              print(
+                                              "index --> $index");
+                                              // var selectedTime = await showTimePicker(
+                                              //   context: context,
+                                              //   initialTime: TimeOfDay.now(),
+                                              // );
+                                              // if (selectedTime != null) {
+                                              //   final now = DateTime.now();
+                                              //   var selectedDateTime = DateTime(
+                                              //       now.year,
+                                              //       now.month,
+                                              //       now.day,
+                                              //       selectedTime.hour,
+                                              //       selectedTime.minute);
+                                              //   _alarmTime = selectedDateTime;
+                                              //   setModalState(() {
+                                              //     _alarmTimeString =
+                                              //         DateFormat('HH:mm')
+                                              //             .format(selectedDateTime);
+                                              //   });
+                                              // }
+                                              },
+                                                child: Text(
+                                                  _alarmTimeString,
+                                                  style:
+                                                  TextStyle(fontSize: 32),
+                                                ),
+                                              ),
+                                              ListTile(
+                                              title: Text(
+                                              'What Do You Want ??'),
+                                              trailing: Icon(
+                                              Icons.timer),
+                                              ),
+                                              ListTile(
+                                              title:  Slider(
+                                                min: 0.0,
+                                                max: 10.0,
+                                                value: double.parse(
+                                                    responseGetData[
+                                                    newIndex - 1]
+                                                        .toString()),
+                                                divisions: 500,
+                                                activeColor: Colors.blue,
+                                                inactiveColor: Colors.black,
+                                                onChanged: (double value) {
+                                                  // print('valuecheck ${value}');
+                                                  // setState(() {
+                                                  _value = value;
+                                                  // });
+                                                  var roundVar = value.round();
+                                                  sliderValue=roundVar.round();
+                                                  // sliderValue=int.parse(_value.toString());
+                                                  print('valuecheck $sliderValue');
+                                                },
+                                              ),
+                                              // trailing: Icon(Icons.arrow_forward_ios),
+                                              ),
+                                              FloatingActionButton
+                                                  .extended(
+                                              onPressed: ()async {
+                                              // pickTime(index);
+                                                await schedulingDevicePin(
+                                                    dId, newIndex-1);
+                                              Navigator.pop(context);
 
-                                                          setState(() {
-                                                            changeIndex(index);
-                                                          });
-                                                        },
-                                                      ),
-                                                      // trailing: Icon(Icons.arrow_forward_ios),
-                                                    ),
-                                                    FloatingActionButton
-                                                        .extended(
-                                                      onPressed: () {
-                                                        pickTime(index);
-                                                        Navigator.pop(context);
-
-                                                        print('Sceduled');
-                                                      },
-                                                      icon: Icon(Icons.alarm),
-                                                      label: Text('Save'),
-                                                    ),
-                                                  ]));
+                                              print('Sceduled');
+                                              },
+                                              icon: Icon(Icons.alarm),
+                                              label: Text('Save'),
+                                              ),
+                                              ]
+                                              )
+                                              );
                                             });
                                       });
                                 },
@@ -4785,8 +5084,7 @@ getAllFloor();
                                                   divisions: 500,
                                                   activeColor: Colors.blue,
                                                   inactiveColor: Colors.black,
-                                                  label:
-                                                  '${double.parse(
+                                                  label: '${double.parse(
                                                       responseGetData[newIndex -
                                                           1].toString())}',
                                                   onChanged:
@@ -4803,18 +5101,11 @@ getAllFloor();
                                                       //   responseGetData[newIndex-1] = widget.Slider_get.round();
                                                       // }
 
-                                                      print(
-                                                          "Round-->  ${newValue
-                                                              .round()}");
-                                                      var roundVar =
-                                                      newValue.round();
-                                                      print(
-                                                          "Round 2-->  $roundVar");
-                                                      responseGetData[newIndex -
-                                                          1] = roundVar;
-                                                      print(
-                                                          "Response Round-->  ${responseGetData[newIndex -
-                                                              1]}");
+                                                      print("Round-->  ${newValue.round()}");
+                                                      var roundVar = newValue.round();
+                                                      print("Round 2-->  $roundVar");
+                                                      responseGetData[newIndex - 1] = roundVar;
+                                                      print("Response Round-->  ${responseGetData[newIndex - 1]}");
                                                     });
 
                                                     // if Internet is not available then _checkInternetConnectivity = true
@@ -5081,20 +5372,23 @@ getAllFloor();
     this.index = index;
     if (time == TimeOfDay.now()) {
       if (index == 0) {
+        print('device is going to on');
         // ignore: unnecessary_statements
-        listDynamic[index];
-        print("index -> ${listDynamic[index]}");
+        // listDynamic[index];
+        // print("index -> ${listDynamic[index]}");
         // dataUpdate(index);
         return;
       } else if (index == 1) {
+        print('device is going to off');
         // ignore: unnecessary_statements
-        listDynamic[index];
+        // listDynamic[index];
         // dataUpdate(index);
         return;
       }
       // dataUpdate(index);
     }
   }
+
 
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;

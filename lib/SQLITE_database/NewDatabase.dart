@@ -290,6 +290,11 @@ class NewDbProvider {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> deleteDeviceModel()async{
+    final db= await database;
+    print('delete');
+    await db.delete(_deviceTable);
+  }
   Future<void> deleteRoomModel()async{
     final db= await database;
     print('delete');
