@@ -7,6 +7,7 @@ import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 
 
 void main()=>runApp(MaterialApp(
@@ -31,7 +32,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
 
   Future assignAlreadySubUserPlace()async{
     String token = await getToken();
-    final url='http://genorionofficial.herokuapp.com/subuserpalceaccess/';
+    final url=API+'subuserpalceaccess/';
     var postData={
       "user":getUidVariable,
       "email":emailController.text,

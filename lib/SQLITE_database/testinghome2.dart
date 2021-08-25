@@ -1315,9 +1315,68 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+  Box scheduledPinBox2;
+  Future openSchedulePinBox()async{
 
+    var dir= await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+    scheduledPinBox2=await Hive.openBox('scheduledPinStatusByDeviceId');
+    print('tempUserBox  ${scheduledPinBox2.values.toString()}');
+    return;
+  }
+
+  var pinDecode;
+  List listOfScheduledPins=[];
+  Future getScheduledPins(String dId)async{
+    await openSchedulePinBox();
+    String token = await getToken();
+    // String token = "be43f6166fce6faef0525c610402b332debdb232";
+    final url=API+'scheduledatagetbyid/?d_id='+dId;
+    try{
+      final response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token'
+      });
+      await scheduledPinBox2.clear();
+      if(response.statusCode>0){
+        print('ScheduledPins  ${response.statusCode}');
+        print('ScheduledPins  ${response.body}');
+        if(response.statusCode==200){
+          pinDecode = jsonDecode(response.body);
+          setState(() {
+            listOfScheduledPins = pinDecode;
+
+            putScheduledPins(listOfScheduledPins);
+          });
+        }
+      }
+    }catch(e){
+
+    }
+    var myMap=scheduledPinBox2.toMap().values.toList();
+    if(myMap.isEmpty){
+      scheduledPinBox2.add('empty');
+
+    }else{
+      listOfScheduledPins=myMap ;
+
+    }
+
+
+  }
+
+  Future putScheduledPins(data)async{
+    await scheduledPinBox2.clear();
+    for(var d in data){
+
+      scheduledPinBox2.add(d);
+    }
+
+  }
   _createAlertDialogForPin19(BuildContext context, String dId) {
     return showDialog(
+
         context: context,
         barrierDismissible: false,
         builder: (context) {
@@ -1377,6 +1436,180 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
+
+
+  _createAlertDialogForPinSchedule(BuildContext context, String dId) {
+    return showDialog(
+
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Device Id ${dId}'),
+            content: Container(
+              color:Colors.red,
+              width: MediaQuery.of(context).size.width,
+              child:FutureBuilder(
+                  future: getScheduledPins(dId),
+                  builder: ( context,  snapshot){
+                    print('snapShot ${snapshot.connectionState}');
+                    if(snapshot.connectionState ==ConnectionState.done){
+                      if(listOfScheduledPins==null){
+                        return Column(
+                          children: [
+                            SizedBox(height: 250,),
+                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                          ],
+                        );
+                      }else{
+                        return Container(
+                          color: Colors.red,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 25,),
+                              Expanded(
+                                  child: ListView.builder(
+                                      itemCount: listOfScheduledPins.length,
+                                      itemBuilder: (context,index){
+                                        if(listOfScheduledPins[index]['pin1Status']==1){
+
+                                        }
+                                        print('length ${listOfScheduledPins.length}');
+                                        return Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Card(
+                                            semanticContainer:true,
+                                            shadowColor: Colors.grey,
+                                            child: Column(
+                                              children: [
+                                                ListTile(
+                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString()),
+                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString()),
+                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),
+
+                                                  onTap: (){
+                                                    print('printSubUser ${listOfScheduledPins[index]['name']}');
+
+                                                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                    //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+
+                                                  },
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text('Pin 1 -> '),
+                                                        Text(listOfScheduledPins[index]['pin1Status'].toString()==1? "On ":listOfScheduledPins[index]['pin1Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 14,),
+                                                        Text('Pin 2 -> '),
+                                                        Text(listOfScheduledPins[index]['pin2Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 8,),
+                                                        Text('Pin 3 -> '),
+                                                        Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
+                                                        // SizedBox(width: 14,),
+                                                        // Text('Pin 4 -> '),
+                                                        // Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text('Pin 4 ->'),
+                                                        Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 10,),
+                                                        Text('Pin 5 -> '),
+                                                        Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 10,),
+                                                        Text('Pin 6 -> '),
+                                                        Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
+                                                        // SizedBox(width: 14,),
+                                                        // Text('Pin 8 -> '),
+                                                        // Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text('Pin 7 ->'),
+                                                        Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 8,),
+                                                        Text('Pin 8 ->'),
+                                                        Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+                                                        SizedBox(width: 8,),
+                                                        Text('Pin 9 ->'),
+                                                        Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+
+
+                                        //   Column(
+                                        //   children: <Widget>[
+                                        //     SizedBox(height: 100,),
+                                        //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                        //     SizedBox(height: 15,),
+                                        //     Row(
+                                        //       children: [
+                                        //         SizedBox(width: 55,),
+                                        //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                        //         SizedBox(width: 15,),
+                                        //         Container(
+                                        //           height: 45,
+                                        //           width: 195,
+                                        //           child:Padding(
+                                        //             padding: const EdgeInsets.all(8.0),
+                                        //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                        //           ),
+                                        //           decoration: BoxDecoration(
+                                        //             color: Colors.white,
+                                        //             border: Border.all(
+                                        //               color: Colors.black38 ,
+                                        //               width: 5.0 ,
+                                        //             ),
+                                        //             borderRadius: BorderRadius.circular(20),
+                                        //           ),
+                                        //         ),
+                                        //       ],
+                                        //     ),
+                                        //
+                                        //
+                                        //   ],
+                                        //
+                                        //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                                        //   // subtitle: Text("${statusData[index]['id']}"),
+                                        //
+                                        // );
+                                      }
+                                  )),
+
+
+                            ],
+                          ),
+                        );
+                      }
+                    }else{
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                          semanticsLabel: 'Loading...',
+                        ),
+                      );
+                    }
+
+                  }
+
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
 
   _createAlertDialogForPin17(BuildContext context, String dId) {
     return showDialog(
@@ -1694,7 +1927,7 @@ class _HomeTestState extends State<HomeTest>
         builder: (context) {
           return AlertDialog(
             content: Container(
-              height: 165,
+              height: MediaQuery.of(context).size.height-20,
               child: Column(
                 children: [
                   TextButton(
@@ -1738,6 +1971,22 @@ class _HomeTestState extends State<HomeTest>
                       },
                       child: Text(
                         'Add Device Cell Number',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                  TextButton(
+                      onPressed: () {
+
+                        _createAlertDialogForPinSchedule(context, dId);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             ShowEmergencyNumber(
+                        //               deviceId: widget.dv[index].dId,
+                        //             )));
+                      },
+                      child: Text(
+                        'Show',
                         style: TextStyle(fontSize: 20),
                       )),
                 ],
@@ -3991,10 +4240,17 @@ class _HomeTestState extends State<HomeTest>
                                                           ],
                                                         ),
                                                       ]),
+
                                                     ],
                                                   ),
                                                   SizedBox(
                                                     height: 22,
+                                                  ),
+                                                  Text(
+                                                    sensorData[index][
+                                                    'd_id']
+                                                        .toString(),
+
                                                   ),
                                                 ],
                                               );
@@ -4256,9 +4512,7 @@ class _HomeTestState extends State<HomeTest>
     getPinsName(dId);
     // devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
-    setState(() {
-      deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
-    });
+
     catchReturn = await NewDbProvider.instance.getPinStatusByDeviceId(dId);
     print('catchReturn123 ${catchReturn}');
     var namesDataList12 =
@@ -4609,15 +4863,29 @@ class _HomeTestState extends State<HomeTest>
                   SizedBox(
                     width: 14,
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(12),
-                  //   child: GestureDetector(
-                  //     child: Icon(Icons.mobile_screen_share_sharp),
-                  //     onTap: () {
-                  //       _createAlertDialogForPin17(context, dId);
-                  //     },
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: GestureDetector(
+                      child: Icon(Icons.device_hub),
+                      onTap: () {
+                        setState(() {
+                        deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+                        });
+                        // _createAlertDialogForPinSchedule(context,dId);
+                        // _createAlertDialogForPin17(context, dId);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      child: Icon(Icons.schedule),
+                      onTap: () {
+                        _createAlertDialogForPinSchedule(context,dId);
+                        // _createAlertDialogForPin17(context, dId);
+                      },
+                    ),
+                  ),
                   Container(
                     width: 14,
                     height: 14,
@@ -4642,6 +4910,7 @@ class _HomeTestState extends State<HomeTest>
                       },
                     ),
                   ),
+
                 ],
               ),
               Container(

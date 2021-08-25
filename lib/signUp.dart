@@ -287,34 +287,34 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                             ),
                             Container(
                               width: 700,
-                              child: TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                                validator: nameValid,
-                                onSaved: (String value) {
-                                  this.data.fname = value;
-                                },
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'First name',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
+                                child: TextFormField(
+                                  autofocus: true,
+                                  textInputAction: TextInputAction.next,
+                                  onEditingComplete: () => node.nextFocus(),
+                                  autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                                  validator: nameValid,
+                                  onSaved: (String value) {
+                                    this.data.fname = value;
+                                  },
+                                  style:
+                                  TextStyle(fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.person),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'First name',
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
                                   ),
                                 ),
-                              ),
                             ),
                             SizedBox(
                               height: 15,
