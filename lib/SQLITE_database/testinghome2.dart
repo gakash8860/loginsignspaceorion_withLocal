@@ -4349,10 +4349,8 @@ class _HomeTestState extends State<HomeTest>
                                               // devicePinNamesQueryFunc();
                                             });
                                             getDevices(tabbarState);
-                                            print(
-                                                "tabbarState Tabs->  $tabbarState");
-                                            widget.dv =
-                                            await NewDbProvider.instance
+                                            print("tabbarState Tabs->  $tabbarState");
+                                            widget.dv = await NewDbProvider.instance
                                                 .getDeviceByRoomId(tabbarState);
                                             getAllRoom();
                                             // widget.rm =await roomQueryFunc();

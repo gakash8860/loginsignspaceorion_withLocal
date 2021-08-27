@@ -34,6 +34,7 @@ class _SubUserDetailsState extends State<SubUserDetails> {
   @override
   void initState() {
     super.initState();
+    placeVal = getplaces();
     getSinglePlaceName();
     getSingleSubUsers();
     // timer= Timer.periodic(Duration(milliseconds: 1), (timer) { getSinglePlaceName();});

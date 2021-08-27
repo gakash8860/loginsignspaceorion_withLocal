@@ -6,118 +6,94 @@ import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../main.dart';
 
-
-
-void main()=>runApp(MaterialApp(
-  home: TempAccessPage(),
-));
-
-
-
-
-
-
-
-
-
+void main() => runApp(MaterialApp(
+      home: TempAccessPage(),
+    ));
 
 class TempAccessPage extends StatefulWidget {
-
-
   @override
   _TempAccessPageState createState() => _TempAccessPageState();
 }
 
 class _TempAccessPageState extends State<TempAccessPage> {
-var ownerName;
-var listOfFloorId;
-List data;
-Box tempUserBox;
-Future tem;
-@override
-void initState(){
-  super.initState();
-  getTempUsers();
-}
-TempUser tempUser;
+  var ownerName;
+  var listOfFloorId;
+  List data;
+  Box tempUserBox;
+  Future tem;
 
-List tempUserDecodeList;
+  @override
+  void initState() {
+    super.initState();
+    getTempUsers();
+  }
 
-Future openTempUserBox()async{
+  TempUser tempUser;
 
-  var dir= await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
-  tempUserBox=await Hive.openBox('tempUser');
-  print('tempUserBox  ${tempUserBox.values.toString()}');
-  return;
-}
+  List tempUserDecodeList;
 
+  Future openTempUserBox() async {
+    var dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+    tempUserBox = await Hive.openBox('tempUser');
+    print('tempUserBox  ${tempUserBox.values.toString()}');
+    return;
+  }
 
+  Future<void> getTempUsers() async {
+    String token = await getToken();
+    await openTempUserBox();
 
+    final url =
+        'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/?mobile=7042717549';
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
 
-Future<void> getTempUsers()async{
-  String token ='fc8a8de66981014125077cadbf12bb12cbfe95fb';
-  await openTempUserBox();
+      await tempUserBox.clear();
 
-  final url ='http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=7042717549';
-  try{
-    final response= await http.get(Uri.parse(url),headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
+      var tempUserDecode = jsonDecode(response.body);
 
-    });
+      print('tempResponse ${tempUserDecode}');
+      setState(() {
+        tempUserDecodeList = tempUserDecode;
+        putTempUser(tempUserDecodeList);
+      });
+      print('tempUserDecode ${tempUserDecodeList}');
+      print('Number1123->  ${tempUserDecodeList}');
+    } catch (e) {
+      // print('Status Exception $e');
 
+    }
+
+    var myMap = tempUserBox.toMap().values.toList();
+    if (myMap.isEmpty) {
+      tempUserBox.add('empty');
+    } else {
+      tempUserDecodeList = myMap;
+    }
+    return Future.value(true);
+  }
+
+  Future putTempUser(data) async {
     await tempUserBox.clear();
-
-    var  tempUserDecode=jsonDecode(response.body);
-
-
-    print('tempResponse ${tempUserDecode}');
-    setState(() {
-      tempUserDecodeList=tempUserDecode;
-      putTempUser(tempUserDecodeList);
-    });
-    print('tempUserDecode ${tempUserDecodeList}');
-    print('Number1123->  ${tempUserDecodeList}');
-
-
-  }catch(e){
-    // print('Status Exception $e');
-
+    for (var d in data) {
+      tempUserBox.add(d);
+    }
   }
-
-  var myMap=tempUserBox.toMap().values.toList();
-  if(myMap.isEmpty){
-    tempUserBox.add('empty');
-
-  }else{
-    tempUserDecodeList=myMap ;
-
-  }
-  return Future.value(true);
-}
-
-Future putTempUser(data)async{
-  await tempUserBox.clear();
-  for(var d in data){
-
-    tempUserBox.add(d);
-  }
-
-}
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(ownerName.toString()),
+        title: Text('Temp Access Page'),
       ),
-      body:  RefreshIndicator(
+      body: RefreshIndicator(
         onRefresh: getTempUsers,
         child: SingleChildScrollView(
           child: Container(
@@ -126,83 +102,143 @@ Future putTempUser(data)async{
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [Colors.blue, Colors.lightBlueAccent])),
-            child:Container(
+            child: Container(
               // color: Colors.green,
               // height: 789,
-              width:MediaQuery.of(context).size.width,
-              height:MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               child: FutureBuilder(
                   future: getTempUsers(),
-                  builder: ( context,  snapshot){
-                    if(snapshot.hasData){
-                      if(tempUserDecodeList.isEmpty){
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (tempUserDecodeList.isEmpty) {
                         return Column(
                           children: [
-                            SizedBox(height: 250,),
-                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                            SizedBox(
+                              height: 250,
+                            ),
+                            Center(
+                                child: Text(
+                              'Sorry we cannot find any Temp User please add',
+                              style: TextStyle(fontSize: 18),
+                            )),
                           ],
                         );
-                      }else{
+                      } else {
                         return Column(
                           children: [
-                            SizedBox(height: 25,),
+                            SizedBox(
+                              height: 25,
+                            ),
                             Expanded(
                                 child: ListView.builder(
                                     itemCount: tempUserDecodeList.length,
-                                    itemBuilder: (context,index){
+                                    itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Card(
-                                          semanticContainer:true,
+                                          semanticContainer: true,
                                           shadowColor: Colors.grey,
                                           child: Column(
                                             children: [
                                               ListTile(
-                                                title: Text(tempUserDecodeList[index]['name']),
-                                                trailing: Text(tempUserDecodeList[index]['email']),
-
-                                                subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
-
-                                                onTap: (){
-                                                  print('printSubUser ${tempUserDecodeList[index]['name']}');
+                                                title: Text(
+                                                    tempUserDecodeList[index]
+                                                        ['name']),
+                                                trailing: Text(
+                                                    tempUserDecodeList[index]
+                                                        ['email']),
+                                                subtitle: Text(
+                                                    tempUserDecodeList[index]
+                                                            ['timing']
+                                                        .toString()),
+                                                onTap: () {
+                                                  print(
+                                                      'printSubUser ${tempUserDecodeList[index]['name']}');
                                                   // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
                                                   //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-
                                                 },
                                               ),
                                               Row(
                                                 children: [
-                                                  Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['date']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
                                                 ],
                                               ),
                                               Row(
                                                 children: [
-                                                  Text(tempUserDecodeList[index]['mobile'].toString(),textAlign: TextAlign.end,),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['mobile']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
                                                 ],
                                               ),
                                               Row(
                                                 children: [
-                                                  Text(tempUserDecodeList[index]['f_id'].toString(),textAlign: TextAlign.end,),
-                                                  SizedBox(width: 10,),
-                                                  Text(tempUserDecodeList[index]['p_id'].toString(),textAlign: TextAlign.end,),
-                                                  SizedBox(width: 10,),
-                                                  Text(tempUserDecodeList[index]['r_id'].toString(),textAlign: TextAlign.end,),
-                                                  SizedBox(width: 10,),
-                                                  Text(tempUserDecodeList[index]['flt_id'].toString(),textAlign: TextAlign.end,),
-                                                  SizedBox(width: 10,),
-                                                  Text(tempUserDecodeList[index]['d_id'].toString(),textAlign: TextAlign.end,),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['f_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['p_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['r_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['flt_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['d_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
                                                 ],
                                               ),
                                               Row(
                                                 children: [
-                                                  Text(tempUserDecodeList[index]['owner_name'].toString(),textAlign: TextAlign.end,),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['owner_name']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
                                                 ],
                                               ),
                                             ],
                                           ),
                                         ),
                                       );
-
 
                                       //   Column(
                                       //   children: <Widget>[
@@ -240,14 +276,11 @@ Future putTempUser(data)async{
                                       //   // subtitle: Text("${statusData[index]['id']}"),
                                       //
                                       // );
-                                    }
-                                )),
-
-
+                                    })),
                           ],
                         );
                       }
-                    }else{
+                    } else {
                       return Center(
                         child: CircularProgressIndicator(
                           color: Colors.red,
@@ -255,10 +288,7 @@ Future putTempUser(data)async{
                         ),
                       );
                     }
-
-                  }
-
-              ),
+                  }),
             ),
           ),
         ),

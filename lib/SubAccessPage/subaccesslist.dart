@@ -165,8 +165,8 @@ class _SubAccessListState extends State<SubAccessList> {
                                                     email:subUserDecodeList[index]['email'] ,
                                                   ownerName: subUserDecodeList[index]['owner_name'],
                                                   pt: subUserDecodeList[index]['p_id'].toString(),)));
-                                                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                  //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+
+
 
                                                 },
                                               ),

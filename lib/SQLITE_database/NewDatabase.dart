@@ -218,16 +218,16 @@ class NewDbProvider {
 
   }
 
-  Future<void> insertFloorModelData(FloorType floorType) async {
-    // Get a reference to the database.
-    final db = await database;
-    await db.insert(
-      '$_floorTableName',
-      floorType.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    Future<void> insertFloorModelData(FloorType floorType) async {
+      // Get a reference to the database.
+      final db = await database;
+      await db.insert(
+        '$_floorTableName',
+        floorType.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
 
-  }
+    }
   Future<void> insertFlatModelData(Flat flat) async {
     // Get a reference to the database.
     final db = await database;

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
+import 'package:loginsignspaceorion/SQLITE_database/localDatabaseForSubUser/subuserSqlite.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 
 import 'package:http/http.dart' as http;
@@ -19,10 +21,9 @@ class SubAccessHome extends StatefulWidget {
   var email;
   var pt;
   var ownerName;
-  FloorType fl;
-  Flat flat;
-  List<RoomType> rm;
-  List<Device> dv;
+  SubUserFloorType fl;
+  SubUserFlatType flat;
+
   SensorData sensorData;
 
   // ignore: non_constant_identifier_names
@@ -89,19 +90,27 @@ class SubAccessHome extends StatefulWidget {
 class _SubAccessHomeState extends State<SubAccessHome> {
   TabController tabC;
   var tabState;
+  List<SubUserRoomType> rm;
+  List<SubUserDeviceType> dv;
   bool _switchValue = false;
   bool val1 = true;
 String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   bool val2 = false;
+
+  Future deviceSensorVal;
   @override
   void initState() {
     super.initState();
     fetchSubUser();
     getPlaceName();
+    // getAllFloorForSubUser();
+    // getAllFlatForSubUser();
+    // getAllRoomForSubUser();
+    // getAllDeviceForSubUser()
   }
 
   Future<void> fetchSubUser() async {
-    String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+
     final url =
         'https://genorion1.herokuapp.com/getallplacesbyonlyplaceidp_id/?email=' +
             widget.email;
@@ -133,19 +142,28 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
     if (response.statusCode > 0) {
       print("GetPlaceName  ${response.statusCode}");
       print("GetPlaceNameResponseBody  ${response.body}");
-      var p12t = jsonDecode(response.body);
-      placeName = p12t[0]["p_type"];
 
+      List placeData = jsonDecode(response.body);
+      placeName = placeData[0]["p_type"];
+      for(int i=0;i<placeData.length;i++){
+        var placeQuery=SubUserPlaceType(
+          pId: placeData[i]['p_id'],
+          pType: placeData[i]['p_id'].toString(),
+          user: placeData[i]['user'],
+        );
+        print('PlaceQuery ${placeQuery.toJson()}');
+        await SubUserDataBase.subUserInstance.insertPlaceModelData(placeQuery);
+      }
+      getAllFloorForSubUser();
     }
   }
-  var varFloorData;
+  var varFloorName;
   var fId;
-
+  List getFloorData;
   Future getAllFloorForSubUser() async {
     final url =
-        'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' +
-            widget.pt;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+        'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' + widget.pt;
+
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -155,122 +173,256 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
       print('floorSubUser ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        var varFloorData1 = jsonDecode(response.body);
-        print('floorSubUser ${varFloorData}');
-        setState(() {
-          varFloorData = varFloorData1;
-          fId = varFloorData[0]['f_id'];
-        });
+        List floorData = jsonDecode(response.body);
+        print('floorSubUser ${floorData}');
 
+        setState(() {
+          // varFloorName = floorData[0]['f_name'];
+          fId = floorData[0]['f_id'];
+        });
+        for(int i=0;i<floorData.length;i++){
+          var floorQueryForSubUser=SubUserFloorType(
+              fId: floorData[i]['f_id'],
+              fName: floorData[i]['f_name'].toString(),
+              pId: floorData[i]['p_id'],
+              user: floorData[i]['user']
+          );
+          await  SubUserDataBase.subUserInstance.insertSubUserFloorModelData(floorQueryForSubUser);
+        }
+         getFloorData= await SubUserDataBase.subUserInstance.queryFloorSubUser();
+        varFloorName=getFloorData[0]['f_name'];
         await getAllFlatForSubUser();
       }
     }
   }
 
-  var varFlatData;
+  List listFlatData;
   var flatId;
-
+  var flatName;
+  List getFlatData;
   Future getAllFlatForSubUser() async {
-    final url =
-        'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' +
-            fId;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('flatSubUser ${response.statusCode}');
 
-      if (response.statusCode == 200) {
-        varFlatData = jsonDecode(response.body);
-        flatId = varFlatData[0]['flt_id'];
-        print('flatSubUser ${varFlatData}');
-        await getAllRoomForSubUser();
+    for(int i=0;i<getFloorData.length;i++){
+      fId=getFloorData[i]['f_id'].toString();
+
+      final url =
+          'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' +
+              fId;
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('flatSubUser ${response.statusCode}');
+
+        if (response.statusCode == 200) {
+          listFlatData = jsonDecode(response.body);
+          print('flatSubUser ${listFlatData}');
+          flatId = listFlatData[0]['flt_id'];
+          // flatName = listFlatData[0]['flt_name'];
+          print('flatSubUser ${listFlatData}');
+          for(int i=0;i<listFlatData.length;i++){
+            var flatQueryForSubUser=SubUserFlatType(
+                fId: listFlatData[i]['f_id'],
+                fltId: listFlatData[i]['flt_id'],
+                fltName: listFlatData[i]['flt_name'],
+                user: listFlatData[i]['user']
+            );
+            await  SubUserDataBase.subUserInstance.insertSubUserFlatModelData(flatQueryForSubUser);
+          }
+           getFlatData= await SubUserDataBase.subUserInstance.queryFlatSubUser();
+          setState(() {
+            flatName=getFlatData[0]['flt_name'];
+          });
+          await getAllRoomForSubUser();
+        }
       }
     }
+
+
   }
 
   List roomTab;
-
+  List roomData;
   Future getAllRoomForSubUser() async {
-    final url =
-        'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' +
-            flatId;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('RoomSubUser ${response.statusCode}');
-      print('RoomSubUser ${response.body}');
 
-      if (response.statusCode == 200) {
-        roomTab = jsonDecode(response.body);
+    for(int i=0;i< getFlatData.length;i++){
+      flatId=getFlatData[i]['flt_id'].toString();
+      final url =
+          'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' +
+              flatId;
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('RoomSubUser ${response.statusCode}');
         print('RoomSubUser ${response.body}');
+
+        if (response.statusCode == 200) {
+          roomTab = jsonDecode(response.body);
+          tabState=roomTab[0]['r_id'];
+          for(int i=0;i<roomTab.length;i++){
+            var  roomQuery=SubUserRoomType(
+                rId: roomTab[i]['r_id'],
+                rName: roomTab[i]['r_name'].toString(),
+                fltId: roomTab[i]['flt_id'],
+                user: roomTab[i]['user']
+            );
+            await SubUserDataBase.subUserInstance.insertSubUserRoomModelData(roomQuery);
+          }
+          roomData=await SubUserDataBase.subUserInstance.queryRoomSubUser();
+          print('RoomSubUser ${response.body}');
+        }
+        await getAllDeviceForSubUser();
       }
     }
+
+
   }
 
   List deviceSubUser;
   var deviceId;
   var devicePinStatus;
   List listOfPinStatus;
+  List<Map<String, dynamic>> deviceQueryRows;
   List responseDataPinStatusForSubUser;
-  Future <List<Device>> getAllDeviceForSubUser(String rId) async {
-    print('tabbar1 ${tabState}');
-    final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' + rId;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('deviceGetSubUser ${response.statusCode}');
-      print('deviceGetSubUser ${response.body}');
-      if (response.statusCode == 200) {
-        deviceSubUser = jsonDecode(response.body);
-        // deviceId=deviceSubUser[index]['d_id'];
-        widget.dv=deviceSubUser.map((data) => Device.fromJson(data)).toList();
-        // print('deviceId ${widget.dv[index].dId}');
+  var rId;
+  Future  getAllDeviceForSubUser() async {
 
+    for(int i=0;i<roomData.length;i++){
+      rId=roomData[i]['r_id'].toString();
+      print('tabbar1 ${tabState}');
+      final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' + rId;
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('deviceGetSubUser ${response.statusCode}');
+        print('deviceGetSubUser ${response.body}');
+        if (response.statusCode == 200) {
+          deviceSubUser = jsonDecode(response.body);
+          // deviceId=deviceSubUser[index]['d_id'];
+          for(int i=0;i<deviceSubUser.length;i++){
+            var deviceQuerySubUser=SubUserDeviceType(
+                user: deviceSubUser[i]['user'],
+                rId: deviceSubUser[i]['r_id'],
+                dId: deviceSubUser[i]['d_id']
+            );
+            await  SubUserDataBase.subUserInstance.insertSubUserDeviceModelData(deviceQuerySubUser);
+          }
+
+          dv=deviceSubUser.map((data) => SubUserDeviceType.fromJson(data)).toList();
+          // print('deviceId ${widget.dv[index].dId}');
+
+        }
+        deviceQueryRows= await SubUserDataBase.subUserInstance.queryDeviceSubUser();
+        getPinStatusData();
       }
     }
-    return widget.dv;
   }
 var catchReturn;
   List namesDataList = [];
+  var data;
+
+
+  Future getDevicesByDeviceId(String rId)async{
+    // deviceSubUser= await SubUserDataBase.subUserInstance.getDeviceByRoomId(rId);
+   dv= await SubUserDataBase.subUserInstance.getDeviceByRoomId(rId);
+    return dv;
+  }
+  var deviceIdForSensor;
+  List<dynamic> deviceStatus = [];
   getData(String dId) async {
     print("Vice Id $dId");
-    final String url =  'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+    deviceIdForSensor = dId;
+    // print('getDataFunction $deviceIdForSensor');
+    getSensorData();
+    final String url =
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
-    if (response.statusCode > 0) {
-      // print(devicePinStatus);
-      devicePinStatus = jsonDecode(response.body);
-      print("DATA-->  $devicePinStatus");
-      print('\n');
-      listOfPinStatus = [
-        widget.switch1_get = devicePinStatus["pin1Status"],
-        widget.switch2_get = devicePinStatus["pin2Status"],
-        widget.switch3_get = devicePinStatus["pin3Status"],
-        widget.switch4_get = devicePinStatus["pin4Status"],
-        widget.switch5_get = devicePinStatus["pin5Status"],
-        widget.switch6_get = devicePinStatus["pin6Status"],
-        widget.switch7_get = devicePinStatus["pin7Status"],
-        widget.switch8_get = devicePinStatus["pin8Status"],
-        widget.switch9_get = devicePinStatus["pin9Status"],
-        widget.Slider_get = devicePinStatus["pin10Status"],
-        widget.Slider_get2 = devicePinStatus["pin11Status"],
-        widget.Slider_get3 = devicePinStatus["pin12Status"],
+    if (response.statusCode == 200) {
+      print(data);
+      data = jsonDecode(response.body);
+      var arr = jsonDecode(response.body);
+      List listOfPinStatus = [
+        arr,
       ];
+      print('sensorData  ${listOfPinStatus}');
+      for (int i = 0; i < listOfPinStatus.length; i++) {
+        var pinStatus = PinStatusSubUser(
+          dId: listOfPinStatus[i]['d_id'],
+          pin1Status: listOfPinStatus[i]['pin1Status'],
+          pin2Status: listOfPinStatus[i]['pin2Status'],
+          pin3Status: listOfPinStatus[i]['pin3Status'],
+          pin4Status: listOfPinStatus[i]['pin4Status'],
+          pin5Status: listOfPinStatus[i]['pin5Status'],
+          pin6Status: listOfPinStatus[i]['pin6Status'],
+          pin7Status: listOfPinStatus[i]['pin7Status'],
+          pin8Status: listOfPinStatus[i]['pin8Status'],
+          pin9Status: listOfPinStatus[i]['pin9Status'],
+          pin10Status: listOfPinStatus[i]['pin10Status'],
+          pin11Status: listOfPinStatus[i]['pin11Status'],
+          pin12Status: listOfPinStatus[i]['pin12Status'],
+          pin13Status: listOfPinStatus[i]['pin13Status'],
+          pin14Status: listOfPinStatus[i]['pin14Status'],
+          pin15Status: listOfPinStatus[i]['pin15Status'],
+          pin16Status: listOfPinStatus[i]['pin16Status'],
+          pin17Status: listOfPinStatus[i]['pin17Status'],
+          pin18Status: listOfPinStatus[i]['pin18Status'],
+          pin19Status: listOfPinStatus[i]['pin19Status'],
+          pin20Status: listOfPinStatus[i]['pin20Status'],
+        );
+        await SubUserDataBase.subUserInstance.updateSubUserDevicePinStatusData(pinStatus);
+        print('devicePinJson    ${pinStatus.toJson()}');
+        // String a = listOfPinStatus[i]['pin20Status'].toString();
+        // print('ForLoop123 ${a}');
+        // int aa = int.parse(a);
+        // print('double $aa');
+        // // int aa=int.parse(a);
+        //
+        // int ms =
+        // // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
+        // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() - 100; // -100 for checking a difference for 100 seconds in current time
+        // print('CheckMs ${ms}');
+        // print('Checkaa ${aa}');
+        // if (aa >= ms) {
+        //   print('ifelse');
+        //   statusOfDevice = 1;
+        // } else {
+        //   print('ifelse2');
+        //   statusOfDevice = 0;
+        // }
+      }
+      print("DATA-->  $data");
+      print('\n');
+      deviceStatus = [
+        widget.switch1_get = data["pin1Status"],
+        widget.switch2_get = data["pin2Status"],
+        widget.switch3_get = data["pin3Status"],
+        widget.switch4_get = data["pin4Status"],
+        widget.switch5_get = data["pin5Status"],
+        widget.switch6_get = data["pin6Status"],
+        widget.switch7_get = data["pin7Status"],
+        widget.switch8_get = data["pin8Status"],
+        widget.switch9_get = data["pin9Status"],
+        widget.Slider_get = data["pin10Status"],
+        widget.Slider_get2 = data["pin11Status"],
+        widget.Slider_get3 = data["pin12Status"],
+      ];
+      for (int i = 0; i < data.length; i++) {}
+
       print('Switch 1 --> ${widget.switch1_get}');
       print('Switch 2 --> ${widget.switch2_get}');
       print('Switch 3 --> ${widget.switch3_get}');
@@ -287,7 +439,208 @@ var catchReturn;
       print(response.statusCode);
       throw Exception('Failed to getData.');
     }
-    return devicePinStatus;
+    return data;
+  }
+
+  Future<List<SubUserDeviceType>> getDevices(String rId) async {
+    print('tabbas ${tabState}');
+    var query = {'r_id': tabState};
+    final url = Uri.https('genorion1.herokuapp.com', '/addyourdevice/', query);
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+     List deviceData = jsonDecode(response.body);
+      dv = deviceData.map((data) => SubUserDeviceType.fromJson(data)).toList();
+      print('Room Id query ================================   $query');
+      print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
+
+      // getDatafunc2();
+      return dv;
+    }
+  }
+  Future<void> getPinStatusData() async {
+
+    var did;
+    print('PinStatusFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'].toString();
+      print('insideLoop $did');
+      String url = "https://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+
+      if(response.statusCode==200){
+        print('PinStatusResponse  ${response.statusCode}');
+        var pinStatus= jsonDecode(response.body);
+        // var pinStatus2=pinStatus;
+        List listOfPinStatusValue=[pinStatus,];
+        print('printFunction $listOfPinStatusValue}');
+        for (int i = 0; i < listOfPinStatusValue.length; i++) {
+          var pinQuery = PinStatusSubUser(
+            dId: listOfPinStatusValue[i]['d_id'],
+            pin1Status: listOfPinStatusValue[i]['pin1Status'],
+            pin2Status: listOfPinStatusValue[i]['pin2Status'],
+            pin3Status: listOfPinStatusValue[i]['pin3Status'],
+            pin4Status: listOfPinStatusValue[i]['pin4Status'],
+            pin5Status: listOfPinStatusValue[i]['pin5Status'],
+            pin6Status: listOfPinStatusValue[i]['pin6Status'],
+            pin7Status: listOfPinStatusValue[i]['pin7Status'],
+            pin8Status: listOfPinStatusValue[i]['pin8Status'],
+            pin9Status: listOfPinStatusValue[i]['pin9Status'],
+            pin10Status: listOfPinStatusValue[i]['pin10Status'],
+            pin11Status: listOfPinStatusValue[i]['pin11Status'],
+            pin12Status: listOfPinStatusValue[i]['pin12Status'],
+            pin13Status: listOfPinStatusValue[i]['pin13Status'],
+            pin14Status: listOfPinStatusValue[i]['pin14Status'],
+            pin15Status: listOfPinStatusValue[i]['pin15Status'],
+            // pin16Status: listOfPinStatusValue[i]['pin16Status'],
+            // pin17Status: listOfPinStatusValue[i]['pin17Status'],
+            // pin18Status: listOfPinStatusValue[i]['pin18Status'],
+            // pin19Status: listOfPinStatusValue[i]['pin19Status'],
+            // pin20Status: listOfPinStatusValue[i]['pin20Status'],
+          );
+          await SubUserDataBase.subUserInstance.insertSubUserDevicePinStatusData(pinQuery);
+          // await SubUserDataBase.subUserInstance.updatePinStatusData(pinQuery);
+          print('check1234567}');
+        }
+       await getAllPinNames();
+
+        // String a=listOfPinStatusValue[i]['pin20Status'].toString();
+        // print('aaaaaaaaaa ${a}');
+        //   int aa= int.parse(a);
+        // print('double $aa');
+        // // int aa=int.parse(a);
+        //
+        // int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
+        // if (aa.compareTo(ms) > 0) {
+        //   print('ifelse');
+        //   statusOfDevice = 1;
+        // } else {
+        //   print('ifelse2');
+        //   statusOfDevice = 0;
+        // }
+      }
+
+
+
+    }
+  }
+  Future devicePinNameLocalUsingDeviceId(String dId) async {
+    print('ssse $dId');
+    // await devicePinSensorLocalUsingDeviceId(dId);
+
+    namesDataList =
+    await SubUserDataBase.subUserInstance.getPinNamesByDeviceId(dId.toString());
+    print('123NameList ${namesDataList}');
+    if (namesDataList == null) {
+      return Text('No Data');
+    }
+    return namesDataList;
+  }
+
+  Future<void> getAllPinNames()async{
+    String token = await getToken();
+    var did;
+    print('pinNamesFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++){
+
+      did=deviceQueryRows[i]['d_id'].toString();
+      print('diddevice $did');
+      String url = "https://genorion1.herokuapp.com/editpinnames/?d_id="+did;
+      // try {
+      final   response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode==200) {
+        var  devicePinNamesData=json.decode(response.body);
+        List listOfPinNames=[devicePinNamesData,];
+        print('QWERTY  $listOfPinNames');
+        for (int i = 0; i < listOfPinNames.length; i++) {
+          print('devicePinData $listOfPinNames}');
+          var devicePinNamesQuery = SubUserDevicePinNameType(
+            dId: listOfPinNames[i]['d_id'].toString(),
+            pin1Name: listOfPinNames[i]['pin1Name'].toString(),
+            pin2Name: listOfPinNames[i]['pin2Name'].toString(),
+            pin3Name: listOfPinNames[i]['pin3Name'].toString(),
+            pin4Name: listOfPinNames[i]['pin4Name'].toString(),
+            pin5Name: listOfPinNames[i]['pin5Name'].toString(),
+            pin6Name: listOfPinNames[i]['pin6Name'].toString(),
+            pin7Name: listOfPinNames[i]['pin7Name'].toString(),
+            pin8Name: listOfPinNames[i]['pin8Name'].toString(),
+            pin9Name: listOfPinNames[i]['pin9Name'].toString(),
+            pin10Name: listOfPinNames[i]['pin10Name'].toString(),
+            pin11Name: listOfPinNames[i]['pin11Name'].toString(),
+            pin12Name: listOfPinNames[i]['pin12Name'].toString(),
+          );
+          print('devicePinNamesInsertQuery    ${devicePinNamesQuery.toJson()}');
+          print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
+          await SubUserDataBase.subUserInstance.insertSubUserDevicePinNames(devicePinNamesQuery);
+          // var check= await NewDbProvider.instance.getPinNamesByDeviceId(listOfPinNames[i]['d_id']);
+          // print('check456 ${check}');
+        }
+        getSensorData();
+
+      }
+    }
+
+
+  }
+
+  Future<void> getSensorData() async {
+    // arr=[arr.length-arr.length];
+    String token = await getToken();
+
+    var did;
+    print('SensorFunction $deviceQueryRows');
+    for(int i=0;i<deviceQueryRows.length;i++) {
+      did=deviceQueryRows[i]['d_id'].toString();
+      print('insideLoop $did');
+      String url = "https://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      final response = await http.get(Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          });
+      if(response.statusCode==200){
+        print('sensorResponse  ${response.statusCode}');
+
+      }
+      var arr = jsonDecode(response.body);
+      List listOfPinSensor=[arr,];
+      print('sensorData  ${listOfPinSensor}');
+      for (int i = 0; i < listOfPinSensor.length; i++) {
+        var sensorQuery = SubUserSensorData(
+          dId: listOfPinSensor[i]['d_id'],
+          sensor1: listOfPinSensor[i]['sensor1'],
+          sensor2: listOfPinSensor[i]['sensor2'],
+          sensor3: listOfPinSensor[i]['sensor3'],
+          sensor4: listOfPinSensor[i]['sensor4'],
+          sensor5: listOfPinSensor[i]['sensor5'],
+          sensor6: listOfPinSensor[i]['sensor6'],
+          sensor7: listOfPinSensor[i]['sensor7'],
+          sensor8: listOfPinSensor[i]['sensor8'],
+          sensor9: listOfPinSensor[i]['sensor9'],
+          sensor10: listOfPinSensor[i]['sensor10'],
+        );
+        print('deviceSensorJson    ${sensorQuery.toJson()}');
+        await SubUserDataBase.subUserInstance.insertSubUserSensor(sensorQuery);
+        // await NewDbProvider.instance.updateSensorData(sensorQuery);
+      }
+
+    }
   }
 
   getPinNames(String dId)async{
@@ -320,41 +673,114 @@ var catchReturn;
 
   }
 var sensorData;
-  Future getSensorData(String dId)async{
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
-    final url= 'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId;
-    final response= await http.get(url,headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if(response.statusCode>0){
-      print("sensorData ${response.body}");
-      sensorData=jsonDecode(response.body);
-      print("sensorData ${response.statusCode}");
-    }
-  }
-  deviceContainer(String dId,index)async{
-    widget.dv=await getAllDeviceForSubUser(tabState);
-    catchReturn  =await getData(dId);
-    getPinNames(dId);
-    getSensorData(dId);
+  // Future getSensorData(String dId)async{
+  //   // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+  //   final url= 'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId;
+  //   final response= await http.get(url,headers: {
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json',
+  //     'Authorization': 'Token $token',
+  //   });
+  //   if(response.statusCode>0){
+  //     print("sensorData ${response.body}");
+  //     sensorData=jsonDecode(response.body);
+  //     print("sensorData ${response.statusCode}");
+  //   }
+  // }
 
-    print('catchReturn ${catchReturn}');
+
+  Future devicePinSensorLocalUsingDeviceId(String dId) async {
+    print('ssse $dId');
+    sensorData =
+    await SubUserDataBase.subUserInstance.getSensorByDeviceId(dId.toString());
+    print('checkSensorData ${sensorData[0]['sensor1']}');
+    if (sensorData == null) {
+      return Text('No Data');
+    }
+    return sensorData;
+  }
+  var namesDataList12;
+  deviceContainer(String dId,index)async{
+    getData(dId);
+    await devicePinSensorLocalUsingDeviceId(dId);
+    deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+    devicePinNameLocalUsingDeviceId(dId);
+    catchReturn = await SubUserDataBase.subUserInstance.getPinStatusByDeviceId(dId);
+     namesDataList12 = await SubUserDataBase.subUserInstance.getPinNamesByDeviceId(dId);
+    responseDataPinStatusForSubUser=[
+      widget.switch1_get = catchReturn[index]["pin1Status"],
+      widget.switch2_get = catchReturn[index]["pin2Status"],
+      widget.switch3_get = catchReturn[index]["pin3Status"],
+      widget.switch4_get = catchReturn[index]["pin4Status"],
+      widget.switch5_get = catchReturn[index]["pin5Status"],
+      widget.switch6_get = catchReturn[index]["pin6Status"],
+      widget.switch7_get = catchReturn[index]["pin7Status"],
+      widget.switch8_get = catchReturn[index]["pin8Status"],
+      widget.switch9_get = catchReturn[index]["pin9Status"],
+      widget.Slider_get = catchReturn[index]["pin10Status"],
+      widget.Slider_get2 = catchReturn[index]["pin11Status"],
+      widget.Slider_get3 = catchReturn[index]["pin12Status"],
+    ];
+
+    print('nameDataList${namesDataList12}');
+    // getSensorData(dId);
+    namesDataList = [
+      widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
+      widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
+      widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
+      widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
+      widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
+      widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
+      widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
+      widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
+      widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
+      widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
+      widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
+      widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+    ];
+    print('responseDataPinStatusForSubUser ${responseDataPinStatusForSubUser}');
+    // namesDataList = [
+    //   widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
+    //   widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
+    //   widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
+    //   widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
+    //   widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
+    //   widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
+    //   widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
+    //   widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
+    //   widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
+    //   widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
+    //   widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
+    //   widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+    // ];
    setState(() {
      responseDataPinStatusForSubUser=[
-       widget.switch1_get = catchReturn["pin1Status"],
-       widget.switch2_get = catchReturn["pin2Status"],
-       widget.switch3_get = catchReturn["pin3Status"],
-       widget.switch4_get = catchReturn["pin4Status"],
-       widget.switch5_get = catchReturn["pin5Status"],
-       widget.switch6_get = catchReturn["pin6Status"],
-       widget.switch7_get = catchReturn["pin7Status"],
-       widget.switch8_get = catchReturn["pin8Status"],
-       widget.switch9_get = catchReturn["pin9Status"],
-       widget.Slider_get = catchReturn["pin10Status"],
-       widget.Slider_get2 = catchReturn["pin11Status"],
-       widget.Slider_get3 = catchReturn["pin12Status"],
+       widget.switch1_get = catchReturn[index]["pin1Status"],
+       widget.switch2_get = catchReturn[index]["pin2Status"],
+       widget.switch3_get = catchReturn[index]["pin3Status"],
+       widget.switch4_get = catchReturn[index]["pin4Status"],
+       widget.switch5_get = catchReturn[index]["pin5Status"],
+       widget.switch6_get = catchReturn[index]["pin6Status"],
+       widget.switch7_get = catchReturn[index]["pin7Status"],
+       widget.switch8_get = catchReturn[index]["pin8Status"],
+       widget.switch9_get = catchReturn[index]["pin9Status"],
+       widget.Slider_get = catchReturn[index]["pin10Status"],
+       widget.Slider_get2 = catchReturn[index]["pin11Status"],
+       widget.Slider_get3 = catchReturn[index]["pin12Status"],
+     ];
+     namesDataList = [
+       widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
+       widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
+       widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
+       widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
+       widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
+       widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
+       widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
+       widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
+       widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
+       widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
+       widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
+       widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
      ];
    });
 
@@ -486,14 +912,14 @@ subUserDeviceContainer(String dId,int index){
                       shape: BoxShape.circle),
                   // child: ...
                 ),
-                Switch(
-                  value: listOfPinStatus.indexOf(index) == 0 ? val2 : val1,
-                  //boolean value
-                  // value: val1,
-                  onChanged: (val) async {
-                    _showDialog(dId);
-                  },
-                ),
+                // Switch(
+                //   value: listOfPinStatus.indexOf(index) == 0 ? val2 : val1,
+                //   //boolean value
+                //   // value: val1,
+                //   onChanged: (val) async {
+                //     _showDialog(dId);
+                //   },
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: GestureDetector(
@@ -550,25 +976,6 @@ subUserDeviceContainer(String dId,int index){
                                                   onPressed: () async {
                                                     // pickTime(index);
                                                     print("index --> $index");
-                                                    // var selectedTime = await showTimePicker(
-                                                    //   context: context,
-                                                    //   initialTime: TimeOfDay.now(),
-                                                    // );
-                                                    // if (selectedTime != null) {
-                                                    //   final now = DateTime.now();
-                                                    //   var selectedDateTime = DateTime(
-                                                    //       now.year,
-                                                    //       now.month,
-                                                    //       now.day,
-                                                    //       selectedTime.hour,
-                                                    //       selectedTime.minute);
-                                                    //   _alarmTime = selectedDateTime;
-                                                    //   setModalState(() {
-                                                    //     _alarmTimeString =
-                                                    //         DateFormat('HH:mm')
-                                                    //             .format(selectedDateTime);
-                                                    //   });
-                                                    // }
                                                   },
                                                   child: Text(
                                                     '_alarmTimeString',
@@ -1011,7 +1418,7 @@ subUserDeviceContainer(String dId,int index){
               width: double.maxFinite,
               color: change_toDark ? Colors.black : Colors.white,
               child: DefaultTabController(
-                length: roomTab.length == null ? 1 : roomTab.length,
+                length:  2,
                 // length: widget.rm.length,
                 child: CustomScrollView(
                     // key: key,
@@ -1059,11 +1466,11 @@ subUserDeviceContainer(String dId,int index){
                                               print(roomTab.length);
                                             },
                                             child: Text(
-                                              varFloorData[0]['f_name']
+                                              varFloorName
                                                           .toString() ==
                                                       null
                                                   ? "Loading.."
-                                                  : varFloorData[0]['f_name']
+                                                  : varFloorName
                                                       .toString(),
 
                                               // 'Hello ',
@@ -1082,16 +1489,29 @@ subUserDeviceContainer(String dId,int index){
                                             height: 12,
                                           ),
                                           GestureDetector(
-                                            onLongPress: () {
+                                            onLongPress: () async{
+                                              var aaa=await SubUserDataBase.subUserInstance.queryPlaceSubUser();
+                                              var floor=await SubUserDataBase.subUserInstance.queryFloorSubUser();
+                                              var flat=await SubUserDataBase.subUserInstance.queryFlatSubUser();
+                                              var room=await SubUserDataBase.subUserInstance.queryRoomSubUser();
+                                              var device=await SubUserDataBase.subUserInstance.queryDeviceSubUser();
+                                              var devicePin=await SubUserDataBase.subUserInstance.queryDevicePinStatusSubUser();
+                                              var devicePinName=await SubUserDataBase.subUserInstance.queryDevicePinNamesSubUser();
+                                              var sensor=await SubUserDataBase.subUserInstance.queryDeviceSensorSubUser();
+                                              print('Query123${aaa}');
+                                              print('Query123${floor}');
+                                              print('Query123${flat}');
+                                              print('Query123${room}');
+                                              print('Query123${device}');
+                                              print('devicePin${devicePin}');
+                                              print('devicePinNames${devicePinName}');
+                                              print('sensorqwe${sensor}');
                                               // _editFloorNameAlertDialog(context);
                                             },
                                             child: Text(
-                                              varFlatData[0]['flt_name']
-                                                          .toString() ==
-                                                      null
+                                              flatName.toString() == null
                                                   ? "Loading.."
-                                                  : varFlatData[0]['flt_name']
-                                                      .toString(),
+                                                  : flatName.toString(),
                                               // widget.flat.fltName,
                                               // 'Hello ',
                                               // + widget.fl.user.first_name,
@@ -1115,9 +1535,10 @@ subUserDeviceContainer(String dId,int index){
                                     // mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       FutureBuilder(
-                                        // future: deviceSensorVal,
+                                        future: deviceSensorVal,
                                         builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
+                                          if (snapshot.hasData) {
+                                            print('SnapShot ${snapshot}');
                                             return Column(
                                               children: <Widget>[
                                                 Row(
@@ -1138,8 +1559,7 @@ subUserDeviceContainer(String dId,int index){
                                                           Container(
                                                             child: Text(
                                                                 // 'aa',
-                                                                sensorData['sensor1'].toString()==null?"Loading":sensorData['sensor1'].toString(),
-                                                                style: TextStyle(
+                                                                sensorData[0]['sensor1'].toString(),                                                            style: TextStyle(
                                                                     fontSize:
                                                                         14,
                                                                     color: Colors
@@ -1165,7 +1585,7 @@ subUserDeviceContainer(String dId,int index){
                                                           Container(
                                                             child: Text(
                                                                 // 's',
-                                                                sensorData['sensor2'].toString()==null?"Loading":sensorData['sensor2'].toString(),
+                                                                sensorData[0]['sensor2'].toString(),
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         14,
@@ -1191,7 +1611,7 @@ subUserDeviceContainer(String dId,int index){
                                                           Container(
                                                             child: Text(
                                                                 // 's',
-                                                                sensorData['sensor3'].toString()==null?"Loading":sensorData['sensor3'].toString(),
+                                                                sensorData[0]['sensor3'].toString(),
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         14,
@@ -1216,7 +1636,7 @@ subUserDeviceContainer(String dId,int index){
                                                         children: <Widget>[
                                                           Container(
                                                             child: Text(
-                                                                sensorData['sensor4'].toString()==null?"Loading":sensorData['sensor4'].toString(),
+                                                                sensorData[0]['sensor4'].toString(),
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         14,
@@ -1277,7 +1697,7 @@ subUserDeviceContainer(String dId,int index){
                                         labelColor: Colors.blueAccent,
                                         indicatorWeight: 2.0,
                                         isScrollable: true,
-                                        tabs: List.generate(roomTab.length,
+                                        tabs: List.generate(roomTab.length==null?1:roomTab.length,
                                             (index) {
                                           return Container(
                                               height: 30,
@@ -1285,9 +1705,14 @@ subUserDeviceContainer(String dId,int index){
                                         }),
                                         onTap: (index) async {
                                           tabState = await roomTab[index]['r_id'].toString();
+                                          // devicePinSensorLocalUsingDeviceId(dv[index].dId);
                                           print('tabState $tabState');
-                                         widget.dv=await getAllDeviceForSubUser(tabState);
-                                          print('tabStateDevice ${widget.dv[index].dId}');
+                                          getDevicesByDeviceId(tabState);
+                                        dv= await SubUserDataBase.subUserInstance.getDeviceByRoomId(tabState);
+
+                                          deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
+                                          print('tabStateDevice ${dv[index].dId}');
+
                                           // print(
                                           //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                           // tabbarState = widget.rm[index].rId;
@@ -1318,9 +1743,9 @@ subUserDeviceContainer(String dId,int index){
 
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          if (index < deviceSubUser.length) {
-                            deviceSubUser.length==null? Text('loading'):deviceSubUser.length==null;
-                            print('asdf ${deviceSubUser.length}');
+                          if (index <dv.length) {
+                            dv.length==null? Text('loading'):dv.length==null;
+                            print('asdf ${dv.length}');
                             Text(
                               "Loading",
                               style: TextStyle(fontSize: 44),
@@ -1329,7 +1754,7 @@ subUserDeviceContainer(String dId,int index){
                             return Container(
                               child: Column(
                                 children: [
-                                  subUserDeviceContainer(deviceSubUser[index]['d_id'],index),
+                                  subUserDeviceContainer(dv[index].dId, index),
                                   Container(
                                        //
                                       // color: Colors.green,
@@ -1338,8 +1763,9 @@ subUserDeviceContainer(String dId,int index){
                                         child: RichText(
                                           text: TextSpan(children: [
                                             TextSpan(
-                                              text:widget.dv[index].dId.toString(),
-                                                // text: widget.dv[index].dId,
+                                              // text:'aa',
+                                              // text:deviceSubUser[index]['d_id'],
+                                                text: dv[index].dId,
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.black)),

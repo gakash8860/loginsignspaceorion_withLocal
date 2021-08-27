@@ -1,3 +1,5 @@
+import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
+import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -7,81 +9,81 @@ Database subUserDatabase;
 
 class SubUserDataBase{
   SubUserDataBase._privateConstructor();
-  static final SubUserDataBase instance = SubUserDataBase._privateConstructor();
+  static final SubUserDataBase subUserInstance = SubUserDataBase._privateConstructor();
 
   static final _subUserPlaceTableName = 'subUserPlaceTable';
-  static final subUserColumnPlaceId = 'subUser_p_id';
-  static final subUserColumnPlaceName = 'subUser_p_type';
-  static final subUserColumnPlaceUser = 'subUser_user';
+  static final subUserColumnPlaceId = 'p_id';
+  static final subUserColumnPlaceName = 'p_type';
+  static final subUserColumnPlaceUser = 'user';
 
-  static final _subUserFloorTableName = 'subUser_floorTable';
-  static final subUserColumnFloorId = 'subUser_f_id';
-  static final subUserColumnFloorName = 'subUser_f_name';
-  static final subUserColumnFloorUser = 'subUser_user';
+  static final _subUserFloorTableName = 'subUserFloorTable';
+  static final subUserColumnFloorId = 'f_id';
+  static final subUserColumnFloorName = 'f_name';
+  static final subUserColumnFloorUser = 'user';
 
-  static final _subUserFlatTableName = 'subUser_flatTable';
-  static final subUserColumnFlatName = 'subUser_flt_name';
-  static final subUserColumnFlatId = 'subUser_flt_id';
-  static final subUserColumnFlatUser = 'subUser_user';
+  static final _subUserFlatTableName = 'subUserFlatTable';
+  static final subUserColumnFlatName = 'flt_name';
+  static final subUserColumnFlatId = 'flt_id';
+  static final subUserColumnFlatUser = 'user';
 
 
-  static final _subUserRoomTableName = 'subUser_roomTable';
-  static final subUserColumnRoomName = 'subUser_r_name';
-  static final subUserColumnRoomId = 'subUser_r_id';
-  static final subUserColumnRoomUser = 'subUser_user';
+  static final _subUserRoomTableName = 'subUserRoomTable';
+  static final subUserColumnRoomName = 'r_name';
+  static final subUserColumnRoomId = 'r_id';
+  static final subUserColumnRoomUser = 'user';
 
-  static final _subUserdeviceTable = 'subUser_deviceTable';
-  static final subUserColumnDeviceId = 'subUser_d_id';
-  static final subUserColumnDeviceUser = 'subUser_user';
-  static final subUserColumnDeviceRoomId = 'subUser_r_id';
+  static final _subUserdeviceTable = 'subUserDeviceTable';
+  static final subUserColumnDeviceId = 'd_id';
+  static final subUserColumnDeviceUser = 'user';
+  static final subUserColumnDeviceRoomId = 'r_id';
 
 
   static final _subUserdevicePinNames = 'devicePinNamesValues';
   static final subUserColumnDevicePinId = 'id';
-  static final subUserPin1Name = 'subUserPin1Name';
-  static final subUserPin2Name = 'subUserPin2Name';
-  static final subUserPin3Name = 'subUserPin3Name';
-  static final subUserPin4Name = 'subUserPin4Name';
-  static final subUserPin5Name = 'subUserPin5Name';
-  static final subUserPin6Name = 'subUserPin6Name';
-  static final subUserPin7Name = 'subUserPin7Name';
-  static final subUserPin8Name = 'subUserPin8Name';
-  static final subUserPin9Name = 'subUserPin9Name';
-  static final subUserPin10Name = 'subUserPin10Name';
-  static final subUserPin11Name = 'subUserPin11Name';
-  static final subUserPin12Name = 'subUserPin12Name';
-  static final subUserPin13Name = 'subUserPin13Name';
-  static final subUserPin14Name = 'subUserPin14Name';
-  static final subUserPin15Name = 'subUserPin15Name';
-  static final subUserPin16Name = 'subUserPin16Name';
-  static final subUserPin17Name = 'subUserPin17Name';
-  static final subUserPin18Name = 'subUserPin18Name';
-  static final subUserPin19Name = 'subUserPin19Name';
-  static final subUserPin20Name = 'subUserPin20Name';
+  static final subUserPin1Name = 'pin1Name';
+  static final subUserPin2Name = 'pin2Name';
+  static final subUserPin3Name = 'pin3Name';
+  static final subUserPin4Name = 'pin4Name';
+  static final subUserPin5Name = 'pin5Name';
+  static final subUserPin6Name = 'pin6Name';
+  static final subUserPin7Name = 'pin7Name';
+  static final subUserPin8Name = 'pin8Name';
+  static final subUserPin9Name = 'pin9Name';
+  static final subUserPin10Name = 'pin10Name';
+  static final subUserPin11Name = 'pin11Name';
+  static final subUserPin12Name = 'pin12Name';
+  static final subUserPin13Name = 'pin13Name';
+  static final subUserPin14Name = 'pin14Name';
+  static final subUserPin15Name = 'pin15Name';
+  static final subUserPin16Name = 'pin16Name';
+  static final subUserPin17Name = 'pin17Name';
+  static final subUserPin18Name = 'pin18Name';
+  static final subUserPin19Name = 'pin19Name';
+  static final subUserPin20Name = 'pin20Name';
 
 
   static final _subUserDevicePinStatus = 'devicePinStatus';
   static final subUserColumnDevicePinStatusId = 'id';
-  static final subUserPin1Status = 'subUserPin1Status';
-  static final subUserPin2Status = 'subUserPin2Status';
-  static final subUserPin3Status = 'subUserPin3Status';
-  static final subUserPin4Status = 'subUserPin4Status';
-  static final subUserPin5Status = 'subUserPin5Status';
-  static final subUserPin6Status = 'subUserPin6Status';
-  static final subUserPin7Status = 'subUserPin7Status';
-  static final subUserPin8Status = 'subUserPin8Status';
-  static final subUserPin9Status = 'subUserPin9Status';
-  static final subUserPin10Status = 'subUserPin10Status';
-  static final subUserPin11Status = 'subUserPin11Status';
-  static final subUserPin12Status = 'subUserPin12Status';
-  static final subUserPin13Status = 'subUserPin13Status';
-  static final subUserPin14Status = 'subUserPin14Status';
-  static final subUserPin15Status = 'subUserPin15Status';
-  static final subUserPin16Status = 'subUserPin16Status';
-  static final subUserPin17Status = 'subUserPin17Status';
-  static final subUserPin18Status = 'subUserPin18Status';
-  static final subUserPin19Status = 'subUserPin19Status';
-  static final subUserPin20Status = 'subUserPin20Status';
+  static final subUserPin1Status = 'pin1Status';
+  static final subUserPin2Status = 'pin2Status';
+  static final subUserPin3Status = 'pin3Status';
+  static final subUserPin4Status = 'pin4Status';
+  static final subUserPin5Status = 'pin5Status';
+  static final subUserPin6Status = 'pin6Status';
+  static final subUserPin7Status = 'pin7Status';
+  static final subUserPin8Status = 'pin8Status';
+  static final subUserPin9Status = 'pin9Status';
+  static final subUserPin10Status = 'pin10Status';
+  static final subUserPin11Status = 'pin11Status';
+  static final subUserPin12Status = 'pin12Status';
+  static final subUserPin13Status = 'pin13Status';
+  static final subUserPin14Status = 'pin14Status';
+  static final subUserPin15Status = 'pin15Status';
+  static final subUserPin16Status = 'pin16Status';
+  static final subUserPin17Status = 'pin17Status';
+  static final subUserPin18Status = 'pin18Status';
+  static final subUserPin19Status = 'pin19Status';
+  static final subUserPin20Status = 'pin20Status';
 
 
   static final _subUserSensorTable = 'sensorTable';
@@ -149,6 +151,195 @@ class SubUserDataBase{
         ''');
 
     });
+    return database;
   }
+  Future<void> insertPlaceModelData(SubUserPlaceType placeType) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      '$_subUserPlaceTableName',
+      placeType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+  }
+
+  Future<void> insertSubUserFloorModelData(SubUserFloorType floorType) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      '$_subUserFloorTableName',
+      floorType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+  }
+  Future<void> insertSubUserFlatModelData(SubUserFlatType flat) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserFlatTableName',
+      flat.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+  }
+
+  Future<void> insertSubUserRoomModelData(SubUserRoomType roomType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserRoomTableName',
+      roomType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<void> insertSubUserDeviceModelData(SubUserDeviceType subUserDeviceType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserdeviceTable',
+      subUserDeviceType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<void> insertSubUserDevicePinStatusData(PinStatusSubUser subUserDeviceType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserDevicePinStatus',
+      subUserDeviceType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<void> updateSubUserDevicePinStatusData(PinStatusSubUser subUserDeviceType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.update(
+      '$_subUserDevicePinStatus',
+      subUserDeviceType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+
+  Future<void> insertSubUserDevicePinNames(SubUserDevicePinNameType subUserDevicePinNameType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserdevicePinNames',
+      subUserDevicePinNameType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<void> updateSubUserDevicePinNames(SubUserDevicePinNameType subUserDevicePinNameType) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.update(
+      '$_subUserdevicePinNames',
+      subUserDevicePinNameType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future<void> insertSubUserSensor(SubUserSensorData subUserSensorData) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserSensorTable',
+      subUserSensorData.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+  Future getPinNamesByDeviceId(String id) async {
+    final db = await database;
+    var result =
+    await db.query("devicePinNamesValues", where: "d_id = ? ", whereArgs: [id]);
+    print('PinNameResultName $result');
+    // return result.isNotEmpty?result.first:Null;
+    return result;}
+
+
+
+
+  Future getPinStatusByDeviceId(String id) async {
+    final db = await database;
+    var result =
+    await db.query("devicePinStatus", where: "d_id = ? ", whereArgs: [id]);
+    print('PinStatusResult $result');
+    // return result.isNotEmpty?result.first:Null;
+    return result;
+  }
+
+  Future getSensorByDeviceId(String id) async{
+    final db =await database;
+    var result= db.query("sensorTable",where: "d_id =? ",whereArgs: [id]);
+    print('sensorResult ${result}');
+    return result;
+  }
+  List <SubUserDeviceType>dvdata;
+  Future<List<SubUserDeviceType>> getDeviceByRoomId(String id) async {
+    final db = await database;
+    List result =
+    await db.query("subUserDeviceTable", where: "r_id = ? ", whereArgs: [id]);
+    print('DeviceChanges $result');
+    dvdata=List.generate(result.length, (index) =>SubUserDeviceType(
+      dId: result[index]['d_id'].toString(),
+      rId: result[index]['r_id'].toString(),
+      user: result[index]['user'],
+    ));
+    print('DeviceChanges12 $dvdata');
+    // dvdata = result.map((data) => Device.fromJson(data)).toList();
+
+
+    return dvdata;
+  }
+
+
+
+
+
+  queryPlaceSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserPlaceTableName);
+  }
+  queryFloorSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserFloorTableName);
+  }
+  queryFlatSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserFlatTableName);
+  }
+  queryRoomSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserRoomTableName);
+  }
+  queryDeviceSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserdeviceTable);
+  }
+  queryDevicePinStatusSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserDevicePinStatus);
+  }
+  queryDevicePinNamesSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserdevicePinNames);
+  }
+  queryDeviceSensorSubUser() async {
+    Database db = await subUserInstance.database;
+
+    return await db.query(_subUserSensorTable);
+  }
+
 
 }
