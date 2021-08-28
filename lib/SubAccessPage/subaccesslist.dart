@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
 
 import '../main.dart';
+
+
+List subUserDecodeList;
 void main()=>runApp(MaterialApp(
   home: SubAccessList(),
 ));
@@ -37,7 +40,7 @@ class _SubAccessListState extends State<SubAccessList> {
 
 
 
-  List subUserDecodeList;
+
 
   Future openSubUserBox()async{
 
@@ -174,7 +177,7 @@ class _SubAccessListState extends State<SubAccessList> {
                                               Row(
                                                 children: [
                                                   SizedBox(width: 25,),
-                                                  Text('Owner Name = ${subUserDecodeList[index]['owner_name']}'.toString(),textAlign: TextAlign.end,),
+                                                  // Text('Owner Name = ${subUserDecodeList[index]['owner_name']}'.toString(),textAlign: TextAlign.end,),
                                                 ],
                                               ),
                                             ],

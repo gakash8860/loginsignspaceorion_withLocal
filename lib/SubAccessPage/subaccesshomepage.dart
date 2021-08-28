@@ -96,8 +96,11 @@ class _SubAccessHomeState extends State<SubAccessHome> {
   bool val1 = true;
 String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   bool val2 = false;
+  var ownerName;
 
   Future deviceSensorVal;
+
+  TextEditingController pin19Controller= new TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -110,9 +113,9 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   }
 
   Future<void> fetchSubUser() async {
-
+      var responseBody;
     final url =
-        'https://genorion1.herokuapp.com/getallplacesbyonlyplaceidp_id/?email=' +
+        'https://genorion1.herokuapp.com/subfindsubdata/?email=' +
             widget.email;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -123,6 +126,9 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
       print('SubUserResponse->  ${response.statusCode}');
       print('SubUserResponse->  ${response.body}');
       print(response.body);
+      responseBody=jsonDecode(response.body);
+      ownerName=responseBody[0]['owner_name'].toString();
+      print('SubUserResponse->  ${ownerName}');
       await getAllFloorForSubUser();
     }
 // return PlaceType.fromJson(true);
@@ -878,6 +884,118 @@ var sensorData;
       ),
     );
   }
+  dataUpdateforPin19(String dId) async {
+    final String url =
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    String token = await getToken();
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseDataPinStatusForSubUser[0],
+      'pin2Status': responseDataPinStatusForSubUser[1],
+      'pin3Status': responseDataPinStatusForSubUser[2],
+      'pin4Status': responseDataPinStatusForSubUser[3],
+      'pin5Status': responseDataPinStatusForSubUser[4],
+      'pin6Status': responseDataPinStatusForSubUser[5],
+      'pin7Status': responseDataPinStatusForSubUser[6],
+      'pin8Status': responseDataPinStatusForSubUser[7],
+      'pin9Status': responseDataPinStatusForSubUser[8],
+      'pin10Status': responseDataPinStatusForSubUser[9],
+      'pin11Status': responseDataPinStatusForSubUser[10],
+      'pin12Status': responseDataPinStatusForSubUser[11],
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': pin17Controller.text,
+      // 'pin18Status': r,
+      'pin19Status': pin19Controller.text,
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+      // print(switch_1);
+      // print(switch_2);
+      //
+      // print('Switch 1 --> $switch_1');
+      // print('Switch 2 --> $switch_2');
+      // print('Switch 3 --> $switch_3');
+      // print('Switch 4 --> $switch_4');
+      getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
+  _createAlertDialogForPin19(BuildContext context, String dId) {
+    return showDialog(
+
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Any Text For Pin 19'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                TextFormField(
+                  autofocus: true,
+                  controller: pin19Controller,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter ANy Text ',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await dataUpdateforPin19(dId);
+                      // await getAllRoom();
+                      // roomQueryFunc();
+
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
 subUserDeviceContainer(String dId,int index){
   deviceContainer(dId,index);
   return Column(
@@ -912,20 +1030,20 @@ subUserDeviceContainer(String dId,int index){
                       shape: BoxShape.circle),
                   // child: ...
                 ),
-                // Switch(
-                //   value: listOfPinStatus.indexOf(index) == 0 ? val2 : val1,
-                //   //boolean value
-                //   // value: val1,
-                //   onChanged: (val) async {
-                //     _showDialog(dId);
-                //   },
-                // ),
+                Switch(
+                  value: responseDataPinStatusForSubUser[index] == 0 ? val2 : val1,
+                  //boolean value
+                  // value: val1,
+                  onChanged: (val) async {
+                    _showDialog(dId);
+                  },
+                ),
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: GestureDetector(
                     child: Icon(Icons.settings_remote),
                     onTap: () {
-                      // _createAlertDialogForPin19(context, dId);
+                      _createAlertDialogForPin19(context, dId);
                     },
                   ),
                 ),
@@ -1064,8 +1182,7 @@ subUserDeviceContainer(String dId,int index){
                                                 TextStyle(fontSize: 10),
                                               ),
                                               onPressed: () {
-                                                print(
-                                                    'indexpinNames->  $index');
+                                                print('indexpinNames->  $index');
 //                                                   setState(() {
 //
 //                                                     names[index] =pinNames;
@@ -1418,7 +1535,7 @@ subUserDeviceContainer(String dId,int index){
               width: double.maxFinite,
               color: change_toDark ? Colors.black : Colors.white,
               child: DefaultTabController(
-                length:  2,
+                length:  roomTab.length,
                 // length: widget.rm.length,
                 child: CustomScrollView(
                     // key: key,
@@ -1430,7 +1547,7 @@ subUserDeviceContainer(String dId,int index){
                         child: Column(
                           children: <Widget>[
                             Container(
-                              height: MediaQuery.of(context).size.height * 0.35,
+                              height: MediaQuery.of(context).size.height * 0.41,
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -1454,6 +1571,35 @@ subUserDeviceContainer(String dId,int index){
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  GestureDetector(
+                                    onLongPress: () {
+                                      // _editFloorNameAlertDialog(context);
+                                      print(roomTab.length);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Assigned By ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                        Text(
+                                          ownerName.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      // _createAlertDialogDropDown(context);
+                                    },
+                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1485,11 +1631,12 @@ subUserDeviceContainer(String dId,int index){
                                               // _createAlertDialogDropDown(context);
                                             },
                                           ),
+
                                           SizedBox(
                                             height: 12,
                                           ),
                                           GestureDetector(
-                                            onLongPress: () async{
+                                            onTap: () async{
                                               var aaa=await SubUserDataBase.subUserInstance.queryPlaceSubUser();
                                               var floor=await SubUserDataBase.subUserInstance.queryFloorSubUser();
                                               var flat=await SubUserDataBase.subUserInstance.queryFlatSubUser();
@@ -1520,16 +1667,16 @@ subUserDeviceContainer(String dId,int index){
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 22),
                                             ),
-                                            onTap: () {
-                                              // _createAlertDialogDropDown(context);
-                                            },
+                                            // onTap: () {
+                                            //   // _createAlertDialogDropDown(context);
+                                            // },
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
                                   SizedBox(
-                                    height: 45,
+                                    height: 35,
                                   ),
                                   Row(
                                     // mainAxisAlignment: MainAxisAlignment.start,
@@ -1697,7 +1844,7 @@ subUserDeviceContainer(String dId,int index){
                                         labelColor: Colors.blueAccent,
                                         indicatorWeight: 2.0,
                                         isScrollable: true,
-                                        tabs: List.generate(roomTab.length==null?1:roomTab.length,
+                                        tabs:  List.generate(roomTab.length==null?1:roomTab.length,
                                             (index) {
                                           return Container(
                                               height: 30,

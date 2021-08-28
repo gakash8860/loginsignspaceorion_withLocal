@@ -126,6 +126,19 @@ class NewDbProvider {
   static final sensor9 = 'sensor9';
   static final sensor10 = 'sensor10';
 
+
+  static final _subUserTable='subUserTable';
+  static final ownerName='owner_name';
+  static final name='name';
+  static final user='user';
+  static final emailSubUser='email';
+  static final p_id='p_id';
+  static final id='id';
+
+
+
+
+
   Future<Database> get database async {
     if (dataBase != null) {
       return dataBase;
@@ -149,6 +162,11 @@ class NewDbProvider {
          CREATE TABLE $_userDetails (  $email TEXT NOT NULL,
          $first_name TEXT NOT NULL,$last_name TEXT NOT NULL, $columnUserName TEXT, $columnUserPhoneNumber INTEGER,$columnUserPassword TEXT,
          $columnUserPassword2 TEXT   )
+         ''');
+
+          await db.execute('''
+         CREATE TABLE $_subUserTable (  $emailSubUser TEXT NOT NULL,
+         $ownerName TEXT NOT NULL,$name TEXT NOT NULL, $user INTEGER, $p_id INTEGER,$id INTEGER  )
          ''');
 
        await db.execute('''
@@ -213,6 +231,16 @@ class NewDbProvider {
     await db.insert(
       '$_placeTableName',
       placeType.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+  }
+  Future<void> insertSubUserModelData(SubAccessPage subAccessPage) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.insert(
+      '$_subUserTable',
+      subAccessPage.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
@@ -360,6 +388,11 @@ class NewDbProvider {
     Database db = await instance.database;
 
     return await db.query(_sensorTable);
+  }
+  querySubUser() async {
+    Database db = await instance.database;
+
+    return await db.query(_subUserTable);
   }
 
   queryPinStatus() async {

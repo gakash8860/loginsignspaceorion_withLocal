@@ -11,17 +11,17 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
-import 'package:loginsignspaceorion/BillPrediction.dart';
 import 'package:loginsignspaceorion/SETTINGS.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
-
+import 'package:loginsignspaceorion/my_flutter_app_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showEmergencyNumber.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showSSID.dart';
+import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
 import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
-import 'package:loginsignspaceorion/about_Genorion.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
 import 'package:loginsignspaceorion/information.dart';
@@ -29,7 +29,6 @@ import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -55,6 +54,7 @@ import 'package:loginsignspaceorion/ProfilePage.dart';
 
 import '../Setting_Page.dart';
 import '../billprediction2.dart';
+import '../setting_icons.dart';
 import 'DesktopUi/desktopMenu.dart';
 import 'DesktopUi/destination.dart';
 import 'DesktopUi/destinationview.dart';
@@ -899,33 +899,28 @@ class _HomeTestState extends State<HomeTest>
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
-                                    var check = selectedPlace;
-                                    print('check ${check.toString()}');
-                                    var placeid = selectedPlace.substring(
-                                        7, 14);
-                                    var placeName = selectedPlace.substring(
-                                        24, 31);
-                                    var user = selectedPlace.substring(38, 40);
-                                    int user2 = int.parse(user);
-                                    print('placeName $user');
-                                    // pt=as.map((e) => PlaceType.fromJson(json));
-                                    var pids = PlaceType(
-                                        pId: placeid,
+                                    var placeId = selectedPlace.substring(7, 14);
+                                    var placeName = selectedPlace.substring(24, 31);
+                                    print('checkPlaceName ${placeName.toString()}');
+                                    var pt = PlaceType(
+                                        pId: placeId,
                                         pType: placeName,
-                                        user: user2
+                                        user: getUidVariable2
                                     );
-                                    pt = pids;
+                                    pt = pt;
                                     // pt=as.map((data) => PlaceType.fromJson(data)).toList();
                                     print("SElectedPlace ${selectedPlace}");
 
-                                    var aa = await NewDbProvider.instance
-                                        .getFloorById(placeid.toString());
+                                    var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
                                     print('AA  ${aa}');
-                                    floorval = null;
+
+                                    floorval = returnFloorQuery(placeId.toString());
+                                    floorQueryRows2 = await aa;
+                                    returnFloorQuery(placeId);
                                     setState(() {
                                       floorQueryRows2 = aa;
-                                      floorval = returnFloorQuery(placeid);
-                                      returnFloorQuery(placeid);
+                                      floorval = returnFloorQuery(placeId);
+                                      returnFloorQuery(placeId);
                                     });
                                     print('Floorqwe  ${floorQueryRows2}');
 
@@ -1017,6 +1012,8 @@ class _HomeTestState extends State<HomeTest>
                                     var getFlat = await NewDbProvider.instance
                                         .getFlatByFId(floorId.toString());
                                     print(getFlat);
+                                    flatVal = returnFlatQuery(floorId);
+                                    flatQueryRows2 = getFlat;
                                     setState(() {
                                       flatVal = returnFlatQuery(floorId);
                                       flatQueryRows2 = getFlat;
@@ -1073,7 +1070,6 @@ class _HomeTestState extends State<HomeTest>
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
-
                                   dropdownColor: Colors.white70,
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 28,
@@ -1093,12 +1089,8 @@ class _HomeTestState extends State<HomeTest>
                                   onChanged: (selectedFlat) async {
                                     flatId = selectedFlat.substring(9, 16);
                                     // var flatId = selectedFlat.substring(7, 14);
-                                    var flatName = selectedFlat.substring(
-                                        28, 35);
-                                    var floorId = selectedFlat.substring(
-                                        39, 46);
-                                    // var user =selectedFlat.substring(58,59);
-
+                                    var flatName = selectedFlat.substring(28, 35);
+                                    var floorId = selectedFlat.substring(39, 46);
                                     print('flatName $selectedFlat');
                                     // print('flatName $user');
                                     // int user2 =int.parse(user);
@@ -1154,10 +1146,11 @@ class _HomeTestState extends State<HomeTest>
                               user: result[index]['user'],
                             )
                     );
-                    rm = room;
+
                     // rm = await getrooms(fl.fId);
                     // print('hello   ${rm[0].rId}') ;
                     setState(() {
+                      rm = room;
                       // tabbarState = rm[0].rId;
                     });
                     // Navigator.of(context).pop();
@@ -1976,7 +1969,23 @@ class _HomeTestState extends State<HomeTest>
                   TextButton(
                       onPressed: () {
 
-                        _createAlertDialogForPinSchedule(context, dId);
+                        _showDialogForDeleteSingleDevices(tabbarState,dId);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             ShowEmergencyNumber(
+                        //               deviceId: widget.dv[index].dId,
+                        //             )));
+                      },
+                      child: Text(
+                        'Delete Device',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                  TextButton(
+                      onPressed: () {
+
+                        // deleteDevice(tabbarState, dId);
                         // Navigator.push(
                         //     context,
                         //     MaterialPageRoute(
@@ -3609,8 +3618,8 @@ class _HomeTestState extends State<HomeTest>
         width: double.maxFinite,
         color: change_toDark ? Colors.black : Colors.white,
         // key: key,
-        child: LayoutBuilder(builder:
-            (BuildContext context, BoxConstraints viewportConstraints) {
+        child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints viewportConstraints) {
           if (viewportConstraints.maxWidth > 600) {
             return Container(
               child: Row(
@@ -3804,7 +3813,7 @@ class _HomeTestState extends State<HomeTest>
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SubAccessList()),
+                                  builder: (context) => SubAccessSinglePage()),
                             );
                           },
                         ),
@@ -3945,7 +3954,7 @@ class _HomeTestState extends State<HomeTest>
                 ),
               ),
               body: Container(
-                width: double.maxFinite,
+                  width: double.maxFinite,
                 color: change_toDark ? Colors.black : Colors.white,
                 child: DefaultTabController(
                   length: widget.rm.length,
@@ -3962,7 +3971,7 @@ class _HomeTestState extends State<HomeTest>
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.38,
+                                    .height * 0.41,
                                 width: MediaQuery
                                     .of(context)
                                     .size
@@ -4022,26 +4031,24 @@ class _HomeTestState extends State<HomeTest>
                                                             color: Colors.white,
                                                             fontSize: 22,
                                                             // fontWeight: FontWeight.bold,
-                                                            fontStyle: FontStyle
-                                                                .italic),
+                                                            fontStyle: FontStyle.italic),
                                                       ),
-                                                      Icon(Icons
-                                                          .arrow_drop_down),
+                                                      Icon(Icons.arrow_drop_down),
                                                       SizedBox(width: 10,),
                                                     ],
                                                   ),
                                                   onTap: () {
-                                                    _createAlertDialogDropDown(
-                                                        context);
+                                                    _createAlertDialogDropDown(context);
                                                   },
                                                 ),
                                                 SizedBox(width: 10,),
                                                 GestureDetector(
-                                                  child: Icon(Icons.add),
+                                                  // child:Image.asset('assets/images/setting.png'),
+
+                                                  child: Icon(SettingIcon.params,size: 18,),
                                                   onTap: () async {
                                                     await allFloor();
-                                                    _createAlertDialogForDeleteFloorAndAddFloor(
-                                                        context);
+                                                    _createAlertDialogForDeleteFloorAndAddFloor(context);
                                                     // _createAlertDialogForFloor(context);
                                                   },
                                                 )
@@ -4093,14 +4100,15 @@ class _HomeTestState extends State<HomeTest>
                                                             context);
                                                       },
                                                     ),
-                                                    SizedBox(width: 35),
+                                                    SizedBox(width: 28),
                                                     GestureDetector(
                                                         onTap: () async {
                                                           await allFlat();
                                                           _createAlertDialogForDeleteFlatAndAddFlat(
                                                               context);
                                                         },
-                                                        child: Icon(Icons.add)),
+                                                      child: Icon(SettingIcon.params,size: 18,),
+                                                    ),
                                                   ],
                                                 )
 
@@ -4293,7 +4301,7 @@ class _HomeTestState extends State<HomeTest>
                                           Column(
                                             children: [
                                               Container(
-                                                  color: Colors.yellow,
+                                                  // color: Colors.yellow,
                                                   child: GestureDetector(
                                                       onTap: () {
                                                         _createAlertDialogForAddRoom(
@@ -4309,9 +4317,9 @@ class _HomeTestState extends State<HomeTest>
                                                                 fontWeight: FontWeight
                                                                     .bold,
                                                                 color: Colors
-                                                                    .white
+                                                                    .black
                                                             ),),
-                                                          Icon(Icons.add),
+                                                          Icon(Icons.add,color: Colors.black,),
                                                         ],
                                                       ))),
                                             ],
@@ -4625,7 +4633,33 @@ class _HomeTestState extends State<HomeTest>
           ),
     );
   }
-
+  _showDialogForDeleteSingleDevices(String rId,String dId) {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Alert"),
+            content: Text("Are your sure to delete this devices"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    await deleteDevice(rId,dId);
+                    Navigator.pop(context);
+                  }
+              ),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          ),
+    );
+  }
   _showDialogForLogOut() {
     // dialog implementation
 
@@ -4829,19 +4863,18 @@ class _HomeTestState extends State<HomeTest>
   double _value = 0.0;
   int checkSwitch;
   int sliderValue;
-
+bool _hasBeenPressed=false;
+String textSelected ="";
+var flag=0;
   deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
     // schedulingDevicePin(dId,x);
     fetchIp(dId);
+     // _hasBeenPressed=false;
     return Column(
       children: [
         Container(
-          color:Colors.red,
-          height: MediaQuery
-              .of(context)
-              .size
-              .height * 1.95,
+          height: MediaQuery.of(context).size.height * 1.95,
           // color: Colors.redAccent,
           child: Column(
             children: [
@@ -4853,6 +4886,7 @@ class _HomeTestState extends State<HomeTest>
                     child: Text(
                       'Turn Off All Appliances',
                       style: TextStyle(
+                        fontSize: 12.5,
                         fontWeight: FontWeight.bold,
                         color: _switchValue ? Colors.white : Colors.black,
                       ),
@@ -4862,15 +4896,24 @@ class _HomeTestState extends State<HomeTest>
                     width: 14,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(4),
                     child: GestureDetector(
-                      child: Icon(Icons.device_hub),
+                      child:  Container(
+                        // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                        child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                      ),
+                      // child: Icon(Icons.device_hub),
                       onTap: () {
+                        // textSelected=dId.toString();
+                      print('check123${textSelected}');
+
                         setState(() {
+                          textSelected=dId.toString();
+                          _hasBeenPressed = !_hasBeenPressed;
                         deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
                         });
-                        // _createAlertDialogForPinSchedule(context,dId);
-                        // _createAlertDialogForPin17(context, dId);
+                        print('check123${textSelected==dId}');
+                        print('_hasBeenPressed ${textSelected}');
                       },
                     ),
                   ),
@@ -4912,7 +4955,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
               Container(
-                color: Colors.yellow,
+                // color: Colors.yellow,
                 height: MediaQuery
                     .of(context)
                     .size
@@ -5074,17 +5117,17 @@ class _HomeTestState extends State<HomeTest>
                                       children: [
                                         Row(
                                           children: [
-                                            GestureDetector(
-                                                onTap: () {
-                                                  print(
-                                                      'tabbarstateDelete ${tabbarState}');
-                                                  print(
-                                                      'tabbarstateDelete ${dId}');
-
-                                                  deleteDevice(tabbarState, dId);
-                                                },
-                                                child: Icon(Icons.auto_delete)
-                                            ),
+                                            // GestureDetector(
+                                            //     onTap: () {
+                                            //       print(
+                                            //           'tabbarstateDelete ${tabbarState}');
+                                            //       print(
+                                            //           'tabbarstateDelete ${dId}');
+                                            //
+                                            //       // deleteDevice(tabbarState, dId);
+                                            //     },
+                                            //     child: Icon(Icons.auto_delete)
+                                            // ),
                                             Expanded(
                                               child: TextButton(
                                                 child: Text(
@@ -5189,7 +5232,7 @@ class _HomeTestState extends State<HomeTest>
                       .size
                       .height *1.92,
                   // color: Colors.black,
-                  color: Colors.amber,
+                  // color: Colors.amber,
                   child: GridView.count(
                       crossAxisSpacing: 8,
                       childAspectRatio: 2 / 1.8,
