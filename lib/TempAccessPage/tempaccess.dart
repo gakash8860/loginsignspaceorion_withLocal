@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/TempAccessPage/tempacessplace.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -23,10 +24,18 @@ class _TempAccessPageState extends State<TempAccessPage> {
   List data;
   Box tempUserBox;
   Future tem;
-
+  Future getTempFuture;
   @override
   void initState() {
     super.initState();
+    print('initState123');
+    getTempFuture= getTempUsers();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    print('dispose');
     getTempUsers();
   }
 
@@ -108,7 +117,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: FutureBuilder(
-                  future: getTempUsers(),
+                  future: getTempFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (tempUserDecodeList.isEmpty) {
@@ -142,6 +151,13 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                           child: Column(
                                             children: [
                                               ListTile(
+                                                onTap: (){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+
+                                                    placeId: tempUserDecodeList[index]['p_id'].toString(),
+                                                    ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                  )));
+                                                },
                                                 title: Text(
                                                     tempUserDecodeList[index]
                                                         ['name']),
@@ -152,12 +168,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                     tempUserDecodeList[index]
                                                             ['timing']
                                                         .toString()),
-                                                onTap: () {
-                                                  print(
-                                                      'printSubUser ${tempUserDecodeList[index]['name']}');
-                                                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                  //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-                                                },
+
                                               ),
                                               Row(
                                                 children: [
@@ -181,12 +192,12 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                               ),
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                            ['f_id']
-                                                        .toString(),
-                                                    textAlign: TextAlign.end,
-                                                  ),
+                                                  // Text(
+                                                  //   tempUserDecodeList[index]
+                                                  //           ['f_id']
+                                                  //       .toString(),
+                                                  //   textAlign: TextAlign.end,
+                                                  // ),
                                                   SizedBox(
                                                     width: 10,
                                                   ),

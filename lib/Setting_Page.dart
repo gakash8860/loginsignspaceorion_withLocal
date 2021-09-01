@@ -144,10 +144,10 @@ class _SettingPageState extends State<SettingPage> {
                         child: Icon(Icons.change_history_sharp)),
                     title: Text('Manage Themes',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,),),
                     onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChangedTheme()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => ChangedTheme()),
+                      // );
                     },
                     trailing: Row(
                       mainAxisSize:MainAxisSize.min ,

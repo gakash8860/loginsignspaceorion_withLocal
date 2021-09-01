@@ -11,17 +11,14 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
-import 'package:loginsignspaceorion/SETTINGS.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
-import 'package:loginsignspaceorion/my_flutter_app_icons.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showEmergencyNumber.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showSSID.dart';
 import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
-import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
+import 'package:loginsignspaceorion/bill2.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
 import 'package:loginsignspaceorion/information.dart';
@@ -38,7 +35,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/scheduling/alarmHelper.dart';
@@ -47,13 +43,10 @@ import 'package:loginsignspaceorion/scopedModel/connectedModel.dart';
 import 'package:loginsignspaceorion/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/whatNew.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:loginsignspaceorion/ProfilePage.dart';
-
 import '../Setting_Page.dart';
-import '../billprediction2.dart';
+import '../mobilesettingpage.dart';
 import '../setting_icons.dart';
 import 'DesktopUi/desktopMenu.dart';
 import 'DesktopUi/destination.dart';
@@ -202,7 +195,7 @@ class _HomeTestState extends State<HomeTest>
   Future placeVal;
   Future floorVal;
   final item = List.from(ConnectedModel.applianceList);
-  Image setImage;
+  // Image setImage;
   SharedPreferences preferences;
   DateTime now = new DateTime.now();
   int _currentIndex = 0;
@@ -266,14 +259,14 @@ class _HomeTestState extends State<HomeTest>
 
   Device device;
   bool val1 = true;
-
+  bool _switchValue = false;
   bool val2 = false;
   Timer timer;
   var formattedTime = DateFormat('HH:mm').format(DateTime.now());
   final storage = FlutterSecureStorage();
   TextEditingController idText = new TextEditingController();
   DropDown1 down1 = new DropDown1();
-  bool _switchValue = false;
+
   var data;
   List<int> listDynamic = [];
   var flatId;
@@ -364,6 +357,7 @@ class _HomeTestState extends State<HomeTest>
   void initState() {
     super.initState();
     pickedDate = DateTime.now();
+    loadImageFromPreferences();
     timer = Timer.periodic(Duration(seconds: 10), (timer) {
       print('10seconds');
       fetchPlace();
@@ -459,9 +453,18 @@ class _HomeTestState extends State<HomeTest>
       print(response.body);
 
       var floorResponse = jsonDecode(response.body);
-      setState(() {
-        widget.fl.fName = postDataFloorName['f_name'];
-      });
+      if(response.statusCode==200||response.statusCode==201){
+
+        setState(() {
+          widget.fl.fName = postDataFloorName['f_name'];
+        });
+        final snackBar = SnackBar(
+          content: Text('Name Updated'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      }
+
       getAllFloor();
       print(' Floor Response--> $floorResponse');
 // pt.pType=;
@@ -868,7 +871,7 @@ class _HomeTestState extends State<HomeTest>
                                       color: Colors.black,
                                       width: 0.5,
                                     )),
-                                child: DropdownButtonFormField<String>(
+                                child: DropdownButtonFormField(
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
@@ -893,21 +896,23 @@ class _HomeTestState extends State<HomeTest>
                                   ),
 
                                   items: placeRows.map((selectedPlace) {
-                                    return DropdownMenuItem<String>(
+                                    return DropdownMenuItem(
                                       value: selectedPlace.toString(),
                                       child: Text("${selectedPlace['p_type']}"),
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
+
                                     var placeId = selectedPlace.substring(7, 14);
                                     var placeName = selectedPlace.substring(24, 31);
                                     print('checkPlaceName ${placeName.toString()}');
-                                    var pt = PlaceType(
+
+                                    var place = PlaceType(
                                         pId: placeId,
                                         pType: placeName,
                                         user: getUidVariable2
                                     );
-                                    pt = pt;
+                                    pt = place;
                                     // pt=as.map((data) => PlaceType.fromJson(data)).toList();
                                     print("SElectedPlace ${selectedPlace}");
 
@@ -918,9 +923,10 @@ class _HomeTestState extends State<HomeTest>
                                     floorQueryRows2 = await aa;
                                     returnFloorQuery(placeId);
                                     setState(() {
-                                      floorQueryRows2 = aa;
                                       floorval = returnFloorQuery(placeId);
                                       returnFloorQuery(placeId);
+                                      floorQueryRows2 = aa;
+
                                     });
                                     print('Floorqwe  ${floorQueryRows2}');
 
@@ -992,16 +998,10 @@ class _HomeTestState extends State<HomeTest>
                                   }).toList(),
                                   onChanged: (selectedFloor) async {
                                     print('Floor selected $selectedFloor');
-                                    var check = selectedFloor;
-                                    var floorId = selectedFloor.substring(
-                                        7, 14);
-                                    var floorName = selectedFloor.substring(
-                                        24, 32);
-                                    var placeId = selectedFloor.substring(
-                                        39, 46);
-                                    // var user =selectedFloor.substring(54,55);
-                                    // int user2 =int.parse(user);
-                                    // print('floorName $user');
+
+                                    var floorId = selectedFloor.substring(7, 14);
+                                    var floorName = selectedFloor.substring(24, 32);
+                                    var placeId = selectedFloor.substring(39, 46);
                                     var floor = FloorType(
                                         fId: floorId,
                                         fName: floorName,
@@ -1009,8 +1009,7 @@ class _HomeTestState extends State<HomeTest>
                                         user: getUidVariable2
                                     );
                                     fl = floor;
-                                    var getFlat = await NewDbProvider.instance
-                                        .getFlatByFId(floorId.toString());
+                                    var getFlat = await NewDbProvider.instance.getFlatByFId(floorId.toString());
                                     print(getFlat);
                                     flatVal = returnFlatQuery(floorId);
                                     flatQueryRows2 = getFlat;
@@ -1022,7 +1021,6 @@ class _HomeTestState extends State<HomeTest>
 
                                     returnFloorQuery(floorId);
                                   },
-                                  // items:snapshot.data
                                 ),
                               );
                             } else {
@@ -1136,7 +1134,7 @@ class _HomeTestState extends State<HomeTest>
                     List result = await NewDbProvider.instance
                         .getRoomById(flatId.toString());
                     print("SubmitAllDetails  ${result}");
-                    room = List.generate(
+                   List<RoomType> room = List.generate(
                         result.length,
                             (index) =>
                             RoomType(
@@ -1146,23 +1144,9 @@ class _HomeTestState extends State<HomeTest>
                               user: result[index]['user'],
                             )
                     );
-
-                    // rm = await getrooms(fl.fId);
-                    // print('hello   ${rm[0].rId}') ;
                     setState(() {
                       rm = room;
-                      // tabbarState = rm[0].rId;
                     });
-                    // Navigator.of(context).pop();
-                    // print('State   $tabbarState');
-                    // print('FID-->   ${fl.fId}');
-                    // // dv = await getDevices(tabbarState );
-                    //
-                    // print('On Pressed  ${pt.pId}');
-                    // print('On Pressed place response ${pt.pId}');
-                    // // print(rm[1]);
-                    // //  print(rm[0].r_name);
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2559,77 +2543,7 @@ class _HomeTestState extends State<HomeTest>
     // getPinNames(deviceIdForSensor);
   }
 
-  // var getDataSql;
 
-  // @override
-  // void initState() {
-  //
-  //   if(roomResponse!=null){
-  //     tabbarState = roomResponse;
-  //     print('hahahah $tabbarState');
-  //   }
-  //   // print('roomLength ${widget.fl.fId}');
-  //   // print('flatDetails ${widget.flat.fltId}');
-  //   // devicePinNamesQueryFunc();
-  //   // placeVal= returnPlaceQuery();
-  //   // placeQueryFunc();
-  //   // placeVal = fetchplace();
-  //   // floorval = fetchFloor(placeVal.toString());
-  //
-  //   timer = Timer.periodic(Duration(minutes: 5), (timer) async {
-  //
-  //     getDevices(tabbarState);
-  //     getDatafunc2();
-  //
-  //
-  //     await devicePinStatusQueryFunc();
-  //
-  //
-  //     // getData(controller.text);
-  //   });
-  //
-  //
-  //   tabC = new TabController(length: widget.rm.length, vsync: this);
-  //   tabC.addListener(() {
-  //
-  //     setState(() {
-  //       // tabbarState = rm[0].rId;
-  //       tabbarState = widget.rm[index].rId;
-  //
-  //     });
-  //   });
-  //
-  //   super.initState();
-  //   loadImageFromPreferences();
-  //   // tabbarState=rm[index].rId;
-  //   // initSharedPreference();
-  //
-  //   // Timer.periodic(Duration(seconds: 5), (timer) {
-  //   //   // getData();
-  //   //   setState(() {
-  //   //     deviceCurrentStatus[0] = widget.switch1_get;
-  //   //     deviceCurrentStatus[1] = widget.switch2_get;
-  //   //     deviceCurrentStatus[2] = widget.switch3_get;
-  //   //     deviceCurrentStatus[3] = widget.switch4_get;
-  //   //     deviceCurrentStatus[4] = widget.switch5_get;
-  //   //     deviceCurrentStatus[5] = widget.switch6_get;
-  //   //     deviceCurrentStatus[6] = widget.switch7_get;
-  //   //     deviceCurrentStatus[7] = widget.switch8_get;
-  //   //     deviceCurrentStatus[8] = widget.switch9_get;
-  //   //     sliderContainer[0] = widget.Slider_get;
-  //   //     sliderContainer[1] = widget.Slider_get2;
-  //   //     sliderContainer[2] = widget.Slider_get3;
-  //   //     j = widget.Slider_get;
-  //   //     k = widget.Slider_get2;
-  //   //     l = widget.Slider_get3;
-  //   //
-  //   //   });
-  //   // });
-  // }
-
-  // loadData(){
-  // getDataSql=databaseHelper.getPlaceData();
-  // }
 
   @override
   void dispose() {
@@ -3784,20 +3698,11 @@ class _HomeTestState extends State<HomeTest>
                           title: Text(
                             'Add Place',
                             style: TextStyle(
-                              color: change_toDark ? Colors.white : Colors
-                                  .black,
+                              color: change_toDark ? Colors.white : Colors.black,
                             ),
                           ),
                           onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DropDown1()),
-                                ModalRoute.withName("/Home"));
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => DropDown1()),
-                            // );
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>DropDown1()));
                           },
                         ),
                         ListTile(
@@ -4009,8 +3914,7 @@ class _HomeTestState extends State<HomeTest>
                                               children: [
                                                 GestureDetector(
                                                   onLongPress: () {
-                                                    _editFloorNameAlertDialog(
-                                                        context);
+                                                    _editFloorNameAlertDialog(context);
                                                   },
                                                   child: Row(
                                                     children: [
@@ -4020,18 +3924,26 @@ class _HomeTestState extends State<HomeTest>
                                                             fontSize: 22,
                                                             fontWeight: FontWeight
                                                                 .bold,
-                                                            fontStyle: FontStyle
-                                                                .italic),),
-                                                      Text(
-                                                        widget.fl.fName,
+                                                            // fontStyle: FontStyle
+                                                            //     .italic
+                                                        ),),
+                                                      Container(
+                                                        child: FittedBox(
+                                                          fit: BoxFit.cover,
+                                                          child: Text(
+                                                            widget.fl.fName,
 
-                                                        // 'Hello ',
-                                                        // + widget.fl.user.first_name,
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 22,
-                                                            // fontWeight: FontWeight.bold,
-                                                            fontStyle: FontStyle.italic),
+                                                            // 'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 22,
+
+                                                                overflow:TextOverflow.ellipsis ,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle: FontStyle.italic),
+                                                          ),
+                                                        ),
                                                       ),
                                                       Icon(Icons.arrow_drop_down),
                                                       SizedBox(width: 10,),
@@ -4122,154 +4034,157 @@ class _HomeTestState extends State<HomeTest>
                                     SizedBox(
                                       height: 45,
                                     ),
-                                    Row(
-                                      // mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        FutureBuilder(
-                                          future: deviceSensorVal,
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              return Column(
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text('Sensors- ',
-                                                        style: TextStyle(
+                                    SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          FutureBuilder(
+                                            future: deviceSensorVal,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Column(
+                                                  children: <Widget>[
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Text('Sensors- ',
+                                                          style: TextStyle(
 
-                                                          // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight
-                                                                .bold,
-                                                            color: Colors.white
-                                                        ),),
-                                                      SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.fire,
-                                                          color: Colors.yellow,
-                                                        ),
+                                                            // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight
+                                                                  .bold,
+                                                              color: Colors.white
+                                                          ),),
                                                         SizedBox(
-                                                          height: 25,
+                                                          width: 8,
                                                         ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text(
-                                                                  sensorData[index][
-                                                                  'sensor1']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 35,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons
-                                                              .temperatureLow,
-                                                          color: Colors.orange,
-                                                        ),
+                                                        Column(children: <Widget>[
+                                                          Icon(
+                                                            FontAwesomeIcons.fire,
+                                                            color: Colors.yellow,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 25,
+                                                          ),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                child: Text(
+                                                                    sensorData[index][
+                                                                    'sensor1']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Colors
+                                                                            .white70)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ]),
                                                         SizedBox(
-                                                          height: 30,
+                                                          width: 35,
                                                         ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text(
-                                                                  sensorData[index][
-                                                                  'sensor2']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 45,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.wind,
-                                                          color: Colors.white,
-                                                        ),
+                                                        Column(children: <Widget>[
+                                                          Icon(
+                                                            FontAwesomeIcons
+                                                                .temperatureLow,
+                                                            color: Colors.orange,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                child: Text(
+                                                                    sensorData[index][
+                                                                    'sensor2']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Colors
+                                                                            .white70)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ]),
                                                         SizedBox(
-                                                          height: 30,
+                                                          width: 45,
                                                         ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text(
-                                                                  sensorData[index][
-                                                                  'sensor3']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 42,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons
-                                                              .cloud,
-                                                          color: Colors.orange,
-                                                        ),
+                                                        Column(children: <Widget>[
+                                                          Icon(
+                                                            FontAwesomeIcons.wind,
+                                                            color: Colors.white,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                child: Text(
+                                                                    sensorData[index][
+                                                                    'sensor3']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Colors
+                                                                            .white70)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ]),
                                                         SizedBox(
-                                                          height: 30,
+                                                          width: 42,
                                                         ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text(
-                                                                  sensorData[index][
-                                                                  'sensor4']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
+                                                        Column(children: <Widget>[
+                                                          Icon(
+                                                            FontAwesomeIcons
+                                                                .cloud,
+                                                            color: Colors.orange,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 30,
+                                                          ),
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                child: Text(
+                                                                    sensorData[index][
+                                                                    'sensor4']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        color: Colors
+                                                                            .white70)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ]),
 
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 22,
-                                                  ),
-                                                  Text(
-                                                    sensorData[index][
-                                                    'd_id']
-                                                        .toString(),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 22,
+                                                    ),
+                                                    Text(
+                                                      sensorData[index][
+                                                      'd_id']
+                                                          .toString(),
 
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              return Center(
-                                                child: Text('Loading...'),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return Center(
+                                                  child: Text('Loading...'),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),
@@ -4294,7 +4209,6 @@ class _HomeTestState extends State<HomeTest>
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
-
                                     children: [
                                       Column(
                                         children: <Widget>[
@@ -4360,7 +4274,7 @@ class _HomeTestState extends State<HomeTest>
                                             print("tabbarState Tabs->  $tabbarState");
                                             widget.dv = await NewDbProvider.instance
                                                 .getDeviceByRoomId(tabbarState);
-                                            getAllRoom();
+                                            // getAllRoom();
                                             // widget.rm =await roomQueryFunc();
                                             print('getDevices123 }');
                                           },
@@ -4863,14 +4777,11 @@ class _HomeTestState extends State<HomeTest>
   double _value = 0.0;
   int checkSwitch;
   int sliderValue;
-bool _hasBeenPressed=false;
 String textSelected ="";
-var flag=0;
-  deviceContainer2(String dId, int x) {
+
+    deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
-    // schedulingDevicePin(dId,x);
     fetchIp(dId);
-     // _hasBeenPressed=false;
     return Column(
       children: [
         Container(
@@ -4878,81 +4789,82 @@ var flag=0;
           // color: Colors.redAccent,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Text(
-                      'Turn Off All Appliances',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.bold,
-                        color: _switchValue ? Colors.white : Colors.black,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        'Turn Off All Appliances',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: _switchValue ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 14,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: GestureDetector(
-                      child:  Container(
-                        // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                        child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                    SizedBox(
+                      width: 14,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: GestureDetector(
+                        child:  Container(
+                          // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                          child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                        ),
+
+                        onTap: () {
+                        print('check123${textSelected}');
+
+                          setState(() {
+                            textSelected=dId.toString();
+                          deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+                          });
+                          print('check123${textSelected==dId}');
+                          print('_hasBeenPressed ${textSelected}');
+                        },
                       ),
-                      // child: Icon(Icons.device_hub),
-                      onTap: () {
-                        // textSelected=dId.toString();
-                      print('check123${textSelected}');
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: GestureDetector(
+                        child: Icon(Icons.schedule),
+                        onTap: () {
+                          _createAlertDialogForPinSchedule(context,dId);
+                          // _createAlertDialogForPin17(context, dId);
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: statusOfDevice == 1 ? Colors.green : Colors.grey,
+                          shape: BoxShape.circle),
+                      // child: ...
+                    ),
+                    Switch(
+                      value: responseGetData == 0 ? val2 : val1,
+                      //boolean value
+                      onChanged: (val) async {
+                        _showDialog(dId);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: GestureDetector(
+                        child: Icon(Icons.settings_remote),
+                        onTap: () {
+                          _createAlertDialogForPin19(context, dId);
+                        },
+                      ),
+                    ),
 
-                        setState(() {
-                          textSelected=dId.toString();
-                          _hasBeenPressed = !_hasBeenPressed;
-                        deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
-                        });
-                        print('check123${textSelected==dId}');
-                        print('_hasBeenPressed ${textSelected}');
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      child: Icon(Icons.schedule),
-                      onTap: () {
-                        _createAlertDialogForPinSchedule(context,dId);
-                        // _createAlertDialogForPin17(context, dId);
-                      },
-                    ),
-                  ),
-                  Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                        color: statusOfDevice == 1 ? Colors.green : Colors.grey,
-                        shape: BoxShape.circle),
-                    // child: ...
-                  ),
-                  Switch(
-                    value: responseGetData == 0 ? val2 : val1,
-                    //boolean value
-                    onChanged: (val) async {
-                      _showDialog(dId);
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: GestureDetector(
-                      child: Icon(Icons.settings_remote),
-                      onTap: () {
-                        _createAlertDialogForPin19(context, dId);
-                      },
-                    ),
-                  ),
-
-                ],
+                  ],
+                ),
               ),
               Container(
                 // color: Colors.yellow,
@@ -5169,8 +5081,7 @@ var flag=0;
                                                     : val1,
                                                 //boolean value
                                                 onChanged: (val) async {
-                                                  print(
-                                                      '12365 ${responseGetData[index]}');
+                                                  print('12365 ${responseGetData[index]}');
                                                   setState(() {
                                                     if (responseGetData[index] == 0) {
                                                       responseGetData[index] =
@@ -5180,7 +5091,7 @@ var flag=0;
                                                     }
                                                     print('yooooooooo ${responseGetData[index]}');
                                                   });
-
+                                                  dataUpdate(dId);
                                                   // if Internet is not available then _checkInternetConnectivity = true
                                                   var result = await Connectivity()
                                                       .checkConnectivity();
@@ -5255,7 +5166,7 @@ var flag=0;
                                 onLongPress: () async {
                                   _alarmTimeString = DateFormat('HH:mm')
                                       .format(DateTime.now());
-                                  _dateString = DateFormat('dd-MM-yyyy').format(
+                                  cutDate = DateFormat('dd-MM-yyyy').format(
                                       DateTime.now());
                                   showModalBottomSheet(
                                       useRootNavigator: true,
@@ -5561,110 +5472,110 @@ var flag=0;
     loadAlarms();
   }
 
-  getData(String dId) async {
-    print("Vice Id $dId");
-    deviceIdForSensor = dId;
-    print('getDataFunction $deviceIdForSensor');
-    getSensorData(deviceIdForSensor);
-    final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
-    String token = await getToken();
-    http.Response response = await http.get(url, headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 200) {
-      print(data);
-      data = jsonDecode(response.body);
-      var arr = jsonDecode(response.body);
-      List listOfPinStatus = [
-        arr,
-      ];
-      print('sensorData  ${listOfPinStatus}');
-      for (int i = 0; i < listOfPinStatus.length; i++) {
-        var pinStatus = PinStatus(
-          dId: listOfPinStatus[i]['d_id'],
-          pin1Status: listOfPinStatus[i]['pin1Status'],
-          pin2Status: listOfPinStatus[i]['pin2Status'],
-          pin3Status: listOfPinStatus[i]['pin3Status'],
-          pin4Status: listOfPinStatus[i]['pin4Status'],
-          pin5Status: listOfPinStatus[i]['pin5Status'],
-          pin6Status: listOfPinStatus[i]['pin6Status'],
-          pin7Status: listOfPinStatus[i]['pin7Status'],
-          pin8Status: listOfPinStatus[i]['pin8Status'],
-          pin9Status: listOfPinStatus[i]['pin9Status'],
-          pin10Status: listOfPinStatus[i]['pin10Status'],
-          pin11Status: listOfPinStatus[i]['pin11Status'],
-          pin12Status: listOfPinStatus[i]['pin12Status'],
-          pin13Status: listOfPinStatus[i]['pin13Status'],
-          pin14Status: listOfPinStatus[i]['pin14Status'],
-          pin15Status: listOfPinStatus[i]['pin15Status'],
-          pin16Status: listOfPinStatus[i]['pin16Status'],
-          pin17Status: listOfPinStatus[i]['pin17Status'],
-          pin18Status: listOfPinStatus[i]['pin18Status'],
-          pin19Status: listOfPinStatus[i]['pin19Status'],
-          pin20Status: listOfPinStatus[i]['pin20Status'],
-        );
-        await NewDbProvider.instance.updatePinStatusData(pinStatus);
-        print('devicePinJson    ${pinStatus.toJson()}');
-        String a = listOfPinStatus[i]['pin20Status'].toString();
-        print('ForLoop123 ${a}');
-        int aa = int.parse(a);
-        print('double $aa');
-        // int aa=int.parse(a);
+    getData(String dId) async {
+      print("Vice Id $dId");
+      deviceIdForSensor = dId;
+      print('getDataFunction $deviceIdForSensor');
+      getSensorData(deviceIdForSensor);
+      final String url =
+          'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+      String token = await getToken();
+      http.Response response = await http.get(url, headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode == 200) {
+        print(data);
+        data = jsonDecode(response.body);
+        var arr = jsonDecode(response.body);
+        List listOfPinStatus = [
+          arr,
+        ];
+        print('sensorData  ${listOfPinStatus}');
+        for (int i = 0; i < listOfPinStatus.length; i++) {
+          var pinStatus = PinStatus(
+            dId: listOfPinStatus[i]['d_id'],
+            pin1Status: listOfPinStatus[i]['pin1Status'],
+            pin2Status: listOfPinStatus[i]['pin2Status'],
+            pin3Status: listOfPinStatus[i]['pin3Status'],
+            pin4Status: listOfPinStatus[i]['pin4Status'],
+            pin5Status: listOfPinStatus[i]['pin5Status'],
+            pin6Status: listOfPinStatus[i]['pin6Status'],
+            pin7Status: listOfPinStatus[i]['pin7Status'],
+            pin8Status: listOfPinStatus[i]['pin8Status'],
+            pin9Status: listOfPinStatus[i]['pin9Status'],
+            pin10Status: listOfPinStatus[i]['pin10Status'],
+            pin11Status: listOfPinStatus[i]['pin11Status'],
+            pin12Status: listOfPinStatus[i]['pin12Status'],
+            pin13Status: listOfPinStatus[i]['pin13Status'],
+            pin14Status: listOfPinStatus[i]['pin14Status'],
+            pin15Status: listOfPinStatus[i]['pin15Status'],
+            pin16Status: listOfPinStatus[i]['pin16Status'],
+            pin17Status: listOfPinStatus[i]['pin17Status'],
+            pin18Status: listOfPinStatus[i]['pin18Status'],
+            pin19Status: listOfPinStatus[i]['pin19Status'],
+            pin20Status: listOfPinStatus[i]['pin20Status'],
+          );
+          await NewDbProvider.instance.updatePinStatusData(pinStatus);
+          print('devicePinJson    ${pinStatus.toJson()}');
+          String a = listOfPinStatus[i]['pin20Status'].toString();
+          print('ForLoop123 ${a}');
+          int aa = int.parse(a);
+          print('double $aa');
+          // int aa=int.parse(a);
 
-        int ms =
-        // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
-        ((DateTime
-            .now()
-            .millisecondsSinceEpoch) / 1000).round() -
-            100; // -100 for checking a difference for 100 seconds in current time
-        print('CheckMs ${ms}');
-        print('Checkaa ${aa}');
-        if (aa >= ms) {
-          print('ifelse');
-          statusOfDevice = 1;
-        } else {
-          print('ifelse2');
-          statusOfDevice = 0;
+          int ms =
+          // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
+          ((DateTime
+              .now()
+              .millisecondsSinceEpoch) / 1000).round() -
+              100; // -100 for checking a difference for 100 seconds in current time
+          print('CheckMs ${ms}');
+          print('Checkaa ${aa}');
+          if (aa >= ms) {
+            print('ifelse');
+            statusOfDevice = 1;
+          } else {
+            print('ifelse2');
+            statusOfDevice = 0;
+          }
         }
-      }
-      print("DATA-->  $data");
-      print('\n');
-      deviceStatus = [
-        widget.switch1_get = data["pin1Status"],
-        widget.switch2_get = data["pin2Status"],
-        widget.switch3_get = data["pin3Status"],
-        widget.switch4_get = data["pin4Status"],
-        widget.switch5_get = data["pin5Status"],
-        widget.switch6_get = data["pin6Status"],
-        widget.switch7_get = data["pin7Status"],
-        widget.switch8_get = data["pin8Status"],
-        widget.switch9_get = data["pin9Status"],
-        widget.Slider_get = data["pin10Status"],
-        widget.Slider_get2 = data["pin11Status"],
-        widget.Slider_get3 = data["pin12Status"],
-      ];
-      for (int i = 0; i < data.length; i++) {}
+        print("DATA-->  $data");
+        print('\n');
+        deviceStatus = [
+          widget.switch1_get = data["pin1Status"],
+          widget.switch2_get = data["pin2Status"],
+          widget.switch3_get = data["pin3Status"],
+          widget.switch4_get = data["pin4Status"],
+          widget.switch5_get = data["pin5Status"],
+          widget.switch6_get = data["pin6Status"],
+          widget.switch7_get = data["pin7Status"],
+          widget.switch8_get = data["pin8Status"],
+          widget.switch9_get = data["pin9Status"],
+          widget.Slider_get = data["pin10Status"],
+          widget.Slider_get2 = data["pin11Status"],
+          widget.Slider_get3 = data["pin12Status"],
+        ];
+        for (int i = 0; i < data.length; i++) {}
 
-      print('Switch 1 --> ${widget.switch1_get}');
-      print('Switch 2 --> ${widget.switch2_get}');
-      print('Switch 3 --> ${widget.switch3_get}');
-      print('Switch 4 --> ${widget.switch4_get}');
-      print('Switch 5 --> ${widget.switch5_get}');
-      print('Switch 6 --> ${widget.switch6_get}');
-      print('Switch 7 --> ${widget.switch7_get}');
-      print('Switch 8 --> ${widget.switch8_get}');
-      print('Switch 9 --> ${widget.switch9_get}');
-      print('Switch 10 --> ${widget.Slider_get}');
-      print('Switch 11 --> ${widget.Slider_get2}');
-      print('Switch 12 --> ${widget.Slider_get3}');
-    } else {
-      print(response.statusCode);
-      throw Exception('Failed to getData.');
+        print('Switch 1 --> ${widget.switch1_get}');
+        print('Switch 2 --> ${widget.switch2_get}');
+        print('Switch 3 --> ${widget.switch3_get}');
+        print('Switch 4 --> ${widget.switch4_get}');
+        print('Switch 5 --> ${widget.switch5_get}');
+        print('Switch 6 --> ${widget.switch6_get}');
+        print('Switch 7 --> ${widget.switch7_get}');
+        print('Switch 8 --> ${widget.switch8_get}');
+        print('Switch 9 --> ${widget.switch9_get}');
+        print('Switch 10 --> ${widget.Slider_get}');
+        print('Switch 11 --> ${widget.Slider_get2}');
+        print('Switch 12 --> ${widget.Slider_get3}');
+      } else {
+        print(response.statusCode);
+        throw Exception('Failed to getData.');
+      }
+      return data;
     }
-    return data;
-  }
 
 
 

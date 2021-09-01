@@ -147,12 +147,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   @override
   void initState() {
     super.initState();
-    // allAwaitFunction();
     requestPermission();
-    var now = DateTime.now();
-    print('now $now');
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
-
       if (currentPage < 2) {
         currentPage++;
       } else {
@@ -163,9 +159,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           curve: Curves.easeIn,
         );
       }
-
     });
-
     read();
   }
 

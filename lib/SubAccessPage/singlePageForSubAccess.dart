@@ -1,26 +1,35 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/localDatabaseForSubUser/subuserSqlite.dart';
-import 'package:loginsignspaceorion/SubAccessPage/subaccesshomepage.dart';
 import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-
+import '../ProfilePage.dart';
+import '../dropdown2.dart';
 import '../main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../utility.dart';
 void main()=>runApp(MaterialApp(
   home:SubAccessSinglePage() ,
 ));
 
 class SubAccessSinglePage extends StatefulWidget {
-   SubAccessSinglePage({Key key}) : super(key: key);
+  List<SubUserRoomType> rmSubUser;
+  SubUserPlaceType ptSubUser;
+  SubUserFloorType flSubUser;
+  SubUserFlatType flatSubUser;
+
+
+   SubAccessSinglePage({Key key,this.flSubUser,this.rmSubUser,this.ptSubUser,this.flatSubUser}) : super(key: key);
 
   // ignore: non_constant_identifier_names
   var switch1_get;
@@ -83,11 +92,13 @@ class SubAccessSinglePage extends StatefulWidget {
 
 class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   List allPlaceId;
+  List allPlaceData;
   var placeId;
   List roomTab;
   Future futureSubUser;
   String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   List<SubUserDeviceType> dv;
+
   List getFlatData;
   List getFloorData;
   List<Map<String, dynamic>> deviceQueryRows;
@@ -97,26 +108,60 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   TabController tabC;
   var tabState;
   Future deviceSensorVal;
+  SubUserFloorType fl;
+  SubUserFlatType flat;
+  SubUserPlaceType pt;
+  Future floorval;
+  List allSubUserOwnerName=[];
+  Future flatVal;
+  var  mainUserEmail;
+  var flatId;
   get index => null;
-
+  List<SubUserRoomType>  room;
   List namesDataList ;
-
+  List userData;
   bool val2 = false;
   bool val1 = true;
+
+
   @override
   void initState(){
     super.initState();
+    loadImageFromPreferences();
+    placeQueryFuncSend();
+    lengthRoomTab();
     getSubUsers();
     getAllFloorForSubUser();
     getAllFlatForSubUser();
   }
+  @override
+  void dispose(){
+    super.dispose();
+    placeQueryFuncSend();
+  }
 
+
+lengthRoomTab()async{
+  // roomTab=await SubUserDataBase.subUserInstance.queryRoomSubUser();
+  userData = await NewDbProvider.instance.userQuery();
+  mainUserEmail=userData[0]['email'].toString();
+  print('mainUserEmail $mainUserEmail');
+  allPlaceId=  await NewDbProvider.instance.querySubUser();
+  allPlaceData=await SubUserDataBase.subUserInstance.allPlaceModelData();
+  print('allSubUserOwnerName ${allSubUserOwnerName}');
+  print('allSubUserOwnerName ${allPlaceData}');
+  getFloorData= await SubUserDataBase.subUserInstance.queryFloorSubUser();
+  getFlatData= await SubUserDataBase.subUserInstance.queryFlatSubUser();
+
+  print('roomTab ${roomTab}');
+}
 
 
   Future<void> getSubUsers()async{
     String token =await getToken();
     // await openSubUserBox();
-    final url ='http://genorion1.herokuapp.com/subuserfindall/';
+    final url ='http://genorion1.herokuapp.com/subfindsubdata/?email=gakash8860@gmail.com';
+    // final url ='http://genorion1.herokuapp.com/subfindsubdata/?email='+mainUserEmail.toString();
     try{
       final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
@@ -126,7 +171,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       });
       // await subUserBox.clear();
       List  subUserDecode=jsonDecode(response.body);
-      print('tempResponse ${subUserDecode}');
+      if(allPlaceId.length==subUserDecode.length){
         for(int i=0;i<subUserDecode.length;i++){
           var data= SubAccessPage(
             email: subUserDecode[i]['email'].toString(),
@@ -135,13 +180,25 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
             name: subUserDecode[i]['name'].toString(),
             user: subUserDecode[i]['user'],
           );
-         await NewDbProvider.instance.insertSubUserModelData(data);
+          await NewDbProvider.instance.updateSubUserModelData(data);
+        }
+      }else{
+        await NewDbProvider.instance.deleteSubUserModelData();
+        for(int i=0;i<subUserDecode.length;i++){
+          var data= SubAccessPage(
+            email: subUserDecode[i]['email'].toString(),
+            ownerName: subUserDecode[i]['owner_name'].toString(),
+            pId: subUserDecode[i]['p_id'],
+            name: subUserDecode[i]['name'].toString(),
+            user: subUserDecode[i]['user'],
+          );
+          await NewDbProvider.instance.insertSubUserModelData(data);
 
 
         }
-     allPlaceId=  await NewDbProvider.instance.querySubUser();
-      print('subUserDecode ${allPlaceId}');
-
+      }
+      allPlaceId=  await NewDbProvider.instance.querySubUser();
+      print('tempResponse ${subUserDecode}');
       print('subUserDecode ${allPlaceId}');
       setState(() {
         subUserDecodeList=subUserDecode;
@@ -153,9 +210,134 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       // print('Status Exception $e');
 
     }
-    getAllFloorForSubUser();
+    getPlaceName();
   }
 
+
+  Future placeQueryFuncSend()async{
+    placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
+    var pids=SubUserPlaceType(
+        pId: placeRows[0]['p_id'].toString(),
+        pType: placeRows[0]['p_type'].toString(),
+        user: placeRows[0]['user']
+    );
+
+    pt=pids;
+
+    floorQueryFunc();
+  }
+  List resultFloor;
+  Future floorQueryFunc()async{
+    floorQueryRows = await SubUserDataBase.subUserInstance.queryFloorSubUser();
+    floorQueryData=floorQueryRows;
+    var pId=placeRows[0]['p_id'].toString();
+    print('placeId $pId');
+    resultFloor= await SubUserDataBase.subUserInstance.getFloorById(pId);
+    print(' checkResult123456 ${resultFloor.first}');
+    var floor=SubUserFloorType(
+        fId: resultFloor[0]['f_id'].toString(),
+        fName: resultFloor[0]['f_name'].toString(),
+        user: resultFloor[0]['user'],
+        pId: resultFloor[0]['p_id'].toString()
+    );
+    fl=floor;
+
+    // floors=floorQueryRows;
+    print('floorLocalData ${fl.fName}');
+
+    flatQueryFunc();
+
+  }
+  List resultFlat;
+  Future flatQueryFunc()async{
+    flatQueryRows2 = await SubUserDataBase.subUserInstance.queryFlatSubUser();
+    print("Query $flatQueryRows2");
+
+
+    floorTypeSingle=floorQueryRows;
+    var fId=resultFloor[0]['f_id'].toString();
+    print(fId);
+    resultFlat= await SubUserDataBase.subUserInstance.getFlatById(fId.toString());
+    print('checkFlat123SubUser  ${resultFlat}');
+    var flat12=SubUserFlatType(
+        fId: resultFlat[0]['f_id'].toString(),
+        fltName: resultFlat[0]['flt_name'].toString(),
+        fltId: resultFlat[0]['flt_id'].toString(),
+        user: resultFlat[0]['user']
+    );
+    flat=flat12;
+
+    roomQueryFunc();
+  }
+
+List resultRoom;
+
+  Future<List<SubUserRoomType>> roomQueryFunc()async {
+    roomQueryRows = await SubUserDataBase.subUserInstance.queryRoomSubUser();
+    print('qqqq ${roomQueryRows}');
+    var id=resultFlat[0]['flt_id'].toString();
+    resultRoom= await SubUserDataBase.subUserInstance.getRoomById(id);
+    print('roomResult $resultRoom');
+    room= List.generate(resultRoom.length, (index) => SubUserRoomType(
+      rId: resultRoom[index]['r_id'].toString(),
+      fltId: resultRoom[index]['flt_id'].toString(),
+      rName:resultRoom[index]['r_name'].toString(),
+      user: resultRoom[index]['user'],
+    ));
+    deviceQueryFunc();
+    return room;
+
+  }
+
+  deviceQueryFunc()async{
+    deviceQueryRows = await SubUserDataBase.subUserInstance.queryDeviceSubUser();
+    print('maindeviceQuery $deviceQueryRows');
+    var roomId=resultRoom[0]['r_id'];
+    // dv=deviceQueryRows;
+   List deviceResult= await SubUserDataBase.subUserInstance.getDeviceByRId(roomId.toString());
+    print('dvlouye ${deviceResult}');
+    dv= List.generate(deviceResult.length, (index) => SubUserDeviceType(
+        dId: deviceResult[index]['d_id'].toString(),
+        rId: deviceResult[index]['r_id'].toString(),
+        user: deviceResult[index]['user']
+    ));
+
+  }
+
+
+
+  Future getPlaceName() async {
+    for(int i=0;i<allPlaceId.length;i++){
+      print('lengthof ${allPlaceId.length}');
+      var pId=allPlaceId[i]['p_id'].toString();
+      print('placeId $pId');
+      final url =
+          'http://genorion1.herokuapp.com/getyouplacename/?p_id=' + pId.toString();
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print("GetPlaceName  ${response.statusCode}");
+        print("GetPlaceNameResponseBody  ${response.body}");
+
+        List placeData = jsonDecode(response.body);
+        // placeName = placeData[0]["p_type"];
+        for(int i=0;i<placeData.length;i++){
+          var placeQuery=SubUserPlaceType(
+            pId: placeData[i]['p_id'],
+            pType: placeData[i]['p_type'].toString(),
+            user: placeData[i]['user'],
+          );
+          print('PlaceQuery ${placeData}');
+          await SubUserDataBase.subUserInstance.insertPlaceModelData(placeQuery);
+        }
+          allPlaceData=await SubUserDataBase.subUserInstance.allPlaceModelData();
+      }
+    }
+    getAllFloorForSubUser();
+  }
   Future getAllFloorForSubUser() async {
     var placeId;
     for(int i=0;i<allPlaceId.length;i++){
@@ -174,6 +356,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
         if (response.statusCode == 200) {
           List floorData = jsonDecode(response.body);
+
           print('floorSubUser ${floorData}');
           for(int i=0;i<floorData.length;i++){
             var floorQueryForSubUser=SubUserFloorType(
@@ -186,6 +369,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           }
           getFloorData= await SubUserDataBase.subUserInstance.queryFloorSubUser();
         }
+        print('getALlFloorData ${getFloorData}');
       }
 
 
@@ -254,6 +438,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
         if (response.statusCode == 200) {
           roomTab = jsonDecode(response.body);
+          print('responseRoomUser${roomTab}');
+         // rm=roomTab.map((data) => SubUserRoomType.fromJson(data));
           // tabState=roomTab[0]['r_id'];
           for(int i=0;i<roomTab.length;i++){
             var  roomQuery=SubUserRoomType(
@@ -264,7 +450,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
             );
             await SubUserDataBase.subUserInstance.insertSubUserRoomModelData(roomQuery);
           }
-          roomData=await SubUserDataBase.subUserInstance.queryRoomSubUser();
+          roomTab=await SubUserDataBase.subUserInstance.queryRoomSubUser();
           print('RoomSubUser ${response.body}');
         }
         await getAllDeviceForSubUser();
@@ -275,8 +461,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   }
   Future  getAllDeviceForSubUser() async {
 
-    for(int i=0;i<roomData.length;i++){
-     var rId=roomData[i]['r_id'].toString();
+    for(int i=0;i<roomTab.length;i++){
+     var rId=roomTab[i]['r_id'].toString();
       // print('tabbar1 ${tabState}');
       final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' + rId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
@@ -306,6 +492,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         }
         deviceQueryRows= await SubUserDataBase.subUserInstance.queryDeviceSubUser();
       }
+     getPinStatusData();
     }
   }
 
@@ -356,9 +543,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           );
           await SubUserDataBase.subUserInstance.insertSubUserDevicePinStatusData(pinQuery);
           // await SubUserDataBase.subUserInstance.updatePinStatusData(pinQuery);
-          print('check1234567}');
+          var check=await SubUserDataBase.subUserInstance.queryDevicePinStatusSubUser();
+          print('checkData${check}');
         }
-        await getAllPinNames();
+         getAllPinNames();
 
         // String a=listOfPinStatusValue[i]['pin20Status'].toString();
         // print('aaaaaaaaaa ${a}');
@@ -475,6 +663,18 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
     }
   }
+  SharedPreferences preferences;
+  loadImageFromPreferences() async {
+    preferences = await SharedPreferences.getInstance();
+    final _imageKeyValue = preferences.getString(IMAGE_KEY);
+    if (_imageKeyValue != null) {
+      final imageString = await Utility.getImagefrompreference();
+      setState(() {
+        setImage = Utility.imageFrom64BaseString(imageString);
+      });
+    }
+  }
+  Image setImage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -486,14 +686,45 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       }else{
         return Scaffold(
           appBar: AppBar(
-            title: Text('AppBar'),
+            title: GestureDetector(
+              child: Text(pt.pType.toString()==null?widget.ptSubUser.pType.toString():pt.pType.toString()),
+              onTap: () async {
+                _createAlertDialogDropDown(context);
+              },
+            ),
+            backgroundColor: Colors.blueAccent,
+            actions: [
+
+              Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: CircularProfileAvatar(
+                  '',
+                  child: setImage == null
+                      ? Image.asset('assets/images/blank.png')
+                      : setImage,
+                  radius: 27.5,
+                  elevation: 5,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ProfilePage(
+                                ))).then((value) =>
+                    loadImageFromPreferences());
+                  },
+                  cacheImage: true,
+                ),
+              ),
+            ],
           ),
           body:Container(
             width: double.maxFinite,
             child: DefaultTabController(
-              length: roomTab.length,
+              length: room.length,
               child: CustomScrollView(
                 slivers: [
+
                   SliverToBoxAdapter(
                     child: Column(
                       children: <Widget>[
@@ -541,43 +772,46 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                             onLongPress: () {
                                               // _editFloorNameAlertDialog(context);
                                             },
-                                            child: Row(
-                                              children: [
-                                                Text('Floor -',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 22,
-                                                      fontWeight: FontWeight
-                                                          .bold,
-                                                      fontStyle: FontStyle
-                                                          .italic),),
-                                                Text(
-                                                  'Hello ',
-                                                  // + widget.fl.user.first_name,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 22,
-                                                      // fontWeight: FontWeight.bold,
-                                                      fontStyle: FontStyle
-                                                          .italic),
-                                                ),
-                                                Icon(Icons
-                                                    .arrow_drop_down),
-                                                SizedBox(width: 10,),
-                                              ],
+                                            child: GestureDetector(
+                                              child: Row(
+                                                children: [
+                                                  Text('Floor -',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 22,
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        fontStyle: FontStyle
+                                                            .italic),),
+                                                  Text(
+                                                    fl.fName.toString(),
+                                                    // getFloorData[0]['f_name'].toString(),
+                                                    // 'Hello ',
+                                                    // + widget.fl.user.first_name,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 22,
+                                                        // fontWeight: FontWeight.bold,
+                                                        fontStyle: FontStyle
+                                                            .italic),
+                                                  ),
+                                                  Icon(Icons.arrow_drop_down),
+                                                  SizedBox(width: 10,),
+                                                ],
+                                              ),
                                             ),
                                             onTap: () {
-
+                                              _createAlertDialogDropDown(context);
                                             },
                                           ),
                                           SizedBox(width: 10,),
-                                          GestureDetector(
-                                            child: Icon(Icons.add),
-                                            onTap: () async {
-
-                                              // _createAlertDialogForFloor(context);
-                                            },
-                                          )
+                                          // GestureDetector(
+                                          //   child: Icon(Icons.add),
+                                          //   onTap: () async {
+                                          //
+                                          //     // _createAlertDialogForFloor(context);
+                                          //   },
+                                          // )
                                         ],
                                       ),
                                       SizedBox(
@@ -604,7 +838,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                               .bold,
                                                           fontSize: 22),),
                                                     Text(
-                                                      'Hello ',
+                                                      flat.fltName.toString(),
+                                                      // getFlatData[0]['flt_name'].toString(),
+                                                      // 'Hello ',
                                                       // + widget.fl.user.first_name,
                                                       style: TextStyle(
                                                           color: Colors
@@ -620,15 +856,15 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                   ],
                                                 ),
                                                 onTap: () {
-
+                                                  _createAlertDialogDropDown(context);
                                                 },
                                               ),
                                               SizedBox(width: 35),
-                                              GestureDetector(
-                                                  onTap: () async {
-
-                                                  },
-                                                  child: Icon(Icons.add)),
+                                              // GestureDetector(
+                                              //     onTap: () async {
+                                              //
+                                              //     },
+                                              //     child: Icon(Icons.add)),
                                             ],
                                           )
 
@@ -645,148 +881,148 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                               Row(
                                 // mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  // FutureBuilder(
-                                  //   // future: deviceSensorVal,
-                                  //   builder: (context, snapshot) {
-                                  //     if (!snapshot.hasData) {
-                                  //       return Column(
-                                  //         children: <Widget>[
-                                  //           Row(
-                                  //             children: <Widget>[
-                                  //               Text('Sensors- ',
-                                  //                 style: TextStyle(
-                                  //
-                                  //                   // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                  //                     fontSize: 14,
-                                  //                     fontWeight: FontWeight
-                                  //                         .bold,
-                                  //                     color: Colors.white
-                                  //                 ),),
-                                  //               SizedBox(
-                                  //                 width: 8,
-                                  //               ),
-                                  //               Column(children: <Widget>[
-                                  //                 Icon(
-                                  //                   FontAwesomeIcons.fire,
-                                  //                   color: Colors.yellow,
-                                  //                 ),
-                                  //                 SizedBox(
-                                  //                   height: 25,
-                                  //                 ),
-                                  //                 Row(
-                                  //                   children: <Widget>[
-                                  //                     Container(
-                                  //                       child: Text(
-                                  //                           sensorData[index]['sensor1'].toString(),
-                                  //                           style: TextStyle(
-                                  //                               fontSize: 14,
-                                  //                               color: Colors
-                                  //                                   .white70)),
-                                  //                     ),
-                                  //                   ],
-                                  //                 ),
-                                  //               ]),
-                                  //               SizedBox(
-                                  //                 width: 35,
-                                  //               ),
-                                  //               Column(children: <Widget>[
-                                  //                 Icon(
-                                  //                   FontAwesomeIcons
-                                  //                       .temperatureLow,
-                                  //                   color: Colors.orange,
-                                  //                 ),
-                                  //                 SizedBox(
-                                  //                   height: 30,
-                                  //                 ),
-                                  //                 Row(
-                                  //                   children: <Widget>[
-                                  //                     Container(
-                                  //                       child: Text(
-                                  //                           sensorData[index][
-                                  //                           'sensor2']
-                                  //                               .toString(),
-                                  //                           style: TextStyle(
-                                  //                               fontSize: 14,
-                                  //                               color: Colors
-                                  //                                   .white70)),
-                                  //                     ),
-                                  //                   ],
-                                  //                 ),
-                                  //               ]),
-                                  //               SizedBox(
-                                  //                 width: 45,
-                                  //               ),
-                                  //               Column(children: <Widget>[
-                                  //                 Icon(
-                                  //                   FontAwesomeIcons.wind,
-                                  //                   color: Colors.white,
-                                  //                 ),
-                                  //                 SizedBox(
-                                  //                   height: 30,
-                                  //                 ),
-                                  //                 Row(
-                                  //                   children: <Widget>[
-                                  //                     Container(
-                                  //                       child: Text(
-                                  //                           sensorData[index][
-                                  //                           'sensor3']
-                                  //                               .toString(),
-                                  //                           style: TextStyle(
-                                  //                               fontSize: 14,
-                                  //                               color: Colors
-                                  //                                   .white70)),
-                                  //                     ),
-                                  //                   ],
-                                  //                 ),
-                                  //               ]),
-                                  //               SizedBox(
-                                  //                 width: 42,
-                                  //               ),
-                                  //               Column(children: <Widget>[
-                                  //                 Icon(
-                                  //                   FontAwesomeIcons
-                                  //                       .cloud,
-                                  //                   color: Colors.orange,
-                                  //                 ),
-                                  //                 SizedBox(
-                                  //                   height: 30,
-                                  //                 ),
-                                  //                 Row(
-                                  //                   children: <Widget>[
-                                  //                     Container(
-                                  //                       child: Text(
-                                  //                           sensorData[index][
-                                  //                           'sensor4']
-                                  //                               .toString(),
-                                  //                           style: TextStyle(
-                                  //                               fontSize: 14,
-                                  //                               color: Colors
-                                  //                                   .white70)),
-                                  //                     ),
-                                  //                   ],
-                                  //                 ),
-                                  //               ]),
-                                  //
-                                  //             ],
-                                  //           ),
-                                  //           SizedBox(
-                                  //             height: 22,
-                                  //           ),
-                                  //           Text(
-                                  //             sensorData[index][
-                                  //             'd_id']
-                                  //                 .toString(),
-                                  //
-                                  //           ),
-                                  //         ],
-                                  //       );
-                                  //     } else {
-                                  //       return Center(
-                                  //         child: Text('Loading...'),
-                                  //       );
-                                  //     }
-                                  //   },
-                                  // ),
+                                  FutureBuilder(
+                                    future: deviceSensorVal,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Column(
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                Text('Sensors- ',
+                                                  style: TextStyle(
+
+                                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight
+                                                          .bold,
+                                                      color: Colors.white
+                                                  ),),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons.fire,
+                                                    color: Colors.yellow,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 25,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                            sensorData[0]['sensor1'].toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(
+                                                  width: 35,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons
+                                                        .temperatureLow,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                            sensorData[0][
+                                                            'sensor2']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(
+                                                  width: 45,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons.wind,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                            sensorData[0][
+                                                            'sensor3']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(
+                                                  width: 42,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons
+                                                        .cloud,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                            sensorData[0][
+                                                            'sensor4']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
+
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 22,
+                                            ),
+                                            Text(
+                                              sensorData[0][
+                                              'd_id']
+                                                  .toString(),
+
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        return Center(
+                                          child: Text('Loading...'),
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ],
                               )
                             ],
@@ -803,7 +1039,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                     backgroundColor: Colors.white,
 
                     title: Container(
-                      // alignment: Alignment.bottomLeft,
+                      alignment: Alignment.bottomLeft,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -811,48 +1047,58 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                GestureDetector(
-                                  onLongPress: () {
-                                    print('longPress');
-                                    // _editRoomNameAlertDialog(context);
-                                  },
-                                  child: TabBar(
-                                    indicatorColor: Colors.blueAccent,
-                                    controller: tabC,
-                                    labelColor: Colors.blueAccent,
-                                    indicatorWeight: 2.0,
-                                    isScrollable: true,
-                                    tabs:  List.generate(roomTab.length,
-                                            (index) {
-                                          return Container(
-                                              height: 30,
-                                              child: Text(roomTab[index]['r_name']));
-                                        }),
-                                    onTap: (index) async {
-                                      tabState = await roomTab[index]['r_id'].toString();
-                                      // devicePinSensorLocalUsingDeviceId(dv[index].dId);
-                                      print('tabState $tabState');
+                                Container(
+                                    height: 30  ,
+                                    child: Text('Rooms->', style: TextStyle(
+
+                                      // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: Colors
+                                            .black
+                                    ),)),
+                                TabBar(
+                                  indicatorColor: Colors.blueAccent,
+                                  controller: tabC,
+                                  labelColor: Colors.blueAccent,
+                                  indicatorWeight: 2.0,
+                                  isScrollable: true,
+                                  tabs:room.map<Widget>((SubUserRoomType rm) {
+                                    return Tab(
+                                      text: rm.rName,
+                                    );
+                                  }).toList(),
+                                  onTap: (index) async {
+                                    tabState = await room[index].rId.toString();
+
+                                    setState(() {
                                       getDevicesByDeviceId(tabState);
-                                      dv= await SubUserDataBase.subUserInstance.getDeviceByRoomId(tabState);
 
-                                      deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
-                                      print('tabStateDevice ${dv[index].dId}');
+                                    });
 
-                                    },
-                                  ),
+
+                                    dv= await SubUserDataBase.subUserInstance.getDeviceByRoomId(tabState);
+
+                                    // deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
+                                    // print('tabStateDevice ${dv[index].dId}');
+
+                                  },
                                 ),
+
                               ],
                             ),
                           ),
 
-                          // SizedBox(height: 45,),
                         ],
                       ),
                     ),
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
+                      print('asdfirst ${dv.length}');
                       if (index <dv.length) {
+
                         dv.length==null? Text('loading'):dv.length==null;
                         print('asdf ${dv.length}');
                         Text(
@@ -894,7 +1140,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   )),
                             ],
                           ),
-                          // child: Text(dv[index].dId),
                         );
                       } else {
                         return null;
@@ -915,9 +1160,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   var data;
   getData(String dId) async {
     print("Vice Id $dId");
-   var deviceIdForSensor = dId;
+
     // print('getDataFunction $deviceIdForSensor');
-    getSensorData();
     final String url =
         'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
@@ -1039,11 +1283,15 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   var namesDataList12;
   deviceContainer(String dId,index)async{
     getData(dId);
-    await devicePinSensorLocalUsingDeviceId(dId);
-    deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
-    devicePinNameLocalUsingDeviceId(dId);
+    // await devicePinSensorLocalUsingDeviceId(dId);
+    // setState(() {
+    //   deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+    // });
+    // devicePinNameLocalUsingDeviceId(dId);
     catchReturn = await SubUserDataBase.subUserInstance.getPinStatusByDeviceId(dId);
+    print('checkCatchReturn ${catchReturn}');
     namesDataList12 = await SubUserDataBase.subUserInstance.getPinNamesByDeviceId(dId);
+    print('namesDataList12 ${namesDataList12}');
     responseDataPinStatusForSubUser=[
       widget.switch1_get = catchReturn[index]["pin1Status"],
       widget.switch2_get = catchReturn[index]["pin2Status"],
@@ -1076,20 +1324,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
     ];
     print('responseDataPinStatusForSubUser ${responseDataPinStatusForSubUser}');
-    // namesDataList = [
-    //   widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
-    //   widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
-    //   widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
-    //   widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
-    //   widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
-    //   widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
-    //   widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
-    //   widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
-    //   widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
-    //   widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
-    //   widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
-    //   widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
-    // ];
     setState(() {
       responseDataPinStatusForSubUser=[
         widget.switch1_get = catchReturn[index]["pin1Status"],
@@ -1122,14 +1356,257 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     });
 
   }
+  dataUpdate(String dId) async {
+    final String url =
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    String token = await getToken();
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseDataPinStatusForSubUser[0],
+      'pin2Status': responseDataPinStatusForSubUser[1],
+      'pin3Status': responseDataPinStatusForSubUser[2],
+      'pin4Status': responseDataPinStatusForSubUser[3],
+      'pin5Status': responseDataPinStatusForSubUser[4],
+      'pin6Status': responseDataPinStatusForSubUser[5],
+      'pin7Status': responseDataPinStatusForSubUser[6],
+      'pin8Status': responseDataPinStatusForSubUser[7],
+      'pin9Status': responseDataPinStatusForSubUser[8],
+      'pin10Status': responseDataPinStatusForSubUser[9],
+      'pin11Status': responseDataPinStatusForSubUser[10],
+      'pin12Status': responseDataPinStatusForSubUser[11],
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': q,
+      // 'pin18Status': r,
+      // 'pin19Status': s,
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+      // print(switch_1);
+      // print(switch_2);
 
+
+      getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
+  var localResponse;
+  var getVariable;
+  var rIdForName;
+  int counter = 0;
+
+  getIp() async {
+    print('no');
+    while (counter <= dv.length - 1) {
+      print('yes');
+      final url = 'http://genorion1.herokuapp.com/addipaddress/?d_id=' +
+          dv[counter].dId.toString();
+      String token = await getToken();
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('Status test--> ${response.statusCode}');
+        getVariable = jsonDecode(response.body);
+
+//      to update the list of Ip Address of each Device
+
+        print("getIpVariable-->  $getVariable");
+        // print("getIpVariable-->  ${getIpVariable}");
+      }
+      counter++;
+    }
+
+    counter = 0;
+  }
+
+  IpAddress ip12;
+  var ip;
+
+  // ignore: missing_return
+  Future<IpAddress> fetchIp(String dId) async {
+    while (counter <= dv.length) {
+      String token = await getToken();
+      final url = 'http://genorion1.herokuapp.com/addipaddress/?d_id=' + dId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+
+      if (response.statusCode == 200) {
+        ip = IpAddress
+            .fromJson(jsonDecode(response.body))
+            .ipaddress;
+        print('IPCheck  ${ip.toString()}');
+      }
+      counter++;
+    }
+    counter = 0;
+  }
+
+  localUpdate(String dId) async {
+    localResponse = http.get(Uri.parse('http://' +
+        ip +
+        '/d_id:' +
+        dId +
+        ':' +
+        (responseDataPinStatusForSubUser[0]).toString() +
+        (responseDataPinStatusForSubUser[1]).toString() +
+        (responseDataPinStatusForSubUser[2]).toString() +
+        (responseDataPinStatusForSubUser[3]).toString() +
+        (responseDataPinStatusForSubUser[4]).toString() +
+        (responseDataPinStatusForSubUser[5]).toString() +
+        (responseDataPinStatusForSubUser[6]).toString() +
+        (responseDataPinStatusForSubUser[7]).toString() +
+        (responseDataPinStatusForSubUser[8]).toString() +
+        (responseDataPinStatusForSubUser[9]).toString() +
+        (responseDataPinStatusForSubUser[10]).toString() +
+        (responseDataPinStatusForSubUser[11]).toString()));
+    if (localResponse == 200) {
+      print("Successfully Updated");
+      print(localResponse);
+    } else {
+      print("Res12  $localResponse");
+      print("Device not Available at LocalHost");
+    }
+  }
+  var recipents = "9911757588";
+  var message = "d_id:";
+  var messageIOS = "This_is%20time";
+
+  void messageSms(BuildContext context, String dId) {
+    if (Platform.isAndroid) {
+      launch("sms:" +
+          recipents +
+          "?body=" +
+          message +
+          dId +
+          ":" +
+          responseDataPinStatusForSubUser[0].toString() +
+          responseDataPinStatusForSubUser[1].toString() +
+          responseDataPinStatusForSubUser[2].toString() +
+          responseDataPinStatusForSubUser[3].toString() +
+          responseDataPinStatusForSubUser[4].toString() +
+          responseDataPinStatusForSubUser[5].toString() +
+          responseDataPinStatusForSubUser[6].toString() +
+          responseDataPinStatusForSubUser[7].toString() +
+          responseDataPinStatusForSubUser[8].toString() +
+          responseDataPinStatusForSubUser[9].toString() +
+          responseDataPinStatusForSubUser[10].toString() +
+          responseDataPinStatusForSubUser[11].toString() +
+          ":");
+    } else if (Platform.isIOS) {
+      launch("sms:" + recipents + "&body=" + messageIOS);
+    }
+  }
+  _createAlertDialogForlocalUpdateAndMessage(BuildContext context,String dId) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Column(
+              children: [
+                Text(
+                  'Your Internet Connection is not working... ',
+                  style: TextStyle(fontSize: 20),
+                ),
+                Text(
+                  'Are you Connected On ?? ',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+            content: Container(
+              // height: MediaQuery
+              //     .of(context)
+              //     .size
+              //     .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Local Update',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      localUpdate(dId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowSubUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Message',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      messageSms(context, dId);
+                      // _showDialogForDeleteRoomWithAllDevices(rId);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ShowTempUser()));
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Edit Floor Name',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+  String textSelected ="";
   subUserDeviceContainer(String dId,int index){
     deviceContainer(dId,index);
     return Column(
       children: [
         Container(
-
-          height: MediaQuery.of(context).size.height * 1.75,
+          height: MediaQuery.of(context).size.height * 1.95,
           color: Colors.redAccent,
           child: Column(
             children: [
@@ -1141,6 +1618,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                     child: Text(
                       'Turn Off All Appliances',
                       style: TextStyle(
+                        fontSize: 12.5,
                         fontWeight: FontWeight.bold,
                         color: _switchValue ? Colors.white : Colors.black,
                       ),
@@ -1148,6 +1626,26 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   ),
                   SizedBox(
                     width: 14,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: GestureDetector(
+                      child:  Container(
+                        // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                        child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                      ),
+
+                      onTap: () {
+                        print('check123${textSelected}');
+
+                        setState(() {
+                          textSelected=dId.toString();
+                          deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+                        });
+                        print('check123${textSelected==dId}');
+                        print('_hasBeenPressed ${textSelected}');
+                      },
+                    ),
                   ),
                   Container(
                     width: 14,
@@ -1177,7 +1675,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                 ],
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 1.18,
+                height: MediaQuery.of(context).size.height * 1.32,
                 // color: Colors.amber,
                 child: GridView.count(
                     crossAxisSpacing: 8,
@@ -1333,7 +1831,34 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                 value: responseDataPinStatusForSubUser[index] == 0 ? val2 : val1,
 
                                                 onChanged: (val) async {
+                                                  print('12365 ${responseDataPinStatusForSubUser[index]}');
+                                                  setState(() {
+                                                    if (responseDataPinStatusForSubUser[index] == 0) {
+                                                      responseDataPinStatusForSubUser[index] =
+                                                      1;
+                                                    } else {
+                                                      responseDataPinStatusForSubUser[index] = 0;
+                                                    }
+                                                    print('yooooooooo ${responseDataPinStatusForSubUser[index]}');
+                                                  });
+                                                  dataUpdate(dId);
+                                                  // if Internet is not available then _checkInternetConnectivity = true
+                                                  var result = await Connectivity()
+                                                      .checkConnectivity();
+                                                  if (result ==
+                                                      ConnectivityResult.none) {
+                                                    // messageSms(context, dId);
+                                                  }
+                                                  if (result == ConnectivityResult.wifi && statusOfDevice == 1) {
+                                                    print("True2-->   $result");
+                                                    // localUpdate(dId);
+                                                    dataUpdate(dId);
+                                                  } else if (result == ConnectivityResult.mobile && result ==ConnectivityResult.none && statusOfDevice == 1) {
+                                                    dataUpdate(dId);
+                                                  } else if(result==ConnectivityResult.wifi && result ==ConnectivityResult.none && statusOfDevice == 1){
+                                                    _createAlertDialogForlocalUpdateAndMessage(context,dId);
 
+                                                  }
                                                 },
                                               ),
                                             ),
@@ -1598,9 +2123,370 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     dv= await SubUserDataBase.subUserInstance.getDeviceByRoomId(rId);
     return dv;
   }
+  Future placeVal;
+  List<Map<String, dynamic>> placeRows;
+  List placeQueryData;
+  List floorQueryData;
+  List floorQueryData2;
+  List<Map<String, dynamic>> floorQueryRows;
+  List<Map<String, dynamic>> roomQueryRows;
+  List<Map<String, dynamic>> pinStatusQueryRows;
+  List<Map<String, dynamic>> sensorQueryRows;
+  List<Map<String, dynamic>> sensor2QueryRows;
+  List<Map<String, dynamic>> deviceQueryRows2;
+  List<Map<String, dynamic>> devicePinNamesQueryRows;
+  List<Map<String, dynamic>> devicePinNamesQueryRows2;
+  List<Map<String, dynamic>> floorQueryRows2;
+  List<Map<String, dynamic>> flatQueryRows2;
+  List<Map<String, dynamic>> roomQueryRows2;
+
+  Future placeQueryFunc() async {
+    placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
+    print('qwe123 $placeRows');
+  }
+  Future returnPlaceQuery() async {
+    placeVal = await placeQueryFunc();
+    return SubUserDataBase.subUserInstance.queryPlaceSubUser();
+  }
+  Future returnFloorQuery(String pId) {
+    return SubUserDataBase.subUserInstance.queryFloorSubUser();
+  }
+  Future returnFlatQuery(String fId) {
+    return SubUserDataBase.subUserInstance.queryFlatSubUser();
+  }
+  var place;
+  var floor;
+  var flat123;
+  _createAlertDialogDropDown(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Change Place'),
+            content: Container(
+              height: 390,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: returnPlaceQuery(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Place'),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+
+                                  items: placeRows.map((selectedPlace) {
+                                    print('aaaadsds ${placeRows}');
+                                    return DropdownMenuItem(
+                                      value: selectedPlace.toString(),
+                                      child: Column(
+                                        children: [
+                                          Text("${selectedPlace['p_type'].toString()}"),
+                                          Text("${allPlaceId[0]['owner_name'].toString()}"),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedPlace) async {
+                                      print('checkqwe123c ${selectedPlace.toString()}');
+
+                                    var placeId = selectedPlace.substring(7, 14);
+                                    var placeName = selectedPlace.substring(24, 31);
+                                     place = SubUserPlaceType(
+                                        pId: placeId,
+                                        pType: placeName,
+                                        user: getUidVariable2
+                                    );
 
 
+                                    var aa = await SubUserDataBase.subUserInstance.getFloorById(placeId.toString());
+                                    print('AA  ${aa}');
 
+                                    floorval = returnFloorQuery(placeId.toString());
+                                    floorQueryRows2 = await aa;
+                                    returnFloorQuery(placeId);
+                                    setState(() {
+                                      floorQueryRows2 = aa;
+                                      floorval = returnFloorQuery(placeId);
+                                      returnFloorQuery(placeId);
+                                    });
+                                    print('Floorqwe  ${floorQueryRows2}');
+
+                                    // qwe= ;
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: floorval,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Floor'),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  items: floorQueryRows2.map((selectedFloor) {
+                                    return DropdownMenuItem(
+                                      value: selectedFloor.toString(),
+                                      child: Text("${selectedFloor['f_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFloor) async {
+                                    print('Floor selected $selectedFloor');
+
+                                    var floorId = selectedFloor.substring(7, 14);
+                                    var floorName = selectedFloor.substring(24, 32);
+                                    var placeId = selectedFloor.substring(39, 46);
+                                     floor = SubUserFloorType(
+                                        fId: floorId,
+                                        fName: floorName,
+                                        pId: placeId,
+                                        user: getUidVariable2
+                                    );
+
+                                    var getFlat = await SubUserDataBase.subUserInstance.getFlatById(floorId.toString());
+                                    print('GetFlat    ${getFlat}');
+                                    flatVal = returnFlatQuery(floorId);
+                                    flatQueryRows2 = getFlat;
+                                    setState(() {
+
+                                      flatVal = returnFlatQuery(floorId);
+                                      flatQueryRows2 = getFlat;
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    returnFloorQuery(floorId);
+                                  },
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: flatVal,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Flat'),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  items: flatQueryRows2.map((selectedFlat) {
+                                    return DropdownMenuItem(
+                                      value: selectedFlat.toString(),
+                                      child: Text(
+                                          "${selectedFlat['flt_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFlat) async {
+                                    flatId = selectedFlat.substring(9, 16);
+                                    var flatName = selectedFlat.substring(28, 35);
+                                    var floorId = selectedFlat.substring(39, 46);
+                                    print('flatName $selectedFlat');
+                                    // print('flatName $user');
+                                    // int user2 =int.parse(user);
+                                    // int user2=int.parse(user.toString());
+                                    flat123 = SubUserFlatType(
+                                        fId: floorId,
+                                        fltId: flatId,
+                                        fltName: flatName,
+                                        user: getUidVariable2
+                                    );
+                                    flat=flat123;
+                                    print(flatId);
+
+                                    var  aa= await SubUserDataBase.subUserInstance.getRoomById(flatId.toString());
+                                    print('AA  ${aa}');
+                                    setState(() {
+                                      // roomQueryRows2=aa;
+                                      // roomVal=returnRoomQuery(flatId);
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    // returnFloorQuery(floorId);
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+
+                    List result = await SubUserDataBase.subUserInstance.getRoomById(flatId.toString());
+                    print("SubmitAllDetails  ${result}");
+                   List<SubUserRoomType> roomList = List.generate(
+                        result.length,
+                            (index) =>
+                            SubUserRoomType(
+                              rId: result[index]['r_id'].toString(),
+                              fltId: result[index]['flt_id'].toString(),
+                              rName: result[index]['r_name'].toString(),
+                              user: result[index]['user'],
+                            )
+                    );
+                    setState(() {
+                      pt = place;
+                      fl = floor;
+                      flat=flat123;
+                       room=roomList;
+                    });
+
+                   await  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SubAccessSinglePage(
+                      ptSubUser: pt,
+                      flSubUser: fl,
+                      flatSubUser: flat,
+                      rmSubUser: room,)));
+
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
 
 
 

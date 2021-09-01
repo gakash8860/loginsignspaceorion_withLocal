@@ -12,6 +12,7 @@ import 'models/modeldefine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+Image setImage;
 void main() => runApp(MaterialApp(
       home: ProfilePage(
           // fl: null,
@@ -26,26 +27,16 @@ void main() => runApp(MaterialApp(
 class ProfilePage extends StatefulWidget {
   String value;
 
-  // place_type pt;
-  FloorType fl;
-
-  // List<Room> rm;
-  // List<Device> dv;
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 
   ProfilePage({
     Key key,
-    // @required this.pt,
-    // @required this.fl,
-    // @required this.rm,
-    // @required this.dv
   }) : super(key: key);
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  Image setImage;
+
   Box userDataBox;
   SharedPreferences preferences;
   List<Map<String, dynamic>> userRows;
@@ -428,15 +419,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           Container(
                             width: 300,
                               child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    email == null
-                                        ? "Loading"
-                                        : email.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 14),
-                                  ),
+                                child: Text(
+                                  email == null
+                                      ? "Loading"
+                                      : email.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 14),
                                 ),
                               )),
                           Container(

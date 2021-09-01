@@ -169,12 +169,12 @@ class _HomePageFinalState extends State<HomePageFinal> {
                   leading: Icon(Icons.power_rounded),
                   title: Text('Bill Prediction'),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BillPrediction(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => BillPrediction(),
+                    //   ),
+                    // );
                   }),
               ListTile(
                 leading: Icon(Icons.settings),
@@ -306,11 +306,11 @@ class _HomePageFinalState extends State<HomePageFinal> {
                           color: Colors.white,
                         ),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      BillPrediction()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             BillPrediction()));
                         },
                       ),
                     ),

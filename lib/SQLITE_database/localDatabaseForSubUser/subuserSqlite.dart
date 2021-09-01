@@ -164,6 +164,15 @@ class SubUserDataBase{
     );
 
   }
+  Future allPlaceModelData() async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.query(
+      '$_subUserPlaceTableName',
+    );
+
+  }
 
   Future<void> insertSubUserFloorModelData(SubUserFloorType floorType) async {
     // Get a reference to the database.
@@ -224,7 +233,14 @@ class SubUserDataBase{
     );
   }
 
+  Future getDeviceByRId(String id) async {
+    final db = await database;
+    var result =
+    await db.query("subUserDeviceTable", where: "r_id = ? ", whereArgs: [id]);
+    print('DeviceChanges $result');
 
+    return result;
+  }
   Future<void> insertSubUserDevicePinNames(SubUserDevicePinNameType subUserDevicePinNameType) async {
     // Get a reference to the database.
     final db = await database;
@@ -290,7 +306,7 @@ class SubUserDataBase{
       user: result[index]['user'],
     ));
     print('DeviceChanges12 $dvdata');
-    // dvdata = result.map((data) => Device.fromJson(data)).toList();
+    // dvdata = result.map((data) => SubUserDeviceType.fromJson(data)).toList();
 
 
     return dvdata;
@@ -300,7 +316,7 @@ class SubUserDataBase{
 
 
 
-  queryPlaceSubUser() async {
+  Future queryPlaceSubUser() async {
     Database db = await subUserInstance.database;
 
     return await db.query(_subUserPlaceTableName);
@@ -340,6 +356,32 @@ class SubUserDataBase{
 
     return await db.query(_subUserSensorTable);
   }
+  Future getFloorById(String id) async {
+    final db = await database;
+    var result =
+    await db.query("subUserFloorTable", where: "p_id = ? ", whereArgs: [id]);
+    print('result $result');
 
+    return result;
+  }
+
+
+
+  Future getFlatById(String id) async {
+    final db = await database;
+    var result =
+    await db.query("subUserFlatTable", where: "f_id = ? ", whereArgs: [id]);
+    print('result $result');
+
+    return result;
+  }
+  Future getRoomById(String id) async {
+    final db = await database;
+    var result =
+    await db.query("subUserRoomTable", where: "flt_id = ? ", whereArgs: [id]);
+    print('result $result');
+
+    return result;
+  }
 
 }

@@ -245,6 +245,24 @@ class NewDbProvider {
     );
 
   }
+  Future<void> deleteSubUserModelData() async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.delete(
+      '$_subUserTable',
+    );
+
+  }
+  Future<void> updateSubUserModelData(SubAccessPage subAccessPage) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.update(
+      '$_subUserTable',
+      subAccessPage.toJson(),
+
+    );
+
+  }
 
     Future<void> insertFloorModelData(FloorType floorType) async {
       // Get a reference to the database.
