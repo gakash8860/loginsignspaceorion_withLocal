@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/TempAccessPage/tempaccessfloor.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempacessplace.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
@@ -152,11 +153,19 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                             children: [
                                               ListTile(
                                                 onTap: (){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+                                                  if(tempUserDecodeList[index]['p_id']!=null){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+                                                      placeId: tempUserDecodeList[index]['p_id'].toString(),
+                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                    )));
+                                                  }else if(tempUserDecodeList[index]['f_id']!=null){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
+                                                      floorId: tempUserDecodeList[index]['f_id'].toString(),
+                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                    )));
+                                                  }
 
-                                                    placeId: tempUserDecodeList[index]['p_id'].toString(),
-                                                    ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                  )));
+
                                                 },
                                                 title: Text(
                                                     tempUserDecodeList[index]
@@ -212,7 +221,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                   ),
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                            ['r_id']
+                                                    ['f_id']
                                                         .toString(),
                                                     textAlign: TextAlign.end,
                                                   ),
@@ -221,13 +230,23 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                   ),
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                            ['flt_id']
+                                                    ['flt_id']
                                                         .toString(),
                                                     textAlign: TextAlign.end,
                                                   ),
                                                   SizedBox(
                                                     width: 10,
                                                   ),
+                                                  Text(
+                                                    tempUserDecodeList[index]
+                                                            ['r_id']
+                                                        .toString(),
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+
                                                   Text(
                                                     tempUserDecodeList[index]
                                                             ['d_id']

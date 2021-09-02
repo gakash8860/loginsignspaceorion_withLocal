@@ -497,7 +497,7 @@ class _HomeTestState extends State<HomeTest>
     );
 
     if (response.statusCode > 0) {
-      print(response.statusCode);
+      print('FlatResposne ${response.statusCode}');
       print(response.body);
 
       var flatResponse = jsonDecode(response.body);
@@ -795,7 +795,7 @@ class _HomeTestState extends State<HomeTest>
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                    addFlatName(flatNameEditing.text);
+                   await addFlatName(flatNameEditing.text);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -4169,9 +4169,8 @@ class _HomeTestState extends State<HomeTest>
                                                       height: 22,
                                                     ),
                                                     Text(
-                                                      sensorData[index][
-                                                      'd_id']
-                                                          .toString(),
+                                                      sensorData[index]['d_id'].toString(),
+                                                        style: TextStyle(color: Colors.white70),
 
                                                     ),
                                                   ],
@@ -4589,8 +4588,7 @@ class _HomeTestState extends State<HomeTest>
                   child: Text("Yes"),
                   onPressed: () async {
                     await _logout();
-                    await _deleteCacheDir();
-                    await _deleteAppDir();
+
                     CircularProgressIndicator();
                     Navigator.push(
                         context,
