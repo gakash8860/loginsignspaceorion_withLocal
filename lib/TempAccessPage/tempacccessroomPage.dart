@@ -818,7 +818,7 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
             width: double.maxFinite,
             color: change_toDark ? Colors.black : Colors.white,
             child: DefaultTabController(
-              length: 1,
+              length: room.length,
               child: CustomScrollView(
                 slivers: <Widget>[
                   SliverToBoxAdapter(

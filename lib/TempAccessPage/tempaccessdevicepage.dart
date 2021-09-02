@@ -3,11 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import '../Setting_Page.dart';
 import '../main.dart';
 
-class TempAccessFlatPage extends StatefulWidget {
+class TempAccessDevicePage extends StatefulWidget {
+  var ownerName;
+  var deviceId;
+
+
   var switch1_get;
   var switch1Name;
   var switch2Name;
@@ -63,122 +67,44 @@ class TempAccessFlatPage extends StatefulWidget {
   // ignore: non_constant_identifier_names
       switch9_get;
 
-  var flatId;
-  var ownerName;
-   TempAccessFlatPage({Key key,
-     this.flatId,
-     this.ownerName})
-   : super(key: key);
+
+
+  TempAccessDevicePage({Key key,
+   this.ownerName,
+   this.deviceId
+   }) : super(key: key);
 
   @override
-  _TempAccessFlatPageState createState() => _TempAccessFlatPageState();
+  _TempAccessDevicePageState createState() => _TempAccessDevicePageState();
 }
 
-class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
+class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
 
-  TempAccessFlat flat;
-  List<TempAccessRoom> room;
-  List<TempAccessDevice> dv;
-  String token="774945db6cd2eec12fe92227ab9b811c888227c6";
 
   bool val1 = true;
   bool _switchValue = false;
   bool val2 = false;
-
   var textSelected;
-
   Future deviceSensorVal;
-
-  TabController tabC;
-
-  var tabbarState;
-
+  var catchReturn;
+  var data;
   List deviceStatus;
 
-  List responseGetData;
+
+
+
 
   @override
   void initState() {
     super.initState();
-    getFlatName();
+    getData();
   }
 
 
 
-  Future getFlatName() async {
-    String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/getyouflatname/?flt_id=' +
-        widget.flatId.toString();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print("GetPlaceName  ${widget.flatId}");
-      print("GetPlaceName  ${response.statusCode}");
-      print("GetPlaceNameResponseBody  ${response.body}");
-      var data=jsonDecode(response.body);
-      print("GetPlaceNameResponseBodydata  ${data}");
-      var flatData=TempAccessFlat(
-        fltName: data[0]['flt_name'].toString(),
-        fltId: data[0]['flt_id'],
-      );
-      setState(() {
-        flat=flatData;
-      });
-      // getFlatForTempUser();
-    }
-    getRoomForTempUser();
-  }
 
-  Future getRoomForTempUser() async {
-    final url = 'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' + flat.fltId.toString();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('RoomSubUser ${response.statusCode}');
-      print('RoomSubUser ${response.body}');
-      if(response.statusCode==200){
-        List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          room = data.map((data) => TempAccessRoom.fromJson(data)).toList();
-        });
-        // getDeviceForTempUser();
-      }
-
-    }
-  }
-  Future  getDeviceForTempUser(String rId) async {
-    // print('tabbar1 ${tabState}');
-    final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' +rId;
-    // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('deviceGetSubUser ${response.statusCode}');
-      print('deviceGetSubUser ${response.body}');
-      if(response.statusCode==200){
-        List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          dv = data.map((data) => TempAccessDevice.fromJson(data)).toList();
-        });
-
-      }
-    }
-    // getPinStatusData();
-
-  }
-
-  var data;
-  getData(String dId) async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+  getData() async {
+    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -242,7 +168,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
       print(response.statusCode);
       throw Exception('Failed to getData.');
     }
-    getPinsName(dId);
+    getPinsName(widget.deviceId.toString());
     return data;
   }
   List<String> namesDataList;
@@ -281,10 +207,10 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
     }
   }
   var sensorData;
-  Future getSensorData(String dId) async {
+  Future getSensorData() async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId.toString(),
+        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + widget.deviceId.toString(),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -306,13 +232,13 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
       throw Exception('Failed to load album');
     }
   }
-  dataUpdate(String dId) async {
+  dataUpdate() async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
     String token = await getToken();
     Map data = {
       'put': 'yes',
-      "d_id": dId,
+      "d_id": widget.deviceId.toString(),
       'pin1Status': responseGetData[0],
       'pin2Status': responseGetData[1],
       'pin3Status': responseGetData[2],
@@ -341,7 +267,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
     if (response.statusCode == 201) {
       print("Data Updated  ${response.body}");
 
-      getData(dId);
+      getData();
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -349,7 +275,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
       throw Exception('Failed to Update data');
     }
   }
-  _showDialog(String dId) {
+  _showDialog() {
     // dialog implementation
     showDialog(
       context: context,
@@ -373,7 +299,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                       });
 
                     }
-                    await dataUpdate(dId);
+                    await dataUpdate();
                     // var result = await Connectivity().checkConnectivity();
                     // if (result == ConnectivityResult.wifi) {
                     //   print("True2-->   $result");
@@ -398,13 +324,13 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
           ),
     );
   }
-  var catchReturn;
-  deviceContainer(String dId, int index) async {
-    getData(dId);
+  List responseGetData;
+  deviceContainer() async {
+    getData();
 
-    print('namesDataList12 ${namesDataList12}');
 
-    catchReturn = await getData(dId);
+
+    catchReturn = await getData();
     print('catchReturn123 ${catchReturn}');
     // var sensorData=
     responseGetData = [
@@ -422,7 +348,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
       widget.Slider_get3 = catchReturn["pin12Status"],
     ];
 
-    print('namesList123 ${namesDataList}');
+
     // catchReturn =  getData(dId);
     setState(() {
 
@@ -444,10 +370,8 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
     });
   }
 
-
-
-  deviceContainer2(String dId, int x) {
-    deviceContainer(dId, x);
+  deviceContainer2(int x) {
+    deviceContainer();
     // fetchIp(dId);
     return Column(
       children: [
@@ -480,17 +404,17 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                       child: GestureDetector(
                         child:  Container(
                           // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                          child: Icon(textSelected==widget.deviceId.toString()?Icons.sensors:Icons.update),
                         ),
 
                         onTap: () async {
                           print('check123${textSelected}');
-                          deviceSensorVal =   getSensorData(dId);
+                          deviceSensorVal =   getSensorData();
                           setState(() {
-                            textSelected=dId.toString();
-                            deviceSensorVal = getSensorData(dId);
+                            textSelected=widget.deviceId.toString();
+                            deviceSensorVal = getSensorData();
                           });
-                          print('check123${textSelected==dId}');
+                          print('check123${textSelected==widget.deviceId.toString()}');
                           print('_hasBeenPressed ${textSelected}');
                         },
                       ),
@@ -517,7 +441,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                       value: responseGetData == 0 ? val2 : val1,
                       //boolean value
                       onChanged: (val) async {
-                        _showDialog(dId);
+                        _showDialog();
                       },
                     ),
                     Padding(
@@ -652,7 +576,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                   }
                                                   print('yooooooooo ${responseGetData[index]}');
                                                 });
-                                                dataUpdate(dId);
+                                                dataUpdate();
 
                                               },
                                             ),
@@ -820,371 +744,277 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
     );
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          if(viewportConstraints.maxWidth>600){
-            return Container();
-          }else {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text('Only Flat'),
-              ),
-              body: Container(
-                width: double.maxFinite,
-                color: change_toDark ? Colors.black : Colors.white,
-                child: DefaultTabController(
-                  length: room.length,
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.37,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Color(0xff669df4),
-                                      Color(0xff4e80f3)
-                                    ]),
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(30),
-                                    bottomRight: Radius.circular(30)),
-                              ),
-                              padding: EdgeInsets.only(
-                                top: 40,
-                                bottom: 10,
-                                left: 30,
-                                right: 30,
-                              ),
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Assigned By ',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                              fontStyle: FontStyle.italic),
-                                        ),
-                                        Text(
-                                          widget.ownerName.toString(),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                              fontStyle: FontStyle.italic),
-                                        ),
-                                      ],
+      if(viewportConstraints.maxWidth>600){
+        return Container();
+      }else{
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Only Device'),
+          ),
+          body: Container(
+            width: double.maxFinite,
+            color: change_toDark ? Colors.black : Colors.white,
+            child: DefaultTabController(
+              length: 1,
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.27,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xff669df4),
+                                  Color(0xff4e80f3)
+                                ]),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30)),
+                          ),
+                          padding: EdgeInsets.only(
+                            top: 40,
+                            bottom: 10,
+                            left: 30,
+                            right: 30,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              GestureDetector(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Assigned By ',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
                                     ),
-                                    onTap: () {
-                                      // _createAlertDialogDropDown(context);
-                                    },
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Column(
-                                        children: <Widget>[
-                                          SizedBox(height: 14,),
-                                          GestureDetector(
-                                            onTap: () async{
-
-                                            },
-                                            child: Text(
-                                              flat.fltName.toString(),
-                                              // 'Hello ',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 22),
-                                            ),
-                                            // onTap: () {
-                                            //   // _createAlertDialogDropDown(context);
-                                            // },
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 35,
-                                  ),
-                                  Row(
-                                    // mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      FutureBuilder(
-                                        future: deviceSensorVal,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            print('SnapShot ${snapshot}');
-                                            return Column(
+                                    Text(
+                                      widget.ownerName.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  // _createAlertDialogDropDown(context);
+                                },
+                              ),
+                              SizedBox(height:22),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  FutureBuilder(
+                                    future: deviceSensorVal,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        print('SnapShot ${snapshot}');
+                                        return Column(
+                                          children: <Widget>[
+                                            Row(
                                               children: <Widget>[
-                                                Row(
-                                                  children: <Widget>[
-                                                    SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    Column(children: <Widget>[
-                                                      Icon(
-                                                        FontAwesomeIcons.fire,
-                                                        color: Colors.yellow,
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons.fire,
+                                                    color: Colors.yellow,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 32,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                          // 'aa',
+                                                            sensorData['sensor1'].toString(),                                                            style: TextStyle(
+                                                            fontSize:
+                                                            14,
+                                                            color: Colors
+                                                                .white70)),
                                                       ),
-                                                      SizedBox(
-                                                        height: 32,
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            child: Text(
-                                                              // 'aa',
-                                                                sensorData['sensor1'].toString(),                                                            style: TextStyle(
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(
+                                                  width: 35,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons
+                                                        .temperatureLow,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                          // 's',
+                                                            sensorData['sensor2'].toString(),
+                                                            style: TextStyle(
                                                                 fontSize:
                                                                 14,
                                                                 color: Colors
                                                                     .white70)),
-                                                          ),
-                                                        ],
                                                       ),
-                                                    ]),
-                                                    SizedBox(
-                                                      width: 35,
-                                                    ),
-                                                    Column(children: <Widget>[
-                                                      Icon(
-                                                        FontAwesomeIcons
-                                                            .temperatureLow,
-                                                        color: Colors.orange,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            child: Text(
-                                                              // 's',
-                                                                sensorData['sensor2'].toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                    14,
-                                                                    color: Colors
-                                                                        .white70)),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ]),
-                                                    SizedBox(
-                                                      width: 45,
-                                                    ),
-                                                    Column(children: <Widget>[
-                                                      Icon(
-                                                        FontAwesomeIcons.wind,
-                                                        color: Colors.white,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            child: Text(
-                                                              // 's',
-                                                                sensorData['sensor3'].toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                    14,
-                                                                    color: Colors
-                                                                        .white70)),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ]),
-                                                    SizedBox(
-                                                      width: 42,
-                                                    ),
-                                                    Column(children: <Widget>[
-                                                      Icon(
-                                                        FontAwesomeIcons.cloud,
-                                                        color: Colors.orange,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            child: Text(
-                                                                sensorData['sensor4'].toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                    14,
-                                                                    color: Colors
-                                                                        .white70)),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ]),
-                                                  ],
-                                                ),
+                                                    ],
+                                                  ),
+                                                ]),
                                                 SizedBox(
-                                                  height: 22,
+                                                  width: 45,
                                                 ),
-                                                Text(
-                                                    sensorData['d_id'].toString(),
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                        14,
-                                                        color: Colors
-                                                            .white70)),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons.wind,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                          // 's',
+                                                            sensorData['sensor3'].toString(),
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(
+                                                  width: 42,
+                                                ),
+                                                Column(children: <Widget>[
+                                                  Icon(
+                                                    FontAwesomeIcons.cloud,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Text(
+                                                            sensorData['sensor4'].toString(),
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                14,
+                                                                color: Colors
+                                                                    .white70)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]),
                                               ],
-                                            );
-                                          } else {
-                                            return Center(
-                                              child: Text('Loading...'),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //Room Tabs
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        // centerTitle: true,
-                        floating: true,
-                        pinned: true,
-                        backgroundColor: Colors.white,
-
-                        title: Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                        height: 30  ,
-                                        child: Text('Rooms->', style: TextStyle(
-
-                                          // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight
-                                                .bold,
-                                            color: Colors
-                                                .black
-                                        ),)),
-                                    TabBar(
-                                      indicatorColor: Colors.blueAccent,
-                                      controller: tabC,
-                                      labelColor: Colors.blueAccent,
-                                      indicatorWeight: 2.0,
-                                      isScrollable: true,
-                                      tabs:room.map<Widget>((TempAccessRoom rm) {
-                                        return Tab(
-                                          text: rm.rName,
+                                            ),
+                                            SizedBox(
+                                              height: 22,
+                                            ),
+                                            Text(
+                                                sensorData['d_id'].toString(),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                    14,
+                                                    color: Colors
+                                                        .white70)),
+                                          ],
                                         );
-                                      }).toList(),
-                                      onTap: (index) async {
-                                        tabbarState=room[index].rId.toString();
-                                        getDeviceForTempUser(tabbarState);
-
-
-                                      },
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-
+                                      } else {
+                                        return Center(
+                                          child: Text('Loading...'),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              )
                             ],
                           ),
-                        ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          print('asdfirst ${dv.length}');
-                          if (index <dv.length) {
-
-                            dv.length==null? Text('loading'):dv.length==null;
-                            print('asdf ${dv.length}');
-                            Text(
-                              "Loading",
-                              style: TextStyle(fontSize: 44),
-                            );
-
-                            return Container(
-                              child: Column(
-                                children: [
-                                  deviceContainer2(dv[index].dId, index),
-                                  Container(
-                                    //
-                                    // color: Colors.green,
-                                      height: 35,
-                                      child: GestureDetector(
-                                        child: RichText(
-                                          text: TextSpan(children: [
-                                            TextSpan(
-                                              // text:'aa',
-                                              // text:deviceSubUser[index]['d_id'],
-                                                text: dv[index].dId,
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.black)),
-                                            TextSpan(text: "   "),
-                                            WidgetSpan(
-                                                child: Icon(
-                                                  Icons.settings,
-                                                  size: 18,
-                                                ))
-                                          ]),
-                                        ),
-                                        onTap: () {
-                                          // _createAlertDialogForSSIDAndEmergencyNumber(
-                                          //     context);
-                                          print('on tap');
-                                        },
-                                      )),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return null;
-                          }
-                        }),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          }
 
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      // print('asdfirst ${dv.length}');
+                      if (index <1) {
+
+
+                        return Container(
+                          child: Column(
+                            children: [
+                              deviceContainer2(index),
+                              Container(
+                                //
+                                // color: Colors.green,
+                                  height: 35,
+                                  child: GestureDetector(
+                                    child: RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                          // text:'aa',
+                                          // text:deviceSubUser[index]['d_id'],
+                                            text: widget.deviceId.toString(),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black)),
+                                        TextSpan(text: "   "),
+                                        WidgetSpan(
+                                            child: Icon(
+                                              Icons.settings,
+                                              size: 18,
+                                            ))
+                                      ]),
+                                    ),
+                                    onTap: () {
+                                      // _createAlertDialogForSSIDAndEmergencyNumber(
+                                      //     context);
+                                      print('on tap');
+                                    },
+                                  )),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return null;
+                      }
+                    }),
+                  )
+
+                ],
+              ),
+            ),
+          ),
+        );
+      }
         }
       ),
     );

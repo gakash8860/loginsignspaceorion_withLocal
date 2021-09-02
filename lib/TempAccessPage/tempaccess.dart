@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/TempAccessPage/tempacccessroomPage.dart';
+import 'package:loginsignspaceorion/TempAccessPage/tempaccessdevicepage.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessflatpage.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessfloor.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
@@ -175,6 +176,11 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
                                                    ownerName: tempUserDecodeList[index]['owner_name'].toString(),
                                                       roomId: tempUserDecodeList[index]['r_id'],
+                                                    )));
+                                                  }else if(tempUserDecodeList[index]['d_id']!=null){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
+                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                      deviceId: tempUserDecodeList[index]['d_id'],
                                                     )));
                                                   }
 
