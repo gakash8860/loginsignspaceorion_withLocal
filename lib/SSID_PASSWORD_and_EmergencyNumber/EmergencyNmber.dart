@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:http/http.dart' as http;
-
+import '../main.dart';
 import 'nextPage.dart';
-  class EmergencyNumber extends StatefulWidget {
+class EmergencyNumber extends StatefulWidget {
     final deviceId;
 
     const EmergencyNumber({Key key, this.deviceId}) : super(key: key);
@@ -51,21 +51,23 @@ final storage= new FlutterSecureStorage();
   var number3;
   var number4;
   var number5;
+
   getEmergencyNumber()async{
-    String token = "0bcb23b98322c01d95211af236b4a8d029bdd9f3";
-    final url = 'http://genorion1.herokuapp.com/getpostemergencynumber/?d_id=DIDM12932021AAAAAD';
+    String token = await getToken();
+    final url = API+'getpostemergencynumber/?d_id='+widget.deviceId.toString();
     final response= await http.get(Uri.parse(url),headers: {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json; charset=UTF-8',
     });
     if(response.statusCode>0){
+      print('number1Emergency ${response.statusCode}');
       var q=jsonDecode(response.body);
       number1=q['number1'];
       number2=q['number2'];
       number3=q['number3'];
       number4=q['number4'];
       number5=q['number5'];
-      print('number1 ->${number1}');
+      print('number1Emergency ->${q}');
       print('number2 ->${number2}');
       print('number3 ->${number3}');
       print('number4 ->${number4}');
@@ -81,7 +83,7 @@ final storage= new FlutterSecureStorage();
   updateEmergencyNumber(EmergencyRequirementField data) async {
     String token =await getToken();
     print('idd ${widget.deviceId.toString()}');
-    final url = 'http://genorion1.herokuapp.com/getpostemergencynumber/?d_id='+widget.deviceId.toString();
+    final url = API+'getpostemergencynumber/?d_id='+widget.deviceId.toString();
     var postData={
       "user":getUidVariable,
       "d_id":widget.deviceId,

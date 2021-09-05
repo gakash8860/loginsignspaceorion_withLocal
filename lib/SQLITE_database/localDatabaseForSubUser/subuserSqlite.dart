@@ -163,6 +163,7 @@ class SubUserDataBase{
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
+
   }
   Future allPlaceModelData() async {
     // Get a reference to the database.

@@ -64,11 +64,6 @@ List floorData;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
-void main() async {
-  await Hive.initFlutter();
-  runApp(MyApp());
-}
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -187,9 +182,6 @@ class _HomeTestState extends State<HomeTest>
   // AudioCache _player;
   var postData;
   bool isVisible = false;
-
-  // = GlobalKey<FormState>();
-  var temp = "DIDM12932021AAAAAA";
   List<bool> isSelected = [true, false, false];
   var getDataStatus;
   Future placeVal;
@@ -201,10 +193,6 @@ class _HomeTestState extends State<HomeTest>
   int _currentIndex = 0;
   var imageString;
   int index = 0;
-
-  // PlaceType pt;
-  // Flat flat;
-  // FloorType fl;
   TimeOfDay time;
   TimeOfDay time23;
   TimeOfDay picked;
@@ -216,6 +204,7 @@ class _HomeTestState extends State<HomeTest>
   List<AlarmInfo> _currentAlarms;
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Map<String, dynamic>> placeRows;
+  List placeRowsList;
   List placeQueryData;
   List floorQueryData;
   List floorQueryData2;
@@ -356,6 +345,7 @@ class _HomeTestState extends State<HomeTest>
   @override
   void initState() {
     super.initState();
+
     pickedDate = DateTime.now();
     loadImageFromPreferences();
     timer = Timer.periodic(Duration(seconds: 10), (timer) {
@@ -382,8 +372,7 @@ class _HomeTestState extends State<HomeTest>
   Future<PlaceType> getPlaceName() async {
     String token = await getToken();
     print('currentPlaceId ${widget.pt.pId}');
-    final url =
-        'http://genorion1.herokuapp.com/addyourplace/?p_id=' + widget.pt.pId;
+    final url = API+'addyourplace/?p_id=' + widget.pt.pId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -402,7 +391,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<PlaceType> addPlaceName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourplace/';
+    final url = API+'addyourplace/';
     var postDataPlaceName = {
       "p_id": widget.pt.pId,
       "p_type": data,
@@ -433,7 +422,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<FloorType> addFloorName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
+    final url = API+'addyourfloor/';
     var postDataFloorName = {
       "f_id": widget.fl.fId,
       "f_name": data,
@@ -481,7 +470,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<FloorType> addFlatName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    final url = API+'addyourflat/';
     var postDataFlatName = {
       "flt_id": widget.flat.fltId,
       "flt_name": data,
@@ -539,7 +528,7 @@ class _HomeTestState extends State<HomeTest>
   List namesDataList = [];
 
   Future getPinsName(String dId) async {
-    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
+    String url = API+"editpinnames/?d_id=" + dId;
     String token = await getToken();
     // try {
     final response = await http.get(Uri.parse(url), headers: {
@@ -588,7 +577,7 @@ class _HomeTestState extends State<HomeTest>
   Future<DevicePin> addPinsName(String data, int index) async {
     String token = await getToken();
     print('data[index] ${widget.dv[index].dId}');
-    final url = 'http://genorion1.herokuapp.com/editpinnames/';
+    final url = API+'editpinnames/';
     var postDataPinName;
     if (index == 0) {
       postDataPinName = {
@@ -689,7 +678,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<RoomType> addRoomName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addroom/';
+    final url = API+'addroom/';
     print(rIdForName);
     var postDataRoomName = {
       "r_id": rIdForName,
@@ -2606,7 +2595,7 @@ class _HomeTestState extends State<HomeTest>
   Future<List<Device>> getDevices(String rId) async {
     print('tabbas ${tabbarState}');
     var query = {'r_id': tabbarState};
-    final url = Uri.https('genorion1.herokuapp.com', '/addyourdevice/', query);
+    final url = API+'addyourdevice/?r_id='+tabbarState;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -2632,7 +2621,7 @@ class _HomeTestState extends State<HomeTest>
       //   print(NewDbProvider.instance.dogs());
       rId = roomQueryRows[i]['r_id'].toString();
       print('roomId  $rId');
-      String url = "http://genorion1.herokuapp.com/addyourdevice/?r_id=" + rId;
+      String url = API+"addyourdevice/?r_id=" + rId;
       var response;
       // try {
       response = await http.get(Uri.parse(url), headers: {
@@ -2675,7 +2664,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future <void> deleteDevice(String rId, String dId) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourdevice/?r_id=${rId}&d_id=${dId}';
+    final url = API+'addyourdevice/?r_id=${rId}&d_id=${dId}';
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -2696,7 +2685,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> deleteRoomWithAllDevice(String rId) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addroom/?r_id=' + rId;
+    final url = API+'addroom/?r_id=' + rId;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -2719,7 +2708,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> deleteFloor(String fId) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourfloor/?f_id=' + fId;
+    final url = API+'addyourfloor/?f_id=' + fId;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -2742,7 +2731,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> deleteFlat(String flt_Id) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourflat/?flt_id=' + flt_Id;
+    final url = API+'addyourflat/?flt_id=' + flt_Id;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -2772,7 +2761,7 @@ class _HomeTestState extends State<HomeTest>
     print('no');
     while (counter <= dv.length - 1) {
       print('yes');
-      final url = 'http://genorion1.herokuapp.com/addipaddress/?d_id=' +
+      final url = API+'addipaddress/?d_id=' +
           dv[counter].dId.toString();
       String token = await getToken();
       final response = await http.get(url, headers: {
@@ -2802,7 +2791,7 @@ class _HomeTestState extends State<HomeTest>
   Future<IpAddress> fetchIp(String dId) async {
     while (counter <= widget.dv.length) {
       String token = await getToken();
-      final url = 'http://genorion1.herokuapp.com/addipaddress/?d_id=' + dId;
+      final url = API+'addipaddress/?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -2851,7 +2840,7 @@ class _HomeTestState extends State<HomeTest>
 
   dataUpdate(String dId) async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -2890,7 +2879,7 @@ class _HomeTestState extends State<HomeTest>
       print('Switch 2 --> $switch_2');
       print('Switch 3 --> $switch_3');
       print('Switch 4 --> $switch_4');
-      getData(dId);
+      await getData(dId);
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -2901,7 +2890,7 @@ class _HomeTestState extends State<HomeTest>
 
   dataUpdateforPin19(String dId) async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -2975,7 +2964,7 @@ class _HomeTestState extends State<HomeTest>
   Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId,
+        API+'tensensorsdata/?d_id=' + dId,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -3053,7 +3042,7 @@ class _HomeTestState extends State<HomeTest>
   // ignore: missing_return
   Future<RoomType> addRoom(String data) async {
     print('floorwidgetid ${widget.flat.fltId}');
-    final url = 'http://genorion1.herokuapp.com/addroom/';
+    final url = API+'addroom/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -3098,7 +3087,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> addFlat(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
-    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    final url = API+'addyourflat/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -3141,7 +3130,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> addFlat2(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
-    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    final url = API+'addyourflat/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -3167,13 +3156,7 @@ class _HomeTestState extends State<HomeTest>
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // getAllRoom();
       }
-
-      // setState(() {
-      //   roomResponse2=roomResponse;
-      //   // roomResponsePreference.setInt('r_id', roomResponse2);
-      // });
       print(' RoomTabs--> $tabbarState');
 
       // return RoomType.fromJson(postData);
@@ -3188,7 +3171,7 @@ class _HomeTestState extends State<HomeTest>
   Future<void> fetchPlace() async {
     // await openPlaceBox();
     String token = await getToken();
-    final url = 'https://genorion1.herokuapp.com/addyourplace/';
+    final url = API+'addyourplace/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -3244,7 +3227,7 @@ class _HomeTestState extends State<HomeTest>
       pId = placeRows[i]['p_id'].toString();
       print('pId  $pId');
 
-      final url = "https://genorion1.herokuapp.com/addyourfloor/?p_id=" + pId;
+      final url = API+"addyourfloor/?p_id=" + pId;
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -3305,7 +3288,7 @@ class _HomeTestState extends State<HomeTest>
     for (int i = 0; i < floorQueryRows.length; i++) {
       fId = floorQueryRows[i]['f_id'].toString();
       print("AllFlatFloorId $fId");
-      String url = 'https://genorion1.herokuapp.com/addyourflat/?f_id=' + fId;
+      String url = API+'addyourflat/?f_id=' + fId;
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -3361,7 +3344,7 @@ class _HomeTestState extends State<HomeTest>
       flatId = flatQueryRows2[i]['flt_id'].toString();
 
       String url =
-          "https://genorion1.herokuapp.com/addroom/?flt_id=" + flatId;
+          API+"addroom/?flt_id=" + flatId;
       var response;
 
       response = await http.get(Uri.parse(url), headers: {
@@ -3372,7 +3355,7 @@ class _HomeTestState extends State<HomeTest>
       roomData = jsonDecode(response.body);
       print('checkRoomData $roomData');
       widget.rm = roomData.map((data) => RoomType.fromJson(data)).toList();
-      List roomQueryRows = await NewDbProvider.instance.queryRoom();
+       roomQueryRows = await NewDbProvider.instance.queryRoom();
       if (roomData.length == roomQueryRows.length) {
         for (int i = 0; i < roomData.length; i++) {
           roomQuery = RoomType(
@@ -3412,9 +3395,9 @@ class _HomeTestState extends State<HomeTest>
     return Future.value(true);
   }
 
-  // ignore: missing_return
+
   Future<RoomType> addRoom2(String data) async {
-    final url = 'http://genorion1.herokuapp.com/addroom/';
+    final url = API+'addroom/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable,
@@ -3433,24 +3416,18 @@ class _HomeTestState extends State<HomeTest>
       print(response.statusCode);
       print(response.body);
       tabbarState = jsonDecode(response.body);
-      // setState(() {
-      //   roomResponse2=roomResponse;
-      //   // roomResponsePreference.setInt('r_id', roomResponse2);
-      // });
       print(' RoomCrated --> $roomResponse');
-
-      // return RoomType.fromJson(postData);
     } else {
       throw Exception('Failed to create Room.');
     }
   }
 
-  // ignore: missing_return
+
   var flatResponse;
 
   Future<FloorType> addFloor(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
+    final url = API+'addyourfloor/';
     var postData = {
       "user": getUidVariable,
       "p_id": widget.pt.pId,
@@ -3472,7 +3449,6 @@ class _HomeTestState extends State<HomeTest>
     } else {
       throw Exception('Failed to create Floor.');
     }
-    // return FloorType.fromJson(floorResponse);
   }
 
   void choiceAction(String choice) {
@@ -3495,38 +3471,21 @@ class _HomeTestState extends State<HomeTest>
   Future placeQueryFunc() async {
     placeRows = await NewDbProvider.instance.queryPlace();
     print('qwe123 $placeRows');
+    // List<PlaceType> places =
+    // placeRowsList.map((data) => PlaceType.fromJson(data)).toList();
+    // return places;
   }
 
   Future returnFloorQuery(String pId) {
     return NewDbProvider.instance.queryFloor();
   }
 
-  Future<List<RoomType>> getrooms(String fId) async {
-    var query = {'f_id': fId};
-    final url = Uri.https('genorion1.herokuapp.com', '/getallrooms/', query);
-    String token = await getToken();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode > 0) {
-      print('-----------room function query -- ------ $query');
-      roomData = jsonDecode(response.body);
-      print('Room Response------->>>>      $roomData');
-      rooms = roomData.map((data) => RoomType.fromJson(data)).toList();
-      print('rooomssssss  ${rooms.toList()}');
-    }
-    return rooms;
-  }
 
   Future floorval;
   Future floorval2;
 
   @override
   Widget build(BuildContext context) {
-    // TabController tabC;
-    // tabC=new TabController(length: widget.rm.length, vsync: this);
     return Scaffold(
       body: Container(
         width: double.maxFinite,
@@ -3834,7 +3793,7 @@ class _HomeTestState extends State<HomeTest>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Information()),
+                                  builder: (context) => information()),
                             );
                           },
                         ),
@@ -4269,11 +4228,13 @@ class _HomeTestState extends State<HomeTest>
                                                   widget.rm[index].rId;
                                               // devicePinNamesQueryFunc();
                                             });
-                                            getDevices(tabbarState);
+                                            // getAllRoom();
+                                            getDeviceOffline(tabbarState);
                                             print("tabbarState Tabs->  $tabbarState");
+
                                             widget.dv = await NewDbProvider.instance
                                                 .getDeviceByRoomId(tabbarState);
-                                            // getAllRoom();
+
                                             // widget.rm =await roomQueryFunc();
                                             print('getDevices123 }');
                                           },
@@ -4492,8 +4453,11 @@ class _HomeTestState extends State<HomeTest>
                           responseGetData[i] = 0;
                           print('AllChange ${responseGetData.toString()}');
                         }
+
                       });
+
                     }
+                    await dataUpdate(dId);
                     var result = await Connectivity().checkConnectivity();
                     if (result == ConnectivityResult.wifi) {
                       print("True2-->   $result");
@@ -4613,7 +4577,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   Future schedulingDevicePin(String dId, index) async {
-    final url = 'http://genorion1.herokuapp.com/schedulingpinsalltheway/';
+    final url = API+'schedulingpinsalltheway/';
     String token = await getToken();
     var postData;
     if (index == 0) {
@@ -4831,6 +4795,7 @@ String textSelected ="";
                       child: GestureDetector(
                         child: Icon(Icons.schedule),
                         onTap: () {
+
                           _createAlertDialogForPinSchedule(context,dId);
                           // _createAlertDialogForPin17(context, dId);
                         },
@@ -5051,19 +5016,8 @@ String textSelected ="";
                                                   TextStyle(fontSize: 10),
                                                 ),
                                                 onPressed: () {
-                                                  print(
-                                                      'indexpinNames->  $index');
-//                                                   setState(() {
-//
-//                                                     names[index] =pinNames;
-//                                                     // pinNameController.text;
-// // /                                                    }
-//                                                   });
-
-                                                  _createAlertDialogForNameDeviceBox(
-                                                      context, index);
-
-                                                  // return addDeviceName(index);
+                                                  print('indexpinNames->  $index');
+                                                  _createAlertDialogForNameDeviceBox(context, index);
                                                 },
                                               ),
                                             ),
@@ -5246,13 +5200,14 @@ String textSelected ="";
                                                 divisions: 500,
                                                 activeColor: Colors.blue,
                                                 inactiveColor: Colors.black,
-                                                onChanged: (double value) {
+                                                onChanged: (double value) async{
                                                   // print('valuecheck ${value}');
                                                   // setState(() {
                                                   _value = value;
                                                   // });
                                                   var roundVar = value.round();
                                                   sliderValue=roundVar.round();
+                                                  await dataUpdate(dId);
                                                   // sliderValue=int.parse(_value.toString());
                                                   print('valuecheck $sliderValue');
                                                 },
@@ -5330,41 +5285,28 @@ String textSelected ="";
                                                           1].toString())}',
                                                   onChanged:
                                                       (double newValue) async {
-                                                    print(
-                                                        'index of data $index --> ${responseGetData[newIndex -
-                                                            1]}');
-                                                    print(
-                                                        'index of $index --> ${newIndex -
-                                                            1}');
+                                                    print('index of data $index --> ${responseGetData[newIndex - 1]}');
+                                                    print('index of $index --> ${newIndex - 1}');
 
                                                     setState(() {
-                                                      // if (responseGetData[newIndex-1] != null) {
-                                                      //   responseGetData[newIndex-1] = widget.Slider_get.round();
-                                                      // }
-
                                                       print("Round-->  ${newValue.round()}");
                                                       var roundVar = newValue.round();
                                                       print("Round 2-->  $roundVar");
                                                       responseGetData[newIndex - 1] = roundVar;
                                                       print("Response Round-->  ${responseGetData[newIndex - 1]}");
                                                     });
+                                                    await dataUpdate(dId);
 
                                                     // if Internet is not available then _checkInternetConnectivity = true
                                                     var result =
-                                                    await Connectivity()
-                                                        .checkConnectivity();
-                                                    if (result ==
-                                                        ConnectivityResult
-                                                            .wifi) {
-                                                      print(
-                                                          "True2-->   $result");
+                                                    await Connectivity().checkConnectivity();
+                                                    if (result == ConnectivityResult.wifi) {
+                                                      print("True2-->   $result");
                                                       await localUpdate(dId);
                                                       await dataUpdate(dId);
                                                     } else if (result ==
-                                                        ConnectivityResult
-                                                            .mobile) {
-                                                      print(
-                                                          "mobile-->   $result");
+                                                        ConnectivityResult.mobile) {
+                                                      print("mobile-->   $result");
                                                       // await localUpdate(d_id);
                                                       await dataUpdate(dId);
                                                     } else {
@@ -5476,7 +5418,7 @@ String textSelected ="";
       print('getDataFunction $deviceIdForSensor');
       getSensorData(deviceIdForSensor);
       final String url =
-          'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+          API+'getpostdevicePinStatus/?d_id=' + dId;
       String token = await getToken();
       http.Response response = await http.get(url, headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -5578,7 +5520,7 @@ String textSelected ="";
 
 
   _launchURL() async {
-    const url = 'https://genorion1.herokuapp.com/change_password_phone';
+    var url = API+'change_password_phone';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

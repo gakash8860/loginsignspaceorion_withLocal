@@ -26,13 +26,15 @@ String roomResponse2;
 
 class DropDown1 extends StatefulWidget {
   static const routeName = '/dropDown1';
-  const DropDown1({Key key}) : super(key: key);
+
 
   @override
   _DropDown1State createState() => _DropDown1State();
 }
 
 class _DropDown1State extends State<DropDown1> {
+
+
   final storage = new FlutterSecureStorage();
   var floorval, ptfuture;
   bool isVisible = false;
@@ -68,7 +70,7 @@ class _DropDown1State extends State<DropDown1> {
   Future<PlaceType> placeName(String data) async {
     print(getUidVariable2);
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourplace/';
+    final url = API+'addyourplace/';
     var postData = {"user": getUidVariable2, "p_type": data};
     final response = await http.post(
       url,
@@ -91,9 +93,6 @@ class _DropDown1State extends State<DropDown1> {
       setState(() {
         // setPlaceValue();
       });
-      // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
-      // placeResponsePreference.setInt('p_id', placeResponse);
-
       return PlaceType.fromJson(postData);
     } else {
       throw Exception('Failed to create Place.');
@@ -102,7 +101,7 @@ class _DropDown1State extends State<DropDown1> {
 
   Future<FloorType> sendFloorName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourfloor/';
+    final url = API+'addyourfloor/';
     var postData = {
       "user": getUidVariable2,
       "p_id": placeResponse,
@@ -132,7 +131,7 @@ class _DropDown1State extends State<DropDown1> {
 
   Future<Flat> sendFlatName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourflat/';
+    final url = API+'addyourflat/';
     var postData = {
       "user": getUidVariable2,
       "f_id": floorResponse,
@@ -162,7 +161,7 @@ class _DropDown1State extends State<DropDown1> {
 
   Future<RoomType> sendRoomName(String data) async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addroom/';
+    final url = API+'addroom/';
     var postData = {
       "user": getUidVariable2,
       "r_name": data,
@@ -200,7 +199,7 @@ class _DropDown1State extends State<DropDown1> {
     print(roomResponse2);
     // placeType.createState().roomResponse;
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourdevice/';
+    final url = API+'addyourdevice/';
     var postData = {
       "user": getUidVariable2,
       "r_id": roomResponse,
@@ -229,7 +228,7 @@ class _DropDown1State extends State<DropDown1> {
   }
 
   getUid() async {
-    final url = 'http://genorion1.herokuapp.com/getuid/';
+    final url = API+'getuid/';
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',

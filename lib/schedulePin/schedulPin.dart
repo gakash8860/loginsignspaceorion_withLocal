@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import '../main.dart';
 
-var API = 'http://genorion1.herokuapp.com/';
+
 void main()=>runApp(MaterialApp(
   home: ScheduledPin(),
 ));
@@ -79,6 +79,7 @@ List listOfScheduledPins=[];
 
             putScheduledPins(listOfScheduledPins);
           });
+          print('listOfScheduledPins ${listOfScheduledPins}');
           allPinNames();
         }
       }
@@ -177,104 +178,7 @@ Future schedulingDevicePin(var postData) async {
     scheduled=getScheduledPins();
   }
 }
-// Future deleteScheduling(String dId,String date,String time,String pinStatus)async{
-//   String token = await getToken();
-//   print('pinstst $pinStatus');
-//   // String token = "be43f6166fce6faef0525c610402b332debdb232";
-//   String url1=API;
-//
-//   // if(url1+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin10Status=${pinStatus}'!=null){
-//   //   url1+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin1Status=${pinStatus}';
-//   // }
-//   // String url=API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&${pinStatus}=${pinStatus}';
-//   String url;
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin1Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin2Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin3Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin4Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin5Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin6Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin7Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin8Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin9Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin10Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin11Status=${pinStatus}';
-//  url= API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin12Status=${pinStatus}';
-//
-//
-//
-//
-//
-//  if( listOfScheduledPins[1]['pin1Status'].toString() != null){
-//     print('check1 ${listOfScheduledPins[1]['pin1Status'].toString()}' );
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin1Status=${pinStatus}';
-//   }else if(listOfScheduledPins[1]['pin2Status'].toString() != null){
-//     print('check2');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin2Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin3Status='!=null){
-//     print('check3');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin3Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin4Status='!=null){
-//     print('check4');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin5Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin6Status='!=null){
-//     print('check5');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin6Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin7Status='!=null){
-//     print('check6');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin7Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin8Status='!=null){
-//     print('check7');
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin8Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin9Status='!=null){
-//
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin9Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin10Status='!=null){
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin10Status=${pinStatus}';
-//   }else if(API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin11Status='!=null){
-//     url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin11Status=${pinStatus}';
-//   }
-//
-//   final response = await http.delete(url,headers: {
-//     'Content-Type': 'application/json',
-//     'Accept': 'application/json',
-//     'Authorization': 'Token $token',
-//   });
-//   if(response.statusCode>0){
-//     print('deleteScheduling ${response.body}');
-//     if(response.statusCode==200){
-//
-//         final snackBar = SnackBar(
-//           content: Text('Pin Scheduled Deleted'),
-//         );
-//         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-//       }
-//
-//   }
-// }
 
-
-// Future deleteSchedulingUsingUrl(String url)async{
-//   String token = await getToken();
-//   String tr=url;
-//   final response = await http.delete(tr,headers: {
-//     'Content-Type': 'application/json',
-//     'Accept': 'application/json',
-//     'Authorization': 'Token $token',
-//   });
-//   if(response.statusCode>0){
-//     print('deleteScheduling ${response.body}');
-//     print('deleteScheduling ${response.statusCode}');
-//     if(response.statusCode==200){
-//
-//       final snackBar = SnackBar(
-//         content: Text('Pin Scheduled Deleted'),
-//       );
-//       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-//     }
-//
-//   }
-// }
 Future deleteSchedulingUsingId(String id)async{
   String token = await getToken();
   String url= API+'schedulingpinsalltheway/?user=${getUidVariable}&id=${id}';
@@ -669,51 +573,7 @@ allPinNames()async{
                                                   icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
                                                   onPressed: (){
                                                     deleteSchedulingUsingId(listOfScheduledPins[index]['id'].toString());
-                                                    // print('listOfScheduledPins[index] ${listOfScheduledPins[index]}');
-                                                    // // if(listOfScheduledPins[index]['pin1Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin1Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin2Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin2Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin3Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin3Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin4Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin4Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin5Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin6Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin7Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin7Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin8Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin8Status'];
-                                                    // // }else if(listOfScheduledPins[index]['pin9Status']!=null){
-                                                    // //   pinStatus=listOfScheduledPins[index]['pin9Status'];
-                                                    // // }
-                                                    // // print('pinStatus ${pinStatus}');
-                                                    // // print('pinStatus ${listOfScheduledPins[index]}');
-                                                    // String  url_delete_api;
-                                                    // if( listOfScheduledPins[index]['pin1Status'].toString() != null){
-                                                    //
-                                                    //   url_delete_api =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${listOfScheduledPins[index]['d_id'].toString()}&date1=${listOfScheduledPins[index]['date1'].toString()}&timing1=${listOfScheduledPins[index]['timing1'].toString()}&pin1Status=${listOfScheduledPins[index]['pin1Status'].toString()}';
-                                                    //   deleteSchedulingUsingUrl(url_delete_api);
-                                                    // print('check1254 ${url_delete_api}' );
-                                                    // }else if(listOfScheduledPins[index]['pin2Status'].toString() != null){
-                                                    //   print('check2');
-                                                    //
-                                                    //   // url =API+'schedulingpinsalltheway/?user=${getUidVariable}&d_id=${dId}&date1=${date}&timing1=${time}&pin2Status=${pinStatus}';
-                                                    // }
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin1Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin2Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin3Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin4Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin5Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin6Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin7Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin8Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin9Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin10Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin11Status'].toString());
-                                                    // // deleteScheduling(listOfScheduledPins[index]['d_id'].toString(),listOfScheduledPins[index]['date1'].toString(),listOfScheduledPins[index]['timing1'].toString(),listOfScheduledPins[index]['pin12Status'].toString());
-                                                    // // deleteSchedulingUsingIndex(index);
-                                                    // // _showDialogForDeleteSubUser(index);
+
                                                   },
                                                 ),
                                                 subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),

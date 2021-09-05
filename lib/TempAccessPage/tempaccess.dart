@@ -34,25 +34,28 @@ class _TempAccessPageState extends State<TempAccessPage> {
   void initState() {
     super.initState();
     print('initState123');
-    getTempFuture= getTempUsers();
+    getTempUsers();
+    getPlaceName();
   }
 
   @override
   void dispose(){
     super.dispose();
-    print('dispose');
+    // print('dispose');
     getTempUsers();
   }
+
 
   TempUser tempUser;
 
   List tempUserDecodeList;
+  List tempUserDecode;
 
   Future openTempUserBox() async {
     var dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     tempUserBox = await Hive.openBox('tempUser');
-    print('tempUserBox  ${tempUserBox.values.toString()}');
+    print('tempUserBoxLength  ${tempUserBox.length}');
     return;
   }
 
@@ -60,8 +63,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
     String token = await getToken();
     await openTempUserBox();
 
-    final url =
-        'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/?mobile=7042717549';
+    final url = API+'giveaccesstotempuser/?mobile=7042717549';
     try {
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -71,14 +73,14 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
       await tempUserBox.clear();
 
-      var tempUserDecode = jsonDecode(response.body);
+       tempUserDecode = jsonDecode(response.body);
 
       print('tempResponse ${tempUserDecode}');
       setState(() {
         tempUserDecodeList = tempUserDecode;
         putTempUser(tempUserDecodeList);
       });
-      print('tempUserDecode ${tempUserDecodeList}');
+      print('tempUserDecode ${tempUserDecodeList.length}');
       print('Number1123->  ${tempUserDecodeList}');
     } catch (e) {
       // print('Status Exception $e');
@@ -101,6 +103,44 @@ class _TempAccessPageState extends State<TempAccessPage> {
     }
   }
 
+
+var pId;
+  List<String> placeName;
+  Future getPlaceName() async {
+    String token = await getToken();
+    print('tempUserDecodeList ${tempUserDecode.length}');
+    for(int i=0;i<tempUserDecodeList.length;i++){
+      pId=tempUserDecodeList[i]['p_id'].toString();
+      final url = API+'getyouplacename/?p_id='+ pId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print("GetPlaceName  ${response.statusCode}");
+        print("GetPlaceNameResponseBody  ${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+
+      }
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var NoPlace='NoPlace';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +162,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: FutureBuilder(
-                  future: getTempFuture,
+                  future: getTempUsers(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (tempUserDecodeList.isEmpty) {
@@ -218,6 +258,29 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                   ),
                                                 ],
                                               ),
+                                              // Container(
+                                              //   color: Colors.red,
+                                              //   height: 45,
+                                              //   child: ListView.builder(
+                                              //     itemCount: 1,
+                                              //       itemBuilder: (context,index){
+                                              //         if(tempUserDecodeList[index]['p_id']!=null){
+                                              //           return Row(
+                                              //             children: [
+                                              //               Text(tempUserDecodeList[index]['p_id'].toString()),
+                                              //             ],
+                                              //           );
+                                              //         }else if(tempUserDecodeList[index]['f_id']!=null){
+                                              //           return Row(
+                                              //             children: [
+                                              //               Text(tempUserDecodeList[index]['_id'].toString()),
+                                              //             ],
+                                              //           );
+                                              //         }else{return null;}
+                                              //   }
+                                              //   ),
+                                              //
+                                              // ),
                                               Row(
                                                 children: [
                                                   // Text(
@@ -229,10 +292,9 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                   SizedBox(
                                                     width: 10,
                                                   ),
+
                                                   Text(
-                                                    tempUserDecodeList[index]
-                                                            ['p_id']
-                                                        .toString(),
+                                                    tempUserDecodeList[index]['p_id'].toString()==null?NoPlace:tempUserDecodeList[index]['p_id'].toString(),
                                                     textAlign: TextAlign.end,
                                                   ),
                                                   SizedBox(
@@ -258,7 +320,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
                                                   ),
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                            ['r_id']
+                                                    ['r_id']
                                                         .toString(),
                                                     textAlign: TextAlign.end,
                                                   ),
@@ -268,7 +330,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                            ['d_id']
+                                                    ['d_id']
                                                         .toString(),
                                                     textAlign: TextAlign.end,
                                                   ),

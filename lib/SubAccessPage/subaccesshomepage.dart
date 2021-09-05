@@ -115,7 +115,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   Future<void> fetchSubUser() async {
       var responseBody;
     final url =
-        'https://genorion1.herokuapp.com/subfindsubdata/?email=' +
+        API+'subfindsubdata/?email=' +
             widget.email;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
     // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
     print('currentPlaceId ${widget.pt}');
     final url =
-        'http://genorion1.herokuapp.com/addyourplace/?p_id=' + widget.pt;
+        API+'addyourplace/?p_id=' + widget.pt;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -168,7 +168,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
   List getFloorData;
   Future getAllFloorForSubUser() async {
     final url =
-        'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' + widget.pt;
+        API+'getallfloorsbyonlyplaceidp_id/?p_id=' + widget.pt;
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
       fId=getFloorData[i]['f_id'].toString();
 
       final url =
-          'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' +
+          API+'getallflatbyonlyflooridf_id/?f_id=' +
               fId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
@@ -257,7 +257,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
     for(int i=0;i< getFlatData.length;i++){
       flatId=getFlatData[i]['flt_id'].toString();
       final url =
-          'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' +
+          API+'getallroomsbyonlyflooridf_id/?flt_id=' +
               flatId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
@@ -303,7 +303,7 @@ String token="774945db6cd2eec12fe92227ab9b811c888227c6";
     for(int i=0;i<roomData.length;i++){
       rId=roomData[i]['r_id'].toString();
       print('tabbar1 ${tabState}');
-      final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' + rId;
+      final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' + rId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -352,7 +352,7 @@ var catchReturn;
     // print('getDataFunction $deviceIdForSensor');
     getSensorData();
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -451,7 +451,7 @@ var catchReturn;
   Future<List<SubUserDeviceType>> getDevices(String rId) async {
     print('tabbas ${tabState}');
     var query = {'r_id': tabState};
-    final url = Uri.https('genorion1.herokuapp.com', '/addyourdevice/', query);
+    final url = API+'addyourdevice/?r_id='+tabState;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -476,7 +476,7 @@ var catchReturn;
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'].toString();
       print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      String url = API+"getpostdevicePinStatus/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -561,7 +561,7 @@ var catchReturn;
 
       did=deviceQueryRows[i]['d_id'].toString();
       print('diddevice $did');
-      String url = "https://genorion1.herokuapp.com/editpinnames/?d_id="+did;
+      String url = API+"editpinnames/?d_id="+did;
       // try {
       final   response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -613,7 +613,7 @@ var catchReturn;
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'].toString();
       print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      String url = API+"tensensorsdata/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -650,7 +650,7 @@ var catchReturn;
   }
 
   getPinNames(String dId)async{
-    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
+    String url = API+"editpinnames/?d_id=" + dId;
     String token = await getToken();
     final response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
@@ -792,7 +792,7 @@ var sensorData;
 
   }
   dataUpdate(String dId) async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
      Map data = {
       'put': 'yes',
@@ -886,7 +886,7 @@ var sensorData;
   }
   dataUpdateforPin19(String dId) async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -1038,6 +1038,7 @@ subUserDeviceContainer(String dId,int index){
                     _showDialog(dId);
                   },
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: GestureDetector(

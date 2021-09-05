@@ -10,6 +10,7 @@ import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart ' as http;
 
+import '../main.dart';
 import 'EmergencyNmber.dart';
 
 
@@ -72,7 +73,7 @@ class _ShowSsidState extends State<ShowSsid> {
   Future<bool> getSSID()async{
     await openSsideBox();
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/ssidpassword/?d_id='+widget.deviceId.toString();
+    final url = API+'ssidpassword/?d_id='+widget.deviceId.toString();
     var response;
     try{
       response= await http.get(Uri.parse(url),headers: {

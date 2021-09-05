@@ -26,6 +26,7 @@ import 'login_Screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
@@ -78,6 +79,7 @@ void main()async {
 
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
+      DropDown1.routeName:(ctx) => DropDown1(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
 
@@ -97,7 +99,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   int currentPage = 0;
   var token;
   List floorData;
-
   NewDbProvider dbProvider;
   List copyFloorData;
   FloorType floorType;
@@ -125,22 +126,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   List flatQueryData;
   Future roomVal;
   Future deviceVal;
-
-
-
   Permission permission;
   PageController pageController = PageController(initialPage: 0);
   DropDown1 down=new DropDown1();
-
-  // List<PlaceType> place;
-  // List<FloorType> floor;
-
-
-
-
-
-
-
   Timer timer;
 
 
@@ -172,7 +160,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
   getUid() async{
-    final url= 'https://genorion1.herokuapp.com/getuid/';
+    final url= API+'getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -215,7 +203,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<List<PlaceType>> fetchPlace() async {
     // await openPlaceBox();
     String token = await getToken();
-    final url = 'https://genorion1.herokuapp.com/addyourplace/';
+    final url = API+'addyourplace/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -261,7 +249,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       pId=placeData[i]['p_id'].toString();
       // print(pId);
 
-      final url="https://genorion1.herokuapp.com/addyourfloor/?p_id="+pId;
+      final url=API+"addyourfloor/?p_id="+pId;
       final  response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -302,7 +290,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<floorQueryRows.length;i++){
       fId=floorQueryRows[i]['f_id'].toString();
       print("AllFlatFloorId $fId");
-      String url='https://genorion1.herokuapp.com/addyourflat/?f_id='+fId;
+      String url=API+'addyourflat/?f_id='+fId;
       final  response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -344,7 +332,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
       String token=await getToken();
-      String url = "https://genorion1.herokuapp.com/addroom/?flt_id="+fId;
+      String url = API+"addroom/?flt_id="+fId;
       var response;
       try {
         response = await http.get(Uri.parse(url), headers: {
@@ -406,7 +394,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<roomQueryRows.length;i++) {
       rId = roomQueryRows2[i]['r_id'].toString();
       print('roomId  $rId');
-      String url = "https://genorion1.herokuapp.com/addyourdevice/?r_id=" +
+      String url = API+"addyourdevice/?r_id=" +
           rId;
       var response;
       // try {
@@ -441,7 +429,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
       did=deviceQueryRows[i]['d_id'];
       print('diddevice $did');
-      String url = "https://genorion1.herokuapp.com/editpinnames/?d_id="+did;
+      String url = API+"editpinnames/?d_id="+did;
       // try {
       final   response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -493,7 +481,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<void> getUserDetailsSql()async{
     String token = await getToken();
     print(getUidVariable);
-    String url="https://genorion1.herokuapp.com/getthedataofuser/?id="+getUidVariable;
+    String url=API+"getthedataofuser/?id="+getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -536,7 +524,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/tensensorsdata/?d_id="+did.toString();
+      String url = API+"tensensorsdata/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -579,7 +567,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     for(int i=0;i<deviceQueryRows.length;i++) {
       did=deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id="+did.toString();
+      String url = API+"getpostdevicePinStatus/?d_id="+did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -682,7 +670,7 @@ List resultFloor;
     var pId=placeTypeSingle[0]['p_id'].toString();
     print('placeId $pId');
     resultFloor= await NewDbProvider.instance.getFloorById(pId);
-    print(' checkResult123456 ${resultFloor.first}');
+    // print(' checkResult123456 ${resultFloor.first}');
     var floor=FloorType(
       fId: resultFloor[0]['f_id'].toString(),
       fName: resultFloor[0]['f_name'].toString(),

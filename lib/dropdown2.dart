@@ -11,6 +11,8 @@ import 'dropdown1.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'main.dart';
+
 
 // import 'allClasses.dart';
 PlaceType pt;
@@ -102,7 +104,7 @@ class _DropDown2State extends State<DropDown2> {
     return;
   }
   getUid() async{
-    final url=await 'http://genorion1.herokuapp.com/getuid/';
+    final url=await API+'getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -123,7 +125,7 @@ class _DropDown2State extends State<DropDown2> {
   Future<List<PlaceType>> fetchPlace() async {
     await openPlaceBox();
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/getallplaces/';
+    final url = API+'getallplaces/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -185,7 +187,7 @@ class _DropDown2State extends State<DropDown2> {
     await openFloorBox();
     var query = {'p_id': pId};
     String token = await getToken();
-    final url = Uri.https('genorion1.herokuapp.com', '/getallfloors/', query);
+    final url = API+'getallfloors/?p_id='+pId;
     final response =
     await http.get(url,
         headers: {
@@ -239,7 +241,7 @@ class _DropDown2State extends State<DropDown2> {
 
   Future<List<RoomType>> getrooms(String fId) async {
     var query = {'f_id': fId};
-    final url = Uri.https('genorion1.herokuapp.com', '/getallrooms/', query);
+    final url = API+'getallrooms/?f_id='+fId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -258,8 +260,8 @@ class _DropDown2State extends State<DropDown2> {
 
 
   Future<List<Device>> getDevices( String rId) async {
-    var query = {'r_id': tabbarState};
-    final url = Uri.https('genorion1.herokuapp.com', '/getalldevices/', query);
+
+    final url = API+'getalldevices/?d_id='+rId;
     // String token = await getToken();
     // String token ='b6625e2b625e920c1828a8244bdea9b84a6a5ae3';
     String token = await getToken();
@@ -277,7 +279,7 @@ class _DropDown2State extends State<DropDown2> {
           .where((element) => ((element.rId == rId) &&
           (element.rId.length == rId)))
           .toList();
-      print('query Devices function ================================   ${query}');
+
       print('------Devicessssssssssssssssssssssssssssss-  function----------------------------------------------- ${dv}');
     }
     return dv;

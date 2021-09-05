@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/login_Screen.dart';
+import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -68,7 +69,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     });
   }
   checkDetails(SignupData data) async {
-    final url = 'https://genorion1.herokuapp.com/regflu';
+    final url = API+'regflu';
     var map = new Map<String, dynamic>();
     map['username'] = data.email;
     map['password1'] = data.password;

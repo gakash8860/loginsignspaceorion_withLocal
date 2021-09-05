@@ -9,6 +9,8 @@ import 'package:loginsignspaceorion/TemporaryUser/tempUserdetails.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
+
 void main()=>runApp(MaterialApp(home: ShowTempUser(),));
 
 class ShowTempUser extends StatefulWidget {
@@ -61,7 +63,7 @@ void initState(){
 
     // String token = await getToken();
     String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
-    final url = 'http://genorion1.herokuapp.com/tempuserautodelete/';
+    final url = API+'tempuserautodelete/';
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -95,7 +97,7 @@ void initState(){
     await openTempUserBox();
     String token = await getToken();
     // String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
-    final url = 'http://genorion1.herokuapp.com/getalldatayouaddedtempuser/';
+    final url = API+'getalldatayouaddedtempuser/';
         try{
      final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
@@ -152,13 +154,13 @@ void initState(){
     // String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
     String url;
     if(deletePid!=null){
-      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
     }else if(deleteFid!=null){
-      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&f_id=$deleteFid';
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&f_id=$deleteFid';
     }else if(deleteFlatId!=null){
-      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&flt_id=$deleteFlatId';
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&flt_id=$deleteFlatId';
     }else if(deleteRid!=null){
-      url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteRid';
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteRid';
     }
     // final url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
     final response= await http.delete(url,

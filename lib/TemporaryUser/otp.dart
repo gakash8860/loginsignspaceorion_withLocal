@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 
 void main()=>runApp(MaterialApp(home: OtpPageForTempUser(),));
 class OtpPageForTempUser extends StatefulWidget {
@@ -18,7 +20,7 @@ class _OtpPageForTempUserState extends State<OtpPageForTempUser> {
 
   Future submitOtp() async {
     String token = '2cc4533c72d33d794e3c7b7277ae03191b91d406';
-    final url = 'http://genorionofficial.herokuapp.com/tempuserloginwithotp/';
+    final url = API+'tempuserloginwithotp/';
     var postData = {"mobile": widget.mobileNumber, "otp": otpController.text};
 
     final response = await http.post(url, body: jsonEncode(postData), headers: {

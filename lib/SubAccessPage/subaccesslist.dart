@@ -58,7 +58,7 @@ class _SubAccessListState extends State<SubAccessList> {
     String token =await getToken();
     await openSubUserBox();
 
-    final url ='http://genorion1.herokuapp.com/getalldatayouadded/';
+    final url =API+'getalldatayouadded/';
     try{
       final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',

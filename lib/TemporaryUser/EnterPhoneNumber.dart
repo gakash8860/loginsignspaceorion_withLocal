@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
 import 'otp.dart';
 
 void main()=>runApp(MaterialApp(home: EnterPhoneNumber(),));
@@ -19,7 +20,7 @@ class _EnterPhoneNumberState extends State<EnterPhoneNumber> {
 
 Future submitMobile()async{
   String token= '2cc4533c72d33d794e3c7b7277ae03191b91d406';
-  final url='http://genorionofficial.herokuapp.com/loginotpsend/';
+  final url=API+'loginotpsend/';
   var map = new Map<String, dynamic>();
   map['mobile'] = phoneController.text;
 

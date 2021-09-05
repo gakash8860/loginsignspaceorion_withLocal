@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'home.dart';
+import 'main.dart';
 import 'models/modeldefine.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -38,7 +39,7 @@ class _DropDownState extends State<DropDown> {
 
   // ignore: missing_return
   Future<List<Device>> getDevices(String pId, String fId) async {
-    final url = 'https://genorionofficial.herokuapp.com/getalldevices/?r_id=2436955';
+    final url = API+'getalldevices/?r_id=2436955';
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ class _DropDownState extends State<DropDown> {
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
-    final url = 'http://genorion1.herokuapp.com/getallplaces/';
+    final url = API+'getallplaces/';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -98,8 +99,7 @@ class _DropDownState extends State<DropDown> {
   // }
   // ignore: missing_return
   Future<List<FloorType>> getfloors(String pId) async {
-    var query = {'p_id': pId};
-    final url = Uri.https('genorion1.herokuapp.com', '/getallfloors/', query);
+    final url = API+'getallfloors/?p_id='+pId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ class _DropDownState extends State<DropDown> {
   // ignore: missing_return
   Future<List<RoomType>> getrooms(String fId) async {
     var query = {'f_id': fId};
-    final url = Uri.https('genorion1.herokuapp.com', '/getallrooms/', query);
+    final url =API+'getallrooms/?f_id='+fId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',

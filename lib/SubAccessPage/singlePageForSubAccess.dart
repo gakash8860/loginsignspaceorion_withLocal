@@ -4,6 +4,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
@@ -20,7 +21,7 @@ import '../dropdown1.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:path_provider/path_provider.dart';
 import '../utility.dart';
 
 void main() =>
@@ -139,21 +140,20 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   @override
   void initState() {
     super.initState();
+    getSubUsers();
     placeQueryFuncSend();
     lengthRoomTab();
-    getSubUsers();
+
     loadImageFromPreferences();
 
-    getAllFloorForSubUser();
-    getAllFlatForSubUser();
     pickedDate= DateTime.now();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    placeQueryFuncSend();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   placeQueryFuncSend();
+  // }
 
 
   lengthRoomTab() async {
@@ -162,7 +162,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     mainUserEmail = userData[0]['email'].toString();
     print('mainUserEmail $mainUserEmail');
     allPlaceId = await NewDbProvider.instance.querySubUser();
-    allPlaceData = await SubUserDataBase.subUserInstance.allPlaceModelData();
+    placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
     print('allSubUserOwnerName ${allSubUserOwnerName}');
     print('allSubUserOwnerName ${allPlaceData}');
     getFloorData = await SubUserDataBase.subUserInstance.queryFloorSubUser();
@@ -175,7 +175,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future<void> getSubUsers() async {
     String token = await getToken();
     // await openSubUserBox();
-    final url = 'http://genorion1.herokuapp.com/subfindsubdata/?email=gakash8860@gmail.com';
+    final url = API+'subfindsubdata/?email=gakash8860@gmail.com';
     // final url ='http://genorion1.herokuapp.com/subfindsubdata/?email='+mainUserEmail.toString();
     try {
       final response = await http.get(Uri.parse(url), headers: {
@@ -211,6 +211,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         }
       }
       allPlaceId = await NewDbProvider.instance.querySubUser();
+      getPlaceName();
       print('tempResponse ${subUserDecode}');
       print('subUserDecode ${allPlaceId}');
       setState(() {
@@ -223,21 +224,25 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       // print('Status Exception $e');
 
     }
-    getPlaceName();
+
   }
 
 
   Future placeQueryFuncSend() async {
     placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
+    print('queryPlaceSubUser ${placeRows}');
     var pids = SubUserPlaceType(
         pId: placeRows[0]['p_id'].toString(),
         pType: placeRows[0]['p_type'].toString(),
         user: placeRows[0]['user']
     );
 
-    pt = pids;
+      setState(() {
+        pt = pids;
+      });
+    print('aaadfdfknd ${pt.pType}');
 
-    floorQueryFunc();
+   await floorQueryFunc();
   }
 
   List resultFloor;
@@ -260,7 +265,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     // floors=floorQueryRows;
     print('floorLocalData ${fl.fName}');
 
-    flatQueryFunc();
+    await flatQueryFunc();
   }
 
   List resultFlat;
@@ -284,10 +289,11 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     );
     flat = flat12;
 
-    roomQueryFunc();
+    await roomQueryFunc();
   }
 
   List resultRoom;
+  List<SubUserRoomType> room123;
 
   Future<List<SubUserRoomType>> roomQueryFunc() async {
     roomQueryRows = await SubUserDataBase.subUserInstance.queryRoomSubUser();
@@ -295,14 +301,17 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     var id = resultFlat[0]['flt_id'].toString();
     resultRoom = await SubUserDataBase.subUserInstance.getRoomById(id);
     print('roomResult $resultRoom');
-    room = List.generate(resultRoom.length, (index) =>
+    room123 = List.generate(resultRoom.length, (index) =>
         SubUserRoomType(
           rId: resultRoom[index]['r_id'].toString(),
           fltId: resultRoom[index]['flt_id'].toString(),
           rName: resultRoom[index]['r_name'].toString(),
           user: resultRoom[index]['user'],
         ));
-    deviceQueryFunc();
+    setState(() {
+      room=room123;
+    });
+    await deviceQueryFunc();
     return room;
   }
 
@@ -323,14 +332,14 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         ));
   }
 
-
+  List placeData;
   Future getPlaceName() async {
     for (int i = 0; i < allPlaceId.length; i++) {
       print('lengthof ${allPlaceId.length}');
       var pId = allPlaceId[i]['p_id'].toString();
       print('placeId $pId');
       final url =
-          'http://genorion1.herokuapp.com/getyouplacename/?p_id=' +
+          API+'getyouplacename/?p_id=' +
               pId.toString();
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -341,7 +350,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         print("GetPlaceName  ${response.statusCode}");
         print("GetPlaceNameResponseBody  ${response.body}");
 
-        List placeData = jsonDecode(response.body);
+         placeData = jsonDecode(response.body);
         // placeName = placeData[0]["p_type"];
         for (int i = 0; i < placeData.length; i++) {
           var placeQuery = SubUserPlaceType(
@@ -350,23 +359,20 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
             user: placeData[i]['user'],
           );
           print('PlaceQuery ${placeData}');
-          await SubUserDataBase.subUserInstance.insertPlaceModelData(
-              placeQuery);
+           SubUserDataBase.subUserInstance.insertPlaceModelData(placeQuery);
         }
-        allPlaceData =
-        await SubUserDataBase.subUserInstance.allPlaceModelData();
+        placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
+        getAllFloorForSubUser();
       }
     }
-    getAllFloorForSubUser();
+
   }
 
   Future getAllFloorForSubUser() async {
     var placeId;
-    for (int i = 0; i < allPlaceId.length; i++) {
-      placeId = allPlaceId[i]['p_id'].toString();
-      final url =
-          'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' +
-              placeId;
+    for (int i = 0; i < placeRows.length; i++) {
+      placeId = placeRows[i]['p_id'].toString();
+      final url = API+'getallfloorsbyonlyplaceidp_id/?p_id=' + placeId;
 
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -406,7 +412,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       var fId = getFloorData[i]['f_id'].toString();
 
       final url =
-          'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' +
+          API+'getallflatbyonlyflooridf_id/?f_id=' +
               fId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
@@ -444,9 +450,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future getAllRoomForSubUser() async {
     for (int i = 0; i < getFlatData.length; i++) {
       var flatId = getFlatData[i]['flt_id'].toString();
-      final url =
-          'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' +
-              flatId;
+      final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flatId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -484,9 +488,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     for (int i = 0; i < roomTab.length; i++) {
       var rId = roomTab[i]['r_id'].toString();
       // print('tabbar1 ${tabState}');
-      final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' +
-          rId;
-      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' + rId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -508,8 +510,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                 deviceQuerySubUser);
           }
 
-          dv = deviceSubUser.map((data) => SubUserDeviceType.fromJson(data))
-              .toList();
+          // dv = deviceSubUser.map((data) => SubUserDeviceType.fromJson(data))
+          //     .toList();
           // print('deviceId ${widget.dv[index].dId}');
 
         }
@@ -521,13 +523,12 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   }
 
   Future<void> getPinStatusData() async {
-    var did;
+    var dId;
     print('PinStatusFunction $deviceQueryRows');
     for (int i = 0; i < deviceQueryRows.length; i++) {
-      did = deviceQueryRows[i]['d_id'].toString();
-      print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=" +
-          did.toString();
+      dId = deviceQueryRows[i]['d_id'].toString();
+      print('insideLoop $dId');
+      String url = API+"getpostdevicePinStatus/?d_id=" + dId.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
@@ -574,20 +575,20 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         }
         getAllPinNames();
 
-        // String a=listOfPinStatusValue[i]['pin20Status'].toString();
-        // print('aaaaaaaaaa ${a}');
-        //   int aa= int.parse(a);
-        // print('double $aa');
-        // // int aa=int.parse(a);
-        //
-        // int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
-        // if (aa.compareTo(ms) > 0) {
-        //   print('ifelse');
-        //   statusOfDevice = 1;
-        // } else {
-        //   print('ifelse2');
-        //   statusOfDevice = 0;
-        // }
+        String a=listOfPinStatusValue[i]['pin20Status'].toString();
+        print('aaaaaaaaaa ${a}');
+          int aa= int.parse(a);
+        print('double $aa');
+        // int aa=int.parse(a);
+
+        int ms = ((DateTime.now().millisecondsSinceEpoch)/1000).round() + 19700;
+        if (aa.compareTo(ms) > 0) {
+          print('ifelse');
+          statusOfDevice = 1;
+        } else {
+          print('ifelse2');
+          statusOfDevice = 0;
+        }
       }
     }
   }
@@ -599,7 +600,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     for (int i = 0; i < deviceQueryRows.length; i++) {
       did = deviceQueryRows[i]['d_id'].toString();
       print('diddevice $did');
-      String url = "https://genorion1.herokuapp.com/editpinnames/?d_id=" + did;
+      String url = API+"editpinnames/?d_id=" + did;
       // try {
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -649,7 +650,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     for (int i = 0; i < deviceQueryRows.length; i++) {
       did = deviceQueryRows[i]['d_id'].toString();
       print('insideLoop $did');
-      String url = "https://genorion1.herokuapp.com/tensensorsdata/?d_id=" +
+      String url = API+"tensensorsdata/?d_id=" +
           did.toString();
       final response = await http.get(Uri.parse(url),
           headers: {
@@ -711,9 +712,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
               return Scaffold(
                 appBar: AppBar(
                   title: GestureDetector(
-                    child: Text(
-                        pt.pType.toString() == null ? widget.ptSubUser.pType
-                            .toString() : pt.pType.toString()),
+                    child: Text(pt.pType.toString()),
                     onTap: () async {
                       _createAlertDialogDropDown(context);
                     },
@@ -744,92 +743,92 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                     ),
                   ],
                 ),
-                drawer: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: change_toDark ? Colors.black : Colors
-                        .white, //This will change the drawer background to blue.
-                    //other styles
-                  ),
-                  child: Drawer(
-                    child: Container(
-                      width: double.maxFinite,
-                      color: change_toDark ? Colors.black : Colors.white,
-                      height: 100,
-                      child: ListView(
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            //padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Color(0xff669df4),
-                                      Color(0xff4e80f3)
-                                    ]),
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(30),
-                                  bottomLeft: Radius.circular(30),
-                                )),
-                            child: Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                  ),
-                                  CircularProfileAvatar(
-                                    '',
-                                    child: setImage == null
-                                        ? Image.asset('assets/images/blank.png')
-                                        : setImage,
-                                    radius: 60,
-                                    elevation: 5,
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProfilePage(
-                                                    // fl: widget.fl,
-                                                  )));
-                                    },
-                                    cacheImage: true,
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text('Hello  ', style: TextStyle(
-
-                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white
-                                  ),),
-                                ],
-                              ),
-                            ),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.schedule),
-                            title: Text(
-                              'Schedule Pin',
-                              style: TextStyle(
-                                color: change_toDark ? Colors.white : Colors
-                                    .black,
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ScheduledPin()));
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // drawer: Theme(
+                //   data: Theme.of(context).copyWith(
+                //     canvasColor: change_toDark ? Colors.black : Colors
+                //         .white, //This will change the drawer background to blue.
+                //     //other styles
+                //   ),
+                //   child: Drawer(
+                //     child: Container(
+                //       width: double.maxFinite,
+                //       color: change_toDark ? Colors.black : Colors.white,
+                //       height: 100,
+                //       child: ListView(
+                //         children: <Widget>[
+                //           Container(
+                //             width: double.infinity,
+                //             //padding: const EdgeInsets.all(20),
+                //             decoration: BoxDecoration(
+                //                 gradient: LinearGradient(
+                //                     begin: Alignment.topCenter,
+                //                     end: Alignment.bottomCenter,
+                //                     colors: [
+                //                       Color(0xff669df4),
+                //                       Color(0xff4e80f3)
+                //                     ]),
+                //                 borderRadius: BorderRadius.only(
+                //                   bottomRight: Radius.circular(30),
+                //                   bottomLeft: Radius.circular(30),
+                //                 )),
+                //             child: Center(
+                //               child: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 children: <Widget>[
+                //                   Container(
+                //                     margin: EdgeInsets.only(
+                //                         top: 10, bottom: 10),
+                //                   ),
+                //                   CircularProfileAvatar(
+                //                     '',
+                //                     child: setImage == null
+                //                         ? Image.asset('assets/images/blank.png')
+                //                         : setImage,
+                //                     radius: 60,
+                //                     elevation: 5,
+                //                     onTap: () {
+                //                       Navigator.push(
+                //                           context,
+                //                           MaterialPageRoute(
+                //                               builder: (context) =>
+                //                                   ProfilePage(
+                //                                     // fl: widget.fl,
+                //                                   )));
+                //                     },
+                //                     cacheImage: true,
+                //                   ),
+                //                   SizedBox(
+                //                     height: 8,
+                //                   ),
+                //                   Text('Hello  ', style: TextStyle(
+                //
+                //                     // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                //                       fontSize: 20,
+                //                       fontWeight: FontWeight.bold,
+                //                       color: Colors.white
+                //                   ),),
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //           ListTile(
+                //             leading: Icon(Icons.schedule),
+                //             title: Text(
+                //               'Schedule Pin',
+                //               style: TextStyle(
+                //                 color: change_toDark ? Colors.white : Colors
+                //                     .black,
+                //               ),
+                //             ),
+                //             onTap: () {
+                //               Navigator.push(context, MaterialPageRoute(builder: (context)=>ScheduledPin()));
+                //             },
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 body: Container(
                   width: double.maxFinite,
                   child: DefaultTabController(
@@ -1199,9 +1198,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                           });
 
 
-                                          dv =
-                                          await SubUserDataBase.subUserInstance
-                                              .getDeviceByRoomId(tabState);
+
 
                                           // deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
                                           // print('tabStateDevice ${dv[index].dId}');
@@ -1415,6 +1412,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   var namesDataList12;
 
   deviceContainer(String dId, index) async {
+    allPlaceData =
+    await SubUserDataBase.subUserInstance.allPlaceModelData();
+    print('allPlaceData  ${allPlaceData}');
+
     getData(dId);
     // await devicePinSensorLocalUsingDeviceId(dId);
     // setState(() {
@@ -1529,7 +1530,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       // print(switch_2);
 
 
-      getData(dId);
+    await getData(dId);
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -1903,7 +1904,553 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       print("SchedulingStatus ${response.body}");
     }
   }
+  _showDialog(String dId) {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Alert"),
+            content: Text("Would to like to turn off all the appliances ?"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    for (int i = 0; i < responseDataPinStatusForSubUser.length; i++) {
+                      setState(() {
+                        // responseGetData[newIndex - 1]=0 ;
+                        if (responseDataPinStatusForSubUser[i] > 0) {
+                          responseDataPinStatusForSubUser[i] = 0;
+                          print('AllChange ${responseDataPinStatusForSubUser.toString()}');
+                        }
+
+                      });
+
+                    }
+                    await dataUpdate(dId);
+
+
+                    var result = await Connectivity().checkConnectivity();
+                    if (result == ConnectivityResult.wifi) {
+                      print("True2-->   $result");
+                      // await localUpdate(dId);
+                      await dataUpdate(dId);
+                    } else if (result == ConnectivityResult.mobile) {
+                      await dataUpdate(dId);
+                      await NewDbProvider.instance.getPinStatusByDeviceId(dId);
+                    } else {
+                      messageSms(context, dId);
+                    }
+
+                    Navigator.of(context).pop();
+                  }),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          ),
+    );
+  }
+
+  Box scheduledPinBox2;
+  Future openSchedulePinBox()async{
+
+    var dir= await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+    scheduledPinBox2=await Hive.openBox('scheduledPinStatusByDeviceId');
+    print('tempUserBox  ${scheduledPinBox2.values.toString()}');
+    return;
+  }
+
+  var pinDecode;
+  List listOfScheduledPins=[];
+  Future getScheduledPins(String dId)async{
+    await openSchedulePinBox();
+    String token = await getToken();
+    // String token = "be43f6166fce6faef0525c610402b332debdb232";
+    final url=API+'scheduledatagetbyid/?d_id='+dId;
+    try{
+      final response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token'
+      });
+      await scheduledPinBox2.clear();
+      if(response.statusCode>0){
+        print('ScheduledPins  ${response.statusCode}');
+        print('ScheduledPins  ${response.body}');
+        if(response.statusCode==200){
+          pinDecode = jsonDecode(response.body);
+          setState(() {
+            listOfScheduledPins = pinDecode;
+
+            putScheduledPins(listOfScheduledPins);
+          });
+        }
+      }
+    }catch(e){
+
+    }
+    var myMap=scheduledPinBox2.toMap().values.toList();
+    if(myMap.isEmpty){
+      scheduledPinBox2.add('empty');
+
+    }else{
+      setState(() {
+        listOfScheduledPins=myMap ;
+      });
+
+
+    }
+
+
+  }
+  Future putScheduledPins(data)async{
+    await scheduledPinBox2.clear();
+    for(var d in data){
+
+      scheduledPinBox2.add(d);
+    }
+
+  }
+  String on="On";
+  String off="Off";
+  _createAlertDialogForPinSchedule(BuildContext context, String dId) {
+    return showDialog(
+
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Device Id ${dId}'),
+            content: Container(
+              color:Colors.red,
+              width: MediaQuery.of(context).size.width,
+              child:FutureBuilder(
+                  future: getScheduledPins(dId),
+                  builder: ( context,  snapshot){
+                    print('snapShot ${snapshot.connectionState}');
+                    if(snapshot.connectionState ==ConnectionState.done){
+                      if(listOfScheduledPins==null){
+                        return Column(
+                          children: [
+                            SizedBox(height: 250,),
+                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                          ],
+                        );
+                      }else{
+                        return Container(
+                          color: Colors.red,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 25,),
+                              Expanded(
+                                  child: ListView.builder(
+                                      itemCount: listOfScheduledPins.length,
+                                      itemBuilder: (context,index){
+                                        if(listOfScheduledPins[index]['pin1Status']==1){
+
+                                        }
+                                        print('length ${listOfScheduledPins.length}');
+                                        return Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Card(
+                                            semanticContainer:true,
+                                            shadowColor: Colors.grey,
+                                            child: Column(
+                                              children: [
+                                                ListTile(
+                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString()),
+                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString()),
+                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),
+
+                                                  onTap: (){
+                                                    print('printSubUser ${listOfScheduledPins[index]['name']}');
+
+                                                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                    //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+
+                                                  },
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    Container(
+                                                      height: 54,
+                                                      color:Colors.red,
+                                                      child: ListView.builder(
+                                                          itemCount: 1,
+                                                          itemBuilder: (context,index){
+                                                            if(listOfScheduledPins[index]['pin1Status']==1){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin1Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(on,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin1Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin1Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin2Status']==1){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin2Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(on,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin2Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin2Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin3Status']==1){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin3Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(on,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin3Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin3Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            } else if(listOfScheduledPins[index]['pin4Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin4Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin4Status']==1){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin4Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(on,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin5Status']==1){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin5Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(on,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin5Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin5Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin6Status']==0){
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin6Name'].toString()),
+                                                                  SizedBox(width: 14,),
+                                                                  Text(off,style: TextStyle(fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin6Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin6Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin7Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin7Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin7Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin7Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin8Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin8Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin8Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin8Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin9Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin9Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin9Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin8Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin10Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin10Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin10Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                      namesDataList[index]['pin10Name']
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin11Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin11Name'].toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin11Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin11Name'].toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin12Status']==0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin12Name'].toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(off,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else if(listOfScheduledPins[index]['pin12Status']==1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(namesDataList[index]['pin12Name'].toString()),
+                                                                  SizedBox(
+                                                                    width: 14,),
+                                                                  Text(on,
+                                                                    style: TextStyle(
+                                                                        fontSize: 22),),
+                                                                ],
+                                                              );
+                                                            }else{return null;}
+                                                          }),
+                                                    ),
+                                                    // Row(
+                                                    //   children: [
+                                                    //     Text('Pin 1 -> '),
+                                                    //     Text(listOfScheduledPins[index]['pin1Status'].toString()==1? "On ":listOfScheduledPins[index]['pin1Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 14,),
+                                                    //     Text('Pin 2 -> '),
+                                                    //     Text(listOfScheduledPins[index]['pin2Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 8,),
+                                                    //     Text('Pin 3 -> '),
+                                                    //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     // SizedBox(width: 14,),
+                                                    //     // Text('Pin 4 -> '),
+                                                    //     // Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                    //   ],
+                                                    // ),
+                                                    // Row(
+                                                    //   children: [
+                                                    //     Text('Pin 4 ->'),
+                                                    //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 10,),
+                                                    //     Text('Pin 5 -> '),
+                                                    //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 10,),
+                                                    //     Text('Pin 6 -> '),
+                                                    //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     // SizedBox(width: 14,),
+                                                    //     // Text('Pin 8 -> '),
+                                                    //     // Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+                                                    //
+                                                    //   ],
+                                                    // ),
+                                                    // Row(
+                                                    //   children: [
+                                                    //     Text('Pin 7 ->'),
+                                                    //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 8,),
+                                                    //     Text('Pin 8 ->'),
+                                                    //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+                                                    //     SizedBox(width: 8,),
+                                                    //     Text('Pin 9 ->'),
+                                                    //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
+                                                    //   ],
+                                                    // ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+
+
+                                        //   Column(
+                                        //   children: <Widget>[
+                                        //     SizedBox(height: 100,),
+                                        //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                        //     SizedBox(height: 15,),
+                                        //     Row(
+                                        //       children: [
+                                        //         SizedBox(width: 55,),
+                                        //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                        //         SizedBox(width: 15,),
+                                        //         Container(
+                                        //           height: 45,
+                                        //           width: 195,
+                                        //           child:Padding(
+                                        //             padding: const EdgeInsets.all(8.0),
+                                        //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                        //           ),
+                                        //           decoration: BoxDecoration(
+                                        //             color: Colors.white,
+                                        //             border: Border.all(
+                                        //               color: Colors.black38 ,
+                                        //               width: 5.0 ,
+                                        //             ),
+                                        //             borderRadius: BorderRadius.circular(20),
+                                        //           ),
+                                        //         ),
+                                        //       ],
+                                        //     ),
+                                        //
+                                        //
+                                        //   ],
+                                        //
+                                        //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                                        //   // subtitle: Text("${statusData[index]['id']}"),
+                                        //
+                                        // );
+                                      }
+                                  )),
+
+
+                            ],
+                          ),
+                        );
+                      }
+                    }else{
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                          semanticsLabel: 'Loading...',
+                        ),
+                      );
+                    }
+
+                  }
+
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
   subUserDeviceContainer(String dId, int index) {
+
     deviceContainer(dId, index);
     return Column(
       children: [
@@ -1931,6 +2478,17 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   ),
                   SizedBox(
                     width: 14,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      child: Icon(Icons.schedule),
+                      onTap: () {
+
+                        _createAlertDialogForPinSchedule(context,dId);
+                        // _createAlertDialogForPin17(context, dId);
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4),
@@ -1970,7 +2528,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                     //boolean value
                     // value: val1,
                     onChanged: (val) async {
-                      // _showDialog(dId);
+                      _showDialog(dId);
                     },
                   ),
                   Padding(
@@ -2389,14 +2947,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                   activeColor: Colors.blue,
                                                   inactiveColor: Colors.black,
                                                   label:
-                                                  '${double.parse(
-                                                      responseDataPinStatusForSubUser[newIndex -
-                                                          1].toString())}',
-                                                  onChanged:
-                                                      (double newValue) async {
-                                                    print(
-                                                        'index of data $index --> ${responseDataPinStatusForSubUser[newIndex -
-                                                            1]}');
+                                                  '${double.parse(responseDataPinStatusForSubUser[newIndex - 1].toString())}',
+                                                  onChanged: (double newValue) async {
+                                                    print('index of data $index --> ${responseDataPinStatusForSubUser[newIndex - 1]}');
                                                     print(
                                                         'index of $index --> ${newIndex -
                                                             1}');
@@ -2406,19 +2959,13 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                       //   responseGetData[newIndex-1] = widget.Slider_get.round();
                                                       // }
 
-                                                      print(
-                                                          "Round-->  ${newValue
-                                                              .round()}");
-                                                      var roundVar =
-                                                      newValue.round();
-                                                      print(
-                                                          "Round 2-->  $roundVar");
-                                                      responseDataPinStatusForSubUser[newIndex -
-                                                          1] = roundVar;
-                                                      print(
-                                                          "Response Round-->  ${responseDataPinStatusForSubUser[newIndex -
-                                                              1]}");
+                                                      print("Round-->  ${newValue.round()}");
+                                                      var roundVar = newValue.round();
+                                                      print("Round 2-->  $roundVar");
+                                                      responseDataPinStatusForSubUser[newIndex - 1] = roundVar;
+                                                      print("Response Round-->  ${responseDataPinStatusForSubUser[newIndex - 1]}");
                                                     });
+                                                    await dataUpdate(dId);
 
                                                     // if Internet is not available then _checkInternetConnectivity = true
                                                     // var result =

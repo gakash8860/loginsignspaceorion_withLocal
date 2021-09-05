@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
 import 'nextPage.dart';
 class SSID extends StatefulWidget {
   final deviceId;
@@ -63,7 +64,7 @@ class _SSIDState extends State<SSID> {
   updateSSID_Password(SsidRequirementField data) async {
     String token =await getToken();
 print('SsidRequirementField ${widget.deviceId}');
-    final url = 'http://genorionofficial.herokuapp.com/ssidpassword/?d_id='+widget.deviceId.toString();
+    final url = API+'ssidpassword/?d_id='+widget.deviceId.toString();
   var postData={
     "d_id":widget.deviceId,
     "ssid1":data.sSSID1,

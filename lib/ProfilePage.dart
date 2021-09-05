@@ -14,12 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 Image setImage;
 void main() => runApp(MaterialApp(
-      home: ProfilePage(
-          // fl: null,
-          // pt: null,
-          // rm: null,
-          // dv: null,
-          ),
+      home: ProfilePage(),
       debugShowCheckedModeBanner: false,
     ));
 
@@ -165,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
   imageUpload() async {
     // String token = "b8bd2e8bc8f9541d031f03217cf9ac0153048a97";
     String token = await getToken();
-    final url = 'https://genorion1.herokuapp.com/testimages123/';
+    final url = API+'testimages123/';
     // final url = 'http://192.168.0.105:8000/testimages123/?user=1';
 
     var postData = {
@@ -212,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String token = await getToken();
     // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
     final url =
-        'https://genorion1.herokuapp.com/testimages123/?user=' + getUidVariable;
+        API+'testimages123/?user=' + getUidVariable;
     // final url = 'http://192.168.0.105:8000/testimages123/?user=1';;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -237,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String token = await getToken();
     print(getUidVariable);
     String url =
-        "http://genorion1.herokuapp.com/getthedataofuser/?id=" + getUidVariable;
+        API+"getthedataofuser/?id=" + getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -286,7 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
     await openUserBox();
     // String url="http://10.0.2.2:8000/api/data";
     String token = await getToken();
-    String url = "http://genorion1.herokuapp.com/getthedataofuser/?id=2";
+    String url = API+"getthedataofuser/?id=2";
     var response;
     try {
       response = await http.get(Uri.parse(url), headers: {

@@ -112,7 +112,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
 
   Future getFloorName() async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/getyoufloorname/?f_id=' +
+    final url = API+'getyoufloorname/?f_id=' +
         widget.floorId.toString();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   Future getFlatForTempUser() async {
 
     final url =
-        'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' + floor.fId.toString();
+        API+'getallflatbyonlyflooridf_id/?f_id=' + floor.fId.toString();
     // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
     }
   }
   Future getRoomForTempUser() async {
-    final url = 'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
+    final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -182,7 +182,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   }
   Future  getDeviceForTempUser(String rId) async {
     // print('tabbar1 ${tabState}');
-    final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' +rId;
+    final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' +rId;
     // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   }
   var data;
   getData(String dId) async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -275,7 +275,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   List<String> namesDataList;
   var namesDataList12;
   Future getPinsName(String dId) async {
-    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
+    String url = API+"editpinnames/?d_id=" + dId;
     String token = await getToken();
     // try {
     final response = await http.get(Uri.parse(url), headers: {
@@ -356,7 +356,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   }
   dataUpdate(String dId) async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -401,7 +401,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
   Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId.toString(),
+        API+'tensensorsdata/?d_id=' + dId.toString(),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -803,7 +803,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
                                                     print("Response Round-->  ${responseGetData[newIndex - 1]}");
                                                   });
 
-
+                                                  await dataUpdate(dId);
                                                 },
                                                 // semanticFormatterCallback: (double newValue) {
                                                 //   return '${newValue.round()}';

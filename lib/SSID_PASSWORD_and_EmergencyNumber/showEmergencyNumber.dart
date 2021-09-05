@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart ' as http;
 
 import '../dropdown2.dart';
+import '../main.dart';
 import 'EmergencyNmber.dart';
 
 
@@ -71,18 +72,17 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
   Future<bool> getEmergencyNumber()async{
     await openEmergencyNumberBox();
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/getpostemergencynumber/?d_id='+widget.deviceId.toString();
-    var response;
+    final url = API+'getpostemergencynumber/?d_id='+widget.deviceId.toString();
     try{
-      response= await http.get(Uri.parse(url),headers: {
+     final response= await http.get(Uri.parse(url),headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
 
       });
-
-
-
+      if(response.statusCode>0){
+        print('number1Emergency ${response.statusCode}');
+      }
       statusDecode=jsonDecode(response.body);
       statusData=[
         statusDecode['number1'],
@@ -123,7 +123,7 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
   var number5;
   getEmergencyNumber2()async{
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/getpostemergencynumber/?d_id='+widget.deviceId.toString();
+    final url = API+'getpostemergencynumber/?d_id='+widget.deviceId.toString();
     final response= await http.get(Uri.parse(url),headers: {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json; charset=UTF-8',

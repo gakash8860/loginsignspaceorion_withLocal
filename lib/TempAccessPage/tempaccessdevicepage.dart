@@ -104,7 +104,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
 
 
   getData() async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
+    final String url = API+'getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -174,7 +174,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
   List<String> namesDataList;
   var namesDataList12;
   Future getPinsName(String dId) async {
-    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
+    String url = API+"editpinnames/?d_id=" + dId;
     String token = await getToken();
     // try {
     final response = await http.get(Uri.parse(url), headers: {
@@ -184,10 +184,6 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
     });
     if (response.statusCode == 200) {
       namesDataList12 = json.decode(response.body);
-      // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
-
-
-
       print('QWERTY  $namesDataList12');
       namesDataList = [
         widget.switch1Name = namesDataList12['pin1Name'].toString(),
@@ -210,7 +206,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
   Future getSensorData() async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + widget.deviceId.toString(),
+        API+'tensensorsdata/?d_id=' + widget.deviceId.toString(),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -234,7 +230,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
   }
   dataUpdate() async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
+        API+'getpostdevicePinStatus/?d_id=' + widget.deviceId.toString();
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -267,7 +263,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
     if (response.statusCode == 201) {
       print("Data Updated  ${response.body}");
 
-      getData();
+     await getData();
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -679,27 +675,17 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                 label: '${double.parse(
                                                     responseGetData[newIndex -
                                                         1].toString())}',
-                                                onChanged:
-                                                    (double newValue) async {
-                                                  print(
-                                                      'index of data $index --> ${responseGetData[newIndex -
-                                                          1]}');
-                                                  print(
-                                                      'index of $index --> ${newIndex -
-                                                          1}');
-
+                                                onChanged: (double newValue) async {
+                                                  print('index of data $index --> ${responseGetData[newIndex - 1]}');
+                                                  print('index of $index --> ${newIndex - 1}');
                                                   setState(() {
-                                                    // if (responseGetData[newIndex-1] != null) {
-                                                    //   responseGetData[newIndex-1] = widget.Slider_get.round();
-                                                    // }
-
                                                     print("Round-->  ${newValue.round()}");
                                                     var roundVar = newValue.round();
                                                     print("Round 2-->  $roundVar");
                                                     responseGetData[newIndex - 1] = roundVar;
                                                     print("Response Round-->  ${responseGetData[newIndex - 1]}");
                                                   });
-
+                                                  await dataUpdate();
 
                                                 },
                                                 // semanticFormatterCallback: (double newValue) {

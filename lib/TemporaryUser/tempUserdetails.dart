@@ -29,7 +29,7 @@ void initState(){
 
   Future getSinglePlaceName()async{
     String token= await getToken();
-    final url='http://genorion1.herokuapp.com/getyouplacename/?p_id='+widget.tempUserPlaceName.toString();
+    final url=API+'getyouplacename/?p_id='+widget.tempUserPlaceName.toString();
     final response = await http.get(url,headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',

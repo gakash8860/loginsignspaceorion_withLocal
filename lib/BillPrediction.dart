@@ -1,376 +1,240 @@
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
-
-import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Billprediction extends StatelessWidget {
-  Billprediction({
+class BILLPREDICTION extends StatelessWidget {
+  BILLPREDICTION({
     Key key,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff083b63),
+      backgroundColor: const Color(0xff814cbe),
       body: Stack(
         children: <Widget>[
           Pinned.fromPins(
-            Pin(size: 1848.4, middle: 0.0),
+            Pin(size: 108.5, start: 0.0),
             Pin(start: 0.0, end: 0.0),
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  width: 1848.0,
-                  height: 2335.0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0x14ffffff),
+                border: Border.all(width: 1.0, color: const Color(0x14707070)),
+              ),
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 329.9, end: 19.1),
+            Pin(size: 244.6, end: 18.1),
+            child:
+                // Adobe XD layer: 'arrow-left-circle-l…' (group)
+                Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(size: 61.8, start: 0.0),
+                  Pin(size: 61.8, start: 0.0),
+                  child: SvgPicture.string(
+                    _svg_lsew89,
+                    allowDrawingOutsideViewBox: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 51.5, end: 0.0),
+                  Pin(size: 51.5, end: 0.0),
+                  child: SvgPicture.string(
+                    _svg_vnu4e7,
+                    allowDrawingOutsideViewBox: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 96.0, start: 4.0),
+            Pin(size: 25.3, start: 7.0),
+            child: Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(start: 0.0, end: 0.0),
+                  Pin(size: 21.0, start: 0.0),
+                  child: Text(
+                    'Bill Prediction',
+                    style: TextStyle(
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: const Color(0xffffffff),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(start: 1.4, end: 1.7),
+                  Pin(size: 1.0, end: -1.0),
+                  child: SvgPicture.string(
+                    _svg_qbduur,
+                    allowDrawingOutsideViewBox: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 46.0, start: 21.2),
+            Pin(size: 21.0, start: 134.5),
+            child: Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(start: 0.0, end: 0.0),
+                  Pin(start: 0.0, end: 0.0),
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'Segoe UI',
+                        fontSize: 10,
+                        color: const Color(0xffffffff),
+                      ),
+                      children: [
+                        TextSpan(
+                          text: ' ',
+                        ),
+                        TextSpan(
+                          text: 'Graph',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textHeightBehavior:
+                        TextHeightBehavior(applyHeightToFirstAscent: false),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 95.0, start: 6.7),
+            Pin(size: 42.0, middle: 0.3661),
+            child: Text(
+              'Electricity \nConsumption',
+              style: TextStyle(
+                fontFamily: 'Segoe UI',
+                fontSize: 16,
+                color: const Color(0xffffffff),
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 289.0, end: 12.0),
+            Pin(size: 188.0, start: 31.0),
+            child: Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(start: 0.0, end: 0.0),
+                  Pin(start: 0.0, end: 0.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26.0),
+                      color: const Color(0x172495ed),
+                      border: Border.all(
+                          width: 1.0, color: const Color(0x17707070)),
+                    ),
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 162.5, start: 15.5),
+                  Pin(size: 138.5, end: 19.7),
+                  child: Stack(
+                    children: <Widget>[
+                      Pinned.fromPins(
+                        Pin(size: 100.0, start: 4.6),
+                        Pin(size: 20.0, end: 0.0),
+                        child: Text(
+                          'Monthly Graph',
+                          style: TextStyle(
+                            fontFamily: 'Segoe UI',
+                            fontSize: 15,
+                            color: const Color(0xffffffff),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Pinned.fromPins(
+                        Pin(size: 1.0, start: 0.0),
+                        Pin(size: 112.7, start: 0.0),
+                        child: SvgPicture.string(
+                          _svg_kth42g,
+                          allowDrawingOutsideViewBox: true,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Pinned.fromPins(
+                        Pin(start: 0.1, end: 0.0),
+                        Pin(size: 1.0, middle: 0.7969),
+                        child: SvgPicture.string(
+                          _svg_pilwap,
+                          allowDrawingOutsideViewBox: true,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Pinned.fromPins(
+                        Pin(size: 76.3, start: 12.8),
+                        Pin(size: 39.0, middle: 0.4594),
+                        child: SvgPicture.string(
+                          _svg_b66it6,
+                          allowDrawingOutsideViewBox: true,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 103.5, end: 1.1),
+                  Pin(size: 82.7, middle: 0.3969),
                   child: Stack(
                     children: <Widget>[
                       Pinned.fromPins(
                         Pin(start: 0.0, end: 0.0),
-                        Pin(start: 0.0, end: -1255.0),
+                        Pin(size: 29.0, start: 0.0),
                         child: Stack(
                           children: <Widget>[
                             Pinned.fromPins(
-                              Pin(size: 482.0, start: 0.0),
+                              Pin(start: 0.0, end: 0.0),
                               Pin(start: 0.0, end: 0.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: const Color(0x14ffffff),
+                                  borderRadius: BorderRadius.circular(48.0),
+                                  color: const Color(0xff6693b7),
                                   border: Border.all(
                                       width: 1.0,
-                                      color: const Color(0x14707070)),
+                                      color: const Color(0xff707070)),
                                 ),
                               ),
                             ),
                             Pinned.fromPins(
-                              Pin(start: 0.5, end: 0.0),
-                              Pin(size: 1908.5, start: 47.5),
-                              child: Stack(
-                                children: <Widget>[
-                                  Pinned.fromPins(
-                                    Pin(size: 447.2, start: 0.0),
-                                    Pin(size: 94.0, start: 0.0),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 25.2, end: 0.0),
-                                          Pin(start: 0.0, end: 0.0),
-                                          child: Text(
-                                            'Bill Prediction',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 70,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 34.2),
-                                          Pin(size: 1.0, end: -1.0),
-                                          child: SvgPicture.string(
-                                            _svg_aavnct,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 124.8, end: 0.0),
-                                    Pin(size: 882.4, end: 0.0),
-                                    child:
-                                        // Adobe XD layer: 'arrow-left-circle-f…' (group)
-                                        Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(size: 124.8, start: 0.0),
-                                          child: SvgPicture.string(
-                                            _svg_bcyl,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(start: 10.4, end: 10.4),
-                                          Pin(size: 104.0, end: 0.0),
-                                          child: PageLink(
-                                            links: [
-                                              PageLinkInfo(
-                                                transition: LinkTransition.Fade,
-                                                ease: Curves.easeOut,
-                                                duration: 0.3,
-                                                // pageBuilder: () => Bedroom(),
-                                              ),
-                                            ],
-                                            child: SvgPicture.string(
-                                              _svg_pvre,
-                                              allowDrawingOutsideViewBox: true,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 149.0, start: 94.1),
-                                    Pin(size: 67.0, middle: 0.2133),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(start: 0.0, end: 0.0),
-                                          child: Text(
-                                            ' Graph',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 50,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 297.0, start: 77.6),
-                                    Pin(size: 134.0, middle: 0.4648),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(start: 0.0, end: 0.0),
-                                          child: Text(
-                                            'Electricity \nConsumption',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 50,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 677.5, middle: 0.488),
-                                    Pin(size: 473.5, start: 189.8),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(size: 333.0, start: 20.5),
-                                          Pin(size: 67.0, end: 0.0),
-                                          child: Text(
-                                            'Monthly Graph',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 50,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(size: 1.0, start: 0.0),
-                                          Pin(size: 373.0, start: 0.0),
-                                          child: SvgPicture.string(
-                                            _svg_rrrxws,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(start: 0.5, end: 0.0),
-                                          Pin(size: 1.0, middle: 0.7905),
-                                          child: SvgPicture.string(
-                                            _svg_yaq0,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(size: 339.1, start: 56.8),
-                                          Pin(size: 173.4, middle: 0.4566),
-                                          child: SvgPicture.string(
-                                            _svg_wpa998,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 339.0, end: 124.8),
-                                    Pin(size: 271.0, middle: 0.1941),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(size: 95.0, start: 0.0),
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Pinned.fromPins(
-                                                Pin(start: 0.0, end: 0.0),
-                                                Pin(start: 0.0, end: 0.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            48.0),
-                                                    color:
-                                                        const Color(0xff6693b7),
-                                                    border: Border.all(
-                                                        width: 1.0,
-                                                        color: const Color(
-                                                            0xff707070)),
-                                                  ),
-                                                ),
-                                              ),
-                                              Pinned.fromPins(
-                                                Pin(
-                                                    size: 102.0,
-                                                    middle: 0.5021),
-                                                Pin(size: 67.0, end: 13.5),
-                                                child: Text(
-                                                  'Start',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Segoe UI',
-                                                    fontSize: 50,
-                                                    color:
-                                                        const Color(0xffffffff),
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(size: 95.0, end: 0.0),
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Pinned.fromPins(
-                                                Pin(start: 0.0, end: 0.0),
-                                                Pin(start: 0.0, end: 0.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            48.0),
-                                                    color:
-                                                        const Color(0xff6693b7),
-                                                    border: Border.all(
-                                                        width: 1.0,
-                                                        color: const Color(
-                                                            0xff707070)),
-                                                  ),
-                                                ),
-                                              ),
-                                              Pinned.fromPins(
-                                                Pin(size: 83.0, middle: 0.4648),
-                                                Pin(size: 67.0, end: 13.5),
-                                                child: Text(
-                                                  'End',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Segoe UI',
-                                                    fontSize: 50,
-                                                    color:
-                                                        const Color(0xffffffff),
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(size: 653.0, middle: 0.7056),
-                                    Pin(size: 95.0, end: 204.2),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 0.0, end: 0.0),
-                                          Pin(start: 0.0, end: 0.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(48.0),
-                                              color: const Color(0xff5789b0),
-                                              border: Border.all(
-                                                  width: 1.0,
-                                                  color:
-                                                      const Color(0xff707070)),
-                                            ),
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(size: 139.0, middle: 0.537),
-                                          Pin(size: 67.0, end: 13.5),
-                                          child: Text(
-                                            'Pridict',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 50,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(start: 99.1, end: 275.8),
-                                    Pin(size: 188.0, end: 251.7),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(size: 302.0, start: 0.0),
-                                          Pin(start: 26.5, end: 27.5),
-                                          child: Text(
-                                            'Bill Prediction\n           ',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 50,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                        Pinned.fromPins(
-                                          Pin(size: 867.0, end: 0.0),
-                                          Pin(start: 0.0, end: 0.0),
-                                          child: Text(
-                                            'Set price per unit ___________\n',
-                                            style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 70,
-                                              color: const Color(0xffffffff),
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              Pin(size: 24.0, middle: 0.4571),
+                              Pin(size: 16.0, middle: 0.3406),
+                              child: Text(
+                                'Start',
+                                style: TextStyle(
+                                  fontFamily: 'Segoe UI',
+                                  fontSize: 12,
+                                  color: const Color(0xffffffff),
+                                ),
+                                textAlign: TextAlign.left,
                               ),
                             ),
                           ],
                         ),
                       ),
                       Pinned.fromPins(
-                        Pin(size: 920.0, middle: 0.6667),
-                        Pin(size: 603.0, end: -286.0),
+                        Pin(start: 0.0, end: 0.0),
+                        Pin(size: 29.0, end: 0.0),
                         child: Stack(
                           children: <Widget>[
                             Pinned.fromPins(
@@ -378,99 +242,25 @@ class Billprediction extends StatelessWidget {
                               Pin(start: 0.0, end: 0.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26.0),
-                                  color: const Color(0x172495ed),
+                                  borderRadius: BorderRadius.circular(48.0),
+                                  color: const Color(0xff6693b7),
                                   border: Border.all(
                                       width: 1.0,
-                                      color: const Color(0x17707070)),
+                                      color: const Color(0xff707070)),
                                 ),
                               ),
                             ),
                             Pinned.fromPins(
-                              Pin(size: 232.0, start: 68.5),
-                              Pin(size: 70.0, start: 88.7),
-                              child: Stack(
-                                children: <Widget>[
-                                  Pinned.fromPins(
-                                    Pin(start: 0.0, end: 0.0),
-                                    Pin(start: 0.0, end: 0.0),
-                                    child: Text(
-                                      'Start Date',
-                                      style: TextStyle(
-                                        fontFamily: 'Segoe UI',
-                                        fontSize: 53,
-                                        color: const Color(0xffffffff),
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Pinned.fromPins(
-                              Pin(size: 212.0, start: 68.5),
-                              Pin(size: 70.0, middle: 0.383),
+                              Pin(size: 22.0, middle: 0.4458),
+                              Pin(size: 17.0, middle: 0.369),
                               child: Text(
-                                'End Date',
+                                'End',
                                 style: TextStyle(
                                   fontFamily: 'Segoe UI',
-                                  fontSize: 53,
+                                  fontSize: 13,
                                   color: const Color(0xffffffff),
                                 ),
                                 textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Pinned.fromPins(
-                              Pin(size: 339.1, middle: 0.6551),
-                              Pin(size: 1.0, middle: 0.2367),
-                              child: SvgPicture.string(
-                                _svg_iy5e0i,
-                                allowDrawingOutsideViewBox: true,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            Pinned.fromPins(
-                              Pin(size: 339.1, middle: 0.6551),
-                              Pin(size: 1.0, middle: 0.4344),
-                              child: SvgPicture.string(
-                                _svg_mr8ket,
-                                allowDrawingOutsideViewBox: true,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            Pinned.fromPins(
-                              Pin(size: 426.0, middle: 0.6824),
-                              Pin(size: 119.4, middle: 0.7232),
-                              child: Stack(
-                                children: <Widget>[
-                                  Pinned.fromPins(
-                                    Pin(start: 0.0, end: 0.0),
-                                    Pin(start: 0.0, end: 0.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(48.0),
-                                        color: const Color(0xff04497f),
-                                      ),
-                                    ),
-                                  ),
-                                  Pinned.fromPins(
-                                    Pin(start: 65.9, end: 65.9),
-                                    Pin(start: 15.4, end: 15.4),
-                                    child: Text(
-                                      'Calculate',
-                                      style: TextStyle(
-                                        fontFamily: 'Segoe UI',
-                                        fontSize: 50,
-                                        color: const Color(0xffffffff),
-                                        height: 0.24,
-                                      ),
-                                      textHeightBehavior: TextHeightBehavior(
-                                          applyHeightToFirstAscent: false),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ],
@@ -479,7 +269,184 @@ class Billprediction extends StatelessWidget {
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 211.8, end: 40.2),
+            Pin(size: 30.8, middle: 0.6384),
+            child: Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(start: 0.0, end: 0.0),
+                  Pin(start: 0.0, end: 0.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(48.0),
+                      color: const Color(0xff5789b0),
+                    ),
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 45.0, middle: 0.5367),
+                  Pin(size: 21.0, start: 2.7),
+                  child: Text(
+                    'Pridict',
+                    style: TextStyle(
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: const Color(0xffffffff),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 96.0, start: 6.7),
+            Pin(size: 49.0, middle: 0.606),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(
+                  fontFamily: 'Segoe UI',
+                  fontSize: 16,
+                  color: const Color(0xffffffff),
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Bill Prediction\n',
+                  ),
+                  TextSpan(
+                    text: '           ',
+                    style: TextStyle(
+                      fontSize: 21,
+                    ),
+                  ),
+                ],
               ),
+              textHeightBehavior:
+                  TextHeightBehavior(applyHeightToFirstAscent: false),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 186.0, middle: 0.6978),
+            Pin(size: 40.0, middle: 0.5999),
+            child: Text(
+              'Set price per unit ___________\n',
+              style: TextStyle(
+                fontFamily: 'Segoe UI',
+                fontSize: 15,
+                color: const Color(0xffffffff),
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Pinned.fromPins(
+            Pin(size: 255.0, end: 33.0),
+            Pin(size: 167.0, middle: 0.3939),
+            child: Stack(
+              children: <Widget>[
+                Pinned.fromPins(
+                  Pin(start: 0.0, end: 0.0),
+                  Pin(start: 0.0, end: 0.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26.0),
+                      color: const Color(0x172495ed),
+                      border: Border.all(
+                          width: 1.0, color: const Color(0x17707070)),
+                    ),
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 66.0, start: 19.0),
+                  Pin(size: 20.0, start: 24.6),
+                  child: Stack(
+                    children: <Widget>[
+                      Pinned.fromPins(
+                        Pin(start: 0.0, end: 0.0),
+                        Pin(start: 0.0, end: 0.0),
+                        child: Text(
+                          'Start Date',
+                          style: TextStyle(
+                            fontFamily: 'Segoe UI',
+                            fontSize: 15,
+                            color: const Color(0xffffffff),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 60.0, start: 19.0),
+                  Pin(size: 20.0, middle: 0.385),
+                  child: Text(
+                    'End Date',
+                    style: TextStyle(
+                      fontFamily: 'Segoe UI',
+                      fontSize: 15,
+                      color: const Color(0xffffffff),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 94.0, middle: 0.6553),
+                  Pin(size: 1.0, middle: 0.238),
+                  child: SvgPicture.string(
+                    _svg_tv4brl,
+                    allowDrawingOutsideViewBox: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 94.0, middle: 0.6553),
+                  Pin(size: 1.0, middle: 0.4367),
+                  child: SvgPicture.string(
+                    _svg_tve3hr,
+                    allowDrawingOutsideViewBox: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Pinned.fromPins(
+                  Pin(size: 118.1, middle: 0.6826),
+                  Pin(size: 33.1, middle: 0.7241),
+                  child: Stack(
+                    children: <Widget>[
+                      Pinned.fromPins(
+                        Pin(start: 0.0, end: 0.0),
+                        Pin(start: 0.0, end: 0.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(48.0),
+                            color: const Color(0xff5789b0),
+                          ),
+                        ),
+                      ),
+                      Pinned.fromPins(
+                        Pin(start: 18.3, end: 18.3),
+                        Pin(start: 4.3, end: 4.3),
+                        child: Text(
+                          'Calculate',
+                          style: TextStyle(
+                            fontFamily: 'Segoe UI',
+                            fontSize: 15,
+                            color: const Color(0xffffffff),
+                            height: 0.8,
+                          ),
+                          textHeightBehavior: TextHeightBehavior(
+                              applyHeightToFirstAscent: false),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -488,19 +455,19 @@ class Billprediction extends StatelessWidget {
   }
 }
 
-const String _svg_aavnct =
-    '<svg viewBox="20.9 116.7 413.0 1.0" ><path transform="translate(20.89, 116.7)" d="M 0 0 L 413 0" fill="none" stroke="#ffffff" stroke-width="5" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_bcyl =
-    '<svg viewBox="0.0 0.0 124.8 124.8" ><path  d="M 0 0 L 124.778564453125 0 L 124.778564453125 124.778564453125 L 0 124.778564453125 L 0 0 Z" fill="none" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_pvre =
-    '<svg viewBox="10.4 778.4 104.0 104.0" ><path transform="translate(8.4, 776.4)" d="M 53.99106597900391 2 C 82.69014739990234 2 105.9821395874023 25.2919979095459 105.9821395874023 53.99106597900391 C 105.9821395874023 82.69014739990234 82.69014739990234 105.9821395874023 53.99106597900391 105.9821395874023 C 25.29199600219727 105.9821395874023 2 82.69014739990234 2 53.99106597900391 C 2 25.29199600219727 25.2919979095459 2 53.99106597900391 2 Z M 53.99106597900391 48.79196166992188 L 53.99106597900391 33.19464111328125 L 33.19464111328125 53.99106597900391 L 53.99106597900391 74.78749847412109 L 53.99106597900391 59.1901741027832 L 74.78749847412109 59.1901741027832 L 74.78749847412109 48.79196166992188 L 53.99106597900391 48.79196166992188 Z" fill="#000000" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_rrrxws =
-    '<svg viewBox="182.5 363.5 1.0 373.0" ><path transform="translate(182.5, 363.5)" d="M 0 0 L 0 373" fill="none" stroke="#000000" stroke-width="8" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_yaq0 =
-    '<svg viewBox="183.0 737.0 677.0 1.0" ><path transform="translate(183.0, 737.0)" d="M 677 0 L 0 0" fill="none" stroke="#000000" stroke-width="8" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_wpa998 =
-    '<svg viewBox="239.3 500.5 339.1 173.4" ><path transform="translate(920.0, -1961.0)" d="M -680.7388305664062 2578.007080078125 L -665.2086791992188 2461.53076171875 L -579.7927856445312 2549.53515625 L -512.495361328125 2461.53076171875 L -434.8445739746094 2634.950927734375 L -341.6636047363281 2461.53076171875" fill="none" stroke="#ffffff" stroke-width="10" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_iy5e0i =
-    '<svg viewBox="506.6 441.5 339.1 1.0" ><path transform="translate(506.57, 441.49)" d="M 0 0 L 339.0905151367188 0" fill="none" stroke="#ffffff" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
-const String _svg_mr8ket =
-    '<svg viewBox="506.6 560.5 339.1 1.0" ><path transform="translate(506.57, 560.53)" d="M 0 0 L 339.0905151367188 0" fill="none" stroke="#ffffff" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_lsew89 =
+    '<svg viewBox="0.0 0.0 61.8 61.8" ><path  d="M 0 0 L 61.7745361328125 0 L 61.7745361328125 61.7745361328125 L 0 61.7745361328125 L 0 0 Z" fill="none" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_vnu4e7 =
+    '<svg viewBox="278.4 193.1 51.5 51.5" ><path transform="translate(276.41, 191.15)" d="M 27.73938941955566 2.000000238418579 C 41.94753646850586 2.000000238418579 53.47878265380859 13.53124713897705 53.47878265380859 27.73938941955566 C 53.47878265380859 41.94753646850586 41.94753646850586 53.47878265380859 27.73938941955566 53.47878265380859 C 13.53124713897705 53.47878265380859 2.000000238418579 41.94753646850586 2.000000238418579 27.73938941955566 C 2.000000238418579 13.53124713897705 13.53124713897705 2.000000238418579 27.73938941955566 2.000000238418579 Z M 27.73938941955566 48.33090591430664 C 39.11620330810547 48.33090591430664 48.33090591430664 39.11620330810547 48.33090591430664 27.73938941955566 C 48.33090591430664 16.36257934570312 39.11620330810547 7.147878646850586 27.73938941955566 7.147878646850586 C 16.36257934570312 7.147878646850586 7.147878646850586 16.36257934570312 7.147878646850586 27.73938941955566 C 7.147878646850586 39.11620330810547 16.36257934570312 48.33090591430664 27.73938941955566 48.33090591430664 Z M 27.73938941955566 25.16545104980469 L 38.03514862060547 25.16545104980469 L 38.03514862060547 30.31332969665527 L 27.73938941955566 30.31332969665527 L 27.73938941955566 38.03514862060547 L 17.44363403320312 27.73938941955566 L 27.73938941955566 17.44363403320312 L 27.73938941955566 25.16545104980469 Z" fill="#000000" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_qbduur =
+    '<svg viewBox="-2.0 21.2 92.9 1.0" ><path transform="translate(-2.0, 21.15)" d="M 0 0 L 92.93479156494141 0" fill="none" stroke="#ffffff" stroke-width="3" stroke-miterlimit="4" stroke-linecap="square" /></svg>';
+const String _svg_kth42g =
+    '<svg viewBox="0.0 0.0 1.0 112.7" ><path transform="translate(-0.01, 0.0)" d="M 0.0078125 0 L 0 112.6943969726562" fill="none" stroke="#000000" stroke-width="8" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_pilwap =
+    '<svg viewBox="0.1 109.6 162.4 1.0" ><path transform="translate(0.11, 109.56)" d="M 162.4055023193359 0 L 0 0" fill="none" stroke="#000000" stroke-width="8" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_b66it6 =
+    '<svg viewBox="12.8 45.7 76.3 39.0" ><path transform="translate(693.51, -2415.84)" d="M -680.73876953125 2487.74072265625 L -677.244140625 2461.53076171875 L -658.0235595703125 2481.333984375 L -642.8800048828125 2461.53076171875 L -625.40673828125 2500.554443359375 L -604.4388427734375 2461.53076171875" fill="none" stroke="#ffffff" stroke-width="3" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_tv4brl =
+    '<svg viewBox="231.5 338.5 94.0 1.0" ><path transform="translate(231.5, 338.5)" d="M 0 0 L 94 0" fill="none" stroke="#ffffff" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_tve3hr =
+    '<svg viewBox="231.5 371.5 94.0 1.0" ><path transform="translate(231.5, 371.5)" d="M 0 0 L 94 0" fill="none" stroke="#ffffff" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';

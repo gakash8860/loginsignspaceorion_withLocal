@@ -368,9 +368,9 @@ class NewDbProvider {
   }
   queryPlace() async {
     Database db = await instance.database;
-
     return await db.query(_placeTableName);
   }
+
   queryTempUser() async {
     Database db = await instance.database;
 

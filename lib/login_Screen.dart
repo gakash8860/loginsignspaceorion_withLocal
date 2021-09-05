@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/dropDown.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
+import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 
 import 'package:loginsignspaceorion/signUp.dart';
@@ -40,7 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isVisible=false;
   bool _isInAsyncCall = false;
 
-
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   // ignore: missing_return
   // Future<List<Device>> getDevices(String pId, String fId) async {
@@ -91,7 +93,29 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     });
   }
+  goToNextPageWeb() {
+// '192.168.0.107':800
+    formKey.currentState.save();
+    print('clear');
+    print(data.email);
+    checkDetailsWeb().then((value) {
+      print(data.password);
+      Navigator.of(context).pushNamed(DropDown1.routeName);
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => DropDown1()));
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => NewDropDown(
+      //   )),
+      // );
+    }).catchError((e) {
 
+      print(e);
+      setState(() {
+        this.error = "Wrong Credentials";
+      });
+    });
+  }
   Future<String> getToken() async {
     final token = await storage.read(key: "token");
     return token;
@@ -108,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isVisible=true;
     });
     // final url = 'https://genorion.herokuapp.com/api-token-auth/';
-    final url = 'https://genorion1.herokuapp.com/api-token-auth/';
+    final url = API+'api-token-auth/';
     print(getToken());
     var map = new Map<String, dynamic>();
     map['username'] = data.email;
@@ -139,7 +163,44 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
   }
+  checkDetailsWeb() async {
+    print('email ${emailController.text}');
+    print('email ${passwordController.text}');
+    setState(() {
+      isVisible=true;
+    });
+    // final url = 'http://192.168.0.107:8000/api-token-auth/';
+    final url = API+'api-token-auth/';
+    print(getToken());
+    var map = new Map<String, dynamic>();
+    map['username'] = emailController.text;
+    map['password'] = passwordController.text;
 
+    http.Response response = await  http.post(url, body: map);
+
+    print('response.statusCode ${response.statusCode}');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> map = jsonDecode(response.body);
+      final storage = new FlutterSecureStorage();
+      await storage.write(key: "token", value: map["token"]);
+      final all = await storage.readAll();
+
+      print(all);
+
+
+    }
+
+    if (response.statusCode == 400) {
+      //  final snackBar=SnackBar(content: Text('Login Successful')
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
+
+      throw ("Wrong Credentials");
+    }
+    if (response.statusCode == 500) {
+      throw ("Internal Server Error");
+    }
+
+  }
 
   String validateEmail(String value) {
     Pattern pattern =
@@ -264,9 +325,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                           autovalidateMode:
                                           AutovalidateMode.onUserInteraction,
                                           validator: validateEmail,
-                                          onSaved: (String value) {
-                                            this.data.email = value;
-                                          },
+                                          controller: emailController,
+                                          // onSaved: (String value) {
+                                          //   this.data.email = value;
+                                          // },
                                           style: TextStyle(
                                               fontSize: 18, color: Colors.black54),
                                           decoration: InputDecoration(
@@ -309,9 +371,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                           autovalidateMode:
                                           AutovalidateMode.onUserInteraction,
                                           validator: validatePass,
-                                          onSaved: (String value) {
-                                            this.data.password = value;
-                                          },
+                                          controller: passwordController,
+                                          // onSaved: (String value) {
+                                          //   this.data.password = value;
+                                          // },
                                           obscureText: isHiddenPassword,
                                           style: TextStyle(
                                               fontSize: 18, color: Colors.black54),
@@ -373,10 +436,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                             padding: const EdgeInsets.all(15),
                                             textColor: Colors.white,
                                             onPressed: () async {
-
+                                              print('aaaaaaaaaaaaaa');
                                               if (formKey.currentState.validate()) {
 
-                                                goToNextPage();
+                                                goToNextPageWeb();
 
                                               } else {
                                                 print("not validated");

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -83,7 +82,7 @@ class _AddTempUserState extends State<AddTempUser> {
 
   Future addTempUser(TempUSerRequirementDetails data) async {
     String token = await getToken();
-    final url = 'https://genorion1.herokuapp.com/giveaccesstotempuser/';
+    final url = API+'giveaccesstotempuser/';
     int pNo;
     var postData;
     pNo = int.parse(data.pno);

@@ -42,8 +42,7 @@ class _SubUserDetailsState extends State<SubUserDetails> {
 
   Future getSinglePlaceName() async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/getyouplacename/?p_id=' +
-        widget.subUserPlaceId.toString();
+    final url = API+'getyouplacename/?p_id=' + widget.subUserPlaceId.toString();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -64,9 +63,7 @@ class _SubUserDetailsState extends State<SubUserDetails> {
 
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
-    print('token123 $token');
-    // final url = 'https://genorion.herokuapp.com/place/';
-    final url = 'http://genorionofficial.herokuapp.com/getallplaces/';
+    final url = API+'getallplaces/';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -107,7 +104,7 @@ class _SubUserDetailsState extends State<SubUserDetails> {
     print('placeName11 ${widget.subUserPlaceId}');
     String token = await getToken();
     final url =
-        'http://genorionofficial.herokuapp.com/subuserpalceaccess/?email=' +
+        API+'subuserpalceaccess/?email=' +
             widget.subUserEmail.toString();
     var response;
     try {
@@ -141,7 +138,7 @@ class _SubUserDetailsState extends State<SubUserDetails> {
 
   Future _assignPlace() async {
     String token = await getToken();
-    final url = 'http://genorionofficial.herokuapp.com/subuserpalceaccess/';
+    final url = API+'subuserpalceaccess/';
     var postData = {
       "user": getUidVariable,
       "email": widget.subUserEmail.toString(),

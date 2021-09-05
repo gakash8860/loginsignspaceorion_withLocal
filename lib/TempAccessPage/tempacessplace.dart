@@ -118,7 +118,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   var floorName;
   Future<List<TempAccessPlace>> getplacesForDropDown() async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/addyourplace/?p_id=' +
+    final url = API+'addyourplace/?p_id=' +
         widget.placeId.toString();
 
     final response = await http.get(url, headers: {
@@ -143,7 +143,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future placeVal;
   Future<List<TempAccessFloor>> getFloorsForDropDown() async {
     final url =
-        'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
+        API+'getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   }
   Future<List<TempAccessFlat>> getFlatForDropDown(String fId) async {
     final url =
-        'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' + fId;
+        API+'getallflatbyonlyflooridf_id/?f_id=' + fId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
     }
   }
   Future<List<TempAccessRoom>> getRoomsForDropDown(String flt_Id) async {
-    final url = 'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' + flt_Id;
+    final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flt_Id;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
     }
   }
   Future<List<TempAccessDevice>> getDeviceForDropDown(String rId) async {
-    final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' +rId;
+    final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' +rId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -446,7 +446,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
 
   Future getPlaceName() async {
     String token = await getToken();
-    final url = 'http://genorion1.herokuapp.com/getyouplacename/?p_id=' +
+    final url = API+'getyouplacename/?p_id=' +
         widget.placeId.toString();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -473,7 +473,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   }
   Future getFloorForTempUser() async {
     final url =
-        'https://genorion1.herokuapp.com/getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
+        API+'getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -500,7 +500,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future getFlatForTempUser() async {
 
       final url =
-          'https://genorion1.herokuapp.com/getallflatbyonlyflooridf_id/?f_id=' + floor[0].fId.toString();
+          API+'getallflatbyonlyflooridf_id/?f_id=' + floor[0].fId.toString();
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -521,7 +521,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   }
 
   Future getRoomForTempUser() async {
-      final url = 'https://genorion1.herokuapp.com/getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
+      final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -544,7 +544,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
 
   Future  getDeviceForTempUser(String rId) async {
       // print('tabbar1 ${tabState}');
-      final url = 'https://genorion1.herokuapp.com/getalldevicesbyonlyroomidr_id/?r_id=' +rId;
+      final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' +rId;
       // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -953,7 +953,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   }
   var data;
   getData(String dId) async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -1023,7 +1023,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
 
 
   Future getPinsName(String dId) async {
-    String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
+    String url = API+"editpinnames/?d_id=" + dId;
     String token = await getToken();
     // try {
     final response = await http.get(Uri.parse(url), headers: {
@@ -1060,7 +1060,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future<List<TempAccessDevice>> getDevices(String rId) async {
     print('tabbas ${tabbarState}');
     var query = {'r_id': tabbarState};
-    final url = Uri.https('genorion1.herokuapp.com', '/addyourdevice/', query);
+    final url = API+'addyourdevice/?r_id='+tabbarState;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -1081,7 +1081,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId.toString(),
+        API+'tensensorsdata/?d_id=' + dId.toString(),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -1153,7 +1153,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
 
   dataUpdate(String dId) async {
     final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+        API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -1575,7 +1575,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                     responseGetData[newIndex - 1] = roundVar;
                                                     print("Response Round-->  ${responseGetData[newIndex - 1]}");
                                                   });
-
+                                                  await dataUpdate(dId);
 
                                                 },
                                                 // semanticFormatterCallback: (double newValue) {
