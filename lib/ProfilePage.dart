@@ -219,11 +219,11 @@ class _ProfilePageState extends State<ProfilePage> {
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-      setState(() {
+      setImage=Utility.imageFrom64BaseString(imageData['file']);
         convertImage = base64Decode(imageData['file']);
         // setImage=convertImage;
-      });
-      print('ConvertImage ${convertImage}');
+
+      print('ConvertImagesetImage ${setImage}');
       print('ConvertImage ${imageData['file']}');
     }
   }
@@ -370,7 +370,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           SizedBox(width: 140,),
                           CircularProfileAvatar(
                             '',
-                            child: convertImage == null
+                            child: setImage == null
                                 ? Image.network('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png')
                                 : setImage,
                             // '',child: Image.network(imageData['images']),
@@ -494,7 +494,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // ),
                       CircularProfileAvatar(
                         '',
-                        child: convertImage == null
+                        child: setImage == null
                             ? Image.asset('assets/images/blank.png')
                             : setImage,
                         // '',child: Image.network(imageData['images']),

@@ -64,6 +64,11 @@ List floorData;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
+
+void main()=>runApp(MaterialApp(
+  home: MyApp(),
+));
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -277,6 +282,10 @@ class _HomeTestState extends State<HomeTest>
   List<dynamic> deviceStatus = [];
 
   Future flatVal;
+
+  TextEditingController phoneController=new TextEditingController();
+
+  var phone;
 
   // =new TabController(length: widget.rm.length, vsync: null);
 
@@ -1739,6 +1748,8 @@ class _HomeTestState extends State<HomeTest>
                       await addFloor(floorEditing.text);
                       await addFlat2(flatEditing.text);
                       await addRoom2(roomEditing.text);
+                      await getAllFlat();
+                      await getAllRoom();
                       //  await addRoom2(roomEditing.text);
                       //   Navigator.of(context).push(
                       //       MaterialPageRoute(builder: (context) => DropDown2()));
@@ -1831,6 +1842,7 @@ class _HomeTestState extends State<HomeTest>
                     onPressed: () async {
                       await addFlat(flatEditing.text);
                       await addRoom2(roomEditing.text);
+                      await getAllFlat();
                       //   Navigator.of(context).push(
                       //       MaterialPageRoute(builder: (context) => DropDown2()));
                       Navigator.of(context).pop();
@@ -3113,6 +3125,7 @@ class _HomeTestState extends State<HomeTest>
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
         // getAllRoom();
       }
 
@@ -3156,6 +3169,7 @@ class _HomeTestState extends State<HomeTest>
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       }
       print(' RoomTabs--> $tabbarState');
 
@@ -3691,11 +3705,26 @@ class _HomeTestState extends State<HomeTest>
                             ),
                           ),
                           onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TempAccessPage()),
-                            );
+                            var result = await Connectivity().checkConnectivity();
+                            if(result == ConnectivityResult.none){
+                             await _showDialogForNoInternet();
+                            }else{
+                              await _getTempNumber();
+                              if(number==null){
+                                await _showDialogForTempAccessPge();
+                              }else{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TempAccessPage(
+                                        mobileNumber: number,
+                                      )),
+                                );
+                              }
+                            }
+
+
+
                           },
                         ),
                         ListTile(
@@ -4381,10 +4410,21 @@ class _HomeTestState extends State<HomeTest>
   }
 
   List responseGetData;
-
-  // List responseGetData2;
   var catchReturn;
   Future deviceSensorVal;
+
+  Future _setTempNumber( mobile)async{
+    final pref= await SharedPreferences.getInstance();
+    pref.setString('mobileNumber', mobile);
+
+    
+  }
+  var number;
+  _getTempNumber()async{
+    final SharedPreferences pref= await SharedPreferences.getInstance();
+   number= pref.getString('mobileNumber');
+   print('number147859 ${number}');
+  }
 
   deviceContainer(String dId, int index) async {
     getData(dId);
@@ -4478,6 +4518,121 @@ class _HomeTestState extends State<HomeTest>
                   onPressed: () {
                     Navigator.of(context).pop();
                   }),
+            ],
+          ),
+    );
+  }
+  _showDialogForNoInternet() {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text("No InterNet"),
+            content: Text("Check your connection"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+
+            ],
+          ),
+    );
+  }
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String validateMobile(String value) {
+    String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = new RegExp(patttern);
+    if (value.length == 0) {
+      return 'Please enter mobile number';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Please enter valid mobile number';
+    } else if (value.length != 10) {
+      return "Please Enter the 10 Digit Mobile Number";
+    }
+    return null;
+  }
+  _showDialogForTempAccessPge() {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            content: Text("Enter your Mobile Number"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              Form(
+                key: formKey,
+                child: TextFormField(
+                  autofocus: true,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode:
+                  AutovalidateMode.onUserInteraction,
+                  validator: validateMobile,
+                  controller: phoneController,
+                  // onSaved: (String value) {
+                  //   phone = value;
+                  // },
+                  style: TextStyle(
+                      fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.phone_android),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter your Contact',
+                    errorStyle: TextStyle(),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+              ),
+              // ignore: deprecated_member_use
+              Row(
+                children: [
+                  // ignore: deprecated_member_use
+                  FlatButton(
+                      child: Text("Submit"),
+                      onPressed: () {
+                        if (formKey.currentState.validate()) {
+                          var mobile =phoneController.text;
+                          _setTempNumber(mobile);
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPage(
+                            mobileNumber: mobile,
+                          )));
+                        }else{
+                          return Text('Error');
+                        }
+
+                      }),
+                  FlatButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                ],
+              ),
+
             ],
           ),
     );
@@ -4741,6 +4896,8 @@ class _HomeTestState extends State<HomeTest>
   int sliderValue;
 String textSelected ="";
 
+
+
     deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
     fetchIp(dId);
@@ -4775,7 +4932,7 @@ String textSelected ="";
                       child: GestureDetector(
                         child:  Container(
                           // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                          child: Icon(textSelected==dId.toString()?Icons.update:Icons.sensors),
                         ),
 
                         onTap: () {
@@ -5043,7 +5200,6 @@ String textSelected ="";
                                                     }
                                                     print('yooooooooo ${responseGetData[index]}');
                                                   });
-                                                  dataUpdate(dId);
                                                   // if Internet is not available then _checkInternetConnectivity = true
                                                   var result = await Connectivity()
                                                       .checkConnectivity();

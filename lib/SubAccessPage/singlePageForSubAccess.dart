@@ -1127,10 +1127,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     height: 22,
                                                   ),
                                                   Text(
-                                                    sensorData[0][
-                                                    'd_id']
-                                                        .toString(),
-
+                                                    sensorData[0]['d_id'].toString(),
+                                                    style: TextStyle(color: Colors.white70),
                                                   ),
                                                 ],
                                               );
@@ -2462,85 +2460,88 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           color: Colors.redAccent,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Text(
-                      'Turn Off All Appliances',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.bold,
-                        color: _switchValue ? Colors.white : Colors.black,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        'Turn Off All Appliances',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: _switchValue ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 14,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      child: Icon(Icons.schedule),
-                      onTap: () {
-
-                        _createAlertDialogForPinSchedule(context,dId);
-                        // _createAlertDialogForPin17(context, dId);
-                      },
+                    SizedBox(
+                      width: 14,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: GestureDetector(
-                      child: Container(
-                        // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                        child: Icon(textSelected == dId.toString()
-                            ? Icons.sensors
-                            : Icons.update),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: GestureDetector(
+                        child: Icon(Icons.schedule),
+                        onTap: () {
+
+                          _createAlertDialogForPinSchedule(context,dId);
+                          // _createAlertDialogForPin17(context, dId);
+                        },
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: GestureDetector(
+                        child: Container(
+                          // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                          child: Icon(textSelected == dId.toString()
+                              ? Icons.update
+                              : Icons.sensors),
+                        ),
 
-                      onTap: () {
-                        print('check123${textSelected}');
+                        onTap: () {
+                          print('check123${textSelected}');
 
-                        setState(() {
-                          textSelected = dId.toString();
-                          deviceSensorVal = devicePinSensorLocalUsingDeviceId(
-                              dId);
-                        });
-                        print('check123${textSelected == dId}');
-                        print('_hasBeenPressed ${textSelected}');
+                          setState(() {
+                            textSelected = dId.toString();
+                            deviceSensorVal = devicePinSensorLocalUsingDeviceId(
+                                dId);
+                          });
+                          print('check123${textSelected == dId}');
+                          print('_hasBeenPressed ${textSelected}');
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: statusOfDevice == 1 ? Colors.green : Colors.grey,
+                          shape: BoxShape.circle),
+                      // child: ...
+                    ),
+                    Switch(
+                      value: responseDataPinStatusForSubUser[index] == 0
+                          ? val2
+                          : val1,
+                      //boolean value
+                      // value: val1,
+                      onChanged: (val) async {
+                        _showDialog(dId);
                       },
                     ),
-                  ),
-                  Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                        color: statusOfDevice == 1 ? Colors.green : Colors.grey,
-                        shape: BoxShape.circle),
-                    // child: ...
-                  ),
-                  Switch(
-                    value: responseDataPinStatusForSubUser[index] == 0
-                        ? val2
-                        : val1,
-                    //boolean value
-                    // value: val1,
-                    onChanged: (val) async {
-                      _showDialog(dId);
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: GestureDetector(
-                      child: Icon(Icons.settings_remote),
-                      onTap: () {
-                        // _createAlertDialogForPin19(context, dId);
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: GestureDetector(
+                        child: Icon(Icons.settings_remote),
+                        onTap: () {
+                          // _createAlertDialogForPin19(context, dId);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 height: MediaQuery
@@ -2717,17 +2718,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       ),
                       onPressed: () {
                       print('indexpinNames->  $index');
-//                                                   setState(() {
-//
-//                                                     names[index] =pinNames;
-//                                                     // pinNameController.text;
-// // /                                                    }
-//                                                   });
-
-                      // _createAlertDialogForNameDeviceBox(
-                      //     context, index);
-
-                      // return addDeviceName(index);
                       },
                       ),
                       ),
@@ -2750,22 +2740,23 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       }
                       print('yooooooooo ${responseDataPinStatusForSubUser[index]}');
                       });
-                      dataUpdate(dId);
+
                       // if Internet is not available then _checkInternetConnectivity = true
                       var result = await Connectivity()
                           .checkConnectivity();
-                      if (result ==
-                      ConnectivityResult.none) {
-                      // messageSms(context, dId);
+                      if (result == ConnectivityResult.none) {
+                        print('yooo1');
+                        messageSms(context, dId);
                       }
                       if (result == ConnectivityResult.wifi && statusOfDevice == 1) {
-                      print("True2-->   $result");
-                      // localUpdate(dId);
-                      dataUpdate(dId);
+                        print('yooo2');
+                        print("True2-->   $result");
+                        localUpdate(dId);
+                        dataUpdate(dId);
                       } else if (result == ConnectivityResult.mobile && result ==ConnectivityResult.none && statusOfDevice == 1) {
-                      dataUpdate(dId);
+                        dataUpdate(dId);
                       } else if(result==ConnectivityResult.wifi && result ==ConnectivityResult.none && statusOfDevice == 1){
-                      _createAlertDialogForlocalUpdateAndMessage(context,dId);
+                        _createAlertDialogForlocalUpdateAndMessage(context,dId);
 
                       }
                       },

@@ -19,6 +19,10 @@ void main() => runApp(MaterialApp(
     ));
 
 class TempAccessPage extends StatefulWidget {
+  var mobileNumber;
+  TempAccessPage({Key key,
+    this.mobileNumber,
+  });
   @override
   _TempAccessPageState createState() => _TempAccessPageState();
 }
@@ -28,14 +32,20 @@ class _TempAccessPageState extends State<TempAccessPage> {
   var listOfFloorId;
   List data;
   Box tempUserBox;
+  Box tempUserPlaceNameBox;
   Future tem;
   Future getTempFuture;
+
+  List placeNameList;
+  List<dynamic> floorNameList=[];
+  List<dynamic> flatNameList=[];
+  List<dynamic> roomNameList=[];
   @override
   void initState() {
     super.initState();
-    print('initState123');
-    getTempUsers();
-    getPlaceName();
+    print('initState123 ${widget.mobileNumber}');
+    getTempUsers().then((value) => getPlaceName().then((value) =>  getFloorName().then((value) => getFlatName()).then((value) => getRoomName())));
+
   }
 
   @override
@@ -50,6 +60,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
   List tempUserDecodeList;
   List tempUserDecode;
+  List tempUserPlaceNameDecode;
 
   Future openTempUserBox() async {
     var dir = await getApplicationDocumentsDirectory();
@@ -59,11 +70,13 @@ class _TempAccessPageState extends State<TempAccessPage> {
     return;
   }
 
+
   Future<void> getTempUsers() async {
+
     String token = await getToken();
     await openTempUserBox();
 
-    final url = API+'giveaccesstotempuser/?mobile=7042717549';
+    final url = API+'giveaccesstotempuser/?mobile='+widget.mobileNumber;
     try {
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -105,30 +118,141 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
 
 var pId;
-  List<String> placeName;
+  List tempUserDecodeListNames;
+  List <PlaceNameModelsForTempUSer> placeName;
+
+
+
+
   Future getPlaceName() async {
-    String token = await getToken();
-    print('tempUserDecodeList ${tempUserDecode.length}');
+    String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
     for(int i=0;i<tempUserDecodeList.length;i++){
-      pId=tempUserDecodeList[i]['p_id'].toString();
-      final url = API+'getyouplacename/?p_id='+ pId;
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      if (response.statusCode > 0) {
-        print("GetPlaceName  ${response.statusCode}");
-        print("GetPlaceNameResponseBody  ${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
+      pId=tempUserDecodeList[i]['p_id'];
+      print('checkPlaceId $pId');
+      if(pId!=null){
+        final url = API+'getyouplacename/?p_id='+ pId;
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        if (response.statusCode > 0) {
+          print("GetPlaceName  ${response.statusCode}");
+          print("GetPlaceNameResponseBody  ${response.body}");
+          var data = jsonDecode(response.body);
+          placeNameList=data;
+          // setState(() {
+          //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
+          // });
+          print("GetPlaceNameResponseBodynames ${placeNameList}");
+
+        }
+      }else{
+        return;
+      }
+
+
+    }
+    
+
+  }
+
+  Future getFloorName() async {
+    String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
+    for(int i=0;i<tempUserDecodeList.length;i++){
+     var fId=tempUserDecodeList[i]['f_id'];
+      print('checkFloorId $fId');
+      if(fId!=null){
+        final url = API+'getyoufloorname/?f_id='+ fId;
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        if (response.statusCode > 0) {
+          print("GetFloorName  ${response.statusCode}");
+          print("GetFloorNameResponseBody  ${response.body}");
+          var data = jsonDecode(response.body);
+          floorNameList=data;
+          // setState(() {
+          //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
+          // });
+          print("GetFloorNameResponseBodynames ${floorNameList[0]['f_name']}");
+
+        }
+      }else{
 
       }
+
+
     }
 
   }
 
 
+  Future getFlatName() async {
+    String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
+    for(int i=0;i<tempUserDecodeList.length;i++){
+      var flatId=tempUserDecodeList[i]['flt_id'];
+      print('checkFloorId $flatId');
+      if(flatId!=null){
+        final url = API+'getyouflatname/?flt_id='+ flatId;
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        if (response.statusCode > 0) {
+          print("getyouflatname  ${response.statusCode}");
+          print("getyouflatname  ${response.body}");
+          var data = jsonDecode(response.body);
+          flatNameList=data;
+          // setState(() {
+          //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
+          // });
+          print("getyouflatname ${flatNameList[0]['f_name']}");
 
+        }
+      }else{
+
+      }
+
+
+    }
+
+  }
+  
+  Future getRoomName() async {
+    String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
+    for(int i=0;i<tempUserDecodeList.length;i++){
+      var rId=tempUserDecodeList[i]['r_id'];
+      print('checkRoomId $rId');
+      if(rId!=null){
+        final url = API+'getyouroomname/?r_id='+ rId;
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        if (response.statusCode > 0) {
+          print("getyouroomname  ${response.statusCode}");
+          print("getyouroomname  ${response.body}");
+          var data = jsonDecode(response.body);
+          roomNameList=data;
+          // setState(() {
+          //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
+          // });
+          print("GetFloorNameResponseBodynames ${roomNameList[0]['r_name']}");
+
+        }
+      }else{
+
+      }
+
+
+    }
+
+  }
 
 
 
@@ -165,6 +289,7 @@ var NoPlace='NoPlace';
                   future: getTempUsers(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      // getPlaceName();
                       if (tempUserDecodeList.isEmpty) {
                         return Column(
                           children: [
@@ -188,6 +313,8 @@ var NoPlace='NoPlace';
                                 child: ListView.builder(
                                     itemCount: tempUserDecodeList.length,
                                     itemBuilder: (context, index) {
+                                      // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
+                                      // getPlaceName();
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Card(
@@ -226,84 +353,58 @@ var NoPlace='NoPlace';
 
 
                                                 },
-                                                title: Text(
-                                                    tempUserDecodeList[index]
-                                                        ['name']),
-                                                trailing: Text(
-                                                    tempUserDecodeList[index]
-                                                        ['email']),
-                                                subtitle: Text(
-                                                    tempUserDecodeList[index]
-                                                            ['timing']
-                                                        .toString()),
+                                                title: Text(tempUserDecodeList[index]['owner_name'].toString()),
 
                                               ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                            ['date']
-                                                        .toString(),
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                            ['mobile']
-                                                        .toString(),
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ],
-                                              ),
-                                              // Container(
-                                              //   color: Colors.red,
-                                              //   height: 45,
-                                              //   child: ListView.builder(
-                                              //     itemCount: 1,
-                                              //       itemBuilder: (context,index){
-                                              //         if(tempUserDecodeList[index]['p_id']!=null){
-                                              //           return Row(
-                                              //             children: [
-                                              //               Text(tempUserDecodeList[index]['p_id'].toString()),
-                                              //             ],
-                                              //           );
-                                              //         }else if(tempUserDecodeList[index]['f_id']!=null){
-                                              //           return Row(
-                                              //             children: [
-                                              //               Text(tempUserDecodeList[index]['_id'].toString()),
-                                              //             ],
-                                              //           );
-                                              //         }else{return null;}
-                                              //   }
-                                              //   ),
+
+
+                                              // Column(
+                                              //   children: [
+                                              //     Container(
+                                              //       color: Colors.red,
+                                              //       height: 45,
+                                              //       child: ListView.builder(
+                                              //         itemCount: 1,
+                                              //           itemBuilder: (context,index){
+                                              //             if(tempUserDecodeList[index]['p_id']!=null){
+                                              //               return Row(
+                                              //                 children: [
+                                              //                   Text(tempUserDecodeList[index]['p_id'].toString()),
+                                              //                 ],
+                                              //               );
+                                              //             }else if(tempUserDecodeList[index]['f_id']!=null){
+                                              //               return Row(
+                                              //                 children: [
+                                              //                   Text('aaaa')
+                                              //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
+                                              //                 ],
+                                              //               );
+                                              //             }else{return null;}
+                                              //       }
+                                              //       ),
                                               //
+                                              //     ),
+                                              //   ],
                                               // ),
                                               Row(
                                                 children: [
-                                                  // Text(
-                                                  //   tempUserDecodeList[index]
-                                                  //           ['f_id']
-                                                  //       .toString(),
-                                                  //   textAlign: TextAlign.end,
-                                                  // ),
                                                   SizedBox(
-                                                    width: 10,
+                                                    width: 5,
                                                   ),
 
-                                                  Text(
-                                                    tempUserDecodeList[index]['p_id'].toString()==null?NoPlace:tempUserDecodeList[index]['p_id'].toString(),
-                                                    textAlign: TextAlign.end,
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: Text(
+                                                      tempUserDecodeList[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
+                                                      textAlign: TextAlign.end,
+                                                    ),
                                                   ),
                                                   SizedBox(
                                                     width: 10,
                                                   ),
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                    ['f_id']
-                                                        .toString(),
+                                                    ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
                                                     textAlign: TextAlign.end,
                                                   ),
                                                   SizedBox(
@@ -312,7 +413,7 @@ var NoPlace='NoPlace';
                                                   Text(
                                                     tempUserDecodeList[index]
                                                     ['flt_id']
-                                                        .toString(),
+                                                        ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
                                                     textAlign: TextAlign.end,
                                                   ),
                                                   SizedBox(
@@ -320,8 +421,7 @@ var NoPlace='NoPlace';
                                                   ),
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                    ['r_id']
-                                                        .toString(),
+                                                    ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
                                                     textAlign: TextAlign.end,
                                                   ),
                                                   SizedBox(
@@ -330,63 +430,17 @@ var NoPlace='NoPlace';
 
                                                   Text(
                                                     tempUserDecodeList[index]
-                                                    ['d_id']
-                                                        .toString(),
+                                                    ['d_id']==null?"":'Device : ${tempUserDecodeList[index]['d_id']}',
                                                     textAlign: TextAlign.end,
                                                   ),
                                                 ],
                                               ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                            ['owner_name']
-                                                        .toString(),
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ],
-                                              ),
+
                                             ],
                                           ),
                                         ),
                                       );
 
-                                      //   Column(
-                                      //   children: <Widget>[
-                                      //     SizedBox(height: 100,),
-                                      //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      //     SizedBox(height: 15,),
-                                      //     Row(
-                                      //       children: [
-                                      //         SizedBox(width: 55,),
-                                      //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                      //         SizedBox(width: 15,),
-                                      //         Container(
-                                      //           height: 45,
-                                      //           width: 195,
-                                      //           child:Padding(
-                                      //             padding: const EdgeInsets.all(8.0),
-                                      //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                      //           ),
-                                      //           decoration: BoxDecoration(
-                                      //             color: Colors.white,
-                                      //             border: Border.all(
-                                      //               color: Colors.black38 ,
-                                      //               width: 5.0 ,
-                                      //             ),
-                                      //             borderRadius: BorderRadius.circular(20),
-                                      //           ),
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //
-                                      //
-                                      //   ],
-                                      //
-                                      //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                      //   // subtitle: Text("${statusData[index]['id']}"),
-                                      //
-                                      // );
                                     })),
                           ],
                         );

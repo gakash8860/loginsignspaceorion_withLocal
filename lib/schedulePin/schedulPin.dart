@@ -80,7 +80,7 @@ List listOfScheduledPins=[];
             putScheduledPins(listOfScheduledPins);
           });
           print('listOfScheduledPins ${listOfScheduledPins}');
-          allPinNames();
+          // allPinNames(listOfScheduledPins);
         }
       }
     }catch(e){
@@ -252,8 +252,8 @@ TimeOfDay time;
   List namesDataList;
 String on="On";
 String off="Off";
-allPinNames()async{
-  namesDataList =await  NewDbProvider.instance.getPinNamesByDeviceId('DIDM12932021AAAAAB');
+allPinNames(String dId)async{
+  namesDataList =await  NewDbProvider.instance.getPinNamesByDeviceId(dId);
   print('names123654 ${namesDataList}');
 }
 
@@ -296,7 +296,7 @@ allPinNames()async{
                                   itemCount: listOfScheduledPins.length,
                                   itemBuilder: (context,index){
                                     print('length ${listOfScheduledPins.length}');
-
+                                    allPinNames(listOfScheduledPins[index]['d_id']);
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: GestureDetector(
@@ -597,7 +597,7 @@ allPinNames()async{
                                                           if(listOfScheduledPins[index]['pin1Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin1Name'].toString()),
+                                                                Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":"PP"),
                                                                 SizedBox(width: 14,),
                                                                 Text(on,style: TextStyle(fontSize: 22),),
                                                               ],

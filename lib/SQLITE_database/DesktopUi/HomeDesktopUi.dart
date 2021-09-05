@@ -888,7 +888,8 @@ class _DesktopHomeState extends State<DesktopHome> {
       color: Colors.yellow,
       // color: change_toDark ? Colors.black : Colors.white,
       child: DefaultTabController(
-        length: rm.length,
+        // length: rm.length,
+        length: 1,
         // length: widget.rm.length,
         child: CustomScrollView(
             // key: key,
@@ -926,14 +927,15 @@ class _DesktopHomeState extends State<DesktopHome> {
                             children: <Widget>[
                               Column(
                                 children: <Widget>[
+                                  SizedBox(width: 74,),
                                   GestureDetector(
                                     onLongPress: () {
                                       // _editFloorNameAlertDialog(context);
                                     },
                                     child: Text(
-                                      fl.fName.toString(),
+                                      // fl.fName.toString(),
 
-                                      // 'Hello Floor ',
+                                      'Hello Floor ',
                                       // + widget.fl.user.first_name,
                                       style: TextStyle(
                                           color: Colors.white,
@@ -953,8 +955,8 @@ class _DesktopHomeState extends State<DesktopHome> {
                                       // _editFloorNameAlertDialog(context);
                                     },
                                     child: Text(
-                                      flat.fltName.toString(),
-                                      // 'Hello Flat ',
+                                      // flat.fltName.toString(),
+                                      'Hello Flat ',
                                       // + widget.fl.user.first_name,
                                       style: TextStyle(
                                           color: Colors.white,
@@ -1126,43 +1128,43 @@ class _DesktopHomeState extends State<DesktopHome> {
                                 print('longPress');
                                 // _editRoomNameAlertDialog(context);
                               },
-                              child: TabBar(
-                                indicatorColor: Colors.blueAccent,
-                                controller: tabC,
-                                labelColor: Colors.blueAccent,
-                                indicatorWeight: 2.0,
-                                isScrollable: true,
-                                // tabs: [
-                                //   Tab(icon: Icon(Icons.directions_car)),
-                                //   Tab(icon: Icon(Icons.directions_transit)),
-                                //   Tab(icon: Icon(Icons.directions_bike)),
-                                // ],
-                                tabs: rm.map<Widget>((RoomType rm) {
-                                  rIdForName = rm.rId;
-                                  print('RoomId  $rIdForName');
-                                  print('RoomId  ${rm.rName}');
-                                  return Tab(
-                                    text: rm.rName,
-                                  );
-                                }).toList(),
-                                onTap: (index) async {
-                                  // print(
-                                  //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                                  // tabbarState = widget.rm[index].rId;
-                                  // setState(() {
-                                  //   tabbarState = widget.rm[index].rId;
-                                  //   // devicePinNamesQueryFunc();
-                                  // });
-                                  // // getDevices(tabbarState);
-                                  // print(
-                                  //     "tabbarState Tabs->  $tabbarState");
-                                  // widget.dv = await NewDbProvider.instance
-                                  //     .getDeviceByRoomId(tabbarState);
-                                  // getAllRoom();
-                                  // // widget.rm =await roomQueryFunc();
-                                  // print('getDevices123 }');
-                                },
-                              ),
+                              // child: TabBar(
+                              //   indicatorColor: Colors.blueAccent,
+                              //   controller: tabC,
+                              //   labelColor: Colors.blueAccent,
+                              //   indicatorWeight: 2.0,
+                              //   isScrollable: true,
+                              //   // tabs: [
+                              //   //   Tab(icon: Icon(Icons.directions_car)),
+                              //   //   Tab(icon: Icon(Icons.directions_transit)),
+                              //   //   Tab(icon: Icon(Icons.directions_bike)),
+                              //   // ],
+                              //   tabs: rm.map<Widget>((RoomType rm) {
+                              //     rIdForName = rm.rId;
+                              //     print('RoomId  $rIdForName');
+                              //     print('RoomId  ${rm.rName}');
+                              //     return Tab(
+                              //       text: rm.rName,
+                              //     );
+                              //   }).toList(),
+                              //   onTap: (index) async {
+                              //     // print(
+                              //     //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                              //     // tabbarState = widget.rm[index].rId;
+                              //     // setState(() {
+                              //     //   tabbarState = widget.rm[index].rId;
+                              //     //   // devicePinNamesQueryFunc();
+                              //     // });
+                              //     // // getDevices(tabbarState);
+                              //     // print(
+                              //     //     "tabbarState Tabs->  $tabbarState");
+                              //     // widget.dv = await NewDbProvider.instance
+                              //     //     .getDeviceByRoomId(tabbarState);
+                              //     // getAllRoom();
+                              //     // // widget.rm =await roomQueryFunc();
+                              //     // print('getDevices123 }');
+                              //   },
+                              // ),
                             ),
                             Padding(
                               padding:
@@ -1199,7 +1201,7 @@ class _DesktopHomeState extends State<DesktopHome> {
                     return Container(
                       child: Column(
                         children: [
-                          deviceContainer2(dv[index].dId, index),
+                          // deviceContainer2(dv[index].dId, index),
                           Container(
                               //
                               // color: Colors.green,

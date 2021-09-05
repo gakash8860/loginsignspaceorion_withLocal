@@ -507,7 +507,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
                       child: GestureDetector(
                         child:  Container(
                           // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(textSelected==dId.toString()?Icons.sensors:Icons.update),
+                          child: Icon(textSelected==dId.toString()?Icons.update:Icons.sensors),
                         ),
 
                         onTap: () async {

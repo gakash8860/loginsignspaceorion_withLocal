@@ -400,7 +400,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                       child: GestureDetector(
                         child:  Container(
                           // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(textSelected==widget.deviceId.toString()?Icons.sensors:Icons.update),
+                          child: Icon(textSelected==widget.deviceId.toString()?Icons.update:Icons.sensors),
                         ),
 
                         onTap: () async {

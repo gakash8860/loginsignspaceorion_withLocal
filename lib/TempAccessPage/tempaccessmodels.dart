@@ -245,3 +245,32 @@ class TempAccessSensor {
     "sensor10": sensor10,
   };
 }
+// To parse this JSON data, do
+//
+//     final placeNameModelsForTempUSer = placeNameModelsForTempUSerFromJson(jsonString);
+
+
+
+List<PlaceNameModelsForTempUSer> placeNameModelsForTempUSerFromJson(String str) => List<PlaceNameModelsForTempUSer>.from(json.decode(str).map((x) => PlaceNameModelsForTempUSer.fromJson(x)));
+
+String placeNameModelsForTempUSerToJson(List<PlaceNameModelsForTempUSer> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class PlaceNameModelsForTempUSer {
+  PlaceNameModelsForTempUSer({
+    this.pType,
+    this.pId,
+  });
+
+  String pType;
+  String pId;
+
+  factory PlaceNameModelsForTempUSer.fromJson(Map<String, dynamic> json) => PlaceNameModelsForTempUSer(
+    pType: json["p_type"],
+    pId: json["p_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "p_type": pType,
+    "p_id": pId,
+  };
+}

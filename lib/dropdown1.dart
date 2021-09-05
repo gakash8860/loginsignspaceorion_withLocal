@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'SQLITE_database/testingHome.dart';
 import 'SQLITE_database/testinghome2.dart';
 import 'main.dart';
 import 'models/modeldefine.dart';
@@ -475,16 +474,16 @@ class _DropDown1State extends State<DropDown1> {
                                     });
 
                                     print('On Press tabbar --> $tabbarState');
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomeTest(
-                                                  pt: pt,
-                                                  fl: fl,
-                                                  flat: flat,
-                                                  rm: rm,
-                                                  dv: dv,
-                                                )));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => HomeTest(
+                                    //               pt: pt,
+                                    //               fl: fl,
+                                    //               flat: flat,
+                                    //               rm: rm,
+                                    //               dv: dv,
+                                    //             )));
                                   },
                                 ),
                               ],
