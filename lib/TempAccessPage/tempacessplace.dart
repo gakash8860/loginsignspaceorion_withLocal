@@ -159,6 +159,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       return floors;
     }
   }
+
   Future<List<TempAccessFlat>> getFlatForDropDown(String fId) async {
     final url =
         API+'getallflatbyonlyflooridf_id/?f_id=' + fId;
@@ -168,12 +169,14 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
+    List<TempAccessFlat> flat;
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      List<TempAccessFlat> flat = data.map((data) => TempAccessFlat.fromJson(data)).toList();
-      print(flat);
-      return flat;
+      flat  = data.map((data) => TempAccessFlat.fromJson(data)).toList();
+      print('flatdata147 ${flat}');
+
     }
+    return flat;
   }
   Future<List<TempAccessRoom>> getRoomsForDropDown(String flt_Id) async {
     final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flt_Id;
@@ -226,7 +229,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child:FutureBuilder<List<TempAccessFloor>>(
-              future: floorVal,
+                          future: floorVal,
                   builder:
                       (context, AsyncSnapshot<List<TempAccessFloor>> snapshot) {
                     if (snapshot.hasData) {
@@ -278,21 +281,21 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    items: snapshot.data
-                                        .map((selectedFloor) {
+                                    items: snapshot.data.map((selectedFloor) {
                                       return DropdownMenuItem<TempAccessFloor>(
                                         value: selectedFloor,
                                         child: Text(selectedFloor.fName),
                                       );
                                     }).toList(),
                                     onChanged: (TempAccessFloor selectedFloor) async {
-                                      flatVal=  getFlatForDropDown(selectedFloor.fId.toString());
+
                                       setState(() {
                                         // flat[0]=null;
+
+                                        flatVal= getFlatForDropDown(selectedFloor.fId);
                                         floor[0] = selectedFloor;
-                                        flatVal=getFlatForDropDown(selectedFloor.fId.toString());
                                       });
-                                      flatVal=  getFlatForDropDown(selectedFloor.fId.toString());
+
                                     },
                                   ),
                                 ),
@@ -324,6 +327,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                           builder:
                               (context, AsyncSnapshot<List<TempAccessFlat>> snapshot) {
                             if (snapshot.hasData) {
+                              print('im coming');
                               if (snapshot.data.length == 0) {
                                 return Center(
                                     child: Text("No Devices on this place"));

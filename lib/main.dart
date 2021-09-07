@@ -14,7 +14,9 @@ import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/signUp.dart';
+import 'package:loginsignspaceorion/utility.dart';
 import 'dart:async';
+import 'ProfilePage.dart';
 import 'SQLITE_database/NewDatabase.dart';
 import 'dart:io' show Platform;
 import 'dart:async' show runZoned;
@@ -80,6 +82,7 @@ void main()async {
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
       DropDown1.routeName:(ctx) => DropDown1(),
+      HomeTest.routeName:(ctx) => HomeTest(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
 
@@ -196,6 +199,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     await devicePinSensorQueryFunc();
     await devicePinStatusQueryFunc();
     await devicePinNamesQueryFunc();
+    getImage();
   }
 
 
@@ -641,7 +645,32 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
 
 
+  getImage() async {
+    String token = await getToken();
+    // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
+    final url =
+        API+'testimages123/?user=' + getUidVariable;
+    // final url = 'http://192.168.0.105:8000/testimages123/?user=1';;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print('statusCode ${response.statusCode}');
+      print('statusCode ${response.body}');
+      var imageData = json.decode(response.body);
+      print('statusCode ${response.body}');
+      Utility.saveImage(imageData['file']
+        // Utility.base64String(_image.readAsBytesSync()),
+      );
+      // setImage=Utility.imageFrom64BaseString(imageData['file']);
+      // setImage=convertImage;
 
+      print('ConvertImagesetImage ${setImage}');
+      print('ConvertImage ${imageData['file']}');
+    }
+  }
 
 
 

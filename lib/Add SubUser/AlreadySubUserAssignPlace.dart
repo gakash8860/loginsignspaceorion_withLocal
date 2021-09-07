@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
+import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
@@ -15,7 +16,8 @@ void main()=>runApp(MaterialApp(
 ));
 
 class AlreadySubUser extends StatefulWidget {
-  const AlreadySubUser({Key key}) : super(key: key);
+
+   AlreadySubUser({Key key}) : super(key: key);
 
   @override
   _AlreadySubUserState createState() => _AlreadySubUserState();
@@ -26,7 +28,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
   var assignSubUserPlaceId;
-
+  List<Map<String, dynamic>> queryRows;
   Future placeVal;
 
 
@@ -86,9 +88,19 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
     // TODO: implement initState
     super.initState();
     // placeVal=getplaces();
+    placeQueryFunc();
   }
 
 
+  Future returnPlaceQuery() async {
+    return NewDbProvider.instance.queryPlace();
+  }
+
+  Future placeQueryFunc() async {
+    queryRows =
+    await NewDbProvider.instance.queryPlace();
+    print('qwe123 $queryRows');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -321,204 +333,185 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [Colors.blue, Colors.lightBlueAccent])),
-                child: SingleChildScrollView(
-                  dragStartBehavior:  DragStartBehavior.down,
-                  physics: BouncingScrollPhysics(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
+                  // color: Theme.of(context).primaryColor,
+                  width: double.infinity,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: viewportConstraints.maxHeight,
                     ),
-                    // color: Theme.of(context).primaryColor,
-                    width: double.infinity,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: viewportConstraints.maxHeight,
-                      ),
-                      child: ClipPath(
-                        child: Form(
-                          key: formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
 
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.emailAddress,
-                                controller: emailController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
+                          TextFormField(
+                            autofocus: true,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => node.nextFocus(),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            // validator: nameValid,
+                            keyboardType: TextInputType.emailAddress,
+                            controller: emailController,
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                            decoration: InputDecoration(
 
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Email for SubUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Enter Email for SubUser',
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              SizedBox(height: 20,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.text,
-                                controller: nameController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
-
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Name for SubUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              SizedBox(height: 10,),
-                              // ignore: deprecated_member_use
-
-                              FutureBuilder<List<PlaceType>>(
-                                  future: placeVal,
-                                  builder: (context,
-                                      AsyncSnapshot<List<PlaceType>> snapshot) {
-                                    if (snapshot.hasData) {
-                                      // print(snapshot.hasData);
-                                      // setState(() {
-                                      //   floorVal = getfloors(snapshot.data[0].p_id);
-                                      // });
-                                      if (snapshot.data.length == 0) {
-                                        return Center(
-                                            child: Text("No Devices on this place"));
-                                      }
-                                      return Column(
-                                        children: [
-                                          Container(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(41.0),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                height: 50.0,
-                                                child: Container(
-                                                  width: MediaQuery.of(context).size.width*2,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      boxShadow: [BoxShadow(
-                                                          color: Colors.black,
-                                                          blurRadius: 30,
-                                                          offset: Offset(20,20)
-                                                      )],
-                                                      border: Border.all(
-                                                        color: Colors.black,
-                                                        width: 0.5,
-                                                      )
-                                                  ),
-                                                  child: DropdownButtonFormField<PlaceType>(
-                                                    decoration:InputDecoration(
-                                                      contentPadding: const EdgeInsets.all(15),
-                                                      focusedBorder: OutlineInputBorder(
-                                                        borderSide: BorderSide(color: Colors.white),
-                                                        borderRadius: BorderRadius.circular(10),
-                                                      ),enabledBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(color: Colors.black),
-                                                      borderRadius: BorderRadius.circular(50),
-                                                    ),
-                                                    ),
-                                                    dropdownColor: Colors.white70,
-                                                    icon: Icon(Icons.arrow_drop_down),
-                                                    iconSize: 28,
-                                                    hint: Text('Select Place'),
-                                                    isExpanded: true,
-                                                    value: pt,
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                    items: snapshot.data.map((selectedPlace) {
-                                                      return DropdownMenuItem<PlaceType>(
-                                                        value: selectedPlace,
-                                                        child: Text(selectedPlace.pType),
-                                                      );
-                                                    }).toList(),
-                                                    onChanged: ( selectedPlace) {
-                                                      assignSubUserPlaceId=selectedPlace.pId;
-                                                      print('selectedPlace ${assignSubUserPlaceId}');
-                                                      setState(() {
-                                                        // fl = null;
-                                                        // pt = selectedPlace;
-                                                        // floorVal =
-                                                        //     getfloors(selectedPlace.pId);
-                                                      });
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                          ),
-
-                                        ],
-                                      );
-
-                                    } else {
-                                      SizedBox(height: 45,);
-                                      return Center(child: Text('Add User'));
-                                    }
-                                  }
-                              ),
-
-                              FlatButton(
-                                  child: Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  shape: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.white, width: 2),
-                                    borderRadius: BorderRadius.circular(90),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  textColor: Colors.white,
-                                  onPressed: ()async {
-                                    // await addSubUser(emailController.text);
-                                    await assignAlreadySubUserPlace();
-                                    // Navigator.of(context).pop();
-
-
-                                    // await floorVal;
-                                    // goToNextPage();
-                                  }),
-
-
-
-
-
-                            ],
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 20,),
+                          TextFormField(
+                            autofocus: true,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => node.nextFocus(),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            // validator: nameValid,
+                            keyboardType: TextInputType.text,
+                            controller: nameController,
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                            decoration: InputDecoration(
+
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Enter Name for SubUser',
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                          // ignore: deprecated_member_use
+
+                          Padding(
+                            padding: const EdgeInsets.all(22.0),
+                            child: FutureBuilder(
+                                future: returnPlaceQuery(),
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                offset: Offset(20, 20))
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(
+                                              15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Place'),
+                                        isExpanded: true,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+
+                                        items: queryRows.map((selectedPlace) {
+                                          return DropdownMenuItem<String>(
+                                            value: selectedPlace.toString(),
+                                            child: Text(
+                                                "${selectedPlace['p_type']}"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedPlace) async {
+
+                                        var placeid=selectedPlace.substring(7,14);
+                                        assignSubUserPlaceId=placeid;
+                                        print('assignSubUserPlaceId ${placeid}');
+                                        // assignSubUserPlaceId
+
+                                          // qwe= ;
+
+                                        },
+                                        // items:snapshot.data
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(child: Text('Please Wait'));
+                                  }
+                                }),
+                          ),
+
+                          FlatButton(
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              shape: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Colors.white, width: 2),
+                                borderRadius: BorderRadius.circular(90),
+                              ),
+                              padding: const EdgeInsets.all(15),
+                              textColor: Colors.white,
+                              onPressed: ()async {
+                                // await addSubUser(emailController.text);
+                                await assignAlreadySubUserPlace();
+                                // Navigator.of(context).pop();
+
+
+                                // await floorVal;
+                                // goToNextPage();
+                              }),
+
+
+
+
+
+                        ],
                       ),
                     ),
                   ),

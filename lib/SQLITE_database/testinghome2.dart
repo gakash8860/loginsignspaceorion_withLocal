@@ -51,6 +51,7 @@ import '../setting_icons.dart';
 import 'DesktopUi/desktopMenu.dart';
 import 'DesktopUi/destination.dart';
 import 'DesktopUi/destinationview.dart';
+import 'DesktopUi/gotoDesktopUi.dart';
 
 var tabbarState = "";
 var value = 1;
@@ -900,32 +901,26 @@ class _HomeTestState extends State<HomeTest>
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
-
                                     var placeId = selectedPlace.substring(7, 14);
                                     var placeName = selectedPlace.substring(24, 31);
                                     print('checkPlaceName ${placeName.toString()}');
+                                    print("SElectedPlace ${selectedPlace}");
 
+                                    var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
+                                    print('AA  ${aa}');
+
+                                    returnFloorQuery(placeId);
+                                    setState(() {
+                                      floorval = returnFloorQuery(placeId);
+                                      floorQueryRows2 = aa;
+
+                                    });
                                     var place = PlaceType(
                                         pId: placeId,
                                         pType: placeName,
                                         user: getUidVariable2
                                     );
                                     pt = place;
-                                    // pt=as.map((data) => PlaceType.fromJson(data)).toList();
-                                    print("SElectedPlace ${selectedPlace}");
-
-                                    var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
-                                    print('AA  ${aa}');
-
-                                    floorval = returnFloorQuery(placeId.toString());
-                                    floorQueryRows2 = await aa;
-                                    returnFloorQuery(placeId);
-                                    setState(() {
-                                      floorval = returnFloorQuery(placeId);
-                                      returnFloorQuery(placeId);
-                                      floorQueryRows2 = aa;
-
-                                    });
                                     print('Floorqwe  ${floorQueryRows2}');
 
                                     // qwe= ;
@@ -2001,29 +1996,39 @@ class _HomeTestState extends State<HomeTest>
               height: 105,
               child: Column(
                 children: [
-                  TextButton(
-                    child: Text(
-                      'Sub User',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ShowSubUser()));
-                    },
+                  Row(
+                    children: [
+                      Icon(Icons.supervised_user_circle_rounded,color: Colors.deepOrange,),
+                      TextButton(
+                        child: Text(
+                          'Sub User',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ShowSubUser()));
+                        },
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    child: Text(
-                      'Temporary User',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ShowTempUser()));
-                    },
+                  Row(
+                    children: [
+                      Icon(Icons.supervised_user_circle_rounded,color: Colors.deepOrange,),
+                      TextButton(
+                        child: Text(
+                          'Temporary User',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ShowTempUser()));
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -2594,7 +2599,7 @@ class _HomeTestState extends State<HomeTest>
       print("CHECKDEVICE123CODE   ${response.statusCode}");
       print(response.body);
       deviceResponse = jsonDecode(response.body);
-      getDeviceOffline(tabbarState);
+     await getDeviceOffline(tabbarState);
       print(postData);
     } else {
       throw Exception('Failed to create Device.');
@@ -2668,6 +2673,7 @@ class _HomeTestState extends State<HomeTest>
           // await NewDbProvider.instance.updateDevice(deviceQuery);
         }
       }
+
 
     }
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
@@ -3498,6 +3504,7 @@ class _HomeTestState extends State<HomeTest>
   Future floorval;
   Future floorval2;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -3508,37 +3515,11 @@ class _HomeTestState extends State<HomeTest>
         child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints viewportConstraints) {
           if (viewportConstraints.maxWidth > 600) {
-            return Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: MenuWidget(
-                      selectedIndex: _index,
-                      onTapped: (selectedIndex) {
-                        setState(() {
-                          _index = selectedIndex;
-                          widget.onTapped(_index);
-                        });
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: IndexedStack(
-                      index: _index,
-                      children: allDestinations.map<Widget>((
-                          Destination destination) {
-                        // print('large');
-                        return DestinationView(destination);
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return HomeViewLarge(_currentIndex, (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            });
           } else {
             return Scaffold(
               backgroundColor: _switchValue ? Colors.white12 : Colors.white,
@@ -4843,6 +4824,12 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode > 0) {
       print("SchedulingStatus ${response.statusCode}");
       print("SchedulingStatus ${response.body}");
+      if(response.statusCode==201){
+        final snackBar = SnackBar(
+          content: Text('Device Scheduled '),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
   }
 
@@ -5103,8 +5090,7 @@ String textSelected ="";
 
                                                   FloatingActionButton.extended(
                                                     onPressed: () async {
-                                                      await schedulingDevicePin(
-                                                          dId, index);
+                                                      await schedulingDevicePin(dId, index);
                                                       Navigator.pop(context);
 
                                                       print('Sceduled');

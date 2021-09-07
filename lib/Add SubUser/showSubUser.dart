@@ -388,7 +388,9 @@ class _ShowSubUserState extends State<ShowSubUser> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AlreadySubUser()));
+                              builder: (context) => AlreadySubUser(
+
+                              )));
                     },
                     child: Text(
                       'Assign Place',

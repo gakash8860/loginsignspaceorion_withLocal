@@ -825,554 +825,547 @@ class _AddTempUserState extends State<AddTempUser> {
                       ),
                       // color: Theme.of(context).primaryColor,
                       width: double.infinity,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          // minHeight: viewportConstraints.maxHeight,
-                        ),
-                        child: ClipPath(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              SizedBox(height: 45,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.text,
-                                onSaved: (String value) {
-                                  this.tempUSerRequirementDetails.name = value;
-                                },
-                                // controller: nameController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
+                      child: ClipPath(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            SizedBox(height: 45,),
+                            TextFormField(
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode: AutovalidateMode
+                                  .onUserInteraction,
+                              // validator: nameValid,
+                              keyboardType: TextInputType.text,
+                              onSaved: (String value) {
+                                this.tempUSerRequirementDetails.name = value;
+                              },
+                              // controller: nameController,
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54),
+                              decoration: InputDecoration(
 
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Name of TempUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Enter Name of TempUser',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.emailAddress,
-                                // controller: emailController,
-                                onSaved: (String value) {
-                                  this.tempUSerRequirementDetails.email = value;
-                                },
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
+                            ),
+                            SizedBox(height: 10,),
+                            TextFormField(
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode: AutovalidateMode
+                                  .onUserInteraction,
+                              // validator: nameValid,
+                              keyboardType: TextInputType.emailAddress,
+                              // controller: emailController,
+                              onSaved: (String value) {
+                                this.tempUSerRequirementDetails.email = value;
+                              },
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.black54),
+                              decoration: InputDecoration(
 
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Email of TempUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Enter Email of TempUser',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.name,
-                                // controller: emailController,
-                                onSaved: (String value) {
-                                  this.tempUSerRequirementDetails.ownerName =
-                                      value;
-                                },
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
+                            ),
+                            SizedBox(height: 10,),
+                            TextFormField(
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode: AutovalidateMode
+                                  .onUserInteraction,
+                              // validator: nameValid,
+                              keyboardType: TextInputType.name,
+                              // controller: emailController,
+                              onSaved: (String value) {
+                                this.tempUSerRequirementDetails.ownerName =
+                                    value;
+                              },
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.black54),
+                              decoration: InputDecoration(
 
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter your Name',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Enter your Name',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
+                            ),
 
-                              SizedBox(height: 10,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.phone,
-                                onSaved: (String value) {
-                                  this.tempUSerRequirementDetails.pno = value;
-                                },
-                                // controller: phoneController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
+                            SizedBox(height: 10,),
+                            TextFormField(
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode: AutovalidateMode
+                                  .onUserInteraction,
+                              // validator: nameValid,
+                              keyboardType: TextInputType.phone,
+                              onSaved: (String value) {
+                                this.tempUSerRequirementDetails.pno = value;
+                              },
+                              // controller: phoneController,
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54),
+                              decoration: InputDecoration(
 
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Phone Number of Temp. User',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Enter Phone Number of Temp. User',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 18,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 1.8,
-                                  child: Card(
-                                    child: GestureDetector(
-                                      onTap: pickDate,
-                                      child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Date:${pickedDate.day}/${pickedDate
-                                                .month}/${pickedDate.year}",
-                                            textAlign: TextAlign.start,)
-                                      ),
-                                    ),)),
-                              Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 18,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 1.8,
-                                  child: Card(
-                                    child: GestureDetector(
-                                      onTap: pickTime,
-                                      child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Time :${pickedTime.hour}:${pickedTime
-                                                .minute}",
-                                            textAlign: TextAlign.start,)
-                                      ),
-                                    ),)),
-
-                              FutureBuilder(
-                                  future: placeVal,
-                                  builder: (context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Container(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width * 2,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  offset: Offset(20, 20))
-                                            ],
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 0.5,
-                                            )),
-                                        child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                            contentPadding: const EdgeInsets.all(
-                                                15),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(
-                                                  10),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(
-                                                  50),
-                                            ),
-                                          ),
-                                          dropdownColor: Colors.white70,
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 28,
-                                          hint: Text('Select Place'),
-                                          isExpanded: true,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-
-                                          items: queryRows.map((selectedPlace) {
-                                            return DropdownMenuItem<String>(
-                                              value: selectedPlace.toString(),
-                                              child: Text(
-                                                  "${selectedPlace['p_type']}"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (selectedPlace) async {
-                                            floorval = null;
-                                            // floorQueryRows2=null;
-                                            // print('Floorqwe  ${floorQueryRows2}');
-                                            var placeId = selectedPlace.substring(
-                                                7, 14);
-                                            assignTempUserPlaceId = placeId;
-                                            print(
-                                                'PlaceId->  ${assignTempUserPlaceId}');
-                                            var aa = await NewDbProvider.instance
-                                                .getFloorById(placeId.toString());
-                                            print('AA  ${aa}');
-                                            floorval = null;
-                                            setState(() {
-                                              floorQueryRows2 = aa;
-                                              floorval =
-                                                  returnFloorQuery(placeId);
-                                              returnFloorQuery(placeId);
-                                            });
-                                            print('Floorqwe  ${floorQueryRows2}');
-
-
-                                            // qwe= ;
-
-                                          },
-                                          // items:snapshot.data
-                                        ),
-                                      );
-                                    } else {
-                                      return Center(child: Text('Please Wait'));
-                                    }
-                                  }),
-                              SizedBox(height: 20),
-                              FutureBuilder(
-                                  future: floorval,
-                                  builder: (context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Container(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width * 2,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  offset: Offset(20, 20))
-                                            ],
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 0.5,
-                                            )),
-                                        child: DropdownButtonFormField(
-                                          decoration: InputDecoration(
-                                            contentPadding: const EdgeInsets.all(
-                                                15),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(
-                                                  10),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(
-                                                  50),
-                                            ),
-                                          ),
-
-                                          dropdownColor: Colors.white70,
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 28,
-                                          hint: Text('Select Floor'),
-                                          isExpanded: true,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          items: floorQueryRows2.map((
-                                              selectedFloor) {
-                                            return DropdownMenuItem(
-                                              value: selectedFloor.toString(),
-                                              child: Text(
-                                                  "${selectedFloor['f_name']}"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (selectedFloor) async {
-                                            print(
-                                                'Floor selected $selectedFloor');
-                                            var floorId = selectedFloor.substring(
-                                                7, 14);
-                                            assignTempUserPlaceId = null;
-                                            assignFloorId = floorId;
-                                            var getFlat = await NewDbProvider
-                                                .instance.getFlatByFId(
-                                                floorId.toString());
-                                            print(getFlat);
-                                            setState(() {
-                                              flatVal = returnFlatQuery(floorId);
-                                              flatQueryRows2 = getFlat;
-                                            });
-                                            print('forRoom  ${roomQueryRows2}');
-
-
-                                            returnFloorQuery(floorId);
-                                          },
-                                          // items:snapshot.data
-                                        ),
-                                      );
-                                    } else {
-                                      return CircularProgressIndicator();
-                                    }
-                                  }),
-                              SizedBox(height: 20),
-                              FutureBuilder(
-                                  future: flatVal,
-                                  builder: (context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Container(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width * 2,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  offset: Offset(20, 20))
-                                            ],
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 0.5,
-                                            )),
-                                        child: DropdownButtonFormField(
-                                          decoration: InputDecoration(
-                                            contentPadding: const EdgeInsets.all(
-                                                15),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(
-                                                  10),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(
-                                                  50),
-                                            ),
-                                          ),
-
-                                          dropdownColor: Colors.white70,
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 28,
-                                          hint: Text('Select Flat'),
-                                          isExpanded: true,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          items: flatQueryRows2.map((
-                                              selectedFlat) {
-                                            return DropdownMenuItem(
-                                              value: selectedFlat.toString(),
-                                              child: Text(
-                                                  "${selectedFlat['flt_name']}"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (selectedFlat) async {
-                                            print('Flat selected $selectedFlat');
-                                            var flatId = selectedFlat.substring(
-                                                9, 16);
-                                            assignFloorId = null;
-                                            assignFlatId = flatId;
-                                            print(flatId);
-                                            var aa = await NewDbProvider.instance
-                                                .getRoomById(flatId.toString());
-                                            print('AA  ${aa}');
-                                            setState(() {
-                                              roomQueryRows2 = aa;
-                                              roomVal = returnRoomQuery(flatId);
-                                            });
-                                            print('forRoom  ${roomQueryRows2}');
-
-
-                                            // returnFloorQuery(floorId);
-
-                                          },
-                                          // items:snapshot.data
-                                        ),
-                                      );
-                                    } else {
-                                      return CircularProgressIndicator();
-                                    }
-                                  }),
-
-                              SizedBox(height: 20),
-                              FutureBuilder(
-                                  future: roomVal,
-                                  builder: (context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Container(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width * 2,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  offset: Offset(20, 20))
-                                            ],
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 0.5,
-                                            )),
-                                        child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                            contentPadding: const EdgeInsets.all(
-                                                15),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(
-                                                  10),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(
-                                                  50),
-                                            ),
-                                          ),
-                                          dropdownColor: Colors.white70,
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 28,
-                                          hint: Text('Select Room'),
-                                          isExpanded: true,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-
-                                          items: roomQueryRows2.map((
-                                              selectedRoom) {
-                                            return DropdownMenuItem<String>(
-                                              value: selectedRoom.toString(),
-                                              child: Text(
-                                                  "${selectedRoom['r_name']}"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (selectedRoom) async {
-                                            assignFlatId = null;
-                                            var roomId = selectedRoom.substring(
-                                                7, 14);
-                                            assignRoomId = roomId;
-                                            print('roomId ${roomId}');
-                                            var aa = await NewDbProvider.instance
-                                                .getDeviceByRId(
-                                                roomId.toString());
-                                            print('deviceQueryRows ${aa}');
-                                            setState(() {
-                                              // deviceQueryRows2=aa;
-                                              // deviceVal=returnDeviceQuery(roomId);
-                                            });
-                                            print('DeviceCheck  ${aa}');
-                                          },
-                                          // items:snapshot.data
-                                        ),
-                                      );
-                                    } else {
-                                      return CircularProgressIndicator();
-                                    }
-                                  }),
-                              FlatButton(
-                                  child: Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
+                            ),
+                            SizedBox(height: 10,),
+                            Container(
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height / 18,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width / 1.8,
+                                child: Card(
+                                  child: GestureDetector(
+                                    onTap: pickDate,
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "Date:${pickedDate.day}/${pickedDate
+                                              .month}/${pickedDate.year}",
+                                          textAlign: TextAlign.start,)
                                     ),
+                                  ),)),
+                            Container(
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height / 18,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width / 1.8,
+                                child: Card(
+                                  child: GestureDetector(
+                                    onTap: pickTime,
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "Time :${pickedTime.hour}:${pickedTime
+                                              .minute}",
+                                          textAlign: TextAlign.start,)
+                                    ),
+                                  ),)),
+
+                            FutureBuilder(
+                                future: placeVal,
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                offset: Offset(20, 20))
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(
+                                              15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Place'),
+                                        isExpanded: true,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+
+                                        items: queryRows.map((selectedPlace) {
+                                          return DropdownMenuItem<String>(
+                                            value: selectedPlace.toString(),
+                                            child: Text(
+                                                "${selectedPlace['p_type']}"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedPlace) async {
+                                          floorval = null;
+                                          // floorQueryRows2=null;
+                                          // print('Floorqwe  ${floorQueryRows2}');
+                                          var placeId = selectedPlace.substring(7, 14);
+                                          assignTempUserPlaceId = placeId;
+                                          print('PlaceId->  ${assignTempUserPlaceId}');
+                                          var aa = await NewDbProvider.instance
+                                              .getFloorById(placeId.toString());
+                                          print('AA  ${aa}');
+                                          floorval = null;
+                                          setState(() {
+                                            floorQueryRows2 = aa;
+                                            floorval =
+                                                returnFloorQuery(placeId);
+                                            returnFloorQuery(placeId);
+                                          });
+                                          print('Floorqwe  ${floorQueryRows2}');
+
+
+                                          // qwe= ;
+
+                                        },
+                                        // items:snapshot.data
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(child: Text('Please Wait'));
+                                  }
+                                }),
+                            SizedBox(height: 20),
+                            FutureBuilder(
+                                future: floorval,
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                offset: Offset(20, 20))
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(
+                                              15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Floor'),
+                                        isExpanded: true,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: floorQueryRows2.map((
+                                            selectedFloor) {
+                                          return DropdownMenuItem(
+                                            value: selectedFloor.toString(),
+                                            child: Text(
+                                                "${selectedFloor['f_name']}"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedFloor) async {
+                                          print(
+                                              'Floor selected $selectedFloor');
+                                          var floorId = selectedFloor.substring(
+                                              7, 14);
+                                          assignTempUserPlaceId = null;
+                                          assignFloorId = floorId;
+                                          var getFlat = await NewDbProvider
+                                              .instance.getFlatByFId(
+                                              floorId.toString());
+                                          print(getFlat);
+                                          setState(() {
+                                            flatVal = returnFlatQuery(floorId);
+                                            flatQueryRows2 = getFlat;
+                                          });
+                                          print('forRoom  ${roomQueryRows2}');
+
+
+                                          returnFloorQuery(floorId);
+                                        },
+                                        // items:snapshot.data
+                                      ),
+                                    );
+                                  } else {
+                                    return CircularProgressIndicator();
+                                  }
+                                }),
+                            SizedBox(height: 20),
+                            FutureBuilder(
+                                future: flatVal,
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                offset: Offset(20, 20))
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(
+                                              15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Flat'),
+                                        isExpanded: true,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: flatQueryRows2.map((
+                                            selectedFlat) {
+                                          return DropdownMenuItem(
+                                            value: selectedFlat.toString(),
+                                            child: Text(
+                                                "${selectedFlat['flt_name']}"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedFlat) async {
+                                          print('Flat selected $selectedFlat');
+                                          var flatId = selectedFlat.substring(
+                                              9, 16);
+                                          assignFloorId = null;
+                                          assignFlatId = flatId;
+                                          print(flatId);
+                                          var aa = await NewDbProvider.instance
+                                              .getRoomById(flatId.toString());
+                                          print('AA  ${aa}');
+                                          setState(() {
+                                            roomQueryRows2 = aa;
+                                            roomVal = returnRoomQuery(flatId);
+                                          });
+                                          print('forRoom  ${roomQueryRows2}');
+
+
+                                          // returnFloorQuery(floorId);
+
+                                        },
+                                        // items:snapshot.data
+                                      ),
+                                    );
+                                  } else {
+                                    return CircularProgressIndicator();
+                                  }
+                                }),
+
+                            SizedBox(height: 20),
+                            FutureBuilder(
+                                future: roomVal,
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                offset: Offset(20, 20))
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(
+                                              15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Room'),
+                                        isExpanded: true,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+
+                                        items: roomQueryRows2.map((
+                                            selectedRoom) {
+                                          return DropdownMenuItem<String>(
+                                            value: selectedRoom.toString(),
+                                            child: Text(
+                                                "${selectedRoom['r_name']}"),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedRoom) async {
+                                          assignFlatId = null;
+                                          var roomId = selectedRoom.substring(
+                                              7, 14);
+                                          assignRoomId = roomId;
+                                          print('roomId ${roomId}');
+                                          var aa = await NewDbProvider.instance
+                                              .getDeviceByRId(
+                                              roomId.toString());
+                                          print('deviceQueryRows ${aa}');
+                                          setState(() {
+                                            // deviceQueryRows2=aa;
+                                            // deviceVal=returnDeviceQuery(roomId);
+                                          });
+                                          print('DeviceCheck  ${aa}');
+                                        },
+                                        // items:snapshot.data
+                                      ),
+                                    );
+                                  } else {
+                                    return CircularProgressIndicator();
+                                  }
+                                }),
+                            FlatButton(
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
                                   ),
-                                  shape: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.white, width: 2),
-                                    borderRadius: BorderRadius.circular(90),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  textColor: Colors.white,
-                                  onPressed: () async {
-                                    print(
-                                        "assignTempUserPlaceId->  ${assignTempUserPlaceId}");
-                                    print(
-                                        "assignTempUserFloorId->  ${assignFloorId}");
-                                    print(
-                                        "assignTempUserRooId->  ${assignRoomId}");
-                                    await goToNextPage();
-                                    // await addSubUser(emailController.text);
+                                ),
+                                shape: OutlineInputBorder(
+                                  borderSide:
+                                  BorderSide(color: Colors.white, width: 2),
+                                  borderRadius: BorderRadius.circular(90),
+                                ),
+                                padding: const EdgeInsets.all(15),
+                                textColor: Colors.white,
+                                onPressed: () async {
+                                  print(
+                                      "assignTempUserPlaceId->  ${assignTempUserPlaceId}");
+                                  print(
+                                      "assignTempUserFloorId->  ${assignFloorId}");
+                                  print(
+                                      "assignTempUserRooId->  ${assignRoomId}");
+                                  await goToNextPage();
+                                  // await addSubUser(emailController.text);
 
-                                    // Navigator.of(context).pop();
-
-
-                                    // await floorVal;
-                                    // goToNextPage();
-                                  }),
+                                  // Navigator.of(context).pop();
 
 
-                            ],
-                          ),
+                                  // await floorVal;
+                                  // goToNextPage();
+                                }),
+
+
+                          ],
                         ),
                       ),
                     ),

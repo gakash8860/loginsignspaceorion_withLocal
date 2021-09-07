@@ -7,6 +7,7 @@ import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import '../dropdown2.dart';
 import '../main.dart';
+import 'assignplace.dart';
 
 
 void main() =>
@@ -57,7 +58,11 @@ void initState(){
           content: Text('SubUser Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        placeValForMobile=returnPlaceQuery();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>AssignPlace(
+            email: emailController.text,
+            name:nameController.text
+        )));
+        // placeValForMobile=returnPlaceQuery();
       } else {
         _showDialog(context);
       }
@@ -181,7 +186,7 @@ void initState(){
                         children: <Widget>[
 
                           Container(
-                            width: 300,
+                            width: 200,
                             child: TextFormField(
                               autofocus: true,
                               textInputAction: TextInputAction.next,
@@ -423,227 +428,222 @@ void initState(){
                         colors: [Colors.blue, Colors.lightBlueAccent])),
                 child: Form(
                   key: formKey,
-                  child: SingleChildScrollView(
-                    dragStartBehavior: DragStartBehavior.down,
-                    physics: BouncingScrollPhysics(),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                    ),
+                    // color: Theme.of(context).primaryColor,
+                    // width: double.infinity,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight,
                       ),
-                      // color: Theme.of(context).primaryColor,
-                      width: double.infinity,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: viewportConstraints.maxHeight,
-                        ),
-                        child: ClipPath(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(height: 140,),
+                          TextFormField(
+                            autofocus: true,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => node.nextFocus(),
+                            autovalidateMode: AutovalidateMode
+                                .onUserInteraction,
+                            // validator: nameValid,
+                            keyboardType: TextInputType.emailAddress,
+                            controller: emailController,
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                            decoration: InputDecoration(
 
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.emailAddress,
-                                controller: emailController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
-
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Email for SubUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Enter Email for SubUser',
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              SizedBox(height: 40,),
-                              TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () => node.nextFocus(),
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                // validator: nameValid,
-                                keyboardType: TextInputType.text,
-                                controller: nameController,
-                                style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                                decoration: InputDecoration(
-
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Enter Name for SubUser',
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              SizedBox(height: 40,),
-                              // ignore: deprecated_member_use
-                              FlatButton(
-                                  child: Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  shape: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.white, width: 2),
-                                    borderRadius: BorderRadius.circular(90),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  textColor: Colors.white,
-                                  onPressed: () async {
-                                    await addSubUser(emailController.text);
-
-                                    // Navigator.of(context).pop();
-
-
-                                    // await floorVal;
-                                    // goToNextPage();
-                                  }),
-
-
-                              FutureBuilder(
-                                  future: placeValForMobile,
-                                  builder: (context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      // print(snapshot.hasData);
-                                      // setState(() {
-                                      //   floorVal = getfloors(snapshot.data[0].p_id);
-                                      // });
-                                      if (snapshot.data.length == 0) {
-                                        return Center(
-                                            child: Text(
-                                                "No Devices on this place"));
-                                      }
-                                      return Column(
-                                          children: [
-                                       Container(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 2,
-                                    decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                    BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 30,
-                                    offset: Offset(20, 20))
-                                    ],
-                                    border: Border.all(
-                                    color: Colors.black,
-                                    width: 0.5,
-                                    )),
-                                    child: DropdownButtonFormField(
-                                    decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(15),
-                                    focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                    color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                    color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Place'),
-                                    isExpanded: true,
-                                    style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    ),
-
-                                    items: placeRows.map((selectedPlace) {
-                                    return DropdownMenuItem(
-                                    value: selectedPlace.toString(),
-                                    child: Text("${selectedPlace['p_type']}"),
-                                    );
-                                    }).toList(),
-                                    onChanged: (selectedPlace) async {
-
-                                    var placeId = selectedPlace.substring(7, 14);
-                                    var placeName = selectedPlace.substring(24, 31);
-                                    print('checkPlaceName ${placeName.toString()}');
-                                    assignSubUserPlaceId = placeId.toString();
-                                    // pt=as.map((data) => PlaceType.fromJson(data)).toList();
-                                    print("SElectedPlace ${selectedPlace}");
-
-
-                                    // qwe= ;
-                                    },
-                                    // items:snapshot.data
-                                    ),
-                                    ),
-                                    SizedBox(
-                                    height: 10,
-                                    ),
-                                    Container(
-                                    margin: EdgeInsets.all(8),
-                                    // ignore: deprecated_member_use
-                                    child: FlatButton(
-                                    child: Text(
-                                    'Next',
-                                    style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                    padding: EdgeInsets.all(12),
-                                    shape: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                    color: Colors.white, width: 1),
-                                    borderRadius:
-                                    BorderRadius.circular(50)),
-                                    onPressed: () async {
-                                    _assignPlace();
-
-                                    },
-                                    ),
-                                    ),
-                                    ],
-                                    );
-
-                                    } else {
-                                    SizedBox(height: 45,);
-                                    return Center(child: Text('Add User'));
-                                    }
-                                  }
-                              ),
-
-
-                            ],
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 40,),
+                          TextFormField(
+                            autofocus: true,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => node.nextFocus(),
+                            autovalidateMode: AutovalidateMode
+                                .onUserInteraction,
+                            // validator: nameValid,
+                            keyboardType: TextInputType.text,
+                            controller: nameController,
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                            decoration: InputDecoration(
+
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Enter Name for SubUser',
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 40,),
+                          // ignore: deprecated_member_use
+                          FlatButton(
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              shape: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Colors.white, width: 2),
+                                borderRadius: BorderRadius.circular(90),
+                              ),
+                              padding: const EdgeInsets.all(15),
+                              textColor: Colors.white,
+                              onPressed: () async {
+                                await addSubUser(emailController.text);
+
+
+                                // Navigator.of(context).pop();
+
+
+                                // await floorVal;
+                                // goToNextPage();
+                              }),
+
+                          SizedBox(height: 40,),
+                          FutureBuilder(
+                              future: placeValForMobile,
+                              builder: (context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  // print(snapshot.hasData);
+                                  // setState(() {
+                                  //   floorVal = getfloors(snapshot.data[0].p_id);
+                                  // });
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child: Text(
+                                            "No Devices on this place"));
+                                  }
+                                  return Column(
+                                      children: [
+                                   Container(
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 2,
+                                decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 30,
+                                offset: Offset(20, 20))
+                                ],
+                                border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                                )),
+                                child: DropdownButtonFormField(
+                                decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                color: Colors.black),
+                                borderRadius: BorderRadius.circular(50),
+                                ),
+                                ),
+                                dropdownColor: Colors.white70,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: Text('Select Place'),
+                                isExpanded: true,
+                                style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                ),
+
+                                items: placeRows.map((selectedPlace) {
+                                return DropdownMenuItem(
+                                value: selectedPlace.toString(),
+                                child: Text("${selectedPlace['p_type']}"),
+                                );
+                                }).toList(),
+                                onChanged: (selectedPlace) async {
+
+                                var placeId = selectedPlace.substring(7, 14);
+                                var placeName = selectedPlace.substring(24, 31);
+                                print('checkPlaceName ${placeName.toString()}');
+                                assignSubUserPlaceId = placeId.toString();
+                                // pt=as.map((data) => PlaceType.fromJson(data)).toList();
+                                print("SElectedPlace ${selectedPlace}");
+
+
+                                // qwe= ;
+                                },
+                                // items:snapshot.data
+                                ),
+                                ),
+                                SizedBox(
+                                height: 10,
+                                ),
+                                Container(
+                                margin: EdgeInsets.all(8),
+                                // ignore: deprecated_member_use
+                                child: FlatButton(
+                                child: Text(
+                                'Next',
+                                style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                ),
+                                ),
+                                padding: EdgeInsets.all(12),
+                                shape: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                color: Colors.white, width: 1),
+                                borderRadius:
+                                BorderRadius.circular(50)),
+                                onPressed: () async {
+                                _assignPlace();
+
+                                },
+                                ),
+                                ),
+                                ],
+                                );
+
+                                } else {
+                                SizedBox(height: 45,);
+                                return Center(child: Text('Add User'));
+                                }
+                              }
+                          ),
+
+
+                        ],
                       ),
                     ),
                   ),

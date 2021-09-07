@@ -1571,7 +1571,13 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
   IpAddress ip12;
   var ip;
+  List namesDataLocal;
+  allPinNames(String dId)async{
 
+    namesDataLocal =await  SubUserDataBase.subUserInstance.getPinNamesByDeviceId(dId);
+
+    print('names123654 ${namesDataLocal[0]['pin1Name']}');
+  }
   // ignore: missing_return
   Future<IpAddress> fetchIp(String dId) async {
     while (counter <= dv.length) {
@@ -2026,7 +2032,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           return AlertDialog(
             title: Text('Device Id ${dId}'),
             content: Container(
-              color:Colors.red,
               width: MediaQuery.of(context).size.width,
               child:FutureBuilder(
                   future: getScheduledPins(dId),
@@ -2042,7 +2047,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                         );
                       }else{
                         return Container(
-                          color: Colors.red,
                           child: Column(
                             children: [
                               SizedBox(height: 25,),
@@ -2050,6 +2054,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   child: ListView.builder(
                                       itemCount: listOfScheduledPins.length,
                                       itemBuilder: (context,index){
+                                        allPinNames(listOfScheduledPins[index]['d_id']);
                                         if(listOfScheduledPins[index]['pin1Status']==1){
 
                                         }
@@ -2058,328 +2063,332 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                           padding: const EdgeInsets.all(4.0),
                                           child: Card(
                                             semanticContainer:true,
-                                            shadowColor: Colors.grey,
-                                            child: Column(
-                                              children: [
-                                                ListTile(
-                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString()),
-                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString()),
-                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),
+                                            shadowColor: Colors.orange,
+                                            child: Container(
+                                              color: Colors.blueGrey,
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                    title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString()),
+                                                    trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString()),
+                                                    subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),
 
-                                                  onTap: (){
-                                                    print('printSubUser ${listOfScheduledPins[index]['name']}');
+                                                    onTap: (){
+                                                      print('printSubUser ${listOfScheduledPins[index]['name']}');
 
-                                                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                    //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+                                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                      //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
 
-                                                  },
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Container(
-                                                      height: 54,
-                                                      color:Colors.red,
-                                                      child: ListView.builder(
-                                                          itemCount: 1,
-                                                          itemBuilder: (context,index){
-                                                            if(listOfScheduledPins[index]['pin1Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin1Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin1Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin1Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin2Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin2Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin2Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin2Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin3Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin3Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin3Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin3Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            } else if(listOfScheduledPins[index]['pin4Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin4Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin4Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin4Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin5Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin5Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin5Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin5Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin6Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin6Name'].toString()),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin6Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin6Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin7Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin7Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin7Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin7Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin8Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin8Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin8Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin8Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin9Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin9Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin9Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin8Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin10Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin10Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin10Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(
-                                                                      namesDataList[index]['pin10Name']
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin11Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin11Name'].toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin11Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin11Name'].toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin12Status']==0) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin12Name'].toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin12Status']==1) {
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList[index]['pin12Name'].toString()),
-                                                                  SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontSize: 22),),
-                                                                ],
-                                                              );
-                                                            }else{return null;}
-                                                          }),
-                                                    ),
-                                                    // Row(
-                                                    //   children: [
-                                                    //     Text('Pin 1 -> '),
-                                                    //     Text(listOfScheduledPins[index]['pin1Status'].toString()==1? "On ":listOfScheduledPins[index]['pin1Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 14,),
-                                                    //     Text('Pin 2 -> '),
-                                                    //     Text(listOfScheduledPins[index]['pin2Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 8,),
-                                                    //     Text('Pin 3 -> '),
-                                                    //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     // SizedBox(width: 14,),
-                                                    //     // Text('Pin 4 -> '),
-                                                    //     // Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
-                                                    //   ],
-                                                    // ),
-                                                    // Row(
-                                                    //   children: [
-                                                    //     Text('Pin 4 ->'),
-                                                    //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 10,),
-                                                    //     Text('Pin 5 -> '),
-                                                    //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 10,),
-                                                    //     Text('Pin 6 -> '),
-                                                    //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     // SizedBox(width: 14,),
-                                                    //     // Text('Pin 8 -> '),
-                                                    //     // Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
-                                                    //
-                                                    //   ],
-                                                    // ),
-                                                    // Row(
-                                                    //   children: [
-                                                    //     Text('Pin 7 ->'),
-                                                    //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 8,),
-                                                    //     Text('Pin 8 ->'),
-                                                    //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
-                                                    //     SizedBox(width: 8,),
-                                                    //     Text('Pin 9 ->'),
-                                                    //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
-                                                    //   ],
-                                                    // ),
-                                                  ],
-                                                )
-                                              ],
+                                                    },
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        // color: Colors.redAccent,
+                                                        height: 54,
+                                                        child: ListView.builder(
+                                                            itemCount: 1,
+                                                            itemBuilder: (context,index){
+                                                              if(listOfScheduledPins[index]['pin1Status']==1){
+                                                                return Row(
+                                                                  children: [
+                                                                    SizedBox(width: 14,),
+                                                                    Text(namesDataLocal[index]['pin1Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(on,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin1Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin1Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin2Status']==1){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin2Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(on,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin2Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin2Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin3Status']==1){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin3Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(on,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin3Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin3Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              } else if(listOfScheduledPins[index]['pin4Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin4Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin4Status']==1){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin4Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(on,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin5Status']==1){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin5Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(on,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin5Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin5Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin6Status']==0){
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin6Name'].toString()),
+                                                                    SizedBox(width: 14,),
+                                                                    Text(off,style: TextStyle(fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin6Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin6Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin7Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin7Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin7Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin7Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin8Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin8Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin8Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin8Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin9Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin9Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin9Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin8Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin10Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin10Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin10Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        namesDataLocal[index]['pin10Name']
+                                                                            .toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin11Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin11Name'].toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin11Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin11Name'].toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin12Status']==0) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin12Name'].toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(off,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else if(listOfScheduledPins[index]['pin12Status']==1) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Text(namesDataLocal[index]['pin12Name'].toString()),
+                                                                    SizedBox(
+                                                                      width: 14,),
+                                                                    Text(on,
+                                                                      style: TextStyle(
+                                                                          fontSize: 22),),
+                                                                  ],
+                                                                );
+                                                              }else{return null;}
+                                                            }),
+                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text('Pin 1 -> '),
+                                                      //     Text(listOfScheduledPins[index]['pin1Status'].toString()==1? "On ":listOfScheduledPins[index]['pin1Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 14,),
+                                                      //     Text('Pin 2 -> '),
+                                                      //     Text(listOfScheduledPins[index]['pin2Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 8,),
+                                                      //     Text('Pin 3 -> '),
+                                                      //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     // SizedBox(width: 14,),
+                                                      //     // Text('Pin 4 -> '),
+                                                      //     // Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text('Pin 4 ->'),
+                                                      //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 10,),
+                                                      //     Text('Pin 5 -> '),
+                                                      //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 10,),
+                                                      //     Text('Pin 6 -> '),
+                                                      //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     // SizedBox(width: 14,),
+                                                      //     // Text('Pin 8 -> '),
+                                                      //     // Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+                                                      //
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text('Pin 7 ->'),
+                                                      //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 8,),
+                                                      //     Text('Pin 8 ->'),
+                                                      //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+                                                      //     SizedBox(width: 8,),
+                                                      //     Text('Pin 9 ->'),
+                                                      //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
+                                                      //   ],
+                                                      // ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         );

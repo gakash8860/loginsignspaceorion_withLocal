@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loginsignspaceorion/customcolor/customcolors.dart';
 
 class MenuWidget extends StatefulWidget {
@@ -69,7 +70,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(1, 'Bookmark', _selectedItem, Icons.bookmark)),
+              child: Item(1, 'Profile', _selectedItem, FontAwesomeIcons.user)),
           Container(
             height: 5,
             width: double.maxFinite,

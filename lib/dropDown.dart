@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'dart:io';
 import 'home.dart';
 import 'main.dart';
@@ -383,11 +384,11 @@ class _DropDownState extends State<DropDown> {
                                             context,
                                           ) =>
                                                   Container(
-                                                    // child: HomePage(
-                                                    //     pt: pt,
-                                                    //     fl: fl,
-                                                    //     rm: rm,
-                                                    //     dv: dv),
+                                                    child: HomeTest(
+                                                        pt: pt,
+                                                        fl: fl,
+                                                        rm: rm,
+                                                        dv: dv),
                                                   )),
                                         );
                                       },

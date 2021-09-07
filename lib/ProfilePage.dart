@@ -187,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //         print('response123 ${response.statusCode}');
 //         print('ElseIfFlag $flag');
 //       }
-    response = await http.post(url, body: jsonEncode(postData), headers: {
+    response = await http.put(url, body: jsonEncode(postData), headers: {
       'Content-Type': 'application/json',
       // 'Accept': 'application/json',
       'Authorization': 'Token $token',
@@ -219,8 +219,10 @@ class _ProfilePageState extends State<ProfilePage> {
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-      setImage=Utility.imageFrom64BaseString(imageData['file']);
-        convertImage = base64Decode(imageData['file']);
+      Utility.saveImage(imageData['file']
+        // Utility.base64String(_image.readAsBytesSync()),
+      );
+      // setImage=Utility.imageFrom64BaseString(imageData['file']);
         // setImage=convertImage;
 
       print('ConvertImagesetImage ${setImage}');

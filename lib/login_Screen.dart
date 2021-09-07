@@ -278,9 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("")
-                    ),
+
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -438,13 +436,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             textColor: Colors.white,
                                             onPressed: () async {
                                               print('aaaaaaaaaaaaaa');
-                                              if (formKey.currentState.validate()) {
-
-                                                goToNextPageWeb();
-
-                                              } else {
-                                                print("not validated");
-                                              }
+                                              Navigator.of(context).pushNamed(DropDown1.routeName);
+                                              // if (formKey.currentState.validate()) {
+                                              //
+                                              //   goToNextPageWeb();
+                                              //
+                                              // } else {
+                                              //   print("not validated");
+                                              // }
                                             }),
                                       ),
                                       Column(

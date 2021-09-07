@@ -44,16 +44,12 @@ class _TempAccessPageState extends State<TempAccessPage> {
   void initState() {
     super.initState();
     print('initState123 ${widget.mobileNumber}');
-    getTempUsers().then((value) => getPlaceName().then((value) =>  getFloorName().then((value) => getFlatName()).then((value) => getRoomName())));
+    // getTempFuture=getTempUsers();
+    getTempFuture=getTempUsers().then((value) => getPlaceName().then((value) =>  getFloorName().then((value) => getFlatName()).then((value) => getRoomName())));
 
   }
 
-  @override
-  void dispose(){
-    super.dispose();
-    // print('dispose');
-    getTempUsers();
-  }
+
 
 
   TempUser tempUser;

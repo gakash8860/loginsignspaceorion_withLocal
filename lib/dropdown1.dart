@@ -64,7 +64,25 @@ class _DropDown1State extends State<DropDown1> {
     print(getUidVariable);
     // roomResponse=send_RoomName(roomEditingController.text);
   }
+  getUid() async{
+    final url=await API+'getuid/';
+    String token = await getToken();
+    final response =
+    await http.get(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+    if(response.statusCode==200){
+      getUidVariable=response.body;
+      getUidVariable2=int.parse(getUidVariable);
 
+      print('GetUi Variable Integer-->   ${getUidVariable2}');
+    }else{
+      print(response.statusCode);
+    }
+  }
   // ignore: missing_return
   Future<PlaceType> placeName(String data) async {
     print(getUidVariable2);
@@ -90,6 +108,7 @@ class _DropDown1State extends State<DropDown1> {
 
       print(' Place--> $postData');
       setState(() {
+        // isVisible = true;
         // setPlaceValue();
       });
       return PlaceType.fromJson(postData);
@@ -180,6 +199,7 @@ class _DropDown1State extends State<DropDown1> {
       print('response.body  ${response.body}');
       roomResponse = jsonDecode(response.body);
       setState(() {
+
         tabbarState = roomResponse;
         // setRoomValue();
         // // final  roomResponse2=roomResponse;
@@ -187,6 +207,7 @@ class _DropDown1State extends State<DropDown1> {
       });
       print(' Room- Tabb-> $tabbarState');
       print(' Room- Response-> $roomResponse');
+      // isVisible=false;
 
       return RoomType.fromJson(postData);
     } else {
@@ -226,22 +247,10 @@ class _DropDown1State extends State<DropDown1> {
     }
   }
 
-  getUid() async {
-    final url = API+'getuid/';
-    String token = await getToken();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 200) {
-      getUidVariable = response.body;
-      getUidVariable2 = int.parse(getUidVariable);
-      print('GetUi Variable-->   $getUidVariable');
-    } else {
-      print(response.statusCode);
-    }
+  allAwaitFunction(){
+
   }
+
 
   // ignore: non_constant_identifier_names
 
@@ -274,7 +283,7 @@ class _DropDown1State extends State<DropDown1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: isVisible
+        body: isVisible==true
             ? Container(
                 color: Colors.blueAccent,
                 child: Center(
@@ -283,447 +292,428 @@ class _DropDown1State extends State<DropDown1> {
                   ),
                 ),
               )
-            : ModalProgressHUD(
-                inAsyncCall: _isInAsyncCall,
-                progressIndicator: CircularProgressIndicator(),
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.blue, Colors.lightBlueAccent])),
-                  child: LayoutBuilder(
-                      builder: (BuildContext context, BoxConstraints viewportConstraints) {
-                    if (viewportConstraints.maxWidth > 600) {
-                      return Container(
-                        width: double.maxFinite,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                        ),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: viewportConstraints.maxHeight,
-                          ),
-                          child: ClipPath(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 35,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Container(
-                                    width: 300,
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: editingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Place Name',
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Container(
-                                    width: 300,
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: floorEditingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Floor Name',
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Container(
-                                    width: 300,
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: flatEditingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Flat Name',
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Container(
-                                    width: 300,
-                                    child: TextFormField(
-                                      controller: roomEditingController,
-                                      autofocus: true,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Room Name',
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                ElevatedButton(
-                                  child: Text('Submit'),
-                                  onPressed: () async {
-                                    // PlaceType place=  await place_Name(editingController.text);
-                                    //   FloorType  floor = await send_FloorName(floorEditingController.text);
-                                    //   RoomType  room= await send_RoomName(roomEditingController.text);
-                                    //   Device device= await send_DeviceId(deviceEditingController.text);
-
-                                    pt = await placeName(editingController.text);
-                                    print('After Await  $placeResponse');
-                                    fl = await sendFloorName(floorEditingController.text);
-                                    flat = await sendFlatName(flatEditingController.text);
-                                    room = [await sendRoomName(roomEditingController.text)];
-                                    // await send_DeviceId(deviceEditingController.text);
-
-                                    // setValue();
-                                    // placeResponsePreference.setInt('pId', placeResponse);
-                                    // floorResponsePreference.setInt('fId', floorResponse);
-                                    // roomResponsePreference.setInt('rId', roomResponse2);
-
-                                    setState(() {
-                                      rm = room;
-                                      // tabbarState=rm[0].rId;
-                                      tabbarState = roomResponse;
-                                      // dv=[deviceResponse] ;
-                                      isVisible = true;
-                                    });
-
-                                    print('On Press tabbar --> $tabbarState');
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => HomeTest(
-                                    //               pt: pt,
-                                    //               fl: fl,
-                                    //               flat: flat,
-                                    //               rm: rm,
-                                    //               dv: dv,
-                                    //             )));
-                                  },
-                                ),
-                              ],
+            : Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.blue, Colors.lightBlueAccent])),
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                if (viewportConstraints.maxWidth > 600) {
+                  return Container(
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                    ),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight,
+                      ),
+                      child: ClipPath(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 35,
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Container(
+                                width: 300,
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: editingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Place Name',
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Container(
+                                width: 300,
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: floorEditingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Floor Name',
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Container(
+                                width: 300,
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: flatEditingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Flat Name',
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Container(
+                                width: 300,
+                                child: TextFormField(
+                                  controller: roomEditingController,
+                                  autofocus: true,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Room Name',
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            ElevatedButton(
+                              child: Text('Submit'),
+                              onPressed: () async {
+                                //
+                                // pt = await placeName(editingController.text);
+                                // print('After Await  $placeResponse');
+                                // fl = await sendFloorName(floorEditingController.text);
+                                // flat = await sendFlatName(flatEditingController.text);
+                                // room = [await sendRoomName(roomEditingController.text)];
+
+                                setState(() {
+                                  // rm = room;
+                                  //
+                                  // tabbarState = roomResponse;
+                                  // dv=[deviceResponse] ;
+                                  // isVisible = true;
+                                });
+
+                                print('On Press tabbar --> $tabbarState');
+                                Navigator.of(context).pushNamed(HomeTest.routeName);
+                              },
+                            ),
+                          ],
                         ),
-                      );
-                    } else {
-                      return Scaffold(
-                        appBar: AppBar(
-                          title: Text('GenOrion'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
+                      ),
+                    ),
+                  );
+                } else {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text('GenOrion'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          DropDown2())).then((value) =>
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              DropDown2())).then((value) =>
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  super.widget)));
-                                },
-                                child: Text(
-                                  'Your places',
-                                  style: TextStyle(color: Colors.black),
-                                ))
-                          ],
+                                              super.widget)));
+                            },
+                            child: Text(
+                              'Your places',
+                              style: TextStyle(color: Colors.black),
+                            ))
+                      ],
+                    ),
+                    body: Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.blue, Colors.lightBlueAccent])),
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: viewportConstraints.maxHeight,
                         ),
-                        body: Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [Colors.blue, Colors.lightBlueAccent])),
-                          width: double.maxFinite,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                          ),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: viewportConstraints.maxHeight,
-                            ),
-                            child: ClipPath(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 35,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: editingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Place Name',
-                                        contentPadding:
-                                            const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: floorEditingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Floor Name',
-                                        contentPadding:
-                                            const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: flatEditingController,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Flat Name',
-                                        contentPadding:
-                                            const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: TextFormField(
-                                      controller: roomEditingController,
-                                      autofocus: true,
-                                      textInputAction: TextInputAction.next,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.black54),
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Enter Room Name',
-                                        contentPadding:
-                                            const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  ElevatedButton(
-                                    child: Text('Submit'),
-                                    onPressed: () async {
-                                      // PlaceType place=  await place_Name(editingController.text);
-                                      //   FloorType  floor = await send_FloorName(floorEditingController.text);
-                                      //   RoomType  room= await send_RoomName(roomEditingController.text);
-                                      //   Device device= await send_DeviceId(deviceEditingController.text);
-
-                                      pt = await placeName(
-                                          editingController.text);
-                                      print('After Await  $placeResponse');
-                                      fl = await sendFloorName(
-                                          floorEditingController.text);
-                                      flat = await sendFlatName(
-                                          flatEditingController.text);
-                                      room = [
-                                        await sendRoomName(
-                                            roomEditingController.text)
-                                      ];
-                                      // await send_DeviceId(deviceEditingController.text);
-
-                                      // setValue();
-                                      // placeResponsePreference.setInt('pId', placeResponse);
-                                      // floorResponsePreference.setInt('fId', floorResponse);
-                                      // roomResponsePreference.setInt('rId', roomResponse2);
-
-                                      setState(() {
-                                        rm = room;
-                                        // tabbarState=rm[0].rId;
-                                        tabbarState = roomResponse;
-                                        // dv=[deviceResponse] ;
-                                        isVisible = true;
-                                      });
-
-                                      print('On Press tabbar --> $tabbarState');
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomeTest(
-                                                    pt: pt,
-                                                    fl: fl,
-                                                    flat: flat,
-                                                    rm: rm,
-                                                    dv: dv,
-                                                  )));
-                                    },
-                                  ),
-                                ],
+                        child: ClipPath(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 35,
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: editingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Place Name',
+                                    contentPadding:
+                                        const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: floorEditingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Floor Name',
+                                    contentPadding:
+                                        const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  autofocus: true,
+                                  controller: flatEditingController,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Flat Name',
+                                    contentPadding:
+                                        const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  controller: roomEditingController,
+                                  autofocus: true,
+                                  textInputAction: TextInputAction.next,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black54),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.place),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Enter Room Name',
+                                    contentPadding:
+                                        const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              ElevatedButton(
+                                child: Text('Submit'),
+                                onPressed: () async {
+
+                                  pt = await placeName(editingController.text);
+                                  print('After Await  $placeResponse');
+                                  fl = await sendFloorName(floorEditingController.text);
+
+                                  flat = await sendFlatName(flatEditingController.text);
+                                  rm = [await sendRoomName(roomEditingController.text)];
+
+                                  setState(() {
+                                    isVisible=true;
+                                    // tabbarState=rm[0].rId;
+                                    tabbarState = roomResponse;
+                                    // dv=[deviceResponse] ;
+
+                                  });
+
+
+                                  print('On Press tabbar --> $tabbarState');
+
+                                  Navigator.push(
+
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeTest(
+                                                pt: pt,
+                                                fl: fl,
+                                                flat: flat,
+                                                rm: rm,
+                                                dv: dv,
+                                              )));
+                                  // isVisible=false;
+                                },
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }
-                  }),
-                ),
-              ));
+                      ),
+                    ),
+                  );
+                }
+              }),
+            ));
+  }
+  changePage(){
+
+    Navigator.push(
+
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeTest(
+              pt: pt,
+              fl: fl,
+              flat: flat,
+              rm: rm,
+              dv: dv,
+            )));
+    isVisible=false;
   }
 }
