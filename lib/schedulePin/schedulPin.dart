@@ -3,11 +3,13 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import '../changeFont.dart';
 import '../main.dart';
 
 
@@ -103,64 +105,7 @@ Future putScheduledPins(data)async{
 }
 var dId;
 
-// Future openSchedulePinNameBox()async{
-//
-//   var dir= await getApplicationDocumentsDirectory();
-//   Hive.init(dir.path);
-//   scheduledPinNameBox=await Hive.openBox('scheduledPinName');
-//   print('scheduledPinNameBox  ${scheduledPinNameBox.values.toString()}');
-//   return;
-// }
-// Future getPinsName() async {
-//  await openSchedulePinNameBox();
-//     for(int i=0;i<listOfScheduledPins.length;i++){
-//       dId=listOfScheduledPins[i]['d_id'].toString();
-//       print('scheduled ${dId}');
-//       String url = "http://genorion1.herokuapp.com/editpinnames/?d_id=" + dId;
-//       String token = await getToken();
-//       // try {
-//       final response = await http.get(Uri.parse(url), headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/json',
-//         'Authorization': 'Token $token',
-//       });
-//       // await scheduledPinNameBox.clear();
-//       if (response.statusCode == 200) {
-//         var  namesDataList12 = json.decode(response.body);
-//         print('QWERTY  $namesDataList12');
-//         namesDataList = [
-//           namesDataList12['pin1Name'].toString(),
-//           namesDataList12['pin2Name'].toString(),
-//           namesDataList12['pin3Name'].toString(),
-//           namesDataList12['pin4Name'].toString(),
-//           namesDataList12['pin5Name'].toString(),
-//           namesDataList12['pin6Name'].toString(),
-//           namesDataList12['pin7Name'].toString(),
-//           namesDataList12['pin8Name'].toString(),
-//           namesDataList12['pin9Name'].toString(),
-//           namesDataList12['pin10Name'].toString(),
-//           namesDataList12['pin11Name'].toString(),
-//           namesDataList12['pin12Name'].toString(),
-//         ];
-//         putScheduledPinName(namesDataList);
-//         print('namesDataList  $namesDataList');
-//       }
-//       var myMap=scheduledPinNameBox.toMap().values.toList();
-//       if(myMap.isEmpty){
-//         scheduledPinNameBox.add('empty');
-//       }else{
-//         namesDataList=myMap ;
-//       }
-//     }
-// }
-// Future putScheduledPinName(data)async{
-//   await scheduledPinNameBox.clear();
-//   for(var d in data){
-//
-//     scheduledPinNameBox.add(d);
-//   }
-//
-// }
+
 var postData;
 Future schedulingDevicePin(var postData) async {
   final url = 'http://genorion1.herokuapp.com/schedulingpinsalltheway/';
@@ -249,9 +194,10 @@ TimeOfDay time;
     }
   }
 
-  List namesDataList;
+
 String on="On";
 String off="Off";
+List namesDataList;
 allPinNames(String dId)async{
   namesDataList =await  NewDbProvider.instance.getPinNamesByDeviceId(dId);
   print('names123654 ${namesDataList}');
@@ -267,7 +213,7 @@ allPinNames(String dId)async{
       }else{
         return Scaffold(
           appBar: AppBar(
-            title: Text("Scheduled Pin"),
+            title: Text("Scheduled Pin",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
           ),
           body: Container(
             color: Colors.green,
@@ -284,7 +230,7 @@ allPinNames(String dId)async{
                       return Column(
                         children: [
                           SizedBox(height: 250,),
-                          Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                          Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),)),
                         ],
                       );
                     }else{
@@ -329,7 +275,7 @@ allPinNames(String dId)async{
                                                                       .toString() == null
                                                                       ? _dateString
                                                                       : cutDate.toString()
-                                                                      .toString()),
+                                                                      .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                                   onTap: () {
                                                                     pickDate();
                                                                   }
@@ -364,12 +310,12 @@ allPinNames(String dId)async{
                                                               child: Text(
                                                                 _alarmTimeString,
                                                                 style:
-                                                                TextStyle(fontSize: 32),
+                                                                TextStyle(fontSize: 32,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                                                               ),
                                                             ),
                                                             ListTile(
                                                               title:
-                                                              Text('What Do You Want ??'),
+                                                              Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                               trailing: Icon(Icons.timer),
                                                             ),
                                                             ListTile(
@@ -567,16 +513,16 @@ allPinNames(String dId)async{
                                           child: Column(
                                             children: [
                                               ListTile(
-                                                title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString()),
-                                                trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString()),
+                                                title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                 leading: IconButton(
                                                   icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                                  onPressed: (){
-                                                    deleteSchedulingUsingId(listOfScheduledPins[index]['id'].toString());
+                                                  onPressed: ()async{
+                                                    await deleteSchedulingUsingId(listOfScheduledPins[index]['id'].toString());
 
                                                   },
                                                 ),
-                                                subtitle: Text(listOfScheduledPins[index]['timing1'].toString()),
+                                                subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
 
                                                 onTap: (){
                                                   print('printSubUser ${listOfScheduledPins[index]['id']}');
@@ -597,89 +543,96 @@ allPinNames(String dId)async{
                                                           if(listOfScheduledPins[index]['pin1Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":"PP"),
+                                                                Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(on,style: TextStyle(fontSize: 22),),
+                                                                Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin1Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin1Name'].toString()),
+                                                                Text(namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,fontFamily:  fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin2Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin2Name'].toString()),
+                                                                Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(on,style: TextStyle(fontSize: 22),),
+                                                                Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin2Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin2Name'].toString()),
+                                                                Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin3Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin3Name'].toString()),
+                                                                Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(on,style: TextStyle(fontSize: 22),),
+                                                                Text(on,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin3Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin3Name'].toString()),
+                                                                Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           } else if(listOfScheduledPins[index]['pin4Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin4Name'].toString()),
+                                                                Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin4Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin4Name'].toString()),
+                                                                Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(on,style: TextStyle(fontSize: 22),),
+                                                                Text(on,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin5Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin5Name'].toString()),
+                                                                Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(on,style: TextStyle(fontSize: 22),),
+                                                                Text(on,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin5Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin5Name'].toString()),
+                                                                Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin6Status']==0){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin6Name'].toString()),
+                                                                Text(namesDataList[index]['pin6Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(width: 14,),
-                                                                Text(off,style: TextStyle(fontSize: 22),),
+                                                                Text(off,style: TextStyle(fontSize: 22,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin6Status']==1) {
@@ -687,11 +640,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin6Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -700,11 +654,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin7Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -713,11 +668,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin7Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -726,11 +682,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin8Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -739,11 +696,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin8Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -752,11 +710,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin9Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -765,11 +724,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin8Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -778,11 +738,12 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin10Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
@@ -791,55 +752,59 @@ allPinNames(String dId)async{
                                                               children: [
                                                                 Text(
                                                                     namesDataList[index]['pin10Name']
-                                                                        .toString()),
+                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin11Status']==1) {
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin11Name'].toString()),
+                                                                Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin11Status']==0) {
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin11Name'].toString()),
+                                                                Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin12Status']==0) {
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin12Name'].toString()),
+                                                                Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(off,
-                                                                  style: TextStyle(
+                                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );
                                                           }else if(listOfScheduledPins[index]['pin12Status']==1) {
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin12Name'].toString()),
+                                                                Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 SizedBox(
                                                                   width: 14,),
                                                                 Text(on,
                                                                   style: TextStyle(
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 22),),
                                                               ],
                                                             );

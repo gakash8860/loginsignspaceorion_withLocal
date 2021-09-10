@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/dropDown.dart';
+import 'package:loginsignspaceorion/widget/circularprogress.dart';
 import 'SQLITE_database/testinghome2.dart';
+import 'changeFont.dart';
 import 'main.dart';
 import 'models/modeldefine.dart';
 
@@ -24,6 +27,7 @@ void main() => runApp(MaterialApp(
 String roomResponse2;
 
 class DropDown1 extends StatefulWidget {
+
   static const routeName = '/dropDown1';
 
 
@@ -283,7 +287,7 @@ class _DropDown1State extends State<DropDown1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: isVisible==true
+        body: isVisible
             ? Container(
                 color: Colors.blueAccent,
                 child: Center(
@@ -455,16 +459,17 @@ class _DropDown1State extends State<DropDown1> {
                               child: Text('Submit'),
                               onPressed: () async {
                                 //
-                                // pt = await placeName(editingController.text);
-                                // print('After Await  $placeResponse');
-                                // fl = await sendFloorName(floorEditingController.text);
-                                // flat = await sendFlatName(flatEditingController.text);
-                                // room = [await sendRoomName(roomEditingController.text)];
+
+                                pt = await placeName(editingController.text);
+                                print('After Await  $placeResponse');
+                                fl = await sendFloorName(floorEditingController.text);
+                                flat = await sendFlatName(flatEditingController.text);
+                                room = [await sendRoomName(roomEditingController.text)];
 
                                 setState(() {
-                                  // rm = room;
+                                  rm = room;
                                   //
-                                  // tabbarState = roomResponse;
+                                  tabbarState = roomResponse;
                                   // dv=[deviceResponse] ;
                                   // isVisible = true;
                                 });
@@ -481,7 +486,7 @@ class _DropDown1State extends State<DropDown1> {
                 } else {
                   return Scaffold(
                     appBar: AppBar(
-                      title: Text('GenOrion'),
+                      title: Text('GenOrion',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest),),
                       actions: [
                         TextButton(
                             onPressed: () {
@@ -489,16 +494,17 @@ class _DropDown1State extends State<DropDown1> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          DropDown2())).then((value) =>
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              super.widget)));
+                                          DropDown()));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             super.widget)));
+
                             },
                             child: Text(
                               'Your places',
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(color: Colors.black,fontFamily: fonttest==null?changeFont:fonttest,),
                             ))
                       ],
                     ),
@@ -532,7 +538,7 @@ class _DropDown1State extends State<DropDown1> {
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
                                   style: TextStyle(
-                                      fontSize: 18, color: Colors.black54),
+                                      fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest),
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.place),
                                     filled: true,
@@ -565,7 +571,7 @@ class _DropDown1State extends State<DropDown1> {
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
                                   style: TextStyle(
-                                      fontSize: 18, color: Colors.black54),
+                                      fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest),
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.place),
                                     filled: true,
@@ -597,7 +603,7 @@ class _DropDown1State extends State<DropDown1> {
                                   textInputAction: TextInputAction.next,
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,
                                       fontSize: 18, color: Colors.black54),
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.place),
@@ -630,7 +636,7 @@ class _DropDown1State extends State<DropDown1> {
                                   textInputAction: TextInputAction.next,
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,
                                       fontSize: 18, color: Colors.black54),
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.place),
@@ -658,35 +664,33 @@ class _DropDown1State extends State<DropDown1> {
                               ElevatedButton(
                                 child: Text('Submit'),
                                 onPressed: () async {
-
-                                  pt = await placeName(editingController.text);
-                                  print('After Await  $placeResponse');
-                                  fl = await sendFloorName(floorEditingController.text);
-
-                                  flat = await sendFlatName(flatEditingController.text);
-                                  rm = [await sendRoomName(roomEditingController.text)];
-
-                                  setState(() {
-                                    isVisible=true;
-                                    // tabbarState=rm[0].rId;
-                                    tabbarState = roomResponse;
-                                    // dv=[deviceResponse] ;
-
-                                  });
+                                  //
+                                  // pt = await placeName(editingController.text);
+                                  // print('After Await  $placeResponse');
+                                  // fl = await sendFloorName(floorEditingController.text);
+                                  //
+                                  // flat = await sendFlatName(flatEditingController.text);
+                                  // rm = [await sendRoomName(roomEditingController.text)];
+                                  //
+                                  // setState(() {
+                                  //   isVisible=true;
+                                  //   // tabbarState=rm[0].rId;
+                                  //   tabbarState = roomResponse;
+                                  //   // dv=[deviceResponse] ;
+                                  //
+                                  // });
 
 
                                   print('On Press tabbar --> $tabbarState');
 
                                   Navigator.push(
-
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HomeTest(
-                                                pt: pt,
-                                                fl: fl,
-                                                flat: flat,
-                                                rm: rm,
-                                                dv: dv,
+                                          builder: (context) => Indicator(
+                                              placeName: editingController.text,
+                                            floorName: floorEditingController.text,
+                                            flatName: flatEditingController.text,
+                                            roomName: roomEditingController.text,
                                               )));
                                   // isVisible=false;
                                 },

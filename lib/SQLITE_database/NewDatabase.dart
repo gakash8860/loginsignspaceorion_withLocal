@@ -453,6 +453,7 @@ class NewDbProvider {
 
     return result;
   }
+  // List<Device> dvdata;
   Future<List<Device>> getDeviceByRoomId(String id) async {
     final db = await database;
     List result =
@@ -463,7 +464,7 @@ class NewDbProvider {
       rId: result[index]['r_id'].toString(),
       user: result[index]['user'],
     ));
-    print('DeviceChanges12 $dvdata');
+
     // dvdata = result.map((data) => Device.fromJson(data)).toList();
 
 

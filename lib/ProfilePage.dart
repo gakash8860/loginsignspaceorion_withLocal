@@ -7,6 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/utility.dart';
+import 'SQLITE_database/testinghome2.dart';
+import 'Setting_Page.dart';
+import 'changeFont.dart';
 import 'main.dart';
 import 'models/modeldefine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -344,13 +347,13 @@ class _ProfilePageState extends State<ProfilePage> {
       // backgroundColor: _switchValue?Colors.white12:Colors.white,
 
       body: Container(
-        // color: change_toDark ? Colors.black : Colors.white,
+        color: change_toDark ? Colors.black : Colors.white,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Colors.blueGrey, Colors.blueAccent, Colors.blueGrey])),
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //         begin: Alignment.centerLeft,
+        //         end: Alignment.centerRight,
+        //         colors: [Colors.blueGrey, Colors.blueAccent, Colors.blueGrey])),
         child: LayoutBuilder(builder:
                 (BuildContext context, BoxConstraints viewportConstraints) {
           if (viewportConstraints.maxWidth > 600) {
@@ -448,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ? "Loading"
                                         : lastName.toString(),
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 14),
+                                    style: TextStyle(fontSize: 14,),
                                   ),
                                 ),
                               )),
@@ -467,7 +470,7 @@ class _ProfilePageState extends State<ProfilePage> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text('GenOrion'),
+                title: Text('GenOrion',style: TextStyle( fontFamily: fonttest==null?'RobotoMono':fonttest),),
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
@@ -539,7 +542,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ? "Loading"
                                             : email.toString(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 14),
+                                        style: TextStyle(
+
+                                            fontSize: 14,fontFamily: fonttest==null?'RobotoMono':fonttest),
                                       ),
                                     ),
                                   )),
@@ -554,7 +559,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ? "Loading"
                                             : firstName.toString(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 14),
+                                        style: TextStyle(fontSize: 14,fontFamily: fonttest==null?'RobotoMono':fonttest),
                                       ),
                                     ),
                                   )),
@@ -569,7 +574,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ? "Loading"
                                             : lastName.toString(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 14),
+                                        style: TextStyle(fontSize: 14,fontFamily:  fonttest==null?changeFont:fonttest,),
                                       ),
                                     ),
                                   )),

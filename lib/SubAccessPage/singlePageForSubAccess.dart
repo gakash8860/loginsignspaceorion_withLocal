@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/localDatabaseForSubUser/subuserSqlite.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/Setting_Page.dart';
 import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
@@ -17,6 +18,7 @@ import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import '../ProfilePage.dart';
+import '../changeFont.dart';
 import '../dropdown1.dart';
 import '../dropdown2.dart';
 import '../main.dart';
@@ -184,6 +186,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         'Authorization': 'Token $token',
 
       });
+      if(response.statusCode>0){
+        print('asdf ${response.statusCode}');
+        print('asdf ${response.body}');
+      }
       // await subUserBox.clear();
       List subUserDecode = jsonDecode(response.body);
       if (allPlaceId.length == subUserDecode.length) {
@@ -712,7 +718,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
               return Scaffold(
                 appBar: AppBar(
                   title: GestureDetector(
-                    child: Text(pt.pType.toString()),
+                    child: Text(pt.pType.toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                     onTap: () async {
                       _createAlertDialogDropDown(context);
                     },
@@ -890,6 +896,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .white,
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               fontSize: 22,
                                                               fontWeight: FontWeight
                                                                   .bold,
@@ -904,6 +911,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                               color: Colors
                                                                   .white,
                                                               fontSize: 22,
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               // fontWeight: FontWeight.bold,
                                                               fontStyle: FontStyle
                                                                   .italic),
@@ -951,6 +959,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                                     .white,
                                                                 fontWeight: FontWeight
                                                                     .bold,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 fontSize: 22),),
                                                           Text(
                                                             flat.fltName
@@ -961,6 +970,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .white,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 // fontWeight: FontWeight.bold,
                                                                 fontStyle: FontStyle
                                                                     .italic,
@@ -1008,7 +1018,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     children: <Widget>[
                                                       Text('Sensors- ',
                                                         style: TextStyle(
-
+                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                           // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                                             fontSize: 12,
                                                             fontWeight: FontWeight
@@ -1033,6 +1043,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                                   sensorData[0]['sensor1']
                                                                       .toString(),
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 14,
                                                                       color: Colors
                                                                           .white70)),
@@ -1060,6 +1071,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                                   'sensor2']
                                                                       .toString(),
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 14,
                                                                       color: Colors
                                                                           .white70)),
@@ -1086,6 +1098,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                                   'sensor3']
                                                                       .toString(),
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 14,
                                                                       color: Colors
                                                                           .white70)),
@@ -1113,6 +1126,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                                   'sensor4']
                                                                       .toString(),
                                                                   style: TextStyle(
+                                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                                       fontSize: 14,
                                                                       color: Colors
                                                                           .white70)),
@@ -1242,6 +1256,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                 // text:deviceSubUser[index]['d_id'],
                                                   text: dv[index].dId,
                                                   style: TextStyle(
+                                                      fontFamily: fonttest==null?changeFont:fonttest,
                                                       fontSize: 15,
                                                       color: Colors.black)),
                                               TextSpan(text: "   "),
@@ -2479,6 +2494,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       child: Text(
                         'Turn Off All Appliances',
                         style: TextStyle(
+                          fontFamily: fonttest==null?changeFont:fonttest,
                           fontSize: 12.5,
                           fontWeight: FontWeight.bold,
                           color: _switchValue ? Colors.white : Colors.black,
@@ -2606,7 +2622,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                           .toString() == null
                       ? _dateString
                           : cutDate.toString()
-                          .toString()),
+                          .toString(),
+                      style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                       onTap: () {
                       pickDate();
                       }
@@ -2646,7 +2663,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       ),
                       ListTile(
                       title:
-                      Text('What Do You Want ??'),
+                      Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                       trailing: Icon(Icons.timer),
                       ),
                       ListTile(
@@ -2674,7 +2691,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       print('Sceduled');
                       },
                       icon: Icon(Icons.alarm),
-                      label: Text('Save'),
+                      label: Text('Save',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                       ),
                       ]));
                       });
@@ -2723,7 +2740,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       TextOverflow.ellipsis,
                       maxLines: 2,
                       style:
-                      TextStyle(fontSize: 10),
+                      TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                       ),
                       onPressed: () {
                       print('indexpinNames->  $index');
@@ -2893,7 +2910,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                         print('Sceduled');
                                                       },
                                                       icon: Icon(Icons.alarm),
-                                                      label: Text('Save'),
+                                                      label: Text('Save',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                     ),
                                                   ]));
                                             });
@@ -3005,7 +3022,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                 // '${namesDataList[index].toString()} ',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
-                                                style: TextStyle(fontSize: 10),
+                                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                               ),
                                               onPressed: () {
                                                 // _createAlertDialogForNameDeviceBox(

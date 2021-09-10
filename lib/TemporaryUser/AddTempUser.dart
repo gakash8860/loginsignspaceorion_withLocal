@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import '../changeFont.dart';
 import '../main.dart';
 
 void main()=>runApp(MaterialApp(home: AddTempUser(),));
@@ -488,16 +490,14 @@ class _AddTempUserState extends State<AddTempUser> {
                                           var placeId = selectedPlace.substring(
                                               7, 14);
                                           assignTempUserPlaceId = placeId;
-                                          print(
-                                              'PlaceId->  ${assignTempUserPlaceId}');
+                                          print('PlaceId->  ${assignTempUserPlaceId}');
                                           var aa = await NewDbProvider.instance
                                               .getFloorById(placeId.toString());
                                           print('AA  ${aa}');
                                           floorval = null;
                                           setState(() {
                                             floorQueryRows2 = aa;
-                                            floorval =
-                                                returnFloorQuery(placeId);
+                                            floorval = returnFloorQuery(placeId);
                                             returnFloorQuery(placeId);
                                           });
                                           print('Floorqwe  ${floorQueryRows2}');
@@ -805,7 +805,7 @@ class _AddTempUserState extends State<AddTempUser> {
             } else {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text('Add Temp User'),
+                  title: Text('Add Temp User',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                 ),
                 body: Container(
                   height: MediaQuery.of(context).size.height,
@@ -844,7 +844,7 @@ class _AddTempUserState extends State<AddTempUser> {
                               },
                               // controller: nameController,
                               style:
-                              TextStyle(fontSize: 18, color: Colors.black54),
+                              TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18, color: Colors.black54),
                               decoration: InputDecoration(
 
                                 filled: true,
@@ -875,6 +875,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                 this.tempUSerRequirementDetails.email = value;
                               },
                               style: TextStyle(
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   fontSize: 18, color: Colors.black54),
                               decoration: InputDecoration(
 
@@ -907,6 +908,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                     value;
                               },
                               style: TextStyle(
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   fontSize: 18, color: Colors.black54),
                               decoration: InputDecoration(
 
@@ -939,7 +941,9 @@ class _AddTempUserState extends State<AddTempUser> {
                               },
                               // controller: phoneController,
                               style:
-                              TextStyle(fontSize: 18, color: Colors.black54),
+                              TextStyle(
+                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                  fontSize: 18, color: Colors.black54),
                               decoration: InputDecoration(
 
                                 filled: true,
@@ -1042,6 +1046,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                         hint: Text('Select Place'),
                                         isExpanded: true,
                                         style: TextStyle(
+                                          fontFamily: fonttest==null?changeFont:fonttest,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1129,6 +1134,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                         hint: Text('Select Floor'),
                                         isExpanded: true,
                                         style: TextStyle(
+                                          fontFamily: fonttest==null?changeFont:fonttest,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1210,7 +1216,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                         dropdownColor: Colors.white70,
                                         icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Flat'),
+                                        hint: Text('Select Flat',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         isExpanded: true,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -1221,7 +1227,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                           return DropdownMenuItem(
                                             value: selectedFlat.toString(),
                                             child: Text(
-                                                "${selectedFlat['flt_name']}"),
+                                                "${selectedFlat['flt_name']}",style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                           );
                                         }).toList(),
                                         onChanged: (selectedFlat) async {
@@ -1294,7 +1300,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                         dropdownColor: Colors.white70,
                                         icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Room'),
+                                        hint: Text('Select Room',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         isExpanded: true,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -1306,7 +1312,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                           return DropdownMenuItem<String>(
                                             value: selectedRoom.toString(),
                                             child: Text(
-                                                "${selectedRoom['r_name']}"),
+                                                "${selectedRoom['r_name']}",style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                           );
                                         }).toList(),
                                         onChanged: (selectedRoom) async {
@@ -1336,6 +1342,7 @@ class _AddTempUserState extends State<AddTempUser> {
                                 child: Text(
                                   'Submit',
                                   style: TextStyle(
+                                    fontFamily: fonttest==null?changeFont:fonttest,
                                     color: Colors.white,
                                     fontSize: 20,
                                   ),

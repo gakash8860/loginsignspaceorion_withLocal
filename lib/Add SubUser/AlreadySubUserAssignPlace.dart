@@ -10,6 +10,8 @@ import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 
+import '../changeFont.dart';
+
 
 void main()=>runApp(MaterialApp(
   home: AlreadySubUser(),
@@ -325,7 +327,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
           }else{
             return Scaffold(
               appBar: AppBar(
-                title: Text('Already SubUser'),
+                title: Text('Already SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
               ),
               body: Container(
                 decoration: BoxDecoration(
@@ -359,7 +361,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                             keyboardType: TextInputType.emailAddress,
                             controller: emailController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -386,7 +388,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                             keyboardType: TextInputType.text,
                             controller: nameController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -429,7 +431,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                             color: Colors.black,
                                             width: 0.5,
                                           )),
-                                      child: DropdownButtonFormField<String>(
+                                      child: DropdownButtonFormField(
                                         decoration: InputDecoration(
                                           contentPadding: const EdgeInsets.all(
                                               15),
@@ -449,7 +451,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                         dropdownColor: Colors.white70,
                                         icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Place'),
+                                        hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                         isExpanded: true,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -460,7 +462,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                           return DropdownMenuItem<String>(
                                             value: selectedPlace.toString(),
                                             child: Text(
-                                                "${selectedPlace['p_type']}"),
+                                                "${selectedPlace['p_type']}",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                           );
                                         }).toList(),
                                         onChanged: (selectedPlace) async {
@@ -477,7 +479,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                       ),
                                     );
                                   } else {
-                                    return Center(child: Text('Please Wait'));
+                                    return Center(child: Text('Please Wait',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),));
                                   }
                                 }),
                           ),
@@ -486,6 +488,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               child: Text(
                                 'Submit',
                                 style: TextStyle(
+                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
                                   color: Colors.white,
                                   fontSize: 20,
                                 ),

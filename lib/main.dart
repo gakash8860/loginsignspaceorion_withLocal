@@ -15,6 +15,8 @@ import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/signUp.dart';
 import 'package:loginsignspaceorion/utility.dart';
+import 'package:loginsignspaceorion/wrongpassword.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'ProfilePage.dart';
 import 'SQLITE_database/NewDatabase.dart';
@@ -22,13 +24,18 @@ import 'dart:io' show Platform;
 import 'dart:async' show runZoned;
 import 'package:path/path.dart' show join, dirname;
 import 'package:shelf/shelf_io.dart' as io;
-import 'package:shelf_static/shelf_static.dart';
+
+import 'Setting_Page.dart';
+import 'changeFont.dart';
 import 'dropdown2.dart';
 import 'login_Screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-var API = 'https://genorion1.herokuapp.com/';
+
+
+var API = '127.0.0.1:8000/';
+// var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
@@ -78,10 +85,11 @@ void main()async {
     debugShowCheckedModeBanner: false,
     home: GettingStartedScreen(),
     routes:{
-
+      '/dropDown1': (context) => DropDown1(),
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
       DropDown1.routeName:(ctx) => DropDown1(),
+      WrongPassword.routeName:(ctx) => WrongPassword(),
       HomeTest.routeName:(ctx) => HomeTest(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
@@ -153,7 +161,20 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     });
     read();
   }
-
+  var font;
+  _getFont()async{
+    final SharedPreferences pref= await SharedPreferences.getInstance();
+    font= pref.getString('font');
+    if(font!=null){
+      fonttest=font;
+    }
+    print('number147859Main ${font}');
+  }
+  _getTheme()async{
+    final SharedPreferences pref= await SharedPreferences.getInstance();
+    changeDark=pref.getBool('darkmode');
+    change_toDark=changeDark;
+  }
   requestPermission() async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
@@ -184,6 +205,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
   allAwaitFunction()async{
     getUid();
+    getImage();
     fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
       .then((value) => floorQueryFunc()).then((value) => getAllFlat().then((value) => flatQueryFunc())).then((value) => getAllRoom())
       .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
@@ -199,7 +221,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     await devicePinSensorQueryFunc();
     await devicePinStatusQueryFunc();
     await devicePinNamesQueryFunc();
-    getImage();
+
   }
 
 
@@ -699,7 +721,7 @@ List resultFloor;
     var pId=placeTypeSingle[0]['p_id'].toString();
     print('placeId $pId');
     resultFloor= await NewDbProvider.instance.getFloorById(pId);
-    // print(' checkResult123456 ${resultFloor.first}');
+    print(' checkResult123456 ${resultFloor[0]}');
     var floor=FloorType(
       fId: resultFloor[0]['f_id'].toString(),
       fName: resultFloor[0]['f_name'].toString(),
@@ -824,6 +846,8 @@ List deviceResult;
   // }
   void  read() async {
     final storage = new FlutterSecureStorage();
+   await _getFont();
+   await _getTheme();
     await allAwaitFunction();
     token = await storage.read(key: "token");
 

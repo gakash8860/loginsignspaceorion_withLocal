@@ -12,8 +12,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MaterialApp(
-      home: DropDown(),
-    ));
+  home: DropDown(),
+));
 
 class DropDown extends StatefulWidget {
   @override
@@ -26,10 +26,12 @@ class _DropDownState extends State<DropDown> {
   Future placeVal;
   // List _place = ["Home", "Hotel", "Office", "Others", "Add"];
   Future floorVal;
+  Future flatVal;
   // List _placef = ["Ground Floor", "1st Floor", "2nd Floor", "3rd Floor"];
   final storage = new FlutterSecureStorage();
   PlaceType pt;
   FloorType fl;
+  Flat flt;
   List<RoomType> rm;
   List<Device> dv;
 
@@ -53,7 +55,7 @@ class _DropDownState extends State<DropDown> {
           .map((data) => Device.fromJson(data))
           .toList()
           .where((element) => ((element.rId == fId) &&
-              (element.rId == pId)))
+          (element.rId == pId)))
           .toList();
       // print(devices);
       return devices;
@@ -67,7 +69,7 @@ class _DropDownState extends State<DropDown> {
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
-    final url = API+'getallplaces/';
+    final url = API+'addyourplace/';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -78,7 +80,7 @@ class _DropDownState extends State<DropDown> {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
-          data.map((data) => PlaceType.fromJson(data)).toList();
+      data.map((data) => PlaceType.fromJson(data)).toList();
       // print(places);
       // floorVal = getfloors(places[0].p_id);
 
@@ -100,7 +102,7 @@ class _DropDownState extends State<DropDown> {
   // }
   // ignore: missing_return
   Future<List<FloorType>> getfloors(String pId) async {
-    final url = API+'getallfloors/?p_id='+pId;
+    final url = API+'addyourfloor/?p_id='+pId;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -114,11 +116,26 @@ class _DropDownState extends State<DropDown> {
       return floors;
     }
   }
+  Future<List<Flat>> getflat(String fId) async {
+    final url = API+'addyourflat/?f_id='+fId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      print(flatData);
+      return flatData;
+    }
+  }
 
   // ignore: missing_return
-  Future<List<RoomType>> getrooms(String fId) async {
-    var query = {'f_id': fId};
-    final url =API+'getallrooms/?f_id='+fId;
+  Future<List<RoomType>> getrooms(String flt_id) async {
+
+    final url =API+'addroom/?flt_id='+flt_id;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -164,7 +181,7 @@ class _DropDownState extends State<DropDown> {
   void initState() {
     super.initState();
     placeVal = getplaces();
-  print(placeVal);
+    print(placeVal);
     //  timer = Timer.periodic(Duration(seconds: 5), (timer) {
     //   _checkInternetConnectivity();
     // });
@@ -201,7 +218,7 @@ class _DropDownState extends State<DropDown> {
                           builder: (context,
                               AsyncSnapshot<List<PlaceType>> snapshot) {
                             if (snapshot.hasData) {
-                             // print(snapshot.hasData);
+                              // print(snapshot.hasData);
                               // setState(() {
                               //   floorVal = getfloors(snapshot.data[0].p_id);
                               // });
@@ -218,16 +235,16 @@ class _DropDownState extends State<DropDown> {
                                     child: Container(
                                       width: MediaQuery.of(context).size.width*2,
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        boxShadow: [BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 30,
-                                          offset: Offset(20,20)
-                                        )],
-                                        border: Border.all(
-                                          color: Colors.black,
-                                          width: 0.5,
-                                        )
+                                          color: Colors.white,
+                                          boxShadow: [BoxShadow(
+                                              color: Colors.black,
+                                              blurRadius: 30,
+                                              offset: Offset(20,20)
+                                          )],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )
                                       ),
                                       child: DropdownButtonFormField<PlaceType>(
                                         decoration:InputDecoration(
@@ -275,7 +292,7 @@ class _DropDownState extends State<DropDown> {
                               return CircularProgressIndicator();
                             }
                           }
-                          ),
+                      ),
                       FutureBuilder<List<FloorType>>(
                           future: floorVal,
                           builder:
@@ -339,6 +356,91 @@ class _DropDownState extends State<DropDown> {
                                             onChanged: (FloorType selectedFloor) {
                                               setState(() {
                                                 fl = selectedFloor;
+                                                flatVal=getflat(selectedFloor.fId);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    margin: new EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+
+                                ],
+                              );
+                            } else {
+                              return Center(
+                                  child: Text(
+                                      "Please select a place to proceed further"));
+                            }
+                          }),
+                      FutureBuilder<List<Flat>>(
+                          future: flatVal,
+                          builder:
+                              (context, AsyncSnapshot<List<Flat>> snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data.length == 0) {
+                                return Center(
+                                    child: Text("No Devices on this place"));
+                              }
+                              return Column(
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(41.0),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 50.0,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [BoxShadow(
+                                                  color: Colors.black,
+                                                  blurRadius: 30,
+                                                  // offset for Upward Effect
+                                                  offset: Offset(20,20)
+                                              )],
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5,
+                                              )
+                                          ),
+                                          child: DropdownButtonFormField<Flat>(
+                                            decoration:InputDecoration(
+                                              contentPadding: const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.white),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            ),
+                                            dropdownColor: Colors.white70,
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            iconSize: 28,
+                                            hint: Text('Select Floor'),
+                                            isExpanded: true,
+                                            value: flt,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            items: snapshot.data
+                                                .map((selectedFlat) {
+                                              return DropdownMenuItem<Flat>(
+                                                value: selectedFlat,
+                                                child: Text(selectedFlat.fltName),
+                                              );
+                                            }).toList(),
+                                            onChanged: (Flat selectedFlat) {
+                                              setState(() {
+                                              flt=selectedFlat;
                                               });
                                             },
                                           ),
@@ -368,11 +470,10 @@ class _DropDownState extends State<DropDown> {
                                           borderSide: BorderSide(
                                               color: Colors.white, width: 1),
                                           borderRadius:
-                                              BorderRadius.circular(50)),
+                                          BorderRadius.circular(50)),
                                       onPressed: () async {
-                                        await CircularProgressIndicator();
-                                        rm = await getrooms(fl.fId);
-                                        dv = await getDevices(pt.pId, fl.fId);
+                                        rm = await getrooms(flt.fltId);
+
 
                                         //print(pt.p_type);
                                         // print(rm[1]);
@@ -381,12 +482,13 @@ class _DropDownState extends State<DropDown> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (
-                                            context,
-                                          ) =>
+                                                  context,
+                                                  ) =>
                                                   Container(
                                                     child: HomeTest(
                                                         pt: pt,
                                                         fl: fl,
+                                                        flat: flt,
                                                         rm: rm,
                                                         dv: dv),
                                                   )),

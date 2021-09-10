@@ -4,7 +4,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 
+import '../changeFont.dart';
 import '../main.dart';
 import 'nextPage.dart';
 class SSID extends StatefulWidget {
@@ -90,7 +92,7 @@ print('SsidRequirementField ${widget.deviceId}');
     final node = FocusScope.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('GenOrion'),
+        title: Text('GenOrion',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
       ),
       body: isVisible?Container(color: Colors.blueAccent,child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,),),):
       Container(
@@ -134,7 +136,7 @@ print('SsidRequirementField ${widget.deviceId}');
                               this.ssidRequirementField.sSSID1 = value;
                             },
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.person),
                               filled: true,
@@ -167,7 +169,7 @@ print('SsidRequirementField ${widget.deviceId}');
                             },
                             obscureText: isHiddenPassword,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.security),
                               filled: true,
@@ -201,7 +203,7 @@ print('SsidRequirementField ${widget.deviceId}');
                               this.ssidRequirementField.sSSID2 = value;
                             },
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, fontFamily: fonttest==null?changeFont:fonttest,color: Colors.black54),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.person),
                               filled: true,
@@ -233,7 +235,7 @@ print('SsidRequirementField ${widget.deviceId}');
                             },
                             obscureText: isHiddenPassword,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, fontFamily: fonttest==null?changeFont:fonttest,color: Colors.black54),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.security),
                               filled: true,
@@ -295,7 +297,7 @@ print('SsidRequirementField ${widget.deviceId}');
                               this.ssidRequirementField.sSSID3 = value;
                             },
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest, color: Colors.black54),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.email),
                               filled: true,
@@ -327,7 +329,7 @@ print('SsidRequirementField ${widget.deviceId}');
                             },
                             obscureText: isHiddenPassword,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, fontFamily: fonttest==null?changeFont:fonttest,color: Colors.black54),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.security),
                               filled: true,
@@ -355,6 +357,7 @@ print('SsidRequirementField ${widget.deviceId}');
                               child: Text(
                                 'Submit',
                                 style: TextStyle(
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: Colors.white,
                                   fontSize: 20,
                                 ),

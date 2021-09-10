@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class WrongPassword extends StatelessWidget {
+  static const routeName = '/WrongPassword';
   const WrongPassword({Key key}) : super(key: key);
 
   @override

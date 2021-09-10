@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
 import '../Setting_Page.dart';
+import '../changeFont.dart';
 import '../main.dart';
 
 class TempAccessPlacePage extends StatefulWidget {
@@ -579,7 +581,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
             onTap: (){
               _createAlertDialogDropDown(context);
             },
-            child: Text(place[0].pType)),
+            child: Text(place[0].pType,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),)),
       ),
       body: Container(
         width: double.maxFinite,
@@ -626,6 +628,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                   Text(
                                     'Assigned By ',
                                     style: TextStyle(
+                                        fontFamily: fonttest==null?changeFont:fonttest,
                                         color: Colors.white,
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,
@@ -658,6 +661,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                         // 'Hello ',
                                         // + widget.fl.user.first_name,
                                         style: TextStyle(
+                                            fontFamily: fonttest==null?changeFont:fonttest,
                                             color: Colors.white,
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold,
@@ -681,6 +685,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                         // 'Hello ',
                                         // + widget.fl.user.first_name,
                                         style: TextStyle(
+                                            fontFamily: fonttest==null?changeFont:fonttest,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 22),
@@ -724,7 +729,9 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                     Container(
                                                       child: Text(
                                                         // 'aa',
-                                                          sensorData['sensor1'].toString(),                                                            style: TextStyle(
+                                                          sensorData['sensor1'].toString(),
+                                                          style: TextStyle(
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                           fontSize:
                                                           14,
                                                           color: Colors
@@ -752,6 +759,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                         // 's',
                                                           sensorData['sensor2'].toString(),
                                                           style: TextStyle(
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               fontSize:
                                                               14,
                                                               color: Colors
@@ -778,6 +786,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                         // 's',
                                                           sensorData['sensor3'].toString(),
                                                           style: TextStyle(
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               fontSize:
                                                               14,
                                                               color: Colors
@@ -803,6 +812,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                       child: Text(
                                                           sensorData['sensor4'].toString(),
                                                           style: TextStyle(
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               fontSize:
                                                               14,
                                                               color: Colors
@@ -819,6 +829,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                           Text(
                                               sensorData['d_id'].toString(),
                                               style: TextStyle(
+                                                  fontFamily: fonttest==null?changeFont:fonttest,
                                                   fontSize:
                                                   14,
                                                   color: Colors
@@ -861,7 +872,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                               Container(
                                   height: 30  ,
                                   child: Text('Rooms->', style: TextStyle(
-
+                                      fontFamily: fonttest==null?changeFont:fonttest,
                                     // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                       fontSize: 14,
                                       fontWeight: FontWeight
@@ -1270,6 +1281,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                       child: Text(
                         'Turn Off All Appliances',
                         style: TextStyle(
+                          fontFamily: fonttest==null?changeFont:fonttest,
                           fontSize: 14.5,
                           fontWeight: FontWeight.bold,
                           color: _switchValue ? Colors.white : Colors.black,
@@ -1415,7 +1427,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                                 TextOverflow.ellipsis,
                                                 maxLines: 2,
                                                 style:
-                                                TextStyle(fontSize: 10),
+                                                TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                               ),
                                               onPressed: () {
                                                 print(
@@ -1598,7 +1610,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                               // '${namesDataList[index].toString()} ',
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
-                                              style: TextStyle(fontSize: 10),
+                                              style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                             ),
                                             onPressed: () {
                                               // _createAlertDialogForNameDeviceBox(

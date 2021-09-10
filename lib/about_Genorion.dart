@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'SQLITE_database/testinghome2.dart';
+import 'changeFont.dart';
+
 void main() => runApp(MaterialApp(
       home: AboutGen(),
     ));
@@ -27,20 +30,20 @@ class AboutGen extends StatelessWidget {
               children: <Widget>[
                 Text(
                   '●	GenOrion is a part of SpaceStation Automation Pvt. Ltd.',
-                  style: TextStyle(fontSize: 20, color: Colors.black54),
+                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54),
                 ),
                 SizedBox(height: 40,),
                 Text(
                     '●	Developing smart switching and control systems for Automation.',
-                    style: TextStyle(fontSize: 20, color: Colors.black54)),
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
                 SizedBox(height: 40,),
                 Text(
                     '●	Systems can be used in Home, office, warehouses and Automobiles',
-                    style: TextStyle(fontSize: 20, color: Colors.black54)),
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
                 SizedBox(height: 40,),
                 Text(
                     '●	Motto is to make Automation affordable to reach each and every house.',
-                    style: TextStyle(fontSize: 20, color: Colors.black54)),
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
               ],
             ),
           );
@@ -55,17 +58,19 @@ class AboutGen extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     '●	GenOrion is a part of SpaceStation Automation Pvt. Ltd.',
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
+                    style: TextStyle(
+                      fontFamily: fonttest==null?changeFont:fonttest,
+                        fontSize: 20, color: Colors.black54),
                   ),
                   Text(
                       '●	Developing smart switching and control systems for Automation.',
-                      style: TextStyle(fontSize: 20, color: Colors.black54)),
+                      style: TextStyle(                      fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
                   Text(
                       '●	Systems can be used in Home, office, warehouses and Automobiles',
-                      style: TextStyle(fontSize: 20, color: Colors.black54)),
+                      style: TextStyle(                      fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
                   Text(
                       '●	Motto is to make Automation affordable to reach each and every house.',
-                      style: TextStyle(fontSize: 20, color: Colors.black54)),
+                      style: TextStyle(                      fontFamily: fonttest==null?changeFont:fonttest,fontSize: 20, color: Colors.black54)),
                 ],
               ),
             ),

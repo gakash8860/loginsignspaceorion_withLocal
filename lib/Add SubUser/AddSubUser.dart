@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import '../changeFont.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 import 'assignplace.dart';
@@ -418,7 +419,7 @@ void initState(){
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Add SubUser'),
+                title: Text('Add SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
               ),
               body: Container(
                 decoration: BoxDecoration(
@@ -453,7 +454,7 @@ void initState(){
                             keyboardType: TextInputType.emailAddress,
                             controller: emailController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -481,7 +482,7 @@ void initState(){
                             keyboardType: TextInputType.text,
                             controller: nameController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -539,7 +540,7 @@ void initState(){
                                   if (snapshot.data.length == 0) {
                                     return Center(
                                         child: Text(
-                                            "No Devices on this place"));
+                                            "No Devices on this place",style: TextStyle( fontFamily: fonttest==null?'RobotoMono':fonttest,),));
                                   }
                                   return Column(
                                       children: [
@@ -587,7 +588,7 @@ void initState(){
                                 items: placeRows.map((selectedPlace) {
                                 return DropdownMenuItem(
                                 value: selectedPlace.toString(),
-                                child: Text("${selectedPlace['p_type']}"),
+                                child: Text("${selectedPlace['p_type']}",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                 );
                                 }).toList(),
                                 onChanged: (selectedPlace) async {
@@ -617,6 +618,7 @@ void initState(){
                                 style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
+                                fontFamily: fonttest==null?'RobotoMono':fonttest,
                                 fontWeight: FontWeight.bold,
                                 ),
                                 ),
@@ -637,7 +639,7 @@ void initState(){
 
                                 } else {
                                 SizedBox(height: 45,);
-                                return Center(child: Text('Add User'));
+                                return null;
                                 }
                               }
                           ),

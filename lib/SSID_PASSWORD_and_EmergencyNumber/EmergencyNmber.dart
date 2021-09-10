@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:http/http.dart' as http;
+import '../changeFont.dart';
 import '../main.dart';
 import 'nextPage.dart';
 class EmergencyNumber extends StatefulWidget {
@@ -141,9 +143,7 @@ final storage= new FlutterSecureStorage();
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Emergency Number'),
-        ),
+
       body: isVisible?Container(color: Colors.blueAccent,child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,),),):
       Container(
         decoration: BoxDecoration(
@@ -156,234 +156,240 @@ final storage= new FlutterSecureStorage();
           child: LayoutBuilder(
             builder:
                 (BuildContext context, BoxConstraints viewportConstraints) {
-              return SingleChildScrollView(
-                dragStartBehavior: DragStartBehavior.down,
-                physics: BouncingScrollPhysics(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                  ),
-                  // color: Theme.of(context).primaryColor,
-                  width: double.infinity,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: viewportConstraints.maxHeight,
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('Emergency Number',style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                ),
+                body: SingleChildScrollView(
+                  dragStartBehavior: DragStartBehavior.down,
+                  physics: BouncingScrollPhysics(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
                     ),
-                    child: ClipPath(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
+                    // color: Theme.of(context).primaryColor,
+                    width: double.infinity,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight,
+                      ),
+                      child: ClipPath(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
 
-                          TextFormField(
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            // validator: nameValid,
-                            keyboardType: TextInputType.phone,
-                            onSaved: (String value) {
-                              print('value $value');
-                              this.emergencyRequirementField.number1 = value;
-                              print('AfterThis ${this.emergencyRequirementField.number1}');
-                              },
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
+                            TextFormField(
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              // validator: nameValid,
+                              keyboardType: TextInputType.phone,
+                              onSaved: (String value) {
+                                print('value $value');
+                                this.emergencyRequirementField.number1 = value;
+                                print('AfterThis ${this.emergencyRequirementField.number1}');
+                                },
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                              decoration: InputDecoration(
 
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Emergency Number 1',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-
-                          TextFormField(
-                            keyboardType: TextInputType.phone,
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            onSaved: (String value) {
-                              this.emergencyRequirementField.number2 = value;
-                            },
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Emergency Number 2',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            onSaved: (String value) {
-                              this.emergencyRequirementField.number3 = value;
-                            },
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Emergency Number 3',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            autofocus: true,
-                            keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            onSaved: (String value) {
-                              this.emergencyRequirementField.number4 = value;
-                            },
-
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Emergency Number 4',
-
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          // TextFormField(
-                          //   autofocus: true,
-                          //   textInputAction: TextInputAction.next,
-                          //   onEditingComplete: () => node.nextFocus(),
-                          //   autovalidateMode:
-                          //   AutovalidateMode.onUserInteraction,
-                          //   //validator: nameValid,
-                          //   onSaved: (String value) {
-                          //     this.data.username = value;
-                          //   },
-                          //   style:
-                          //   TextStyle(fontSize: 18, color: Colors.black54),
-                          //   decoration: InputDecoration(
-                          //     prefixIcon: Icon(Icons.person),
-                          //     filled: true,
-                          //     fillColor: Colors.white,
-                          //     hintText: 'username',
-                          //     contentPadding: const EdgeInsets.all(15),
-                          //     focusedBorder: OutlineInputBorder(
-                          //       borderSide: BorderSide(color: Colors.white),
-                          //       borderRadius: BorderRadius.circular(50),
-                          //     ),
-                          //     enabledBorder: UnderlineInputBorder(
-                          //       borderSide: BorderSide(color: Colors.white),
-                          //       borderRadius: BorderRadius.circular(50),
-                          //     ),
-                          //   ),
-                          // ),
-                          SizedBox(height: 15,),
-                          TextFormField(
-                            keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            // autovalidateMode: AutovalidateMode.values[2],
-                            // validator: validateEmail,
-                            onSaved: (String value) {
-                              // ignore: unnecessary_statements
-                              this.emergencyRequirementField.number5= value;
-                            },
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Emergency Number 5',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 15,
-                          ),
-
-                          SizedBox(height: 15,),
-                          // ignore: deprecated_member_use
-                          FlatButton(
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Emergency Number 1',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
-                              shape: OutlineInputBorder(
-                                borderSide:
-                                BorderSide(color: Colors.white, width: 2),
-                                borderRadius: BorderRadius.circular(90),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+
+                            TextFormField(
+                              keyboardType: TextInputType.phone,
+                              autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              onSaved: (String value) {
+                                this.emergencyRequirementField.number2 = value;
+                              },
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                              decoration: InputDecoration(
+
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Emergency Number 2',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
                               ),
-                              padding: const EdgeInsets.all(15),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                goToNextPage();
-                              }),
-                        ],
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.phone,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              onSaved: (String value) {
+                                this.emergencyRequirementField.number3 = value;
+                              },
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                              decoration: InputDecoration(
+
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Emergency Number 3',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            TextFormField(
+                              autofocus: true,
+                              keyboardType: TextInputType.phone,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              onSaved: (String value) {
+                                this.emergencyRequirementField.number4 = value;
+                              },
+
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                              decoration: InputDecoration(
+
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Emergency Number 4',
+
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+                            // TextFormField(
+                            //   autofocus: true,
+                            //   textInputAction: TextInputAction.next,
+                            //   onEditingComplete: () => node.nextFocus(),
+                            //   autovalidateMode:
+                            //   AutovalidateMode.onUserInteraction,
+                            //   //validator: nameValid,
+                            //   onSaved: (String value) {
+                            //     this.data.username = value;
+                            //   },
+                            //   style:
+                            //   TextStyle(fontSize: 18, color: Colors.black54),
+                            //   decoration: InputDecoration(
+                            //     prefixIcon: Icon(Icons.person),
+                            //     filled: true,
+                            //     fillColor: Colors.white,
+                            //     hintText: 'username',
+                            //     contentPadding: const EdgeInsets.all(15),
+                            //     focusedBorder: OutlineInputBorder(
+                            //       borderSide: BorderSide(color: Colors.white),
+                            //       borderRadius: BorderRadius.circular(50),
+                            //     ),
+                            //     enabledBorder: UnderlineInputBorder(
+                            //       borderSide: BorderSide(color: Colors.white),
+                            //       borderRadius: BorderRadius.circular(50),
+                            //     ),
+                            //   ),
+                            // ),
+                            SizedBox(height: 15,),
+                            TextFormField(
+                              keyboardType: TextInputType.phone,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              // autovalidateMode: AutovalidateMode.values[2],
+                              // validator: validateEmail,
+                              onSaved: (String value) {
+                                // ignore: unnecessary_statements
+                                this.emergencyRequirementField.number5= value;
+                              },
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                              decoration: InputDecoration(
+
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Emergency Number 5',
+                                contentPadding: const EdgeInsets.all(15),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 15,
+                            ),
+
+                            SizedBox(height: 15,),
+                            // ignore: deprecated_member_use
+                            FlatButton(
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                shape: OutlineInputBorder(
+                                  borderSide:
+                                  BorderSide(color: Colors.white, width: 2),
+                                  borderRadius: BorderRadius.circular(90),
+                                ),
+                                padding: const EdgeInsets.all(15),
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  goToNextPage();
+                                }),
+                          ],
+                        ),
                       ),
                     ),
                   ),

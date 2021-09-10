@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
 import 'package:http/http.dart'as http;
 import '../Setting_Page.dart';
+import '../changeFont.dart';
 import '../main.dart';
 
 class TempAccessFlatPage extends StatefulWidget {
@@ -466,6 +468,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                       child: Text(
                         'Turn Off All Appliances',
                         style: TextStyle(
+                          fontFamily: fonttest==null?changeFont:fonttest,
                           fontSize: 14.5,
                           fontWeight: FontWeight.bold,
                           color: _switchValue ? Colors.white : Colors.black,
@@ -611,7 +614,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                 TextOverflow.ellipsis,
                                                 maxLines: 2,
                                                 style:
-                                                TextStyle(fontSize: 10),
+                                                TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                               ),
                                               onPressed: () {
                                                 print(
@@ -794,7 +797,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                               // '${namesDataList[index].toString()} ',
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
-                                              style: TextStyle(fontSize: 10),
+                                              style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                             ),
                                             onPressed: () {
                                               // _createAlertDialogForNameDeviceBox(
@@ -834,7 +837,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
           }else {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Only Flat'),
+                title: Text('Only Flat',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
               ),
               body: Container(
                 width: double.maxFinite,
@@ -877,6 +880,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                         Text(
                                           'Assigned By ',
                                           style: TextStyle(
+                                              fontFamily: fonttest==null?changeFont:fonttest,
                                               color: Colors.white,
                                               fontSize: 22,
                                               fontWeight: FontWeight.bold,
@@ -885,6 +889,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                         Text(
                                           widget.ownerName.toString(),
                                           style: TextStyle(
+                                              fontFamily: fonttest==null?changeFont:fonttest,
                                               color: Colors.white,
                                               fontSize: 22,
                                               fontWeight: FontWeight.bold,
@@ -911,6 +916,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                               flat.fltName.toString(),
                                               // 'Hello ',
                                               style: TextStyle(
+                                                  fontFamily: fonttest==null?changeFont:fonttest,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 22),
@@ -957,6 +963,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                                 sensorData['sensor1'].toString(),                                                            style: TextStyle(
                                                                 fontSize:
                                                                 14,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 color: Colors
                                                                     .white70)),
                                                           ),
@@ -982,6 +989,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                               // 's',
                                                                 sensorData['sensor2'].toString(),
                                                                 style: TextStyle(
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     fontSize:
                                                                     14,
                                                                     color: Colors
@@ -1008,6 +1016,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                               // 's',
                                                                 sensorData['sensor3'].toString(),
                                                                 style: TextStyle(
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     fontSize:
                                                                     14,
                                                                     color: Colors
@@ -1033,6 +1042,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                             child: Text(
                                                                 sensorData['sensor4'].toString(),
                                                                 style: TextStyle(
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     fontSize:
                                                                     14,
                                                                     color: Colors
@@ -1049,6 +1059,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                                 Text(
                                                     sensorData['d_id'].toString(),
                                                     style: TextStyle(
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
                                                         fontSize:
                                                         14,
                                                         color: Colors
@@ -1091,7 +1102,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                                     Container(
                                         height: 30  ,
                                         child: Text('Rooms->', style: TextStyle(
-
+                                            fontFamily: fonttest==null?changeFont:fonttest,
                                           // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                             fontSize: 14,
                                             fontWeight: FontWeight

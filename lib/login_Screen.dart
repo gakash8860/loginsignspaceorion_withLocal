@@ -44,31 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  // ignore: missing_return
-  // Future<List<Device>> getDevices(String pId, String fId) async {
-  //   final url = 'https://genorion.herokuapp.com/device/';
-  //   String token = await getToken();
-  //   final response = await http.get(url, headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json',
-  //     'Authorization': 'Token $token',
-  //   });
-  //   if (response.statusCode == 200) {
-  //     List<dynamic> data = jsonDecode(response.body);
-  //     List<Device> devices = data
-  //         .map((data) => Device.fromJson(data))
-  //         .toList()
-  //         .where((element) => ((element.r_id.f_id.f_id == fId) &&
-  //             (element.r_id.f_id.p_id.p_id == pId)))
-  //         .toList();
-  //     // print(devices);
-  //     return devices;
-  //   }
-  //   // else(response.statusCode == 401){
-  //   //   throw "Not Authorised";
-  //   // }
-  // }
-
 
   goToNextPage() {
 
@@ -101,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
     print(data.email);
     checkDetailsWeb().then((value) {
       print(data.password);
-      Navigator.of(context).pushNamed(DropDown1.routeName);
+
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => DropDown1()));
       // Navigator.push(
@@ -172,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     // final url = 'http://192.168.0.107:8000/api-token-auth/';
     final url = API+'api-token-auth/';
-    print(getToken());
     var map = new Map<String, dynamic>();
     map['username'] = emailController.text;
     map['password'] = passwordController.text;
@@ -181,14 +155,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print('response.statusCode ${response.statusCode}');
     if (response.statusCode == 200) {
-      Map<String, dynamic> map = jsonDecode(response.body);
-      final storage = new FlutterSecureStorage();
-      await storage.write(key: "token", value: map["token"]);
-      final all = await storage.readAll();
-
-      print(all);
+      // Navigator.of(context).pushNamed('/dropDown1');
+      Navigator.of(context).pushNamed(DropDown1.routeName);
 
 
+    }else{
+      Navigator.of(context).pushNamed(WrongPassword.routeName);
     }
 
     if (response.statusCode == 400) {
@@ -266,11 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('GenOrion'),
-            // automaticallyImplyLeading: false,
-            elevation: 0,
-          ),
+
           body:isVisible?Container(color: Colors.blueAccent,child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,),),): ModalProgressHUD(
             inAsyncCall: _isInAsyncCall,
             progressIndicator:CircularProgressIndicator() ,
@@ -310,6 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       //   'assets/images/signin.png',
                                       //   height: 130,
                                       // ),
+                                      Text('Login',style: TextStyle(fontSize: 78),),
                                       SizedBox(
                                         height: 15,
                                       ),
@@ -436,14 +405,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             textColor: Colors.white,
                                             onPressed: () async {
                                               print('aaaaaaaaaaaaaa');
-                                              Navigator.of(context).pushNamed(DropDown1.routeName);
-                                              // if (formKey.currentState.validate()) {
-                                              //
-                                              //   goToNextPageWeb();
-                                              //
-                                              // } else {
-                                              //   print("not validated");
-                                              // }
+                                              // Navigator.of(context).pushNamed(DropDown1.routeName);
+                                              if (formKey.currentState.validate()) {
+
+                                                checkDetailsWeb();
+
+                                              } else {
+                                                print("not validated");
+                                              }
                                             }),
                                       ),
                                       Column(
@@ -486,10 +455,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             );
                           }
-                      return SingleChildScrollView(
-                        dragStartBehavior: DragStartBehavior.down,
-                        physics: BouncingScrollPhysics(),
-                        child: Container(
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text('GenOrion'),
+                          // automaticallyImplyLeading: false,
+                          // elevation: 0,
+                        ),
+                        body: Container(
+                          height: MediaQuery.of(context).size.height,
+
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [Colors.blue, Colors.lightBlueAccent])),
                           width: double.maxFinite,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 30,

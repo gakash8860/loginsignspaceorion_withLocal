@@ -11,7 +11,12 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
 class DesktopHome extends StatefulWidget {
-   // DesktopHome({Key key}) : super(key: key);
+  PlaceType pt;
+Flat flt;
+  FloorType fl;
+  List<RoomType> rm;
+  List<Device> dv;
+   DesktopHome({Key key,this.pt,this.fl,this.rm,this.dv,this.flt}) : super(key: key);
   var switch1_get;
   var switch1Name;
   var switch2Name;
@@ -73,6 +78,7 @@ class DesktopHome extends StatefulWidget {
 }
 
 class _DesktopHomeState extends State<DesktopHome> {
+  var Api='https://genorion1.herokuapp.com/';
   Future deviceSensorVal;
   int index=0;
   TabController tabC;
@@ -184,7 +190,7 @@ class _DesktopHomeState extends State<DesktopHome> {
   Future<IpAddress> fetchIp(String dId) async {
     while(counter<=dv.length){
       String token = await getToken();
-      final url ='http://genorion1.herokuapp.com/addipaddress/?d_id='+dId;
+      final url =Api+'addipaddress/?d_id='+dId;
       final response = await http.get(url,
           headers: {
             'Content-Type': 'application/json',
@@ -207,7 +213,7 @@ class _DesktopHomeState extends State<DesktopHome> {
   Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
-        'http://genorion1.herokuapp.com/tensensorsdata/?d_id=' + dId,
+        Api+'tensensorsdata/?d_id=' + dId,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -229,7 +235,7 @@ class _DesktopHomeState extends State<DesktopHome> {
     }
   }
   dataUpdate(String dId) async {
-    final String url = 'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url = Api+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -346,7 +352,7 @@ class _DesktopHomeState extends State<DesktopHome> {
 
   getData(String dId) async {
     print("Vice Id $dId");
-    final String url =  'http://genorionofficial.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url =  Api+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -880,7 +886,27 @@ class _DesktopHomeState extends State<DesktopHome> {
       ),
     );
   }
+  Future<List<Device>> getDevices(String rId) async {
+    print('tabbas ${tabbarState}');
+    var query = {'r_id': tabbarState};
+    final url = API+'addyourdevice/?r_id='+tabbarState;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      deviceData = jsonDecode(response.body);
+      dv = deviceData.map((data) => Device.fromJson(data)).toList();
+      print('Room Id query ================================   $query');
+      print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
 
+
+      return dv;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -933,9 +959,9 @@ class _DesktopHomeState extends State<DesktopHome> {
                                       // _editFloorNameAlertDialog(context);
                                     },
                                     child: Text(
-                                      // fl.fName.toString(),
+                                      widget.fl.fName.toString(),
 
-                                      'Hello Floor ',
+                                      // 'Hello Floor ',
                                       // + widget.fl.user.first_name,
                                       style: TextStyle(
                                           color: Colors.white,
@@ -955,8 +981,8 @@ class _DesktopHomeState extends State<DesktopHome> {
                                       // _editFloorNameAlertDialog(context);
                                     },
                                     child: Text(
-                                      // flat.fltName.toString(),
-                                      'Hello Flat ',
+                                      widget.flt.fltName.toString(),
+                                      // 'Hello Flat ',
                                       // + widget.fl.user.first_name,
                                       style: TextStyle(
                                           color: Colors.white,
@@ -1128,43 +1154,43 @@ class _DesktopHomeState extends State<DesktopHome> {
                                 print('longPress');
                                 // _editRoomNameAlertDialog(context);
                               },
-                              // child: TabBar(
-                              //   indicatorColor: Colors.blueAccent,
-                              //   controller: tabC,
-                              //   labelColor: Colors.blueAccent,
-                              //   indicatorWeight: 2.0,
-                              //   isScrollable: true,
-                              //   // tabs: [
-                              //   //   Tab(icon: Icon(Icons.directions_car)),
-                              //   //   Tab(icon: Icon(Icons.directions_transit)),
-                              //   //   Tab(icon: Icon(Icons.directions_bike)),
-                              //   // ],
-                              //   tabs: rm.map<Widget>((RoomType rm) {
-                              //     rIdForName = rm.rId;
-                              //     print('RoomId  $rIdForName');
-                              //     print('RoomId  ${rm.rName}');
-                              //     return Tab(
-                              //       text: rm.rName,
-                              //     );
-                              //   }).toList(),
-                              //   onTap: (index) async {
-                              //     // print(
-                              //     //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                              //     // tabbarState = widget.rm[index].rId;
-                              //     // setState(() {
-                              //     //   tabbarState = widget.rm[index].rId;
-                              //     //   // devicePinNamesQueryFunc();
-                              //     // });
-                              //     // // getDevices(tabbarState);
-                              //     // print(
-                              //     //     "tabbarState Tabs->  $tabbarState");
-                              //     // widget.dv = await NewDbProvider.instance
-                              //     //     .getDeviceByRoomId(tabbarState);
-                              //     // getAllRoom();
-                              //     // // widget.rm =await roomQueryFunc();
-                              //     // print('getDevices123 }');
-                              //   },
-                              // ),
+                              child: TabBar(
+                                indicatorColor: Colors.blueAccent,
+                                controller: tabC,
+                                labelColor: Colors.blueAccent,
+                                indicatorWeight: 2.0,
+                                isScrollable: true,
+                                // tabs: [
+                                //   Tab(icon: Icon(Icons.directions_car)),
+                                //   Tab(icon: Icon(Icons.directions_transit)),
+                                //   Tab(icon: Icon(Icons.directions_bike)),
+                                // ],
+                                tabs: rm.map<Widget>((RoomType rm) {
+                                  rIdForName = rm.rId;
+                                  print('RoomId  $rIdForName');
+                                  print('RoomId  ${rm.rName}');
+                                  return Tab(
+                                    text: rm.rName,
+                                  );
+                                }).toList(),
+                                onTap: (index) async {
+                                  // print(
+                                  //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                                  // tabbarState = widget.rm[index].rId;
+                                  // setState(() {
+                                  //   tabbarState = widget.rm[index].rId;
+                                  //   // devicePinNamesQueryFunc();
+                                  // });
+                                  getDevices(tabbarState);
+                                  // print(
+                                  //     "tabbarState Tabs->  $tabbarState");
+                                  // widget.dv = await NewDbProvider.instance
+                                  //     .getDeviceByRoomId(tabbarState);
+                                  // getAllRoom();
+                                  // // widget.rm =await roomQueryFunc();
+                                  // print('getDevices123 }');
+                                },
+                              ),
                             ),
                             Padding(
                               padding:
@@ -1201,7 +1227,7 @@ class _DesktopHomeState extends State<DesktopHome> {
                     return Container(
                       child: Column(
                         children: [
-                          // deviceContainer2(dv[index].dId, index),
+                          deviceContainer2(dv[index].dId, index),
                           Container(
                               //
                               // color: Colors.green,

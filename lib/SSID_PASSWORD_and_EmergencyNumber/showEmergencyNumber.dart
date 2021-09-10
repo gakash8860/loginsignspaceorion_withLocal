@@ -5,9 +5,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart ' as http;
 
+import '../changeFont.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 import 'EmergencyNmber.dart';
@@ -150,7 +152,7 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Emergency Number'),
+        title: Text('Emergency Number',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
       ),
       body:  Container(
         decoration: BoxDecoration(
@@ -178,19 +180,19 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
                               return Column(
                                 children: <Widget>[
                                   SizedBox(height: 100,),
-                                  Text('Emergency Number',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  Text('Emergency Number',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,fontFamily: fonttest==null?changeFont:fonttest,),),
                                   SizedBox(height: 15,),
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -207,14 +209,14 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('Number 2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Number 2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -231,14 +233,14 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('Number 3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Number 3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -262,7 +264,7 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[3].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[3].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -279,14 +281,14 @@ timer=Timer.periodic(Duration(seconds: 1), (timer) {getEmergencyNumber2();  getE
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('Number 5',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Number 5',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[4].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[4].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,

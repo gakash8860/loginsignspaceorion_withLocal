@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/AddTempUser.dart';
 import 'package:loginsignspaceorion/TemporaryUser/tempUserdetails.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../changeFont.dart';
 import '../main.dart';
 
 void main()=>runApp(MaterialApp(home: ShowTempUser(),));
@@ -363,7 +365,7 @@ void initState(){
             else{
               return Scaffold(
                 appBar: AppBar(
-                  title: Text('Temporary Users'),
+                  title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                   actions: [
 
                     MaterialButton(onPressed: (){
@@ -386,7 +388,7 @@ void initState(){
                             return Column(
                               children: [
                                 SizedBox(height: 250,),
-                                Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                                Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,),)),
                               ],
                             );
                           }else{
@@ -405,8 +407,8 @@ void initState(){
                                               child: Column(
                                                 children: [
                                                   ListTile(
-                                                    title: Text(tempUserDecodeList[index]['name']),
-                                                    trailing: Text(tempUserDecodeList[index]['email']),
+                                                    title: Text(tempUserDecodeList[index]['name'],style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                                    trailing: Text(tempUserDecodeList[index]['email'],style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
                                                     leading: IconButton(
                                                       icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
                                                       onPressed: (){
@@ -414,7 +416,7 @@ void initState(){
                                                         _showDialogForDeleteSubUser(index);
                                                       },
                                                     ),
-                                                    subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
+                                                    subtitle: Text(tempUserDecodeList[index]['timing'].toString(),style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
 
                                                     onTap: (){
                                                       print('printSubUser ${tempUserDecodeList[index]['name']}');
@@ -425,7 +427,7 @@ void initState(){
                                                   ),
                                                   Row(
                                                     children: [
-                                                      Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
+                                                      Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
                                                     ],
                                                   )
                                                 ],

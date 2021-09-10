@@ -235,11 +235,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('GenOrion'),
-        // backgroundColor: Colors.blueAccent,
-        elevation: 0,
-      ),
+
       body: isVisible?Container(color: Colors.blueAccent,child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,),),):
       Container(
         height: MediaQuery.of(context).size.height,
@@ -287,7 +283,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                               height: 15,
                             ),
                             Container(
-                              width: 700,
+                              width: 300,
                                 child: TextFormField(
                                   autofocus: true,
                                   textInputAction: TextInputAction.next,
@@ -542,267 +538,269 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                   ),
                 );
               }
-              return SingleChildScrollView(
-                dragStartBehavior: DragStartBehavior.down,
-                physics: BouncingScrollPhysics(),
-                child: Container(
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('GenOrion'),
+                  // backgroundColor: Colors.blueAccent,
+                  elevation: 0,
+                ),
+                body: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.blue, Colors.lightBlueAccent])),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                   ),
                   // color: Theme.of(context).primaryColor,
                   width: double.infinity,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: viewportConstraints.maxHeight,
-                    ),
-                    child: ClipPath(
-                      child: Column(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              // CircleAvatar(
-                              //   radius: 105,
-                              //   backgroundImage: imageFile==null? AssetImage('assets/images/blank.png'):FileImage(File(imageFile.path)),
-                              // )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: nameValid,
-                            onSaved: (String value) {
-                              this.data.fname = value;
-                            },
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.person),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'First name',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: nameValid,
-                            onSaved: (String value) {
-                              this.data.lname = value;
-                            },
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.person),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Last name',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            // autovalidateMode: AutovalidateMode.values[2],
-                            // validator: validateEmail,
-                            onSaved: (String value) {
-                              // ignore: unnecessary_statements
-                              this.data.email = value;
-                            },
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Enter your Email',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: validatePass,
-                            onSaved: (String value) {
-                              this.data.password = value;
-                            },
-                            obscureText: isHiddenPassword,
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.security),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Enter your password',
-                              suffixIcon: InkWell(
-                                  onTap: tooglePassword,
-                                  child: Icon(isHiddenPassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off)),
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            validator: validatePass,
-                            onSaved: (String value) {
-                              if(data.password.length==data.password2.length){
-                                this.data.password2=value;
-                              }else{
-                                return Text("Password doesn't match");
-                              }
-                             // this.data.password2 = value;
-                            },
-                            obscureText: isHiddenPassword,
-                            style:
-                            TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.security),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Re-enter your password',
-                              suffixIcon: InkWell(
-                                  onTap: tooglePassword,
-                                  child: Icon(isHiddenPassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off)),
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            textInputAction: TextInputAction.next,
-                            onEditingComplete: () => node.nextFocus(),
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            keyboardType: TextInputType.phone,
-                            validator: validateMobile,
-                            onSaved: (String value) {
-                              this.data.pno = value;
-                            },
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.phone_iphone),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Enter your Phone Number',
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          // ignore: deprecated_member_use
-                          FlatButton(
-                              child: Text(
-                                'Signup',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              shape: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.white, width: 2),
-                                borderRadius: BorderRadius.circular(90),
-                              ),
-                              padding: const EdgeInsets.all(15),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                if (formKey.currentState.validate()) {
-                                    //data.checkPassword();
-                                   goToNextPage();
-                                } else {
-                                  print("not validated");
-                                }
-                              }),
+                          // CircleAvatar(
+                          //   radius: 105,
+                          //   backgroundImage: imageFile==null? AssetImage('assets/images/blank.png'):FileImage(File(imageFile.path)),
+                          // )
                         ],
                       ),
-                    ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        autofocus: true,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
+                        validator: nameValid,
+                        onSaved: (String value) {
+                          this.data.fname = value;
+                        },
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'First name',
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
+                        validator: nameValid,
+                        onSaved: (String value) {
+                          this.data.lname = value;
+                        },
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Last name',
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        // autovalidateMode: AutovalidateMode.values[2],
+                        // validator: validateEmail,
+                        onSaved: (String value) {
+                          // ignore: unnecessary_statements
+                          this.data.email = value;
+                        },
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Enter your Email',
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        autofocus: true,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
+                        validator: validatePass,
+                        onSaved: (String value) {
+                          this.data.password = value;
+                        },
+                        obscureText: isHiddenPassword,
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.security),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Enter your password',
+                          suffixIcon: InkWell(
+                              onTap: tooglePassword,
+                              child: Icon(isHiddenPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off)),
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        autofocus: true,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        autovalidateMode:
+                        AutovalidateMode.onUserInteraction,
+                        validator: validatePass,
+                        onSaved: (String value) {
+                          if(data.password.length==data.password2.length){
+                            this.data.password2=value;
+                          }else{
+                            return Text("Password doesn't match");
+                          }
+                         // this.data.password2 = value;
+                        },
+                        obscureText: isHiddenPassword,
+                        style:
+                        TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.security),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Re-enter your password',
+                          suffixIcon: InkWell(
+                              onTap: tooglePassword,
+                              child: Icon(isHiddenPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off)),
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.phone,
+                        validator: validateMobile,
+                        onSaved: (String value) {
+                          this.data.pno = value;
+                        },
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.phone_iphone),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Enter your Phone Number',
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      // ignore: deprecated_member_use
+                      FlatButton(
+                          child: Text(
+                            'Signup',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                          shape: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2),
+                            borderRadius: BorderRadius.circular(90),
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          textColor: Colors.white,
+                          onPressed: () {
+                            if (formKey.currentState.validate()) {
+                                //data.checkPassword();
+                               goToNextPage();
+                            } else {
+                              print("not validated");
+                            }
+                          }),
+                    ],
                   ),
                 ),
               );

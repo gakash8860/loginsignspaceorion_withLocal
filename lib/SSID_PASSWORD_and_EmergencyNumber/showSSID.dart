@@ -5,11 +5,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/SSID.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart ' as http;
 
+import '../changeFont.dart';
 import '../main.dart';
 import 'EmergencyNmber.dart';
 
@@ -154,19 +156,19 @@ class _ShowSsidState extends State<ShowSsid> {
                               return Column(
                                 children: <Widget>[
                                   SizedBox(height: 70,),
-                                  Text('SSID Number',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  Text('SSID Number',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,fontFamily: fonttest==null?changeFont:fonttest,),),
                                   SizedBox(height: 15,),
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                       Text('SSID1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                       Text('SSID1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[0].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -183,14 +185,14 @@ class _ShowSsidState extends State<ShowSsid> {
                                   Row(
                                     children: [
                                       SizedBox(width: 25,),
-                                      Text('Password 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Password 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[1].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -207,14 +209,14 @@ class _ShowSsidState extends State<ShowSsid> {
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('SSID2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('SSID2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[2].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -231,14 +233,14 @@ class _ShowSsidState extends State<ShowSsid> {
                                   Row(
                                     children: [
                                       SizedBox(width: 25,),
-                                      Text('Password 2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Password 2',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[3].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[3].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -255,14 +257,14 @@ class _ShowSsidState extends State<ShowSsid> {
                                   Row(
                                     children: [
                                       SizedBox(width: 55,),
-                                      Text('SSID3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('SSID3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[4].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[4].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -279,14 +281,14 @@ class _ShowSsidState extends State<ShowSsid> {
                                   Row(
                                     children: [
                                       SizedBox(width: 25,),
-                                      Text('Password 3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                      Text('Password 3',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                       SizedBox(width: 15,),
                                       Container(
                                         height: 45,
                                         width: 195,
                                         child:Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(statusData[5].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          child: Text(statusData[5].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,

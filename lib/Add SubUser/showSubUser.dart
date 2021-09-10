@@ -9,6 +9,7 @@ import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../changeFont.dart';
 import '../main.dart';
 import 'AddSubUser.dart';
 import 'SubUserDetailPage.dart';
@@ -370,7 +371,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
         } else {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Sub Users'),
+              title: Text('Sub Users',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
               actions: [
                 MaterialButton(
                     onPressed: () {
@@ -381,7 +382,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                     },
                     child: Text(
                       'Add SubUser',
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 15,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                     )),
                 MaterialButton(
                     onPressed: () {
@@ -394,7 +395,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                     },
                     child: Text(
                       'Assign Place',
-                      style: TextStyle(fontSize: 8),
+                      style: TextStyle(fontSize: 8,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                     )),
               ],
             ),
@@ -425,7 +426,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                                   Center(
                                       child: Text(
                                     'Sorry we cannot find any sub User please add',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                                   )),
                                 ],
                               );
@@ -448,10 +449,10 @@ class _ShowSubUserState extends State<ShowSubUser> {
                                                 child: ListTile(
                                                   title: Text(
                                                       subUserDecodeList[index]
-                                                          ['name']),
+                                                          ['name'],style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                   trailing: Text(
                                                       subUserDecodeList[index]
-                                                          ['email']),
+                                                          ['email'],style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                   leading: IconButton(
                                                     icon: Icon(
                                                       Icons.delete_forever,

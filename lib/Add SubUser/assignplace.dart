@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:http/http.dart'as http;
+import 'package:loginsignspaceorion/changeFont.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 void main()=>runApp(MaterialApp(
@@ -75,7 +76,7 @@ class _AssignPlaceState extends State<AssignPlace> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Assign Place'),
+        title: Text('Assign Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
       ),
       body: Center(
 
@@ -104,7 +105,7 @@ class _AssignPlaceState extends State<AssignPlace> {
                       if (snapshot.data.length == 0) {
                         return Center(
                             child: Text(
-                                "No Devices on this place"));
+                                "No Devices on this place",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),));
                       }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -143,7 +144,7 @@ class _AssignPlaceState extends State<AssignPlace> {
                               dropdownColor: Colors.white70,
                               icon: Icon(Icons.arrow_drop_down),
                               iconSize: 28,
-                              hint: Text('Select Place'),
+                              hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                               isExpanded: true,
                               style: TextStyle(
                                 color: Colors.black,
@@ -153,7 +154,7 @@ class _AssignPlaceState extends State<AssignPlace> {
                               items: placeRows.map((selectedPlace) {
                                 return DropdownMenuItem(
                                   value: selectedPlace.toString(),
-                                  child: Text("${selectedPlace['p_type']}"),
+                                  child: Text("${selectedPlace['p_type']}",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                 );
                               }).toList(),
                               onChanged: (selectedPlace) async {
@@ -181,6 +182,7 @@ class _AssignPlaceState extends State<AssignPlace> {
                               child: Text(
                                 'Next',
                                 style: TextStyle(
+                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
                                   color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,

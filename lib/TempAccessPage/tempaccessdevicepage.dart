@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
 import 'package:http/http.dart' as http;
 import '../Setting_Page.dart';
+import '../changeFont.dart';
 import '../main.dart';
 
 class TempAccessDevicePage extends StatefulWidget {
@@ -278,7 +280,8 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       builder: (context) =>
           AlertDialog(
             title: Text("Alert"),
-            content: Text("Would to like to turn off all the appliances ?"),
+            content: Text("Would to like to turn off all the appliances ?",
+              style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
             actions: <Widget>[
               // ignore: deprecated_member_use
               FlatButton(
@@ -312,7 +315,8 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                   }),
               // ignore: deprecated_member_use
               FlatButton(
-                  child: Text("No"),
+                  child: Text("No",
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }),
@@ -386,6 +390,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                       child: Text(
                         'Turn Off All Appliances',
                         style: TextStyle(
+                          fontFamily: fonttest==null?changeFont:fonttest,
                           fontSize: 14.5,
                           fontWeight: FontWeight.bold,
                           color: _switchValue ? Colors.white : Colors.black,
@@ -531,7 +536,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                 TextOverflow.ellipsis,
                                                 maxLines: 2,
                                                 style:
-                                                TextStyle(fontSize: 10),
+                                                TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                               ),
                                               onPressed: () {
                                                 print(
@@ -704,7 +709,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                               // '${namesDataList[index].toString()} ',
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
-                                              style: TextStyle(fontSize: 10),
+                                              style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 10),
                                             ),
                                             onPressed: () {
                                               // _createAlertDialogForNameDeviceBox(
@@ -740,7 +745,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       }else{
         return Scaffold(
           appBar: AppBar(
-            title: Text('Only Device'),
+            title: Text('Only Device',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
           ),
           body: Container(
             width: double.maxFinite,
@@ -785,6 +790,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 22,
+                                          fontFamily: fonttest==null?changeFont:fonttest,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.italic),
                                     ),
@@ -793,6 +799,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 22,
+                                          fontFamily: fonttest==null?changeFont:fonttest,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.italic),
                                     ),
@@ -834,6 +841,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                             sensorData['sensor1'].toString(),                                                            style: TextStyle(
                                                             fontSize:
                                                             14,
+                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                             color: Colors
                                                                 .white70)),
                                                       ),
@@ -859,6 +867,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                           // 's',
                                                             sensorData['sensor2'].toString(),
                                                             style: TextStyle(
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 fontSize:
                                                                 14,
                                                                 color: Colors
@@ -885,6 +894,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                           // 's',
                                                             sensorData['sensor3'].toString(),
                                                             style: TextStyle(
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 fontSize:
                                                                 14,
                                                                 color: Colors
@@ -910,6 +920,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                                         child: Text(
                                                             sensorData['sensor4'].toString(),
                                                             style: TextStyle(
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                                 fontSize:
                                                                 14,
                                                                 color: Colors
@@ -926,6 +937,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                             Text(
                                                 sensorData['d_id'].toString(),
                                                 style: TextStyle(
+                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                     fontSize:
                                                     14,
                                                     color: Colors
@@ -970,6 +982,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                                           // text:deviceSubUser[index]['d_id'],
                                             text: widget.deviceId.toString(),
                                             style: TextStyle(
+                                                fontFamily: fonttest==null?changeFont:fonttest,
                                                 fontSize: 15,
                                                 color: Colors.black)),
                                         TextSpan(text: "   "),
