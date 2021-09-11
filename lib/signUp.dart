@@ -78,7 +78,9 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     map['last_name'] = data.lname;
     map['email'] = data.email;
     map['phone_no'] = data.pno;
-    response = await http.post(url, body: map,encoding: Encoding.getByName("utf-8"));
+    response = await http.post(url, body: map,encoding: Encoding.getByName("utf-8"),headers: {HttpHeaders.contentTypeHeader:"application/json"});
+    print('response.body');
+    print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
       print(data.email);

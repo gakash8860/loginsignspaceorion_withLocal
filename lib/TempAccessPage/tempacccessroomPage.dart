@@ -808,7 +808,322 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
       if(viewportConstraints.maxWidth>600){
-        return Container();
+        return Container(
+          width: double.maxFinite,
+          color: change_toDark ? Colors.black : Colors.white,
+          child: DefaultTabController(
+            length: room.length,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.27,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xff669df4),
+                                Color(0xff4e80f3)
+                              ]),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
+                        ),
+                        padding: EdgeInsets.only(
+                          top: 40,
+                          bottom: 10,
+                          left: 30,
+                          right: 30,
+                        ),
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            GestureDetector(
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Assigned By ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  Text(
+                                    widget.ownerName.toString(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                // _createAlertDialogDropDown(context);
+                              },
+                            ),
+                            SizedBox(height:22),
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: deviceSensorVal,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      print('SnapShot ${snapshot}');
+                                      return Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.fire,
+                                                  color: Colors.yellow,
+                                                ),
+                                                SizedBox(
+                                                  height: 32,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text(
+                                                        // 'aa',
+                                                          sensorData['sensor1'].toString(),                                                            style: TextStyle(
+                                                          fontSize:
+                                                          14,
+                                                          color: Colors
+                                                              .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 35,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons
+                                                      .temperatureLow,
+                                                  color: Colors.orange,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text(
+                                                        // 's',
+                                                          sensorData['sensor2'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 45,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.wind,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text(
+                                                        // 's',
+                                                          sensorData['sensor3'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 42,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.cloud,
+                                                  color: Colors.orange,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text(
+                                                          sensorData['sensor4'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 22,
+                                          ),
+                                          Text(
+                                              sensorData['d_id'].toString(),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                  14,
+                                                  color: Colors
+                                                      .white70)),
+                                        ],
+                                      );
+                                    } else {
+                                      return Center(
+                                        child: Text('Loading...'),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                //Room Tabs
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  // centerTitle: true,
+                  floating: true,
+                  pinned: true,
+                  backgroundColor: Colors.white,
+
+                  title: Container(
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Container(
+                                  height: 30  ,
+                                  child: Text('Rooms->', style: TextStyle(
+
+                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight
+                                          .bold,
+                                      color: Colors
+                                          .black
+                                  ),)),
+                              TabBar(
+                                indicatorColor: Colors.blueAccent,
+                                controller: tabC,
+                                labelColor: Colors.blueAccent,
+                                indicatorWeight: 2.0,
+                                isScrollable: true,
+                                tabs:room.map<Widget>((TempAccessRoom rm) {
+                                  return Tab(
+                                    text: rm.rName,
+                                  );
+                                }).toList(),
+                                onTap: (index) async {
+                                  tabbarState=room[index].rId.toString();
+                                  getDeviceForTempUser(tabbarState);
+
+
+                                },
+                              ),
+
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    print('asdfirst ${dv.length}');
+                    if (index <dv.length) {
+
+                      dv.length==null? Text('loading'):dv.length==null;
+                      print('asdf ${dv.length}');
+                      Text(
+                        "Loading",
+                        style: TextStyle(fontSize: 44),
+                      );
+
+                      return Container(
+                        child: Column(
+                          children: [
+                            deviceContainer2(dv[index].dId, index),
+                            Container(
+                              //
+                              // color: Colors.green,
+                                height: 35,
+                                child: GestureDetector(
+                                  child: RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                        // text:'aa',
+                                        // text:deviceSubUser[index]['d_id'],
+                                          text: dv[index].dId,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black)),
+                                      TextSpan(text: "   "),
+                                      WidgetSpan(
+                                          child: Icon(
+                                            Icons.settings,
+                                            size: 18,
+                                          ))
+                                    ]),
+                                  ),
+                                  onTap: () {
+                                    // _createAlertDialogForSSIDAndEmergencyNumber(
+                                    //     context);
+                                    print('on tap');
+                                  },
+                                )),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return null;
+                    }
+                  }),
+                )
+              ],
+            ),
+          ),
+        );
       }else{
         return Scaffold(
           appBar: AppBar(

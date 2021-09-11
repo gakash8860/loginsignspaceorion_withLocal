@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/AlreadySubUserAssignPlace.dart';
+import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -371,7 +372,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
         } else {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Sub Users',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+              title: Text('Sub Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
               actions: [
                 MaterialButton(
                     onPressed: () {
@@ -382,7 +383,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                     },
                     child: Text(
                       'Add SubUser',
-                      style: TextStyle(fontSize: 15,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                      style: TextStyle(fontSize: 15,fontFamily: fonttest==null?changeFont:fonttest,),
                     )),
                 MaterialButton(
                     onPressed: () {
@@ -395,7 +396,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                     },
                     child: Text(
                       'Assign Place',
-                      style: TextStyle(fontSize: 8,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                      style: TextStyle(fontSize: 8,fontFamily: fonttest==null?changeFont:fonttest,),
                     )),
               ],
             ),
@@ -426,7 +427,7 @@ class _ShowSubUserState extends State<ShowSubUser> {
                                   Center(
                                       child: Text(
                                     'Sorry we cannot find any sub User please add',
-                                    style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                                    style: TextStyle(fontSize: 14,fontFamily: fonttest==null?changeFont:fonttest,),
                                   )),
                                 ],
                               );

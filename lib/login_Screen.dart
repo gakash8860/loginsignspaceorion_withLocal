@@ -163,15 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushNamed(WrongPassword.routeName);
     }
 
-    if (response.statusCode == 400) {
-      //  final snackBar=SnackBar(content: Text('Login Successful')
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
-
-      throw ("Wrong Credentials");
-    }
-    if (response.statusCode == 500) {
-      throw ("Internal Server Error");
-    }
 
   }
 
@@ -405,14 +396,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             textColor: Colors.white,
                                             onPressed: () async {
                                               print('aaaaaaaaaaaaaa');
-                                              // Navigator.of(context).pushNamed(DropDown1.routeName);
-                                              if (formKey.currentState.validate()) {
-
-                                                checkDetailsWeb();
-
-                                              } else {
-                                                print("not validated");
-                                              }
+                                              Navigator.of(context).pushNamed(DropDown1.routeName);
+                                              // if (formKey.currentState.validate()) {
+                                              //
+                                              //   checkDetailsWeb();
+                                              //
+                                              // } else {
+                                              //   print("not validated");
+                                              // }
                                             }),
                                       ),
                                       Column(

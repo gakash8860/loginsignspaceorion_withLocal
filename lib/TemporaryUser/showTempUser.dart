@@ -388,7 +388,7 @@ void initState(){
                             return Column(
                               children: [
                                 SizedBox(height: 250,),
-                                Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,),)),
+                                Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 14,fontFamily: fonttest==null?changeFont:fonttest,),)),
                               ],
                             );
                           }else{

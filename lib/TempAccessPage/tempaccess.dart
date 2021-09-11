@@ -109,6 +109,29 @@ class _TempAccessPageState extends State<TempAccessPage> {
     }
     return Future.value(true);
   }
+  Future<void> getTempUsersWeb() async {
+
+    String token = await getToken();
+
+    final url = API+'giveaccesstotempuser/?mobile='+widget.mobileNumber;
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+
+       tempUserDecode = jsonDecode(response.body);
+
+      print('tempResponse ${tempUserDecode}');
+
+    } catch (e) {
+      // print('Status Exception $e');
+
+    }
+
+    return Future.value(true);
+  }
 
   Future putTempUser(data) async {
     await tempUserBox.clear();
@@ -342,7 +365,8 @@ TextEditingController phoneController= new TextEditingController();
                   // ignore: deprecated_member_use
                   FlatButton(
                       child: Text("Submit"),
-                      onPressed: () {
+                      onPressed: ()async {
+                        await _removeTempNumber();
                         var mobile =phoneController.text;
                         _setTempNumber(mobile);
 
@@ -366,210 +390,409 @@ var NoPlace='NoPlace';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Temp Access'),
-        actions: [
-          MaterialButton(
-              onPressed: ()async {
-                await _removeTempNumber();
-               await _showDialogForTempAccessPge();
-              },
-              child: Text(
-                'Edit PhoneNumber',
-                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 15),
-              )),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: getTempUsers,
-        child: SingleChildScrollView(
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+      if (viewportConstraints.maxWidth > 600) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.blue, Colors.lightBlueAccent])),
           child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.blue, Colors.lightBlueAccent])),
-            child: Container(
-              // color: Colors.green,
-              // height: 789,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: FutureBuilder(
-                  future: getTempUsers(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      // getPlaceName();
-                      if (tempUserDecodeList.isEmpty) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: 250,
-                            ),
-                            Center(
-                                child: Text(
-                              'Sorry we cannot find any Temp User please add',
-                              style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
-                            )),
-                          ],
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Expanded(
-                                child: ListView.builder(
-                                    itemCount: tempUserDecodeList.length,
-                                    itemBuilder: (context, index) {
-                                      // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
-                                      // getPlaceName();
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Card(
-                                          semanticContainer: true,
-                                          shadowColor: Colors.grey,
-                                          child: Column(
-                                            children: [
-                                              ListTile(
-                                                onTap: (){
-                                                  if(tempUserDecodeList[index]['p_id']!=null){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
-                                                      placeId: tempUserDecodeList[index]['p_id'].toString(),
-                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                    )));
-                                                  }else if(tempUserDecodeList[index]['f_id']!=null){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
-                                                      floorId: tempUserDecodeList[index]['f_id'].toString(),
-                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                    )));
-                                                  }else if(tempUserDecodeList[index]['flt_id']!=null){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
-                                                      flatId: tempUserDecodeList[index]['flt_id'].toString(),
-                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                    )));
-                                                  }else if(tempUserDecodeList[index]['r_id']!=null){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
-                                                   ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                      roomId: tempUserDecodeList[index]['r_id'],
-                                                    )));
-                                                  }else if(tempUserDecodeList[index]['d_id']!=null){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
-                                                      ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                      deviceId: tempUserDecodeList[index]['d_id'],
-                                                    )));
-                                                  }
-
-
-                                                },
-                                                title: Text(tempUserDecodeList[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-
-                                              ),
-
-
-                                              // Column(
-                                              //   children: [
-                                              //     Container(
-                                              //       color: Colors.red,
-                                              //       height: 45,
-                                              //       child: ListView.builder(
-                                              //         itemCount: 1,
-                                              //           itemBuilder: (context,index){
-                                              //             if(tempUserDecodeList[index]['p_id']!=null){
-                                              //               return Row(
-                                              //                 children: [
-                                              //                   Text(tempUserDecodeList[index]['p_id'].toString()),
-                                              //                 ],
-                                              //               );
-                                              //             }else if(tempUserDecodeList[index]['f_id']!=null){
-                                              //               return Row(
-                                              //                 children: [
-                                              //                   Text('aaaa')
-                                              //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
-                                              //                 ],
-                                              //               );
-                                              //             }else{return null;}
-                                              //       }
-                                              //       ),
-                                              //
-                                              //     ),
-                                              //   ],
-                                              // ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(4.0),
-                                                    child: Text(
-                                                      tempUserDecodeList[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
-                                                      textAlign: TextAlign.end,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                    ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
-                                                    textAlign: TextAlign.end,
-                                                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                    ['flt_id']
-                                                        ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
-                                                    textAlign: TextAlign.end,
-                                                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                    ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
-                                                    textAlign: TextAlign.end,
-                                                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-
-                                                  Text(
-                                                    tempUserDecodeList[index]
-                                                    ['d_id']==null?"":'Device : ${tempUserDecodeList[index]['d_id']}',
-                                                    textAlign: TextAlign.end,
-                                                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  ),
-                                                ],
-                                              ),
-
-                                            ],
-                                          ),
-                                        ),
-                                      );
-
-                                    })),
-                          ],
-                        );
-                      }
+            color: Colors.green,
+            // height: 789,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: FutureBuilder(
+                future: getTempUsersWeb(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    // getPlaceName();
+                    if (tempUserDecode.isEmpty) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 250,
+                          ),
+                          Center(
+                              child: Text(
+                                'Sorry we cannot find any Temp User please add',
+                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
+                              )),
+                        ],
+                      );
                     } else {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.red,
-                          semanticsLabel: 'Loading...',
-                        ),
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 25,
+                          ),
+                          Expanded(
+                              child: ListView.builder(
+                                  itemCount: tempUserDecode.length,
+                                  itemBuilder: (context, index) {
+                                    // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
+                                    // getPlaceName();
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        semanticContainer: true,
+                                        shadowColor: Colors.grey,
+                                        child: Column(
+                                          children: [
+                                            ListTile(
+                                              onTap: (){
+                                                if(tempUserDecode[index]['p_id']!=null){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+                                                    placeId: tempUserDecode[index]['p_id'].toString(),
+                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
+                                                  )));
+                                                }else if(tempUserDecode[index]['f_id']!=null){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
+                                                    floorId: tempUserDecode[index]['f_id'].toString(),
+                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
+                                                  )));
+                                                }else if(tempUserDecode[index]['flt_id']!=null){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
+                                                    flatId: tempUserDecode[index]['flt_id'].toString(),
+                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
+                                                  )));
+                                                }else if(tempUserDecode[index]['r_id']!=null){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
+                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
+                                                    roomId: tempUserDecode[index]['r_id'],
+                                                  )));
+                                                }else if(tempUserDecode[index]['d_id']!=null){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
+                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
+                                                    deviceId: tempUserDecode[index]['d_id'],
+                                                  )));
+                                                }
+
+
+                                              },
+                                              title: Text(tempUserDecode[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+
+                                            ),
+
+
+                                            // Column(
+                                            //   children: [
+                                            //     Container(
+                                            //       color: Colors.red,
+                                            //       height: 45,
+                                            //       child: ListView.builder(
+                                            //         itemCount: 1,
+                                            //           itemBuilder: (context,index){
+                                            //             if(tempUserDecodeList[index]['p_id']!=null){
+                                            //               return Row(
+                                            //                 children: [
+                                            //                   Text(tempUserDecodeList[index]['p_id'].toString()),
+                                            //                 ],
+                                            //               );
+                                            //             }else if(tempUserDecodeList[index]['f_id']!=null){
+                                            //               return Row(
+                                            //                 children: [
+                                            //                   Text('aaaa')
+                                            //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
+                                            //                 ],
+                                            //               );
+                                            //             }else{return null;}
+                                            //       }
+                                            //       ),
+                                            //
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+
+                                                Padding(
+                                                  padding: const EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    tempUserDecode[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  tempUserDecode[index]
+                                                  ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  tempUserDecode[index]
+                                                  ['flt_id']
+                                                      ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  tempUserDecode[index]
+                                                  ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+
+                                                Text(
+                                                  tempUserDecode[index]
+                                                  ['d_id']==null?"":'Device : ${tempUserDecode[index]['d_id']}',
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                ),
+                                              ],
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+                                    );
+
+                                  })),
+                        ],
                       );
                     }
-                  }),
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.red,
+                        semanticsLabel: 'Loading...',
+                      ),
+                    );
+                  }
+                }),
+          ),
+        );
+      }else{
+        return Scaffold(
+
+          appBar: AppBar(
+            title: Text('Temp Access'),
+            actions: [
+              MaterialButton(
+                  onPressed: ()async {
+
+                    await _showDialogForTempAccessPge();
+                  },
+                  child: Text(
+                    'Edit PhoneNumber',
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 15),
+                  )),
+            ],
+          ),
+          body: RefreshIndicator(
+            onRefresh: getTempUsers,
+            child: SingleChildScrollView(
+              child: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.blue, Colors.lightBlueAccent])),
+                child: Container(
+                  // color: Colors.green,
+                  // height: 789,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: FutureBuilder(
+                      future: getTempUsers(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          // getPlaceName();
+                          if (tempUserDecodeList.isEmpty) {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 250,
+                                ),
+                                Center(
+                                    child: Text(
+                                      'Sorry we cannot find any Temp User please add',
+                                      style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
+                                    )),
+                              ],
+                            );
+                          } else {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 25,
+                                ),
+                                Expanded(
+                                    child: ListView.builder(
+                                        itemCount: tempUserDecodeList.length,
+                                        itemBuilder: (context, index) {
+                                          // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
+                                          // getPlaceName();
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Card(
+                                              semanticContainer: true,
+                                              shadowColor: Colors.grey,
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                    onTap: (){
+                                                      if(tempUserDecodeList[index]['p_id']!=null){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+                                                          placeId: tempUserDecodeList[index]['p_id'].toString(),
+                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                        )));
+                                                      }else if(tempUserDecodeList[index]['f_id']!=null){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
+                                                          floorId: tempUserDecodeList[index]['f_id'].toString(),
+                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                        )));
+                                                      }else if(tempUserDecodeList[index]['flt_id']!=null){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
+                                                          flatId: tempUserDecodeList[index]['flt_id'].toString(),
+                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                        )));
+                                                      }else if(tempUserDecodeList[index]['r_id']!=null){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
+                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                          roomId: tempUserDecodeList[index]['r_id'],
+                                                        )));
+                                                      }else if(tempUserDecodeList[index]['d_id']!=null){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
+                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
+                                                          deviceId: tempUserDecodeList[index]['d_id'],
+                                                        )));
+                                                      }
+
+
+                                                    },
+                                                    title: Text(tempUserDecodeList[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+
+                                                  ),
+
+
+                                                  // Column(
+                                                  //   children: [
+                                                  //     Container(
+                                                  //       color: Colors.red,
+                                                  //       height: 45,
+                                                  //       child: ListView.builder(
+                                                  //         itemCount: 1,
+                                                  //           itemBuilder: (context,index){
+                                                  //             if(tempUserDecodeList[index]['p_id']!=null){
+                                                  //               return Row(
+                                                  //                 children: [
+                                                  //                   Text(tempUserDecodeList[index]['p_id'].toString()),
+                                                  //                 ],
+                                                  //               );
+                                                  //             }else if(tempUserDecodeList[index]['f_id']!=null){
+                                                  //               return Row(
+                                                  //                 children: [
+                                                  //                   Text('aaaa')
+                                                  //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
+                                                  //                 ],
+                                                  //               );
+                                                  //             }else{return null;}
+                                                  //       }
+                                                  //       ),
+                                                  //
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(4.0),
+                                                        child: Text(
+                                                          tempUserDecodeList[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
+                                                          textAlign: TextAlign.end,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeList[index]
+                                                        ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeList[index]
+                                                        ['flt_id']
+                                                            ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeList[index]
+                                                        ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+
+                                                      Text(
+                                                        tempUserDecodeList[index]
+                                                        ['d_id']==null?"":'Device : ${tempUserDecodeList[index]['d_id']}',
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+                                          );
+
+                                        })),
+                              ],
+                            );
+                          }
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.red,
+                              semanticsLabel: 'Loading...',
+                            ),
+                          );
+                        }
+                      }),
+                ),
+              ),
             ),
           ),
-        ),
+        );
+      }
+        }
+
       ),
     );
   }

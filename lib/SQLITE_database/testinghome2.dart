@@ -19,6 +19,7 @@ import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/bill2.dart';
+import 'package:loginsignspaceorion/bill_estimation.dart';
 import 'package:loginsignspaceorion/changeFont.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
@@ -903,11 +904,12 @@ class _HomeTestState extends State<HomeTest>
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
+
                                     floorval=null;
                                     var placeId = selectedPlace.substring(7, 14);
                                     var placeName = selectedPlace.substring(24, 31);
                                     print('checkPlaceName ${placeName.toString()}');
-                                    print("SElectedPlace ${selectedPlace}");
+
 
                                     var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
                                     print('AA  ${aa}');
@@ -915,7 +917,7 @@ class _HomeTestState extends State<HomeTest>
                                     returnFloorQuery(placeId);
                                     setState(() {
                                       floorQueryRows2 = aa;
-                                      floorval = returnFloorQuery(placeId);
+                                      floorval = returnFloorQuery(placeId.toString());
                                       returnFloorQuery(placeId);
 
                                     });
@@ -3563,7 +3565,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
       print("CHECKDEVICE123CODE   ${response.statusCode}");
       print(response.body);
       deviceResponse = jsonDecode(response.body);
-       await getDeviceOffline(tabbarState);
+       await getDeviceOffline();
       print(postData);
     } else {
       throw Exception('Failed to create Device.');
@@ -3595,13 +3597,12 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
     }
   }
 
-  Future<List<Device>> getDeviceOffline(String rId) async {
-
+  Future<List<Device>> getDeviceOffline() async {
+    List roomQueryRows=await NewDbProvider.instance.queryRoom();
+    print('checkLength ${roomQueryRows}');
     String token = await getToken();
-    // for (int i = 0; i < roomQueryRows.length; i++) {
-      //   print(NewDbProvider.instance.dogs());
-
-      print('roomId  $rId');
+    for (int i = 0; i < roomQueryRows.length; i++) {
+      var rId=roomQueryRows[i]['r_id'].toString();
       String url = API+"addyourdevice/?r_id=" + rId;
       var response;
       // try {
@@ -3614,6 +3615,8 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
       print('deviceData  ${deviceData}');
      List deviceQueryRows=await NewDbProvider.instance.queryDevice();
      print('checkLength ${deviceData.length==deviceQueryRows.length}');
+     print('checkLength ${deviceData.length}');
+     print('checkLength ${deviceQueryRows.length}');
       if(deviceData.length==deviceQueryRows.length){
         for (int i = 0; i < deviceData.length; i++) {
           var deviceQuery = Device(
@@ -3625,7 +3628,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
           // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
           await NewDbProvider.instance.updateDevice(deviceQuery);
         }
-      }else{
+      }else {
         await NewDbProvider.instance.deleteDeviceModel();
         for (int i = 0; i < deviceData.length; i++) {
           var deviceQuery = Device(
@@ -3637,7 +3640,55 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
           await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
           // await NewDbProvider.instance.updateDevice(deviceQuery);
         }
+      }
+    }
+    // dv = deviceData.map((data) => Device.fromJson(data)).toList();
+    return dv;
+  }
+  Future<List<Device>> getDeviceOnlySingleRoom(String rId) async {
+    // List roomQueryRows=await NewDbProvider.instance.queryRoom();
+    // print('checkLength ${roomQueryRows}');
+    String token = await getToken();
+    // for (int i = 0; i < roomQueryRows.length; i++) {
+    //   var rId=roomQueryRows[i]['r_id'].toString();
+      String url = API+"addyourdevice/?r_id=" + rId;
+      var response;
+      // try {
+      response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+     List deviceData = jsonDecode(response.body);
+      print('deviceData  ${deviceData}');
+     List deviceQueryRows=await NewDbProvider.instance.queryDevice();
+     print('checkLength ${deviceData.length==deviceQueryRows.length}');
+     print('checkLength ${deviceData.length}');
+     print('checkLength ${deviceQueryRows.length}');
+      if(deviceData.length==deviceQueryRows.length){
+        for (int i = 0; i < deviceData.length; i++) {
+          var deviceQuery = Device(
+              user: deviceData[i]['user'],
+              rId: deviceData[i]['r_id'],
+              dId: deviceData[i]['d_id']);
+          print('deviceQueryFunc   $deviceData}');
 
+          // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+          await NewDbProvider.instance.updateDevice(deviceQuery);
+        }
+      }else {
+        await NewDbProvider.instance.deleteDeviceModel();
+        for (int i = 0; i < deviceData.length; i++) {
+          var deviceQuery = Device(
+              user: deviceData[i]['user'],
+              rId: deviceData[i]['r_id'],
+              dId: deviceData[i]['d_id']);
+          print('deviceQueryFunc   $deviceData}');
+
+          await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+          // await NewDbProvider.instance.updateDevice(deviceQuery);
+
+      }
     }
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
@@ -3656,7 +3707,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      await getDeviceOffline(rId);
+      await getDeviceOffline();
     } else {
       final snackBar = SnackBar(
         content: Text('Something went wrong'),
@@ -4220,7 +4271,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
       });
       if (response.statusCode > 0) {
         List floorData = jsonDecode(response.body);
-        floorQueryRows = await NewDbProvider.instance.queryFloor();
+       List floorQueryRows = await NewDbProvider.instance.queryFloor();
         if (floorData.length == floorQueryRows.length) {
           print('updateFloor');
           for (int i = 0; i < floorData.length; i++) {
@@ -4246,16 +4297,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
           }
         }
         print('floorData12 ${floorData}');
-        for (int i = 0; i < floorData.length; i++) {
-          var floorQuery = FloorType(
-              fId: floorData[i]['f_id'],
-              fName: floorData[i]['f_name'].toString(),
-              pId: floorData[i]['p_id'],
-              user: floorData[i]['user']
-          );
-          print('floorData12 ${floorQuery}');
-          await NewDbProvider.instance.updateFloor(floorQuery);
-        }
+
       }
       getAllFlat();
       // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
@@ -4367,7 +4409,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
         }
       }
     }
-    getDeviceOffline(tabbarState);
+    getDeviceOffline();
     // for (int i = 0; i < roomData.length; i++) {
     //    roomQuery = RoomType(
     //       rId: roomData[i]['r_id'],
@@ -4490,6 +4532,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                   });
                 });
               } else {
+
                 return Scaffold(
                   backgroundColor: _switchValue ? Colors.white12 : Colors.white,
                   resizeToAvoidBottomInset: false,
@@ -4710,7 +4753,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BillPrediction2(),
+                                      builder: (context) => BillEstimation(),
                                     ),
                                   );
                                 }),
@@ -5220,16 +5263,22 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                               onTap: (index) async {
                                                 print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                                 print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
-                                                tabbarState =
-                                                    widget.rm[index].rId;
-                                                setState(() {
+                                                // tabbarState =
+                                                //     widget.rm[index].rId;
 
+                                                setState(() {
+                                                  tabbarState =
+                                                      widget.rm[index].rId;
                                                 });
                                                 widget.dv = await NewDbProvider.instance
                                                     .getDeviceByRoomId(tabbarState);
+                                                widget.dv = await NewDbProvider.instance
+                                                    .getDeviceByRoomId(tabbarState);
+
                                                 print("tabbarState Tabs->  $tabbarState");
+
                                                 // await getAllRoom();
-                                                 getDeviceOffline(tabbarState);
+                                                getDeviceOnlySingleRoom(tabbarState);
 
 
                                                 print('getDevices123 }');
@@ -5390,7 +5439,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
     number= pref.getString('mobileNumber');
     print('number147859 ${number}');
   }
-
+bool switchOn;
   deviceContainer(String dId, int index) async {
     getData(dId);
      getPinsName(dId);
@@ -5413,6 +5462,20 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
       widget.Slider_get2 = catchReturn[index]["pin11Status"],
       widget.Slider_get3 = catchReturn[index]["pin12Status"],
     ];
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
+
     var namesDataList12 =
     await NewDbProvider.instance.getPinNamesByDeviceId(dId);
     // var sensorData=
@@ -5970,7 +6033,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog(dId);

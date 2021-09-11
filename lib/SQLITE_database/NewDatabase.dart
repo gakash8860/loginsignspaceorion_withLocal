@@ -453,7 +453,7 @@ class NewDbProvider {
 
     return result;
   }
-  // List<Device> dvdata;
+  List<Device> dvdata;
   Future<List<Device>> getDeviceByRoomId(String id) async {
     final db = await database;
     List result =

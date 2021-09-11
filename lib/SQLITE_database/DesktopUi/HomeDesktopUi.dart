@@ -9,7 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/scheduling/alarmHelper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+import '../../changeFont.dart';
 import '../../main.dart';
+import '../testinghome2.dart';
 class DesktopHome extends StatefulWidget {
   PlaceType pt;
 Flat flt;
@@ -909,360 +911,436 @@ class _DesktopHomeState extends State<DesktopHome> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      color: Colors.yellow,
-      // color: change_toDark ? Colors.black : Colors.white,
-      child: DefaultTabController(
-        // length: rm.length,
-        length: 1,
-        // length: widget.rm.length,
-        child: CustomScrollView(
-            // key: key,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Place'),
+      ),
+      body: Container(
+        width: double.maxFinite,
 
-            // controller: _scrollController,
-            slivers: <Widget>[
-              //Upper Widget
-              SliverToBoxAdapter(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Color(0xff669df4), Color(0xff4e80f3)]),
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30)),
-                      ),
-                      // padding: EdgeInsets.only(
-                      //   top: 40,
-                      //   bottom: 10,
-                      //   left: 30,
-                      //   right: 30,
-                      // ),
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  SizedBox(width: 74,),
-                                  GestureDetector(
-                                    onLongPress: () {
-                                      // _editFloorNameAlertDialog(context);
-                                    },
-                                    child: Text(
-                                      widget.fl.fName.toString(),
+        // color: change_toDark ? Colors.black : Colors.white,
+        child: DefaultTabController(
+          // length: rm.length,
+          length: 1,
+          // length: widget.rm.length,
+          child: CustomScrollView(
+              // key: key,
 
-                                      // 'Hello Floor ',
-                                      // + widget.fl.user.first_name,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
+              // controller: _scrollController,
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.41,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xff669df4),
+                                Color(0xff4e80f3)
+                              ]),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
+                        ),
+                        padding: EdgeInsets.only(
+                          top: 40,
+                          bottom: 10,
+                          left: 28,
+                          right: 30,
+                        ),
+                        // alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+
+                                Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onLongPress: () {
+                                            // _editFloorNameAlertDialog(context);
+                                          },
+                                          child: GestureDetector(
+                                            child: Row(
+                                              children: [
+                                                Text('Floor -',
+                                                  style: TextStyle(
+                                                      color: Colors
+                                                          .white,
+                                                      fontFamily: fonttest==null?changeFont:fonttest,
+                                                      fontSize: 22,
+                                                      fontWeight: FontWeight
+                                                          .bold,
+                                                      fontStyle: FontStyle
+                                                          .italic),),
+                                                Text(
+                                                  // fl.fName.toString(),
+                                                  // getFloorData[0]['f_name'].toString(),
+                                                  'Hello ',
+                                                  // + widget.fl.user.first_name,
+                                                  style: TextStyle(
+                                                      color: Colors
+                                                          .white,
+                                                      fontSize: 22,
+                                                      fontFamily: fonttest==null?changeFont:fonttest,
+                                                      // fontWeight: FontWeight.bold,
+                                                      fontStyle: FontStyle
+                                                          .italic),
+                                                ),
+                                                Icon(Icons
+                                                    .arrow_drop_down),
+                                                SizedBox(width: 10,),
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            // _createAlertDialogDropDown(
+                                            //     context);
+                                          },
+                                        ),
+                                        SizedBox(width: 10,),
+                                        // GestureDetector(
+                                        //   child: Icon(Icons.add),
+                                        //   onTap: () async {
+                                        //
+                                        //     // _createAlertDialogForFloor(context);
+                                        //   },
+                                        // )
+                                      ],
                                     ),
-                                    onTap: () {
-                                      // _createAlertDialogDropDown(context);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 12,
-                                  ),
-                                  GestureDetector(
-                                    onLongPress: () {
-                                      // _editFloorNameAlertDialog(context);
-                                    },
-                                    child: Text(
-                                      widget.flt.fltName.toString(),
-                                      // 'Hello Flat ',
-                                      // + widget.fl.user.first_name,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 22),
+                                    SizedBox(
+                                      height: 12,
                                     ),
-                                    onTap: () {
-                                      // _createAlertDialogDropDown(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 45,
-                          ),
-                          Row(
-                            // mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              FutureBuilder(
-                                future: deviceSensorVal,
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Column(
+
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: <Widget>[
                                         Row(
                                           children: <Widget>[
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Column(children: <Widget>[
-                                              Icon(
-                                                FontAwesomeIcons.fire,
-                                                color: Colors.yellow,
-                                              ),
-                                              SizedBox(
-                                                height: 32,
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Text('sensor 1',
-                                                        // sensorData[index]['sensor1'].toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors
-                                                                .white70)),
+                                            GestureDetector(
+                                              onLongPress: () {
+
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text('Flat- ',
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                        fontSize: 22),),
+                                                  Text(
+                                                    // flat.fltName.toString(),
+                                                    // getFlatData[0]['flt_name'].toString(),
+                                                    'Hello ',
+                                                    // + widget.fl.user.first_name,
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                        // fontWeight: FontWeight.bold,
+                                                        fontStyle: FontStyle
+                                                            .italic,
+                                                        fontSize: 22),
                                                   ),
+                                                  Icon(Icons
+                                                      .arrow_drop_down),
+                                                  SizedBox(width: 10,),
                                                 ],
                                               ),
-                                            ]),
-                                            SizedBox(
-                                              width: 35,
+                                              onTap: () {
+                                                // _createAlertDialogDropDown(
+                                                //     context);
+                                              },
                                             ),
-                                            Column(children: <Widget>[
-                                              Icon(
-                                                FontAwesomeIcons.temperatureLow,
-                                                color: Colors.orange,
-                                              ),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Text('sensor 1',
-                                                        // sensorData[index][
-                                                        // 'sensor2']
-                                                        //     .toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors
-                                                                .white70)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ]),
-                                            SizedBox(
-                                              width: 45,
-                                            ),
-                                            Column(children: <Widget>[
-                                              Icon(
-                                                FontAwesomeIcons.wind,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Text('sensor 1',
-                                                        // sensorData[index]['sensor3'].toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors
-                                                                .white70)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ]),
-                                            SizedBox(
-                                              width: 42,
-                                            ),
-                                            Column(children: <Widget>[
-                                              Icon(
-                                                FontAwesomeIcons.cloud,
-                                                color: Colors.orange,
-                                              ),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Text('sensor 1',
-                                                        // sensorData[index]['sensor4'].toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors
-                                                                .white70)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ]),
+                                            SizedBox(width: 35),
+                                            // GestureDetector(
+                                            //     onTap: () async {
+                                            //
+                                            //     },
+                                            //     child: Icon(Icons.add)),
                                           ],
-                                        ),
-                                        SizedBox(
-                                          height: 22,
-                                        ),
+                                        )
+
                                       ],
-                                    );
-                                  } else {
-                                    return Center(
-                                      child: Text('Loading...'),
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
+                                    ),
 
-              //Room Tabs
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                // centerTitle: true,
-                floating: true,
-                pinned: true,
-                backgroundColor: Colors.white,
-
-                title: Container(
-                  alignment: Alignment.bottomLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onLongPress: () {
-                                print('longPress');
-                                // _editRoomNameAlertDialog(context);
-                              },
-                              child: TabBar(
-                                indicatorColor: Colors.blueAccent,
-                                controller: tabC,
-                                labelColor: Colors.blueAccent,
-                                indicatorWeight: 2.0,
-                                isScrollable: true,
-                                // tabs: [
-                                //   Tab(icon: Icon(Icons.directions_car)),
-                                //   Tab(icon: Icon(Icons.directions_transit)),
-                                //   Tab(icon: Icon(Icons.directions_bike)),
-                                // ],
-                                tabs: rm.map<Widget>((RoomType rm) {
-                                  rIdForName = rm.rId;
-                                  print('RoomId  $rIdForName');
-                                  print('RoomId  ${rm.rName}');
-                                  return Tab(
-                                    text: rm.rName,
-                                  );
-                                }).toList(),
-                                onTap: (index) async {
-                                  // print(
-                                  //     'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                                  // tabbarState = widget.rm[index].rId;
-                                  // setState(() {
-                                  //   tabbarState = widget.rm[index].rId;
-                                  //   // devicePinNamesQueryFunc();
-                                  // });
-                                  getDevices(tabbarState);
-                                  // print(
-                                  //     "tabbarState Tabs->  $tabbarState");
-                                  // widget.dv = await NewDbProvider.instance
-                                  //     .getDeviceByRoomId(tabbarState);
-                                  // getAllRoom();
-                                  // // widget.rm =await roomQueryFunc();
-                                  // print('getDevices123 }');
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10, bottom: 2),
-                              child: GestureDetector(
-                                // color: Colors.black,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.black,
+                                  ],
                                 ),
-                                onTap: () {
-                                  // _createAlertDialogForAddRoom(context);
-                                },
-                              ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 45,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: deviceSensorVal,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        // mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.fire,
+                                                  color: Colors.yellow,
+                                                ),
+                                                SizedBox(
+                                                  height: 32,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text('sensor 1',
+                                                          // sensorData[index]['sensor1'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 35,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.temperatureLow,
+                                                  color: Colors.orange,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text('sensor 1',
+                                                          // sensorData[index][
+                                                          // 'sensor2']
+                                                          //     .toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 45,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.wind,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text('sensor 1',
+                                                          // sensorData[index]['sensor3'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 42,
+                                              ),
+                                              Column(children: <Widget>[
+                                                Icon(
+                                                  FontAwesomeIcons.cloud,
+                                                  color: Colors.orange,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text('sensor 1',
+                                                          // sensorData[index]['sensor4'].toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .white70)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 22,
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Center(
+                                        child: Text('Loading...'),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
                             )
                           ],
                         ),
-                      ),
-
-                      // SizedBox(height: 45,),
+                      )
                     ],
                   ),
                 ),
-              ),
 
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  if (index < dv.length) {
-                    Text(
-                      "Loading",
-                      style: TextStyle(fontSize: 44),
-                    );
+                //Room Tabs
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  // centerTitle: true,
+                  floating: true,
+                  pinned: true,
+                  backgroundColor: Colors.white,
 
-                    return Container(
-                      child: Column(
-                        children: [
-                          deviceContainer2(dv[index].dId, index),
-                          Container(
-                              //
-                              // color: Colors.green,
-                              height: 35,
-                              child: GestureDetector(
-                                child: RichText(
-                                  text: TextSpan(children: [
-                                    TextSpan(
-                                        text: dv[index].dId,
-                                        style: TextStyle(
-                                            fontSize: 15, color: Colors.black)),
-                                    TextSpan(text: "   "),
-                                    WidgetSpan(
-                                        child: Icon(
-                                      Icons.settings,
-                                      size: 18,
-                                    ))
-                                  ]),
+                  title: Container(
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, bottom: 2),
+                                child: GestureDetector(
+                                  // color: Colors.black,
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.black,
+                                  ),
+                                  onTap: () {
+                                    // _createAlertDialogForAddRoom(context);
+                                  },
                                 ),
-                                onTap: () {
-                                  // _createAlertDialogForSSIDAndEmergencyNumber(
-                                  //     context);
-                                  print('on tap');
+                              ),
+                              GestureDetector(
+                                onLongPress: () {
+                                  print('longPress');
+                                  // _editRoomNameAlertDialog(context);
                                 },
-                              )),
-                        ],
-                      ),
-                      // child: Text(dv[index].dId),
-                    );
-                  } else {
-                    return null;
-                  }
-                }),
-              )
-            ]),
+                                child: TabBar(
+                                  indicatorColor: Colors.blueAccent,
+                                  controller: tabC,
+                                  labelColor: Colors.blueAccent,
+                                  indicatorWeight: 2.0,
+                                  isScrollable: true,
+                                  tabs: [
+                                    Icon(Icons.delete)
+                                  ],
+                                  // tabs: rm.map<Widget>((RoomType rm) {
+                                  //   rIdForName = rm.rId;
+                                  //   print('RoomId  $rIdForName');
+                                  //   print('RoomId  ${rm.rName}');
+                                  //   return Tab(
+                                  //     text: rm.rName,
+                                  //   );
+                                  // }).toList(),
+                                  onTap: (index) async {
+
+                                    getDevices(tabbarState);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // SizedBox(height: 45,),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    if (index < dv.length) {
+                      Text(
+                        "Loading",
+                        style: TextStyle(fontSize: 44),
+                      );
+
+                      return Container(
+                        child: Column(
+                          children: [
+                            // deviceContainer2(dv[index].dId, index),
+                            Container(
+                                //
+                                // color: Colors.green,
+                                height: 35,
+                                child: GestureDetector(
+                                  child: RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: dv[index].dId,
+                                          style: TextStyle(
+                                              fontSize: 15, color: Colors.black)),
+                                      TextSpan(text: "   "),
+                                      WidgetSpan(
+                                          child: Icon(
+                                        Icons.settings,
+                                        size: 18,
+                                      ))
+                                    ]),
+                                  ),
+                                  onTap: () {
+                                    // _createAlertDialogForSSIDAndEmergencyNumber(
+                                    //     context);
+                                    print('on tap');
+                                  },
+                                )),
+                          ],
+                        ),
+                        // child: Text(dv[index].dId),
+                      );
+                    } else {
+                      return null;
+                    }
+                  }),
+                )
+              ]),
+        ),
       ),
     );
   }

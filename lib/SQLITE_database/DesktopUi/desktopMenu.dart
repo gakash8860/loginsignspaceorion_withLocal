@@ -70,7 +70,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(1, 'Profile', _selectedItem, FontAwesomeIcons.user)),
+              child: Item(1, 'Add Place', _selectedItem, Icons.add)),
           Container(
             height: 5,
             width: double.maxFinite,
@@ -83,7 +83,63 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Profile', _selectedItem, Icons.people)),
+              child: Item(2, 'Sub Access Page', _selectedItem, Icons.people)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 3;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Temp Access Page', _selectedItem, Icons.people)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 4;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Show Temp User', _selectedItem, Icons.people)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 5;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Show Sub User', _selectedItem, Icons.people)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 6;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Bill Prediction', _selectedItem, Icons.power_rounded)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 7;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Schedule Pin', _selectedItem, Icons.schedule)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 8;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'Setting Page', _selectedItem, Icons.settings)),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = 9;
+                  widget.onTapped(_selectedItem);
+                });
+              },
+              child: Item(2, 'ABout GenOrion', _selectedItem, Icons.help)),
           Container(
             height: 5,
             width: double.maxFinite,

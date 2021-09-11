@@ -20,12 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'ProfilePage.dart';
 import 'SQLITE_database/NewDatabase.dart';
-import 'dart:io' show Platform;
-import 'dart:async' show runZoned;
-import 'package:path/path.dart' show join, dirname;
-import 'package:shelf/shelf_io.dart' as io;
-
 import 'Setting_Page.dart';
+import 'SubAccessPage/singlePageForSubAccess.dart';
 import 'changeFont.dart';
 import 'dropdown2.dart';
 import 'login_Screen.dart';
@@ -34,7 +30,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-var API = '127.0.0.1:8000/';
+var API = 'http://127.0.0.1:8000/';
 // var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
@@ -90,6 +86,7 @@ void main()async {
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
       DropDown1.routeName:(ctx) => DropDown1(),
       WrongPassword.routeName:(ctx) => WrongPassword(),
+      SubAccessSinglePage.routeName:(ctx) => SubAccessSinglePage(),
       HomeTest.routeName:(ctx) => HomeTest(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
@@ -847,7 +844,7 @@ List deviceResult;
   void  read() async {
     final storage = new FlutterSecureStorage();
    await _getFont();
-   await _getTheme();
+   // await _getTheme();
     await allAwaitFunction();
     token = await storage.read(key: "token");
 

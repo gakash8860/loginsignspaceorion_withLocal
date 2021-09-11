@@ -32,6 +32,7 @@ void main() =>
     ));
 
 class SubAccessSinglePage extends StatefulWidget {
+  static const routeName = '/subAccessSinglePage';
   List<SubUserRoomType> rmSubUser;
   SubUserPlaceType ptSubUser;
   SubUserFloorType flSubUser;
@@ -128,7 +129,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future flatVal;
   var mainUserEmail;
   var flatId;
-
+  int x;
   get index => null;
   List<SubUserRoomType> room;
   List namesDataList;
@@ -233,14 +234,25 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
   }
 
+  funcIndex(int index){
+    if(index==null){
+      x=0;
+    }else{
+      x=index;
+    }
+  }
+
 
   Future placeQueryFuncSend() async {
+    if(x==null){
+      x=0;
+    }
     placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
     print('queryPlaceSubUser ${placeRows}');
     var pids = SubUserPlaceType(
-        pId: placeRows[0]['p_id'].toString(),
-        pType: placeRows[0]['p_type'].toString(),
-        user: placeRows[0]['user']
+        pId: placeRows[x]['p_id'].toString(),
+        pType: placeRows[x]['p_type'].toString(),
+        user: placeRows[x]['user']
     );
 
       setState(() {
@@ -713,7 +725,434 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
             if (viewportConstraints.maxWidth > 600) {
-              return Container();
+              return Scaffold(
+                  body: Container(
+                  width: double.maxFinite,
+                  child: DefaultTabController(
+                    length: 1,
+                    child: CustomScrollView(
+                      slivers: [
+
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.41,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color(0xff669df4),
+                                        Color(0xff4e80f3)
+                                      ]),
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(30),
+                                      bottomRight: Radius.circular(30)),
+                                ),
+                                padding: EdgeInsets.only(
+                                  top: 40,
+                                  bottom: 10,
+                                  left: 28,
+                                  right: 30,
+                                ),
+                                // alignment: Alignment.topLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+
+                                        Column(
+                                          children: <Widget>[
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onLongPress: () {
+                                                    // _editFloorNameAlertDialog(context);
+                                                  },
+                                                  child: GestureDetector(
+                                                    child: Row(
+                                                      children: [
+                                                        Text('Floor -',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white,
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
+                                                              fontSize: 22,
+                                                              fontWeight: FontWeight
+                                                                  .bold,
+                                                              fontStyle: FontStyle
+                                                                  .italic),),
+                                                        Text(
+                                                          // fl.fName.toString(),
+                                                          // getFloorData[0]['f_name'].toString(),
+                                                          'Hello ',
+                                                          // + widget.fl.user.first_name,
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white,
+                                                              fontSize: 22,
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
+                                                              // fontWeight: FontWeight.bold,
+                                                              fontStyle: FontStyle
+                                                                  .italic),
+                                                        ),
+                                                        Icon(Icons
+                                                            .arrow_drop_down),
+                                                        SizedBox(width: 10,),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    _createAlertDialogDropDown(
+                                                        context);
+                                                  },
+                                                ),
+                                                SizedBox(width: 10,),
+                                                // GestureDetector(
+                                                //   child: Icon(Icons.add),
+                                                //   onTap: () async {
+                                                //
+                                                //     // _createAlertDialogForFloor(context);
+                                                //   },
+                                                // )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
+
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    GestureDetector(
+                                                      onLongPress: () {
+
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Text('Flat- ',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight: FontWeight
+                                                                    .bold,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
+                                                                fontSize: 22),),
+                                                          Text(
+                                                            // flat.fltName.toString(),
+                                                            // getFlatData[0]['flt_name'].toString(),
+                                                            'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle: FontStyle
+                                                                    .italic,
+                                                                fontSize: 22),
+                                                          ),
+                                                          Icon(Icons
+                                                              .arrow_drop_down),
+                                                          SizedBox(width: 10,),
+                                                        ],
+                                                      ),
+                                                      onTap: () {
+                                                        _createAlertDialogDropDown(
+                                                            context);
+                                                      },
+                                                    ),
+                                                    SizedBox(width: 35),
+                                                    // GestureDetector(
+                                                    //     onTap: () async {
+                                                    //
+                                                    //     },
+                                                    //     child: Icon(Icons.add)),
+                                                  ],
+                                                )
+
+                                              ],
+                                            ),
+
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 45,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        FutureBuilder(
+                                          future: deviceSensorVal,
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                // mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Row(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      Column(children: <Widget>[
+                                                        Icon(
+                                                          FontAwesomeIcons.fire,
+                                                          color: Colors.yellow,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 32,
+                                                        ),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Container(
+                                                              child: Text('sensor 1',
+                                                                  // sensorData[index]['sensor1'].toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ]),
+                                                      SizedBox(
+                                                        width: 35,
+                                                      ),
+                                                      Column(children: <Widget>[
+                                                        Icon(
+                                                          FontAwesomeIcons.temperatureLow,
+                                                          color: Colors.orange,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Container(
+                                                              child: Text('sensor 1',
+                                                                  // sensorData[index][
+                                                                  // 'sensor2']
+                                                                  //     .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ]),
+                                                      SizedBox(
+                                                        width: 45,
+                                                      ),
+                                                      Column(children: <Widget>[
+                                                        Icon(
+                                                          FontAwesomeIcons.wind,
+                                                          color: Colors.white,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Container(
+                                                              child: Text('sensor 1',
+                                                                  // sensorData[index]['sensor3'].toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ]),
+                                                      SizedBox(
+                                                        width: 42,
+                                                      ),
+                                                      Column(children: <Widget>[
+                                                        Icon(
+                                                          FontAwesomeIcons.cloud,
+                                                          color: Colors.orange,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        Row(
+                                                          children: <Widget>[
+                                                            Container(
+                                                              child: Text('sensor 1',
+                                                                  // sensorData[index]['sensor4'].toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      color: Colors
+                                                                          .white70)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ]),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 22,
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return Center(
+                                                child: Text('Loading...'),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          // centerTitle: true,
+                          floating: true,
+                          pinned: true,
+                          backgroundColor: Colors.white,
+
+                          title: Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                          height: 30,
+                                          child: Text(
+                                            'Rooms->', style: TextStyle(
+
+                                            // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight
+                                                  .bold,
+                                              color: Colors
+                                                  .black
+                                          ),)),
+                                      // TabBar(
+                                      //   indicatorColor: Colors.blueAccent,
+                                      //   controller: tabC,
+                                      //   labelColor: Colors.blueAccent,
+                                      //   indicatorWeight: 2.0,
+                                      //   isScrollable: true,
+                                      //   tabs: room.map<Widget>((
+                                      //       SubUserRoomType rm) {
+                                      //     return Tab(
+                                      //       text: rm.rName,
+                                      //     );
+                                      //   }).toList(),
+                                      //   onTap: (index) async {
+                                      //     tabState =
+                                      //     await room[index].rId.toString();
+                                      //     funcIndex(index);
+                                      //     setState(() {
+                                      //       getDevicesByDeviceId(tabState);
+                                      //     });
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //     // deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
+                                      //     // print('tabStateDevice ${dv[index].dId}');
+                                      //
+                                      //   },
+                                      // ),
+
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                        // SliverList(
+                        //   delegate: SliverChildBuilderDelegate((context,
+                        //       index) {
+                        //     print('asdfirst ${dv.length}');
+                        //     if (index < dv.length) {
+                        //       dv.length == null ? Text('loading') : dv.length ==
+                        //           null;
+                        //       print('asdf ${dv.length}');
+                        //       Text(
+                        //         "Loading",
+                        //         style: TextStyle(fontSize: 44),
+                        //       );
+                        //
+                        //       return Container(
+                        //         child: Column(
+                        //           children: [
+                        //             subUserDeviceContainer(
+                        //                 dv[index].dId, index),
+                        //             Container(
+                        //               //
+                        //               // color: Colors.green,
+                        //                 height: 35,
+                        //                 child: GestureDetector(
+                        //                   child: RichText(
+                        //                     text: TextSpan(children: [
+                        //                       TextSpan(
+                        //                         // text:'aa',
+                        //                         // text:deviceSubUser[index]['d_id'],
+                        //                           text: dv[index].dId,
+                        //                           style: TextStyle(
+                        //                               fontFamily: fonttest==null?changeFont:fonttest,
+                        //                               fontSize: 15,
+                        //                               color: Colors.black)),
+                        //                       TextSpan(text: "   "),
+                        //                       WidgetSpan(
+                        //                           child: Icon(
+                        //                             Icons.settings,
+                        //                             size: 18,
+                        //                           ))
+                        //                     ]),
+                        //                   ),
+                        //                   onTap: () {
+                        //                     // _createAlertDialogForSSIDAndEmergencyNumber(
+                        //                     //     context);
+                        //                     print('on tap');
+                        //                   },
+                        //                 )),
+                        //           ],
+                        //         ),
+                        //       );
+                        //     } else {
+                        //       return null;
+                        //     }
+                        //   }),
+                        // )
+                      ],
+                    ),
+                  ),
+                ),
+              );
             } else {
               return Scaffold(
                 appBar: AppBar(
@@ -749,92 +1188,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                     ),
                   ],
                 ),
-                // drawer: Theme(
-                //   data: Theme.of(context).copyWith(
-                //     canvasColor: change_toDark ? Colors.black : Colors
-                //         .white, //This will change the drawer background to blue.
-                //     //other styles
-                //   ),
-                //   child: Drawer(
-                //     child: Container(
-                //       width: double.maxFinite,
-                //       color: change_toDark ? Colors.black : Colors.white,
-                //       height: 100,
-                //       child: ListView(
-                //         children: <Widget>[
-                //           Container(
-                //             width: double.infinity,
-                //             //padding: const EdgeInsets.all(20),
-                //             decoration: BoxDecoration(
-                //                 gradient: LinearGradient(
-                //                     begin: Alignment.topCenter,
-                //                     end: Alignment.bottomCenter,
-                //                     colors: [
-                //                       Color(0xff669df4),
-                //                       Color(0xff4e80f3)
-                //                     ]),
-                //                 borderRadius: BorderRadius.only(
-                //                   bottomRight: Radius.circular(30),
-                //                   bottomLeft: Radius.circular(30),
-                //                 )),
-                //             child: Center(
-                //               child: Column(
-                //                 crossAxisAlignment: CrossAxisAlignment.center,
-                //                 children: <Widget>[
-                //                   Container(
-                //                     margin: EdgeInsets.only(
-                //                         top: 10, bottom: 10),
-                //                   ),
-                //                   CircularProfileAvatar(
-                //                     '',
-                //                     child: setImage == null
-                //                         ? Image.asset('assets/images/blank.png')
-                //                         : setImage,
-                //                     radius: 60,
-                //                     elevation: 5,
-                //                     onTap: () {
-                //                       Navigator.push(
-                //                           context,
-                //                           MaterialPageRoute(
-                //                               builder: (context) =>
-                //                                   ProfilePage(
-                //                                     // fl: widget.fl,
-                //                                   )));
-                //                     },
-                //                     cacheImage: true,
-                //                   ),
-                //                   SizedBox(
-                //                     height: 8,
-                //                   ),
-                //                   Text('Hello  ', style: TextStyle(
-                //
-                //                     // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                //                       fontSize: 20,
-                //                       fontWeight: FontWeight.bold,
-                //                       color: Colors.white
-                //                   ),),
-                //                 ],
-                //               ),
-                //             ),
-                //           ),
-                //           ListTile(
-                //             leading: Icon(Icons.schedule),
-                //             title: Text(
-                //               'Schedule Pin',
-                //               style: TextStyle(
-                //                 color: change_toDark ? Colors.white : Colors
-                //                     .black,
-                //               ),
-                //             ),
-                //             onTap: () {
-                //               Navigator.push(context, MaterialPageRoute(builder: (context)=>ScheduledPin()));
-                //             },
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
+
                 body: Container(
                   width: double.maxFinite,
                   child: DefaultTabController(
@@ -1204,7 +1558,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                         onTap: (index) async {
                                           tabState =
                                           await room[index].rId.toString();
-
+                                          funcIndex(index);
                                           setState(() {
                                             getDevicesByDeviceId(tabState);
                                           });
@@ -3077,9 +3431,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     print('qwe123 $placeRows');
   }
 
+  SubUserPlaceType subUserPlaceType;
   Future returnPlaceQuery() async {
     placeVal = await placeQueryFunc();
-    return SubUserDataBase.subUserInstance.queryPlaceSubUser();
+   return SubUserDataBase.subUserInstance.queryPlaceSubUser();
   }
 
   Future returnFloorQuery(String pId) {
@@ -3161,8 +3516,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                         children: [
                                           Text("${selectedPlace['p_type']
                                               .toString()}"),
-                                          Text("${allPlaceId[0]['owner_name']
-                                              .toString()}"),
+                                          // Text("${allPlaceId[0]['owner_name']
+                                          //     .toString()}"),
                                         ],
                                       ),
                                     );
@@ -3426,14 +3781,16 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       flat = flat123;
                       room = roomList;
                     });
+                    Navigator.of(context)
+                        .pushNamed(SubAccessSinglePage.routeName);
 
-                    await Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) =>
-                        SubAccessSinglePage(
-                          ptSubUser: pt,
-                          flSubUser: fl,
-                          flatSubUser: flat,
-                          rmSubUser: room,)));
+                     // Navigator.pushReplacement(
+                     //    context, MaterialPageRoute(builder: (context) =>
+                     //    SubAccessSinglePage(
+                     //      ptSubUser: pt,
+                     //      flSubUser: fl,
+                     //      flatSubUser: flat,
+                     //      rmSubUser: room,)));
                   },
                 ),
               )
