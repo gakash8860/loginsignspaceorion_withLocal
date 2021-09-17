@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         //  fontFamily: 'Satisfy',
@@ -82,7 +83,9 @@ class _ChangeFontState extends State<ChangeFont> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+
         title: Text("Genorion"  ,
             style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest)),
       ),

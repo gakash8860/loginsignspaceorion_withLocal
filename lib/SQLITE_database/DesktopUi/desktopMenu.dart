@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loginsignspaceorion/customcolor/customcolors.dart';
+import 'package:loginsignspaceorion/icons/my_flutter_app_icons.dart';
+
 
 class MenuWidget extends StatefulWidget {
   final int selectedIndex;
@@ -58,11 +60,11 @@ class _MenuWidgetState extends State<MenuWidget> {
                 });
               },
               child: Item(0, 'Home', _selectedItem, Icons.home)),
-          Container(
-            height: 5,
-            width: double.maxFinite,
-            color: Colors.white60,
-          ),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -71,11 +73,11 @@ class _MenuWidgetState extends State<MenuWidget> {
                 });
               },
               child: Item(1, 'Add Place', _selectedItem, Icons.add)),
-          Container(
-            height: 5,
-            width: double.maxFinite,
-            color: Colors.white60,
-          ),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -83,7 +85,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Sub Access Page', _selectedItem, Icons.people)),
+              child: Item(2, 'Sub Access Page', _selectedItem, FontAwesomeIcons.userFriends)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -91,7 +98,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Temp Access Page', _selectedItem, Icons.people)),
+              child: Item(3, 'Temp Access Page', _selectedItem, FontAwesomeIcons.userClock)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -99,7 +111,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Show Temp User', _selectedItem, Icons.people)),
+              child: Item(4, 'Add Temp User', _selectedItem, FontAwesomeIcons.userPlus)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -107,7 +124,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Show Sub User', _selectedItem, Icons.people)),
+              child: Item(5, 'Add Sub User', _selectedItem, FontAwesomeIcons.houseUser)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -115,7 +137,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Bill Prediction', _selectedItem, Icons.power_rounded)),
+              child: Item(6, 'Bill Prediction', _selectedItem, Icons.power_rounded)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -123,7 +150,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Schedule Pin', _selectedItem, Icons.schedule)),
+              child: Item(7, 'Schedule Pin', _selectedItem, Icons.schedule)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -131,7 +163,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'Setting Page', _selectedItem, Icons.settings)),
+              child: Item(8, 'Setting Page', _selectedItem, Icons.settings)),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
           InkWell(
               onTap: () {
                 setState(() {
@@ -139,57 +176,62 @@ class _MenuWidgetState extends State<MenuWidget> {
                   widget.onTapped(_selectedItem);
                 });
               },
-              child: Item(2, 'ABout GenOrion', _selectedItem, Icons.help)),
+              child: Item(9, 'ABout GenOrion', _selectedItem, Icons.help)),
           Container(
             height: 5,
             width: double.maxFinite,
             color: Colors.white60,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
-            child: Row(
-              children: [
-                Icon(Icons.notifications, size: 24, color: CustomColors.neon_green),
-                SizedBox(width: 16.0),
-                Expanded(child: Text('Add')),
-              ],
-            ),
-          ),
-          Container(
-            height: 2,
-            width: double.maxFinite,
-            color: Colors.white24,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
-            child: Row(
-              children: [
-                Icon(Icons.settings, size: 24, color: CustomColors.neon_green),
-                SizedBox(width: 16.0),
-                Expanded(child: Text('Add')),
-              ],
-            ),
-          ),
-          Container(
-            height: 2,
-            width: double.maxFinite,
-            color: Colors.white24,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
-            child: Row(
-              children: [
-                Icon(Icons.info, size: 24, color: CustomColors.neon_green),
-                SizedBox(width: 16.0),
-                Expanded(child: Text('Add')),
-              ],
-            ),
-          ),
-          Container(
-            height: 2,
-            width: double.maxFinite,
-            color: Colors.white24,
-          ),
+          // Container(
+          //   height: 5,
+          //   width: double.maxFinite,
+          //   color: Colors.white60,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
+          //   child: Row(
+          //     children: [
+          //       Icon(Icons.notifications, size: 24, color: CustomColors.neon_green),
+          //       SizedBox(width: 16.0),
+          //       Expanded(child: Text('Add')),
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   height: 2,
+          //   width: double.maxFinite,
+          //   color: Colors.white24,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
+          //   child: Row(
+          //     children: [
+          //       Icon(Icons.settings, size: 24, color: CustomColors.neon_green),
+          //       SizedBox(width: 16.0),
+          //       Expanded(child: Text('Add')),
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   height: 2,
+          //   width: double.maxFinite,
+          //   color: Colors.white24,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 16.0, top: 20.0, bottom: 20.0),
+          //   child: Row(
+          //     children: [
+          //       Icon(Icons.info, size: 24, color: CustomColors.neon_green),
+          //       SizedBox(width: 16.0),
+          //       Expanded(child: Text('Add')),
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   height: 2,
+          //   width: double.maxFinite,
+          //   color: Colors.white24,
+          // ),
         ],
       ),
     );

@@ -8,7 +8,7 @@ class Destination {
   final IconData icon;
 }
 
-const List<Destination> allDestinations = <Destination>[
+const List<Destination> allDestinations = [
   Destination(0, 'Home', Icons.home),
   Destination(1, 'Add Place', FontAwesomeIcons.user),
   Destination(2, 'Sub Access Page', Icons.people),
@@ -18,4 +18,5 @@ const List<Destination> allDestinations = <Destination>[
   Destination(6, 'Bill Predection', Icons.people),
   Destination(7, 'Schedule Pin', Icons.people),
   Destination(8, 'Setting Page', Icons.people),
+  Destination(9, 'About Page', Icons.people),
 ];

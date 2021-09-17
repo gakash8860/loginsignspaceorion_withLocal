@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 
 
 void  main()=>runApp(MaterialApp(
@@ -172,8 +173,8 @@ class _BillEstimationState extends State<BillEstimation> {
                       ),
                     ),
                     onPressed:() {
-                      // Navigator.of(context)
-                      //     .pushReplacementNamed(TotalUsage.routeName);
+                      Navigator.of(context)
+                          .pushReplacementNamed(TotalUsage.routeName);
                     },
                   ),
                 ),
@@ -198,6 +199,7 @@ class _BillEstimationState extends State<BillEstimation> {
               SizedBox(
                 height: 10,
               ),
+              // Image(image: AssetImage('assets/images/Bill.png'),),
               Image.asset(
                 'assets/images/Bill.png',
                 height: 130,
@@ -289,8 +291,8 @@ class _BillEstimationState extends State<BillEstimation> {
                       ),
                     ),
                     onPressed:() {
-                      // Navigator.of(context)
-                      //     .pushReplacementNamed(TotalUsage.routeName);
+                      Navigator.of(context)
+                          .pushReplacementNamed(TotalUsage.routeName);
                     },
                   ),
                 ),

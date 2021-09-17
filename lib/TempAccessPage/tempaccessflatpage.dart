@@ -99,6 +99,8 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
 
   List responseGetData;
 
+  bool switchOn;
+
   @override
   void initState() {
     super.initState();
@@ -444,6 +446,19 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
       ];
 
     });
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
   }
 
 
@@ -517,7 +532,7 @@ class _TempAccessFlatPageState extends State<TempAccessFlatPage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog(dId);

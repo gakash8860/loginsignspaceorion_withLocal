@@ -357,6 +357,16 @@ class SubUserDataBase{
 
     return await db.query(_subUserSensorTable);
   }
+  Future getPlaceById(String id) async {
+    final db = await database;
+    var result =
+    await db.query("subUserPlaceTable", where: "p_id = ? ", whereArgs: [id]);
+    print('result $result');
+
+    return result;
+  }
+
+
   Future getFloorById(String id) async {
     final db = await database;
     var result =

@@ -102,6 +102,8 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
 
   TempAccessFlat  tempFlat;
 
+  bool switchOn;
+
 
 
 
@@ -355,6 +357,19 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
       ];
 
     });
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
   }
   dataUpdate(String dId) async {
     final String url =
@@ -544,7 +559,7 @@ class _TempAccessFloorPageState extends State<TempAccessFloorPage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog(dId);

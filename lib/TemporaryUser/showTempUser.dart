@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
+import 'package:loginsignspaceorion/TempAccessPage/tempDemo.dart';
 import 'package:loginsignspaceorion/TemporaryUser/AddTempUser.dart';
 import 'package:loginsignspaceorion/TemporaryUser/tempUserdetails.dart';
 import 'package:path_provider/path_provider.dart';
@@ -231,7 +232,17 @@ void initState(){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+        actions: [
 
+          MaterialButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
+          }, child: Text('Add TempUser',style: TextStyle(
+              fontSize: 15
+          ),)),
+        ],
+      ),
       body:  Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -242,139 +253,172 @@ void initState(){
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
             if (viewportConstraints.maxWidth > 600) {
               return Container(
-                // color: Colors.green,
-                // height: 789,
-                // width:MediaQuery.of(context).size.width,
                 height:MediaQuery.of(context).size.height,
-                child: FutureBuilder(
-                    future: getTempUsers(),
-                    builder: ( context,  snapshot){
-                      if(snapshot.hasData){
-                        if(tempUserDecodeList.length==null){
-                          return Column(
-                            children: [
-                              SizedBox(height: 250,),
-                              Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
-                            ],
-                          );
-                        }else{
-                          return Column(
-                            children: [
-                              SizedBox(height: 25,),
-                              Expanded(
-                                  child: ListView.builder(
-                                      itemCount: tempUserDecodeList.length,
-                                      itemBuilder: (context,index){
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            width: 300,
-                                            child: Card(
-                                              semanticContainer:true,
-                                              shadowColor: Colors.grey,
-                                              child: Column(
-                                                children: [
-                                                  ListTile(
-                                                    title: Text(tempUserDecodeList[index]['name']),
-                                                    trailing: Text(tempUserDecodeList[index]['email']),
-                                                    leading: IconButton(
-                                                      icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                                      onPressed: (){
+                // child: FutureBuilder(
+                //     future: getTempUsers(),
+                //     builder: ( context,  snapshot){
+                //       if(snapshot.hasData){
+                //         if(tempUserDecodeList.length==null){
+                //           return Column(
+                //             children: [
+                //               SizedBox(height: 250,),
+                //               Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
+                //             ],
+                //           );
+                //         }else{
+                //           return Column(
+                //             children: [
+                //               SizedBox(height: 25,),
+                //               Expanded(
+                //                   child: ListView.builder(
+                //                       itemCount: tempUserDecodeList.length,
+                //                       itemBuilder: (context,index){
+                //                         return Padding(
+                //                           padding: const EdgeInsets.all(8.0),
+                //                           child: Container(
+                //                             width: 300,
+                //                             child: Card(
+                //                               semanticContainer:true,
+                //                               shadowColor: Colors.grey,
+                //                               child: Column(
+                //                                 children: [
+                //                                   ListTile(
+                //                                     title: Text(tempUserDecodeList[index]['name']),
+                //                                     trailing: Text(tempUserDecodeList[index]['email']),
+                //                                     leading: IconButton(
+                //                                       icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                //                                       onPressed: (){
+                //
+                //                                         _showDialogForDeleteSubUser(index);
+                //                                       },
+                //                                     ),
+                //                                     subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
+                //
+                //                                     onTap: (){
+                //                                       print('printSubUser ${tempUserDecodeList[index]['name']}');
+                //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                //                                         tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+                //
+                //                                     },
+                //                                   ),
+                //                                   Row(
+                //                                     children: [
+                //                                       Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
+                //                                     ],
+                //                                   )
+                //                                 ],
+                //                               ),
+                //                             ),
+                //                           ),
+                //                         );
+                //
+                //
+                //                         //   Column(
+                //                         //   children: <Widget>[
+                //                         //     SizedBox(height: 100,),
+                //                         //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                //                         //     SizedBox(height: 15,),
+                //                         //     Row(
+                //                         //       children: [
+                //                         //         SizedBox(width: 55,),
+                //                         //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                //                         //         SizedBox(width: 15,),
+                //                         //         Container(
+                //                         //           height: 45,
+                //                         //           width: 195,
+                //                         //           child:Padding(
+                //                         //             padding: const EdgeInsets.all(8.0),
+                //                         //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                //                         //           ),
+                //                         //           decoration: BoxDecoration(
+                //                         //             color: Colors.white,
+                //                         //             border: Border.all(
+                //                         //               color: Colors.black38 ,
+                //                         //               width: 5.0 ,
+                //                         //             ),
+                //                         //             borderRadius: BorderRadius.circular(20),
+                //                         //           ),
+                //                         //         ),
+                //                         //       ],
+                //                         //     ),
+                //                         //
+                //                         //
+                //                         //   ],
+                //                         //
+                //                         //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                //                         //   // subtitle: Text("${statusData[index]['id']}"),
+                //                         //
+                //                         // );
+                //                       }
+                //                   )),
+                //
+                //
+                //             ],
+                //           );
+                //         }
+                //       }else{
+                //         return Center(
+                //           child: Image.asset('assets/images/loader.gif'),
+                //           // child: CircularProgressIndicator(
+                //           //   color: Colors.red,
+                //           //   semanticsLabel: 'Loading...',
+                //           // ),
+                //         );
+                //       }
+                //
+                //     }
+                //
+                // ),
+                child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: 1,
+                              itemBuilder: (context,index){
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+                                    semanticContainer:true,
+                                    shadowColor: Colors.grey,
+                                    child: Column(
+                                      children: <Widget>[
+                                        GestureDetector(
+                                          onTap:(){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)=>TempDemo()));
+                                            },
+                                          child: ListTile(
+                                            title: Text('Akash'),
+                                            trailing: Text('akash@gmail.com'),
+                                            leading: IconButton(
+                                              icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                              onPressed: (){
 
-                                                        _showDialogForDeleteSubUser(index);
-                                                      },
-                                                    ),
-                                                    subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
-
-                                                    onTap: (){
-                                                      print('printSubUser ${tempUserDecodeList[index]['name']}');
-                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                        tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-
-                                                    },
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
+                                                _showDialogForDeleteSubUser(index);
+                                              },
                                             ),
+                                            subtitle: Text('10:33',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
                                           ),
-                                        );
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text('25-09-2021',textAlign: TextAlign.end,style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
 
-
-                                        //   Column(
-                                        //   children: <Widget>[
-                                        //     SizedBox(height: 100,),
-                                        //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                        //     SizedBox(height: 15,),
-                                        //     Row(
-                                        //       children: [
-                                        //         SizedBox(width: 55,),
-                                        //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //         SizedBox(width: 15,),
-                                        //         Container(
-                                        //           height: 45,
-                                        //           width: 195,
-                                        //           child:Padding(
-                                        //             padding: const EdgeInsets.all(8.0),
-                                        //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //           ),
-                                        //           decoration: BoxDecoration(
-                                        //             color: Colors.white,
-                                        //             border: Border.all(
-                                        //               color: Colors.black38 ,
-                                        //               width: 5.0 ,
-                                        //             ),
-                                        //             borderRadius: BorderRadius.circular(20),
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //
-                                        //
-                                        //   ],
-                                        //
-                                        //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                        //   // subtitle: Text("${statusData[index]['id']}"),
-                                        //
-                                        // );
-                                      }
-                                  )),
-
-
-                            ],
-                          );
-                        }
-                      }else{
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.red,
-                            semanticsLabel: 'Loading...',
                           ),
-                        );
-                      }
-
-                    }
-
+                        )
+                      ],
                 ),
               );
             }
             else{
               return Scaffold(
-                appBar: AppBar(
-                  title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                  actions: [
 
-                    MaterialButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
-                    }, child: Text('Add TempUser',style: TextStyle(
-                        fontSize: 15
-                    ),)),
-                  ],
-                ),
                 body: Container(
                   color: Colors.green,
                   // height: 789,

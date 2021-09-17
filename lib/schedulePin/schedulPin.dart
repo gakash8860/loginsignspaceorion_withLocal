@@ -206,6 +206,9 @@ allPinNames(String dId)async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Scheduled Pin",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+      ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
       if (viewportConstraints.maxWidth > 600) {
@@ -214,727 +217,760 @@ allPinNames(String dId)async{
           // height: 789,
           // width:MediaQuery.of(context).size.width,
           height:MediaQuery.of(context).size.height,
-          child: FutureBuilder(
-              future: scheduled,
-              builder: ( context,  snapshot){
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                    itemCount: 1,
+                    itemBuilder: (context,index){
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          semanticContainer:true,
+                          shadowColor: Colors.grey,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text('DeviceId'),
+                                trailing: Text('25-9-2021'),
+                                leading: IconButton(
+                                  icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                  onPressed: (){
 
-                print('snapShot ${snapshot.connectionState}');
-                if(snapshot.connectionState ==ConnectionState.done){
-                  if(listOfScheduledPins==null){
-                    return Column(
-                      children: [
-                        SizedBox(height: 250,),
-                        Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),)),
-                      ],
-                    );
-                  }else{
-                    return Column(
-                      children: [
-                        SizedBox(height: 25,),
-                        Expanded(
-                            child: ListView.builder(
-                                itemCount: listOfScheduledPins.length,
-                                itemBuilder: (context,index){
-                                  print('length ${listOfScheduledPins.length}');
-                                  allPinNames(listOfScheduledPins[index]['d_id']);
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GestureDetector(
-                                      onLongPress: (){
-                                        _alarmTimeString =
-                                            DateFormat('HH:mm').format(DateTime.now());
-                                        cutDate = DateFormat('dd-MM-yyyy').format(
-                                            DateTime.now());
-                                        showModalBottomSheet(
-                                            useRootNavigator: true,
-                                            context: context,
-                                            clipBehavior: Clip.antiAlias,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(24),
-                                              ),
-                                            ),
-                                            builder: (context) {
-                                              return StatefulBuilder(
-                                                  builder: (context, setModalState) {
-                                                    return Container(
-                                                        padding: const EdgeInsets.all(
-                                                            32),
-                                                        child: Column(children: [
-                                                          // ignore: deprecated_member_use
-                                                          Container(
-                                                            width: 145,
-                                                            child: GestureDetector(
-                                                                child: Text(cutDate
-                                                                    .toString() == null
-                                                                    ? _dateString
-                                                                    : cutDate.toString()
-                                                                    .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                                                onTap: () {
-                                                                  pickDate();
-                                                                }
+                                    // _showDialogForDeleteSubUser(index);
+                                  },
+                                ),
+                                subtitle: Text('10:33',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
 
-                                                            ),
-                                                          ),
-
-                                                          FlatButton(
-                                                            onPressed: () async {
-                                                              pickTime(index);
-                                                              print("index --> $index");
-                                                              // var selectedTime = await showTimePicker(
-                                                              //   context: context,
-                                                              //   initialTime: TimeOfDay.now(),
-                                                              // );
-                                                              // if (selectedTime != null) {
-                                                              //   final now = DateTime.now();
-                                                              //   var selectedDateTime = DateTime(
-                                                              //       now.year,
-                                                              //       now.month,
-                                                              //       now.day,
-                                                              //       selectedTime.hour,
-                                                              //       selectedTime.minute);
-                                                              //   _alarmTime = selectedDateTime;
-                                                              //   setModalState(() {
-                                                              //     _alarmTimeString =
-                                                              //         DateFormat('HH:mm')
-                                                              //             .format(selectedDateTime);
-                                                              //   });
-                                                              // }
-                                                            },
-                                                            child: Text(
-                                                              _alarmTimeString,
-                                                              style:
-                                                              TextStyle(fontSize: 32,fontFamily: fonttest==null?'RobotoMono':fonttest,),
-                                                            ),
-                                                          ),
-                                                          ListTile(
-                                                            title:
-                                                            Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                                            trailing: Icon(Icons.timer),
-                                                          ),
-                                                          ListTile(
-                                                            title: ToggleSwitch(
-                                                              initialLabelIndex: 0,
-                                                              labels: ['Off', 'On'],
-                                                              onToggle: (index) {
-                                                                print(
-                                                                    'switched to: $index');
-                                                                checkSwitch = index;
-                                                                // changeIndex(index);
-                                                                // setState(() {
-                                                                //
-                                                                // });
-                                                              },
-                                                            ),
-                                                            // trailing: Icon(Icons.arrow_forward_ios),
-                                                          ),
-
-                                                          FloatingActionButton.extended(
-                                                            onPressed: () async {
-                                                              if(listOfScheduledPins[index]['pin1Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin1Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin2Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin2Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin3Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin3Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin4Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin4Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin5Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin5Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin6Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin6Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin7Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin7Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin8Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin8Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin8Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin8Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin9Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin9Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin10Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin10Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }else if(listOfScheduledPins[index]['pin11Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin11Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }
-                                                              else if(listOfScheduledPins[index]['pin12Status']!=null){
-                                                                postData={
-                                                                  "user":getUidVariable2,
-                                                                  "date1":cutDate.toString(),
-                                                                  "timing1":cutTime.toString(),
-                                                                  "d_id":listOfScheduledPins[index]['d_id'],
-                                                                  "id":listOfScheduledPins[index]['id'],
-                                                                  "pin12Status":checkSwitch,
-                                                                };
-                                                                await schedulingDevicePin(postData);
-                                                                Navigator.pop(context);
-                                                                return;
-                                                              }
-                                                              // await schedulingDevicePin(postData);
-                                                              Navigator.pop(context);
-
-                                                              print('Sceduled');
-                                                            },
-                                                            icon: Icon(Icons.alarm),
-                                                            label: Text('Save'),
-                                                          ),
-                                                        ]));
-                                                  });
-                                            });
-                                      },
-                                      child: Card(
-                                        semanticContainer:true,
-                                        shadowColor: Colors.grey,
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                              title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                              trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                              leading: IconButton(
-                                                icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                                onPressed: ()async{
-                                                  await deleteSchedulingUsingId(listOfScheduledPins[index]['id'].toString());
-
-                                                },
-                                              ),
-                                              subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-
-                                              onTap: (){
-                                                print('printSubUser ${listOfScheduledPins[index]['id']}');
-
-                                                // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                                                //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-
-                                              },
-                                            ),
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  height: 54,
-                                                  color:Colors.red,
-                                                  child: ListView.builder(
-                                                      itemCount: 1,
-                                                      itemBuilder: (context,index){
-                                                        if(listOfScheduledPins[index]['pin1Status']==1){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin1Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,fontFamily:  fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin2Status']==1){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin2Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin3Status']==1){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(on,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin3Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        } else if(listOfScheduledPins[index]['pin4Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin4Status']==1){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(on,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin5Status']==1){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(on,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin5Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin6Status']==0){
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin6Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(width: 14,),
-                                                              Text(off,style: TextStyle(fontSize: 22,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin6Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin6Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin7Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin7Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin7Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin7Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin8Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin8Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin8Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin8Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin9Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin9Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin9Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin8Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin10Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin10Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin10Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(
-                                                                namesDataList[index]['pin10Name']
-                                                                    .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin11Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin11Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin12Status']==0) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(off,
-                                                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else if(listOfScheduledPins[index]['pin12Status']==1) {
-                                                          return Row(
-                                                            children: [
-                                                              Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                              SizedBox(
-                                                                width: 14,),
-                                                              Text(on,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    fontSize: 22),),
-                                                            ],
-                                                          );
-                                                        }else{return null;}
-                                                      }),
-                                                )
-                                                // Row(
-                                                //   children: [
-                                                //
-                                                //     Text(namesDataList[index]['pin1Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin1Status'].toString()==null? "Off ":"On",textAlign: TextAlign.end,),
-                                                //   SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin2Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin2Status'].toString()==null?"check":"",textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin3Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin4Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
-                                                //   ],
-                                                // ),
-                                                // Row(
-                                                //   children: [
-                                                //     Text(namesDataList[index]['pin5Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin6Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin7Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin8Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
-                                                //
-                                                //   ],
-                                                // ),
-                                                // Row(
-                                                //   children: [
-                                                //     Text(namesDataList[index]['pin9Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin10Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin10Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin11Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin11Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //     Text(namesDataList[index]['pin12Name'].toString()),
-                                                //     Text(' -> '),
-                                                //     Text(listOfScheduledPins[index]['pin12Status'].toString(),textAlign: TextAlign.end,),
-                                                //     SizedBox(width: 14,),
-                                                //   ],
-                                                // ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-
-
-                                  //   Column(
-                                  //   children: <Widget>[
-                                  //     SizedBox(height: 100,),
-                                  //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  //     SizedBox(height: 15,),
-                                  //     Row(
-                                  //       children: [
-                                  //         SizedBox(width: 55,),
-                                  //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                  //         SizedBox(width: 15,),
-                                  //         Container(
-                                  //           height: 45,
-                                  //           width: 195,
-                                  //           child:Padding(
-                                  //             padding: const EdgeInsets.all(8.0),
-                                  //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                  //           ),
-                                  //           decoration: BoxDecoration(
-                                  //             color: Colors.white,
-                                  //             border: Border.all(
-                                  //               color: Colors.black38 ,
-                                  //               width: 5.0 ,
-                                  //             ),
-                                  //             borderRadius: BorderRadius.circular(20),
-                                  //           ),
-                                  //         ),
-                                  //       ],
-                                  //     ),
-                                  //
-                                  //
-                                  //   ],
-                                  //
-                                  //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                  //   // subtitle: Text("${statusData[index]['id']}"),
-                                  //
-                                  // );
-                                }
-                            )),
-
-
-                      ],
-                    );
-                  }
-                }else{
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.red,
-                      semanticsLabel: 'Loading...',
-                    ),
-                  );
-                }
-
-              }
-
+                ),
+              )
+            ],
           ),
+          // child: FutureBuilder(
+          //     future: scheduled,
+          //     builder: ( context,  snapshot){
+          //
+          //       print('snapShot ${snapshot.connectionState}');
+          //       if(snapshot.connectionState ==ConnectionState.done){
+          //         if(listOfScheduledPins==null){
+          //           return Column(
+          //             children: [
+          //               SizedBox(height: 250,),
+          //               Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),)),
+          //             ],
+          //           );
+          //         }else{
+          //           return Column(
+          //             children: [
+          //               SizedBox(height: 25,),
+          //               Expanded(
+          //                   child: ListView.builder(
+          //                       itemCount: listOfScheduledPins.length,
+          //                       itemBuilder: (context,index){
+          //                         print('length ${listOfScheduledPins.length}');
+          //                         allPinNames(listOfScheduledPins[index]['d_id']);
+          //                         return Padding(
+          //                           padding: const EdgeInsets.all(8.0),
+          //                           child: GestureDetector(
+          //                             onLongPress: (){
+          //                               _alarmTimeString =
+          //                                   DateFormat('HH:mm').format(DateTime.now());
+          //                               cutDate = DateFormat('dd-MM-yyyy').format(
+          //                                   DateTime.now());
+          //                               showModalBottomSheet(
+          //                                   useRootNavigator: true,
+          //                                   context: context,
+          //                                   clipBehavior: Clip.antiAlias,
+          //                                   shape: RoundedRectangleBorder(
+          //                                     borderRadius: BorderRadius.vertical(
+          //                                       top: Radius.circular(24),
+          //                                     ),
+          //                                   ),
+          //                                   builder: (context) {
+          //                                     return StatefulBuilder(
+          //                                         builder: (context, setModalState) {
+          //                                           return Container(
+          //                                               padding: const EdgeInsets.all(
+          //                                                   32),
+          //                                               child: Column(children: [
+          //                                                 // ignore: deprecated_member_use
+          //                                                 Container(
+          //                                                   width: 145,
+          //                                                   child: GestureDetector(
+          //                                                       child: Text(cutDate
+          //                                                           .toString() == null
+          //                                                           ? _dateString
+          //                                                           : cutDate.toString()
+          //                                                           .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                                       onTap: () {
+          //                                                         pickDate();
+          //                                                       }
+          //
+          //                                                   ),
+          //                                                 ),
+          //
+          //                                                 FlatButton(
+          //                                                   onPressed: () async {
+          //                                                     pickTime(index);
+          //                                                     print("index --> $index");
+          //                                                     // var selectedTime = await showTimePicker(
+          //                                                     //   context: context,
+          //                                                     //   initialTime: TimeOfDay.now(),
+          //                                                     // );
+          //                                                     // if (selectedTime != null) {
+          //                                                     //   final now = DateTime.now();
+          //                                                     //   var selectedDateTime = DateTime(
+          //                                                     //       now.year,
+          //                                                     //       now.month,
+          //                                                     //       now.day,
+          //                                                     //       selectedTime.hour,
+          //                                                     //       selectedTime.minute);
+          //                                                     //   _alarmTime = selectedDateTime;
+          //                                                     //   setModalState(() {
+          //                                                     //     _alarmTimeString =
+          //                                                     //         DateFormat('HH:mm')
+          //                                                     //             .format(selectedDateTime);
+          //                                                     //   });
+          //                                                     // }
+          //                                                   },
+          //                                                   child: Text(
+          //                                                     _alarmTimeString,
+          //                                                     style:
+          //                                                     TextStyle(fontSize: 32,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+          //                                                   ),
+          //                                                 ),
+          //                                                 ListTile(
+          //                                                   title:
+          //                                                   Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                                   trailing: Icon(Icons.timer),
+          //                                                 ),
+          //                                                 ListTile(
+          //                                                   title: ToggleSwitch(
+          //                                                     initialLabelIndex: 0,
+          //                                                     labels: ['Off', 'On'],
+          //                                                     onToggle: (index) {
+          //                                                       print(
+          //                                                           'switched to: $index');
+          //                                                       checkSwitch = index;
+          //                                                       // changeIndex(index);
+          //                                                       // setState(() {
+          //                                                       //
+          //                                                       // });
+          //                                                     },
+          //                                                   ),
+          //                                                   // trailing: Icon(Icons.arrow_forward_ios),
+          //                                                 ),
+          //
+          //                                                 FloatingActionButton.extended(
+          //                                                   onPressed: () async {
+          //                                                     if(listOfScheduledPins[index]['pin1Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin1Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin2Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin2Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin3Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin3Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin4Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin4Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin5Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin5Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin6Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin6Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin7Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin7Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin8Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin8Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin8Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin8Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin9Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin9Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin10Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin10Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }else if(listOfScheduledPins[index]['pin11Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin11Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }
+          //                                                     else if(listOfScheduledPins[index]['pin12Status']!=null){
+          //                                                       postData={
+          //                                                         "user":getUidVariable2,
+          //                                                         "date1":cutDate.toString(),
+          //                                                         "timing1":cutTime.toString(),
+          //                                                         "d_id":listOfScheduledPins[index]['d_id'],
+          //                                                         "id":listOfScheduledPins[index]['id'],
+          //                                                         "pin12Status":checkSwitch,
+          //                                                       };
+          //                                                       await schedulingDevicePin(postData);
+          //                                                       Navigator.pop(context);
+          //                                                       return;
+          //                                                     }
+          //                                                     // await schedulingDevicePin(postData);
+          //                                                     Navigator.pop(context);
+          //
+          //                                                     print('Sceduled');
+          //                                                   },
+          //                                                   icon: Icon(Icons.alarm),
+          //                                                   label: Text('Save'),
+          //                                                 ),
+          //                                               ]));
+          //                                         });
+          //                                   });
+          //                             },
+          //                             child: Card(
+          //                               semanticContainer:true,
+          //                               shadowColor: Colors.grey,
+          //                               child: Column(
+          //                                 children: [
+          //                                   ListTile(
+          //                                     title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                     trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                     leading: IconButton(
+          //                                       icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+          //                                       onPressed: ()async{
+          //                                         await deleteSchedulingUsingId(listOfScheduledPins[index]['id'].toString());
+          //
+          //                                       },
+          //                                     ),
+          //                                     subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //
+          //                                     onTap: (){
+          //                                       print('printSubUser ${listOfScheduledPins[index]['id']}');
+          //
+          //                                       // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+          //                                       //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
+          //
+          //                                     },
+          //                                   ),
+          //                                   Column(
+          //                                     children: [
+          //                                       Container(
+          //                                         height: 54,
+          //                                         color:Colors.red,
+          //                                         child: ListView.builder(
+          //                                             itemCount: 1,
+          //                                             itemBuilder: (context,index){
+          //                                               if(listOfScheduledPins[index]['pin1Status']==1){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin1Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,fontFamily:  fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin2Status']==1){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin2Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin3Status']==1){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(on,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin3Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               } else if(listOfScheduledPins[index]['pin4Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin4Status']==1){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(on,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin5Status']==1){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(on,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin5Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin6Status']==0){
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin6Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(width: 14,),
+          //                                                     Text(off,style: TextStyle(fontSize: 22,
+          //                                                       fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin6Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin6Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin7Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin7Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin7Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin7Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin8Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin8Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin8Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin8Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin9Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin9Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin9Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin8Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin10Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin10Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin10Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(
+          //                                                       namesDataList[index]['pin10Name']
+          //                                                           .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin11Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin11Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin12Status']==0) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(off,
+          //                                                       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else if(listOfScheduledPins[index]['pin12Status']==1) {
+          //                                                 return Row(
+          //                                                   children: [
+          //                                                     Text(namesDataList[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+          //                                                     SizedBox(
+          //                                                       width: 14,),
+          //                                                     Text(on,
+          //                                                       style: TextStyle(
+          //                                                           fontFamily: fonttest==null?changeFont:fonttest,
+          //                                                           fontSize: 22),),
+          //                                                   ],
+          //                                                 );
+          //                                               }else{return null;}
+          //                                             }),
+          //                                       )
+          //                                       // Row(
+          //                                       //   children: [
+          //                                       //
+          //                                       //     Text(namesDataList[index]['pin1Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin1Status'].toString()==null? "Off ":"On",textAlign: TextAlign.end,),
+          //                                       //   SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin2Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin2Status'].toString()==null?"check":"",textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin3Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin4Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //   ],
+          //                                       // ),
+          //                                       // Row(
+          //                                       //   children: [
+          //                                       //     Text(namesDataList[index]['pin5Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin6Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin7Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin8Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //
+          //                                       //   ],
+          //                                       // ),
+          //                                       // Row(
+          //                                       //   children: [
+          //                                       //     Text(namesDataList[index]['pin9Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin10Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin10Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin11Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin11Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //     Text(namesDataList[index]['pin12Name'].toString()),
+          //                                       //     Text(' -> '),
+          //                                       //     Text(listOfScheduledPins[index]['pin12Status'].toString(),textAlign: TextAlign.end,),
+          //                                       //     SizedBox(width: 14,),
+          //                                       //   ],
+          //                                       // ),
+          //                                     ],
+          //                                   )
+          //                                 ],
+          //                               ),
+          //                             ),
+          //                           ),
+          //                         );
+          //
+          //
+          //                         //   Column(
+          //                         //   children: <Widget>[
+          //                         //     SizedBox(height: 100,),
+          //                         //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+          //                         //     SizedBox(height: 15,),
+          //                         //     Row(
+          //                         //       children: [
+          //                         //         SizedBox(width: 55,),
+          //                         //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+          //                         //         SizedBox(width: 15,),
+          //                         //         Container(
+          //                         //           height: 45,
+          //                         //           width: 195,
+          //                         //           child:Padding(
+          //                         //             padding: const EdgeInsets.all(8.0),
+          //                         //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+          //                         //           ),
+          //                         //           decoration: BoxDecoration(
+          //                         //             color: Colors.white,
+          //                         //             border: Border.all(
+          //                         //               color: Colors.black38 ,
+          //                         //               width: 5.0 ,
+          //                         //             ),
+          //                         //             borderRadius: BorderRadius.circular(20),
+          //                         //           ),
+          //                         //         ),
+          //                         //       ],
+          //                         //     ),
+          //                         //
+          //                         //
+          //                         //   ],
+          //                         //
+          //                         //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+          //                         //   // subtitle: Text("${statusData[index]['id']}"),
+          //                         //
+          //                         // );
+          //                       }
+          //                   )),
+          //
+          //
+          //             ],
+          //           );
+          //         }
+          //       }else{
+          //         return Center(
+          //           child: CircularProgressIndicator(
+          //             color: Colors.red,
+          //             semanticsLabel: 'Loading...',
+          //           ),
+          //         );
+          //       }
+          //
+          //     }
+          //
+          // ),
         );
       }else{
         return Scaffold(
-          appBar: AppBar(
-            title: Text("Scheduled Pin",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-          ),
+
           body: Container(
             color: Colors.green,
             // height: 789,

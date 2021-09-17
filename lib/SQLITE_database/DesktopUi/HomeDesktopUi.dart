@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/scheduling/alarmHelper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+import '../../ProfilePage.dart';
 import '../../changeFont.dart';
 import '../../main.dart';
 import '../testinghome2.dart';
@@ -285,41 +287,7 @@ class _DesktopHomeState extends State<DesktopHome> {
       throw Exception('Failed to Update data');
     }
   }
-  _createAlertDialogForNameDeviceBox(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Enter the Name of Device'),
-            content: TextField(
-              controller: deviceNameEditing,
-            ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MaterialButton(
-                  elevation: 5.0,
-                  child: Text('Submit'),
-                  onPressed: () {
-                    addDeviceName(index);
-                    Navigator.of(context).pop();
-                    //
 
-                    print(
-                        'Device Name ----->>>> ${names.map((e) =>
-                            addDeviceName(index))}');
-                    final snackBar = SnackBar(
-                      content: Text('Name Added'),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  },
-                ),
-              )
-            ],
-          );
-        });
-  }
 
   void onOffSchedule() {
     print(time23);
@@ -398,6 +366,117 @@ class _DesktopHomeState extends State<DesktopHome> {
     return data;
   }
 
+
+
+
+
+  String _chosenValue;
+  var icon1=Icons.ac_unit;
+  var icon2=IconData(0xe800);
+  var icon3=FontAwesomeIcons.lightbulb;
+  var icon4=FontAwesomeIcons.fan;
+  var icon5=FontAwesomeIcons.handsWash;
+  var icon6=FontAwesomeIcons.lightbulb;
+  var icon7=FontAwesomeIcons.lightbulb;
+  var icon8=FontAwesomeIcons.lightbulb;
+  var icon9=FontAwesomeIcons.lightbulb;
+  List changeIcon=[null,null,null,null,null,null,null,null,null];
+
+
+  _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Column(
+              children: [
+                DropdownButton<String>(
+                  value: _chosenValue,
+                  //elevation: 5,
+                  style: TextStyle(color: Colors.black),
+
+                  items: <String>[
+                    'Air Conditioner',
+                    'Refrigerator',
+                    'Bulb',
+                    'Fan',
+                    'Washing Machine',
+                    'Heater',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    "Please choose a Icon",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      _chosenValue = value;
+                      if(_chosenValue=='Air Conditioner'){
+                        changeIcon[index]=icon1;
+                        print('true');
+                      }else if(_chosenValue=='Refrigerator'){
+                        changeIcon[index]=icon2;
+                        print('true');
+                      }else if(_chosenValue=='Bulb'){
+                        changeIcon[index]=icon3;
+                        print('true');
+                      }else if(_chosenValue=='Fan'){
+                        changeIcon[index]=icon4;
+                        print('true');
+                      }else if(_chosenValue=='Washing Machine'){
+                        changeIcon[index]=icon5;
+                        print('true');
+                      }else if(_chosenValue=='Washing Machine'){
+                        changeIcon[index]=icon6;
+                        print('true');
+                      }
+                      // changeIcon=value;
+                    });
+                  },
+                ),
+                Text('Enter the Name of Device'),
+              ],
+            ),
+            content: TextField(
+              // controller: pinNameController,
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () {
+                    // addPinsName(pinNameController.text, index);
+                    Navigator.of(context).pop();
+                    //
+
+
+                    final snackBar = SnackBar(
+                      content: Text('Name Added'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+
+
+
+
+
   deviceContainer(String dId) async {
     catchReturn = await getData(dId);
     setState(() {
@@ -423,16 +502,16 @@ class _DesktopHomeState extends State<DesktopHome> {
     print('Device id-> $dId');
   }
 
-  deviceContainer2(String dId, int x) {
-    deviceContainer(dId);
-    fetchIp(dId);
+  deviceContainer2() {
+    // deviceContainer(dId);
+    // fetchIp(dId);
     return Container(
-      height: MediaQuery.of(context).size.height * 1.58,
+      height: MediaQuery.of(context).size.height * 4.8,
       // color: Colors.redAccent,
       child: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 1.13,
+            height: MediaQuery.of(context).size.height * 1.2,
             // color: Colors.amber,
             child: GridView.count(
                 crossAxisSpacing: 8,
@@ -440,213 +519,212 @@ class _DesktopHomeState extends State<DesktopHome> {
                 mainAxisSpacing: 4,
                 physics: NeverScrollableScrollPhysics(),
                 // shrinkWrap: true,
-                crossAxisCount: 2,
-                children: List.generate(responseGetData.length - 3, (index) {
+                crossAxisCount: 3,
+                children: List.generate(
+                  9,
+                    // responseGetData.length - 3,
+                        (index) {
                   print('Something');
-                  print('catch return --> $catchReturn');
+                  print('catch return --> $index');
 
                   return Container(
                     // color: Colors.green,
-                    height: 2030,
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          // onTap:Text(),
-                          onLongPress: () async {
-                            _alarmTimeString =
-                                DateFormat('HH:mm').format(DateTime.now());
-                            showModalBottomSheet(
-                                useRootNavigator: true,
-                                context: context,
-                                clipBehavior: Clip.antiAlias,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(24),
-                                  ),
-                                ),
-                                builder: (context) {
-                                  return StatefulBuilder(
-                                      builder: (context, setModalState) {
-                                    return Container(
-                                        padding: const EdgeInsets.all(32),
-                                        child: Column(children: [
-                                          // ignore: deprecated_member_use
-                                          FlatButton(
-                                            onPressed: () async {
-                                              pickTime(index);
-                                              // s
-                                              print("index --> $index");
-                                              // var selectedTime = await showTimePicker(
-                                              //   context: context,
-                                              //   initialTime: TimeOfDay.now(),
-                                              // );
-                                              // if (selectedTime != null) {
-                                              //   final now = DateTime.now();
-                                              //   var selectedDateTime = DateTime(
-                                              //       now.year,
-                                              //       now.month,
-                                              //       now.day,
-                                              //       selectedTime.hour,
-                                              //       selectedTime.minute);
-                                              //   _alarmTime = selectedDateTime;
-                                              //   setModalState(() {
-                                              //     _alarmTimeString =
-                                              //         DateFormat('HH:mm')
-                                              //             .format(selectedDateTime);
-                                              //   });
-                                              // }
-                                            },
-                                            child: Text(
-                                              _alarmTimeString,
-                                              style: TextStyle(fontSize: 32),
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text('What Do You Want ??'),
-                                            trailing: Icon(Icons.timer),
-                                          ),
-                                          ListTile(
-                                            title: ToggleSwitch(
-                                              initialLabelIndex: 0,
-                                              labels: ['On', 'Off'],
-                                              onToggle: (index) {
-                                                print('switched to: $index');
+                    height: 203,
+                    child: GestureDetector(
+                      // onTap:Text(),
+                      onLongPress: () async {
+                        _alarmTimeString =
+                            DateFormat('HH:mm').format(DateTime.now());
+                        showModalBottomSheet(
+                            useRootNavigator: true,
+                            context: context,
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24),
+                              ),
+                            ),
+                            builder: (context) {
+                              return StatefulBuilder(
+                                  builder: (context, setModalState) {
+                                return Container(
+                                    padding: const EdgeInsets.all(32),
+                                    child: Column(children: [
+                                      // ignore: deprecated_member_use
+                                      FlatButton(
+                                        onPressed: () async {
+                                          pickTime(index);
+                                          // s
+                                          print("index --> $index");
+                                          // var selectedTime = await showTimePicker(
+                                          //   context: context,
+                                          //   initialTime: TimeOfDay.now(),
+                                          // );
+                                          // if (selectedTime != null) {
+                                          //   final now = DateTime.now();
+                                          //   var selectedDateTime = DateTime(
+                                          //       now.year,
+                                          //       now.month,
+                                          //       now.day,
+                                          //       selectedTime.hour,
+                                          //       selectedTime.minute);
+                                          //   _alarmTime = selectedDateTime;
+                                          //   setModalState(() {
+                                          //     _alarmTimeString =
+                                          //         DateFormat('HH:mm')
+                                          //             .format(selectedDateTime);
+                                          //   });
+                                          // }
+                                        },
+                                        child: Text(
+                                          _alarmTimeString,
+                                          style: TextStyle(fontSize: 32),
+                                        ),
+                                      ),
+                                      ListTile(
+                                        title: Text('What Do You Want ??'),
+                                        trailing: Icon(Icons.timer),
+                                      ),
+                                      ListTile(
+                                        title: ToggleSwitch(
+                                          initialLabelIndex: 0,
+                                          labels: ['On', 'Off'],
+                                          onToggle: (index) {
+                                            print('switched to: $index');
 
-                                                setState(() {
-                                                  changeIndex(index);
-                                                });
-                                              },
-                                            ),
-                                            // trailing: Icon(Icons.arrow_forward_ios),
-                                          ),
-                                          FloatingActionButton.extended(
-                                            onPressed: () {
-                                              pickTime(index);
-                                              Navigator.pop(context);
+                                            setState(() {
+                                              changeIndex(index);
+                                            });
+                                          },
+                                        ),
+                                        // trailing: Icon(Icons.arrow_forward_ios),
+                                      ),
+                                      FloatingActionButton.extended(
+                                        onPressed: () {
+                                          pickTime(index);
+                                          Navigator.pop(context);
 
-                                              print('Sceduled');
-                                            },
-                                            icon: Icon(Icons.alarm),
-                                            label: Text('Save'),
-                                          ),
-                                        ]));
-                                  });
-                                });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                                alignment: new FractionalOffset(1.0, 0.0),
-                                // alignment: Alignment.bottomRight,
-                                height: 120,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 1, vertical: 10),
-                                margin: index % 2 == 0
-                                    ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
-                                    : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
-                                // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
-                                decoration: BoxDecoration(
-                                    boxShadow: <BoxShadow>[
-                                      BoxShadow(
-                                          blurRadius: 10,
-                                          offset: Offset(8, 10),
-                                          color: Colors.black)
-                                    ],
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 1,
-                                        style: BorderStyle.solid,
-                                        color: Color(0xffa3a3a3)),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  // crossAxisAlignment:
-                                  // CrossAxisAlignment.stretch,
+                                          print('Sceduled');
+                                        },
+                                        icon: Icon(Icons.alarm),
+                                        label: Text('Save'),
+                                      ),
+                                    ]));
+                              });
+                            });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Container(
+                            // alignment: new FractionalOffset(1.0, 0.0),
+                            // alignment: Alignment.bottomRight,
+                            height: 20,
+                            // padding: EdgeInsets.symmetric(
+                            //     horizontal: 74, vertical: 10),
+                            // margin: index / 2 == 0
+                            //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                            //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                            // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
+                            margin: EdgeInsets.only(top: 41,right: 41,bottom: 30),
+                            decoration: BoxDecoration(
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                      blurRadius: 10,
+                                      offset: Offset(8, 10),
+                                      color: Colors.black)
+                                ],
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                    color: Color(0xffa3a3a3)),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Column(
+                              // crossAxisAlignment:
+                              // CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
-                                            child: Text(
-                                              '$index ',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                              style: TextStyle(fontSize: 10),
-                                            ),
-                                            onPressed: () {
-                                              print('index->  ${names[index]}');
-                                              setState(() {
-                                                if (names[index] != null) {
-                                                  names[index] =
-                                                      deviceNameEditing.text;
-                                                }
-                                              });
-                                              _createAlertDialogForNameDeviceBox(
-                                                  context);
 
-                                              return addDeviceName(index);
-                                            },
-                                          ),
+                                    Expanded(
+                                      child: TextButton(
+                                        child: Text(
+                                          '$index ',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(fontSize: 10),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 4.5,
-                                            // vertical: 10
-                                          ),
-                                          child: Switch(
-                                            value: responseGetData[index] == 0
-                                                ? val2
-                                                : val1,
-                                            //boolean value
-                                            onChanged: (val) async {
-                                              setState(() {
-                                                if (responseGetData[index] ==
-                                                    0) {
-                                                  responseGetData[index] = 1;
-                                                } else {
-                                                  responseGetData[index] = 0;
-                                                }
+                                        onPressed: () {
+                                          print('index->  ${names[index]}');
+                                          setState(() {
+                                            if (names[index] != null) {
+                                              names[index] =
+                                                  deviceNameEditing.text;
+                                            }
+                                          });
+                                          _createAlertDialogForNameDeviceBox(context,index);
 
-                                                // print('index of $index --> ${listDynamic[index]}');
-                                              });
-
-                                              // if Internet is not available then _checkInternetConnectivity = true
-                                              var result = await Connectivity()
-                                                  .checkConnectivity();
-                                              if (result ==
-                                                  ConnectivityResult.wifi) {
-                                                print("True2-->   $result");
-                                                // await localUpdate(dId);
-                                                await dataUpdate(dId);
-                                              } else if (result ==
-                                                  ConnectivityResult.mobile) {
-                                                print("mobile-->   $result");
-                                                // await localUpdate(d_id);
-                                                await dataUpdate(dId);
-                                              } else {
-                                                // messageSms(context, dId);
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 5.5,
-                                              // vertical: 10
-                                            ),
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                print("Message}");
-                                                // messageSms(context, dId);
-                                              },
-                                              child: Text('Click'),
-                                            )),
-                                      ],
+                                           addDeviceName(index);
+                                        },
+                                      ),
                                     ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 14.5,
+                                        vertical: 10
+                                      ),
+                                      child: Switch(
+                                        // value: responseGetData[index] == 0
+                                        //     ? val2
+                                        //     : val1,
+                                        value: val1,
+                                        onChanged: (val) async {
+                                          setState(() {
+                                            if (responseGetData[index] ==
+                                                0) {
+                                              responseGetData[index] = 1;
+                                            } else {
+                                              responseGetData[index] = 0;
+                                            }
+
+                                            // print('index of $index --> ${listDynamic[index]}');
+                                          });
+
+                                          // if Internet is not available then _checkInternetConnectivity = true
+                                          // var result = await Connectivity()
+                                          //     .checkConnectivity();
+                                          // if (result ==
+                                          //     ConnectivityResult.wifi) {
+                                          //   print("True2-->   $result");
+                                          //   // await localUpdate(dId);
+                                          //   await dataUpdate(dId);
+                                          // } else if (result ==
+                                          //     ConnectivityResult.mobile) {
+                                          //   print("mobile-->   $result");
+                                          //   // await localUpdate(d_id);
+                                          //   await dataUpdate(dId);
+                                          // } else {
+                                          //   // messageSms(context, dId);
+                                          // }
+                                        },
+                                      ),
+                                    ),
+
                                   ],
-                                )),
-                          ),
-                        ),
-                      ],
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 45,),
+                                    GestureDetector(
+                                        onTap:(){
+                                          // _createAlertDialogForlocalUpdateAndMessage(context,dId);
+                                        },
+                                        child: Icon(changeIcon[index]==null?null:changeIcon[index])),
+                                  ],
+                                )
+                              ],
+                            )),
+                      ),
                     ),
                   );
                 })),
@@ -663,13 +741,16 @@ class _DesktopHomeState extends State<DesktopHome> {
                   physics: NeverScrollableScrollPhysics(),
                   // shrinkWrap: true,
                   crossAxisCount: 2,
-                  children: List.generate(responseGetData.length - 9, (index) {
+                  children: List.generate(
+                    3,
+                      // responseGetData.length - 9,
+                          (index) {
                     print('Slider Start');
                     print('catch return --> $catchReturn');
                     var newIndex = index + 10;
                     return Container(
-                      // color: Colors.green,
-                      height: 2030,
+                      // color: Colors.deepOrange,
+                      // height: 2030,
                       child: Column(
                         children: [
                           GestureDetector(
@@ -757,17 +838,18 @@ class _DesktopHomeState extends State<DesktopHome> {
                                   });
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(24.0),
                               child: Container(
-                                  alignment: new FractionalOffset(1.0, 0.0),
-                                  // alignment: Alignment.bottomRight,
+                                  // alignment: new FractionalOffset(1.0, 0.0),
+                                  alignment: Alignment.bottomRight,
                                   height: 120,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 1, vertical: 10),
-                                  margin: index % 2 == 0
-                                      ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
-                                      : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
-                                  // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
+                                  // padding: EdgeInsets.symmetric(
+                                  //     horizontal: 1, vertical: 10),
+                                  // margin: index % 2 == 0
+                                  //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                                  //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                                  // margin: EdgeInsets.fromLTRB(95, 77.5, 7.5, 75),
+                                  margin: EdgeInsets.only(top: 41,right: 81,bottom: 70),
                                   decoration: BoxDecoration(
                                       boxShadow: <BoxShadow>[
                                         BoxShadow(
@@ -804,8 +886,7 @@ class _DesktopHomeState extends State<DesktopHome> {
                                                         deviceNameEditing.text;
                                                   }
                                                 });
-                                                _createAlertDialogForNameDeviceBox(
-                                                    context);
+                                                _createAlertDialogForNameDeviceBox(context,index);
 
                                                 return addDeviceName(index);
                                               },
@@ -814,10 +895,10 @@ class _DesktopHomeState extends State<DesktopHome> {
                                           Container(
                                             width: 109,
                                             child: Slider(
-                                              // value: 5.0,
-                                              value: double.parse(
-                                                  responseGetData[newIndex - 1]
-                                                      .toString()),
+                                              value: 5.0,
+                                              // value: double.parse(
+                                              //     responseGetData[newIndex - 1]
+                                              //         .toString()),
                                               min: 0,
                                               max: 10,
                                               divisions: 500,
@@ -857,12 +938,12 @@ class _DesktopHomeState extends State<DesktopHome> {
                                                     ConnectivityResult.wifi) {
                                                   print("True2-->   $result");
                                                   // await localUpdate(dId);
-                                                  await dataUpdate(dId);
+                                                  // await dataUpdate(dId);
                                                 } else if (result ==
                                                     ConnectivityResult.mobile) {
                                                   print("mobile-->   $result");
                                                   // await localUpdate(d_id);
-                                                  await dataUpdate(dId);
+                                                  // await dataUpdate(dId);
                                                 } else {
                                                   // messageSms(context, dId);
                                                 }
@@ -913,7 +994,12 @@ class _DesktopHomeState extends State<DesktopHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Place'),
+        automaticallyImplyLeading: false,
+        title: GestureDetector(
+            child: Center(child: Text('Place'))
+
+        ),
+
       ),
       body: Container(
         width: double.maxFinite,
@@ -921,7 +1007,7 @@ class _DesktopHomeState extends State<DesktopHome> {
         // color: change_toDark ? Colors.black : Colors.white,
         child: DefaultTabController(
           // length: rm.length,
-          length: 1,
+          length: 3,
           // length: widget.rm.length,
           child: CustomScrollView(
               // key: key,
@@ -976,36 +1062,39 @@ class _DesktopHomeState extends State<DesktopHome> {
                                             // _editFloorNameAlertDialog(context);
                                           },
                                           child: GestureDetector(
-                                            child: Row(
-                                              children: [
-                                                Text('Floor -',
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .white,
-                                                      fontFamily: fonttest==null?changeFont:fonttest,
-                                                      fontSize: 22,
-                                                      fontWeight: FontWeight
-                                                          .bold,
-                                                      fontStyle: FontStyle
-                                                          .italic),),
-                                                Text(
-                                                  // fl.fName.toString(),
-                                                  // getFloorData[0]['f_name'].toString(),
-                                                  'Hello ',
-                                                  // + widget.fl.user.first_name,
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .white,
-                                                      fontSize: 22,
-                                                      fontFamily: fonttest==null?changeFont:fonttest,
-                                                      // fontWeight: FontWeight.bold,
-                                                      fontStyle: FontStyle
-                                                          .italic),
-                                                ),
-                                                Icon(Icons
-                                                    .arrow_drop_down),
-                                                SizedBox(width: 10,),
-                                              ],
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 361.0),
+                                              child: Row(
+                                                children: [
+                                                  Text('Floor - ',
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                        fontSize: 22,
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        // fontStyle: FontStyle.italic
+                                                    ),),
+                                                  Text(
+                                                    // fl.fName.toString(),
+                                                    // getFloorData[0]['f_name'].toString(),
+                                                    'Floor 1 ',
+                                                    // + widget.fl.user.first_name,
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontSize: 22,
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                        // fontWeight: FontWeight.bold,
+                                                        // fontStyle: FontStyle
+                                                        //     .italic
+                                                    ),
+                                                  ),
+                                                  Icon(Icons.arrow_drop_down),
+                                                  SizedBox(width: 10,),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           onTap: () {
@@ -1013,73 +1102,96 @@ class _DesktopHomeState extends State<DesktopHome> {
                                             //     context);
                                           },
                                         ),
-                                        SizedBox(width: 10,),
-                                        // GestureDetector(
-                                        //   child: Icon(Icons.add),
-                                        //   onTap: () async {
-                                        //
-                                        //     // _createAlertDialogForFloor(context);
-                                        //   },
-                                        // )
+                                        // SizedBox(width: 10,),
+                                        // // GestureDetector(
+                                        // //   child: Icon(Icons.add),
+                                        // //   onTap: () async {
+                                        // //
+                                        // //     // _createAlertDialogForFloor(context);
+                                        // //   },
+                                        // // )
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
+                                    // SizedBox(
+                                    //   height: 12,
+                                    // ),
 
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                    Row(
                                       children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            GestureDetector(
-                                              onLongPress: () {
+                                        GestureDetector(
+                                          onLongPress: () {
 
-                                              },
-                                              child: Row(
+                                          },
+                                          child: Row(
+                                            children: [
+
+                                              Text('Flat - ', style: TextStyle(
+                                                    color: Colors
+                                                        .white,
+                                                    fontWeight: FontWeight
+                                                        .bold,
+
+                                                    fontFamily: fonttest==null?changeFont:fonttest,
+                                                    fontSize: 22),),
+
+                                              Text(
+                                                // flat.fltName.toString(),
+                                                // getFlatData[0]['flt_name'].toString(),
+                                                'Flat 1 ',
+                                                // + widget.fl.user.first_name,
+                                                style: TextStyle(
+                                                    color: Colors
+                                                        .white,
+                                                    fontFamily: fonttest==null?changeFont:fonttest,
+                                                    // fontWeight: FontWeight.bold,
+                                                    // fontStyle: FontStyle
+                                                    //     .italic,
+                                                    fontSize: 22),
+                                              ),
+                                              Icon(Icons
+                                                  .arrow_drop_down),
+                                              SizedBox(width: 250,),
+                                              Row(
                                                 children: [
-                                                  Text('Flat- ',
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .white,
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                        fontSize: 22),),
-                                                  Text(
-                                                    // flat.fltName.toString(),
-                                                    // getFlatData[0]['flt_name'].toString(),
-                                                    'Hello ',
-                                                    // + widget.fl.user.first_name,
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .white,
-                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                        // fontWeight: FontWeight.bold,
-                                                        fontStyle: FontStyle
-                                                            .italic,
-                                                        fontSize: 22),
+                                                  SizedBox(width: 28,),
+                                                  Container(
+                                                    // color:Colors.red,
+                                                    child: CircularProfileAvatar(
+                                                      '',
+                                                      child: setImage == null
+                                                          ? Image.asset('assets/images/genLogo.png')
+                                                          : setImage,
+                                                      radius: 47.5,
+                                                      // elevation: 5,
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    ProfilePage()));
+                                                        //     .then((value) =>
+                                                        // loadImageFromPreferences()
+                                                        //     ? _deleteImage()
+                                                        //     : loadImageFromPreferences());
+                                                      },
+                                                      cacheImage: true,
+                                                    ),
                                                   ),
-                                                  Icon(Icons
-                                                      .arrow_drop_down),
-                                                  SizedBox(width: 10,),
                                                 ],
                                               ),
-                                              onTap: () {
-                                                // _createAlertDialogDropDown(
-                                                //     context);
-                                              },
-                                            ),
-                                            SizedBox(width: 35),
-                                            // GestureDetector(
-                                            //     onTap: () async {
-                                            //
-                                            //     },
-                                            //     child: Icon(Icons.add)),
-                                          ],
-                                        )
-
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            // _createAlertDialogDropDown(
+                                            //     context);
+                                          },
+                                        ),
+                                        SizedBox(width: 35),
+                                        // GestureDetector(
+                                        //     onTap: () async {
+                                        //
+                                        //     },
+                                        //     child: Icon(Icons.add)),
                                       ],
                                     ),
 
@@ -1088,134 +1200,153 @@ class _DesktopHomeState extends State<DesktopHome> {
                               ],
                             ),
                             SizedBox(
-                              height: 45,
+                              height: 8,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: deviceSensorVal,
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        // mainAxisAlignment: MainAxisAlignment.center,
+                            FutureBuilder(
+                              future: deviceSensorVal,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    // mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Row(
                                         children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Column(children: <Widget>[
-                                                Icon(
-                                                  FontAwesomeIcons.fire,
-                                                  color: Colors.yellow,
-                                                ),
-                                                SizedBox(
-                                                  height: 32,
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text('sensor 1',
-                                                          // sensorData[index]['sensor1'].toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ]),
-                                              SizedBox(
-                                                width: 35,
-                                              ),
-                                              Column(children: <Widget>[
-                                                Icon(
-                                                  FontAwesomeIcons.temperatureLow,
-                                                  color: Colors.orange,
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text('sensor 1',
-                                                          // sensorData[index][
-                                                          // 'sensor2']
-                                                          //     .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ]),
-                                              SizedBox(
-                                                width: 45,
-                                              ),
-                                              Column(children: <Widget>[
-                                                Icon(
-                                                  FontAwesomeIcons.wind,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text('sensor 1',
-                                                          // sensorData[index]['sensor3'].toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ]),
-                                              SizedBox(
-                                                width: 42,
-                                              ),
-                                              Column(children: <Widget>[
-                                                Icon(
-                                                  FontAwesomeIcons.cloud,
-                                                  color: Colors.orange,
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text('sensor 1',
-                                                          // sensorData[index]['sensor4'].toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white70)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ]),
-                                            ],
-                                          ),
                                           SizedBox(
-                                            height: 22,
+                                            width: 8,
                                           ),
+                                          Column(children: <Widget>[
+                                            Icon(
+                                              FontAwesomeIcons.fire,
+                                              color: Colors.yellow,
+                                            ),
+                                            SizedBox(
+                                              height: 32,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  child: Text('2.65',
+                                                      // sensorData[index]['sensor1'].toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .white70)),
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
+                                          SizedBox(
+                                            width: 35,
+                                          ),
+                                          Column(children: <Widget>[
+                                            Icon(
+                                              FontAwesomeIcons.temperatureLow,
+                                              color: Colors.orange,
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  child: Text('45.36',
+                                                      // sensorData[index][
+                                                      // 'sensor2']
+                                                      //     .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .white70)),
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
+                                          SizedBox(
+                                            width: 45,
+                                          ),
+                                          Column(children: <Widget>[
+                                            Icon(
+                                              FontAwesomeIcons.wind,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  child: Text('41.25',
+                                                      // sensorData[index]['sensor3'].toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .white70)),
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
+                                          SizedBox(
+                                            width: 42,
+                                          ),
+                                          Column(children: <Widget>[
+                                            Icon(
+                                              FontAwesomeIcons.cloud,
+                                              color: Colors.orange,
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  child: Text('45.2',
+                                                      // sensorData[index]['sensor4'].toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .white70)),
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
+                                          SizedBox(
+                                            width: 42,
+                                          ),
+                                          Column(children: <Widget>[
+                                            Icon(
+                                              FontAwesomeIcons.idBadge,
+                                              color: Colors.orange,
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  child: Text('Device Id',
+                                                      // sensorData[index]['sensor4'].toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .white70)),
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
                                         ],
-                                      );
-                                    } else {
-                                      return Center(
-                                        child: Text('Loading...'),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
+                                      ),
+                                      SizedBox(
+                                        height: 22,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Text('Loading...'),
+                                  );
+                                }
+                              },
                             )
                           ],
                         ),
@@ -1267,7 +1398,9 @@ class _DesktopHomeState extends State<DesktopHome> {
                                   indicatorWeight: 2.0,
                                   isScrollable: true,
                                   tabs: [
-                                    Icon(Icons.delete)
+                                    Text('Room 1',),
+                                    Text('Room 2',),
+                                    Text('Room 3',),
                                   ],
                                   // tabs: rm.map<Widget>((RoomType rm) {
                                   //   rIdForName = rm.rId;
@@ -1295,48 +1428,49 @@ class _DesktopHomeState extends State<DesktopHome> {
 
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index < dv.length) {
-                      Text(
-                        "Loading",
-                        style: TextStyle(fontSize: 44),
-                      );
-
-                      return Container(
-                        child: Column(
-                          children: [
-                            // deviceContainer2(dv[index].dId, index),
-                            Container(
-                                //
-                                // color: Colors.green,
-                                height: 35,
-                                child: GestureDetector(
-                                  child: RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: dv[index].dId,
-                                          style: TextStyle(
-                                              fontSize: 15, color: Colors.black)),
-                                      TextSpan(text: "   "),
-                                      WidgetSpan(
-                                          child: Icon(
-                                        Icons.settings,
-                                        size: 18,
-                                      ))
-                                    ]),
-                                  ),
-                                  onTap: () {
-                                    // _createAlertDialogForSSIDAndEmergencyNumber(
-                                    //     context);
-                                    print('on tap');
-                                  },
-                                )),
-                          ],
-                        ),
-                        // child: Text(dv[index].dId),
-                      );
-                    } else {
-                      return null;
-                    }
+                   return deviceContainer2();
+                    // if (index < dv.length) {
+                    //   Text(
+                    //     "Loading",
+                    //     style: TextStyle(fontSize: 44),
+                    //   );
+                    //
+                    //   return Container(
+                    //     child: Column(
+                    //       children: [
+                    //         deviceContainer2(),
+                    //         // Container(
+                    //         //     //
+                    //         //     // color: Colors.green,
+                    //         //     height: 35,
+                    //         //     child: GestureDetector(
+                    //         //       child: RichText(
+                    //         //         text: TextSpan(children: [
+                    //         //           TextSpan(
+                    //         //               text: dv[index].dId,
+                    //         //               style: TextStyle(
+                    //         //                   fontSize: 15, color: Colors.black)),
+                    //         //           TextSpan(text: "   "),
+                    //         //           WidgetSpan(
+                    //         //               child: Icon(
+                    //         //             Icons.settings,
+                    //         //             size: 18,
+                    //         //           ))
+                    //         //         ]),
+                    //         //       ),
+                    //         //       onTap: () {
+                    //         //         // _createAlertDialogForSSIDAndEmergencyNumber(
+                    //         //         //     context);
+                    //         //         print('on tap');
+                    //         //       },
+                    //         //     )),
+                    //       ],
+                    //     ),
+                    //     // child: Text(dv[index].dId),
+                    //   );
+                    // } else {
+                    //   return null;
+                    // }
                   }),
                 )
               ]),

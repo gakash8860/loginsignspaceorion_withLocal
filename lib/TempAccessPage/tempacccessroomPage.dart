@@ -95,6 +95,8 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
 
   var tabbarState;
 
+  bool switchOn;
+
   @override
   void initState() {
     super.initState();
@@ -426,6 +428,19 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
       ];
 
     });
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
   }
 
   deviceContainer2(String dId, int x) {
@@ -496,7 +511,7 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog(dId);

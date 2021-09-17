@@ -8,7 +8,6 @@ import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/main.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
-import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 
 import '../changeFont.dart';
 
@@ -73,7 +72,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    if (response.statusCode>0) {
+
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
@@ -82,7 +81,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
       // floorVal = getfloors(places[0].p_id);
 
       return places;
-    }
+
   }
 
 @override

@@ -110,6 +110,8 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future floorVal;
 
   Future flatVal;
+
+  bool switchOn;
   @override
   void initState() {
     super.initState();
@@ -1552,6 +1554,19 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       ];
 
     });
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
   }
 
   dataUpdate(String dId) async {
@@ -1718,7 +1733,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog(dId);

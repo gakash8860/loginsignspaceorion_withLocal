@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:loginsignspaceorion/BillUsage/bill_estimation.dart';
+import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
@@ -30,8 +32,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-var API = 'http://127.0.0.1:8000/';
-// var API = 'https://genorion1.herokuapp.com/';
+// var API = 'http://127.0.0.1:8000/';
+var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
@@ -87,6 +89,8 @@ void main()async {
       DropDown1.routeName:(ctx) => DropDown1(),
       WrongPassword.routeName:(ctx) => WrongPassword(),
       SubAccessSinglePage.routeName:(ctx) => SubAccessSinglePage(),
+      TotalUsage.routeName:(ctx) => TotalUsage(),
+      BillEstimation.routeName:(ctx) => BillEstimation(),
       HomeTest.routeName:(ctx) => HomeTest(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
@@ -203,6 +207,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   allAwaitFunction()async{
     getUid();
     getImage();
+    getUserDataOfflineSql();
+    loadImageFromPreferences();
     fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
       .then((value) => floorQueryFunc()).then((value) => getAllFlat().then((value) => flatQueryFunc())).then((value) => getAllRoom())
       .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
@@ -221,7 +227,20 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
   }
 
-
+  getUserDataOfflineSql() async {
+   List data = await NewDbProvider.instance.userQuery();
+    print('qqqqqq $data');
+    var userQuery = User(
+        lastName: data.first['last_name'].toString(),
+        firstName: data.first['first_name'].toString(),
+        email: data.first['email'].toString());
+    setState(() {
+      email = userQuery.email;
+      firstName = userQuery.firstName;
+      lastName = userQuery.lastName;
+    });
+    print('asasa ${lastName}');
+  }
 
   Future<List<PlaceType>> fetchPlace() async {
     // await openPlaceBox();
@@ -692,7 +711,16 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   }
 
 
-
+  loadImageFromPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final _imageKeyValue = preferences.getString(IMAGE_KEY);
+    if (_imageKeyValue != null) {
+      final imageString = await Utility.getImagefrompreference();
+      setState(() {
+        setImage = Utility.imageFrom64BaseString(imageString);
+      });
+    }
+  }
 
   Future placeQueryFunc()async{
     placeTypeSingle=  await NewDbProvider.instance.queryPlace();

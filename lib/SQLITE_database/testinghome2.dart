@@ -19,10 +19,11 @@ import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/bill2.dart';
-import 'package:loginsignspaceorion/bill_estimation.dart';
+import 'package:loginsignspaceorion/BillUsage/bill_estimation.dart';
 import 'package:loginsignspaceorion/changeFont.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
+import 'package:loginsignspaceorion/icons/my_flutter_app_icons.dart';
 import 'package:loginsignspaceorion/information.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
@@ -584,70 +585,71 @@ class _HomeTestState extends State<HomeTest>
 
 
   List pinNames = [];
-
-  Future<DevicePin> addPinsName(String data, int index) async {
+  var postDataPinName;
+  Future addPinsName(String data, int index) async {
+    print('editpinnames ${index}');
     String token = await getToken();
-    print('data[index] ${widget.dv[index].dId}');
     final url = API+'editpinnames/';
-    var postDataPinName;
+
+
     if (index == 0) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
-        "pin1Name": data.toString(),
+        "d_id": deviceId,
+        "pin1Name": data
       };
     } else if (index == 1) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
-        "pin2Name": data.toString(),
+        "d_id": deviceId,
+        "pin2Name": data,
       };
     } else if (index == 2) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin3Name": data,
       };
     } else if (index == 3) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin4Name": data,
       };
     } else if (index == 4) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin5Name": data,
       };
     } else if (index == 5) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin6Name": data,
       };
     } else if (index == 6) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin7Name": data,
       };
     } else if (index == 7) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin8Name": data,
       };
     } else if (index == 8) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin9Name": data,
       };
     } else if (index == 9) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin10Name": data,
       };
     } else if (index == 10) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin11Name": data,
       };
     } else if (index == 11) {
       postDataPinName = {
-        "d_id": widget.dv[index].dId,
+        "d_id": deviceId,
         "pin12Name": data,
       };
     }
@@ -1509,185 +1511,6 @@ class _HomeTestState extends State<HomeTest>
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.all(18.0),
-                    //   child: FutureBuilder(
-                    //       future: returnPlaceQuery(),
-                    //       builder: (context, AsyncSnapshot snapshot) {
-                    //         if (snapshot.hasData) {
-                    //           return Container(
-                    //             width: MediaQuery
-                    //                 .of(context)
-                    //                 .size
-                    //                 .width * 2,
-                    //             decoration: BoxDecoration(
-                    //                 color: Colors.white,
-                    //                 boxShadow: [
-                    //                   BoxShadow(
-                    //                       color: Colors.black,
-                    //                       blurRadius: 30,
-                    //                       offset: Offset(20, 20))
-                    //                 ],
-                    //                 border: Border.all(
-                    //                   color: Colors.black,
-                    //                   width: 0.5,
-                    //                 )),
-                    //             child: DropdownButtonFormField(
-                    //               decoration: InputDecoration(
-                    //                 contentPadding: const EdgeInsets.all(15),
-                    //                 focusedBorder: OutlineInputBorder(
-                    //                   borderSide: BorderSide(
-                    //                       color: Colors.white),
-                    //                   borderRadius: BorderRadius.circular(10),
-                    //                 ),
-                    //                 enabledBorder: UnderlineInputBorder(
-                    //                   borderSide: BorderSide(
-                    //                       color: Colors.black),
-                    //                   borderRadius: BorderRadius.circular(50),
-                    //                 ),
-                    //               ),
-                    //               dropdownColor: Colors.white70,
-                    //               icon: Icon(Icons.arrow_drop_down),
-                    //               iconSize: 28,
-                    //               hint: Text('Select Place'),
-                    //               isExpanded: true,
-                    //               style: TextStyle(
-                    //                 color: Colors.black,
-                    //                 fontWeight: FontWeight.bold,
-                    //               ),
-                    //
-                    //               items: placeRows.map((selectedPlace) {
-                    //                 return DropdownMenuItem(
-                    //                   value: selectedPlace.toString(),
-                    //                   child: Text("${selectedPlace['p_type']}"),
-                    //                 );
-                    //               }).toList(),
-                    //               onChanged: (selectedPlace) async {
-                    //                 floorval=null;
-                    //                 var placeId = selectedPlace.substring(7, 14);
-                    //                 var placeName = selectedPlace.substring(24, 31);
-                    //                 print('checkPlaceName ${placeName.toString()}');
-                    //                 print("SElectedPlace ${selectedPlace}");
-                    //
-                    //                 var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
-                    //                 print('AA  ${aa}');
-                    //
-                    //                 returnFloorQuery(placeId);
-                    //                 setState(() {
-                    //                   floorQueryRows2 = aa;
-                    //                   floorval = returnFloorQuery(placeId);
-                    //                   returnFloorQuery(placeId);
-                    //
-                    //                 });
-                    //                 var place = PlaceType(
-                    //                     pId: placeId,
-                    //                     pType: placeName,
-                    //                     user: getUidVariable2
-                    //                 );
-                    //                 pt = place;
-                    //                 print('Floorqwe  ${floorQueryRows2}');
-                    //
-                    //                 // qwe= ;
-                    //               },
-                    //               // items:snapshot.data
-                    //             ),
-                    //           );
-                    //         } else {
-                    //           return CircularProgressIndicator();
-                    //         }
-                    //       }),
-                    // ),
-                    // SizedBox(
-                    //   height: 30,
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(18.0),
-                    //   child: FutureBuilder(
-                    //       future: returnFloorQuery(widget.pt.pId),
-                    //       builder: (context, AsyncSnapshot snapshot) {
-                    //         if (snapshot.hasData) {
-                    //           return Container(
-                    //             width: MediaQuery
-                    //                 .of(context)
-                    //                 .size
-                    //                 .width * 2,
-                    //             decoration: BoxDecoration(
-                    //                 color: Colors.white,
-                    //                 boxShadow: [
-                    //                   BoxShadow(
-                    //                       color: Colors.black,
-                    //                       blurRadius: 30,
-                    //                       offset: Offset(20, 20))
-                    //                 ],
-                    //                 border: Border.all(
-                    //                   color: Colors.black,
-                    //                   width: 0.5,
-                    //                 )),
-                    //             child: DropdownButtonFormField(
-                    //               decoration: InputDecoration(
-                    //                 contentPadding: const EdgeInsets.all(15),
-                    //                 focusedBorder: OutlineInputBorder(
-                    //                   borderSide: BorderSide(
-                    //                       color: Colors.white),
-                    //                   borderRadius: BorderRadius.circular(10),
-                    //                 ),
-                    //                 enabledBorder: UnderlineInputBorder(
-                    //                   borderSide: BorderSide(
-                    //                       color: Colors.black),
-                    //                   borderRadius: BorderRadius.circular(50),
-                    //                 ),
-                    //               ),
-                    //
-                    //               dropdownColor: Colors.white70,
-                    //               icon: Icon(Icons.arrow_drop_down),
-                    //               iconSize: 28,
-                    //               hint: Text('Select Floor'),
-                    //               isExpanded: true,
-                    //               style: TextStyle(
-                    //                 color: Colors.black,
-                    //                 fontWeight: FontWeight.bold,
-                    //               ),
-                    //               items: floorQueryRowsFloor.map((selectedFloor) {
-                    //                 return DropdownMenuItem(
-                    //                   value: selectedFloor.toString(),
-                    //                   child: Text("${selectedFloor['f_name']}"),
-                    //                 );
-                    //               }).toList(),
-                    //               onChanged: (selectedFloor) async {
-                    //                 print('Floor selected $selectedFloor');
-                    //
-                    //                 var floorId = selectedFloor.substring(7, 14);
-                    //                 var floorName = selectedFloor.substring(24, 32);
-                    //                 var placeId = selectedFloor.substring(39, 46);
-                    //                 var floor = FloorType(
-                    //                     fId: floorId,
-                    //                     fName: floorName,
-                    //                     pId: placeId,
-                    //                     user: getUidVariable2
-                    //                 );
-                    //                 fl = floor;
-                    //                 var getFlat = await NewDbProvider.instance.getFlatByFId(floorId.toString());
-                    //                 print(getFlat);
-                    //                 flatVal = returnFlatQuery(floorId);
-                    //                 flatQueryRows2 = getFlat;
-                    //                 setState(() {
-                    //                   flatVal = returnFlatQuery(floorId);
-                    //                   flatQueryRows2 = getFlat;
-                    //                 });
-                    //                 print('forRoom  ${roomQueryRows2}');
-                    //
-                    //                 returnFloorQuery(floorId);
-                    //               },
-                    //             ),
-                    //           );
-                    //         } else {
-                    //           return CircularProgressIndicator();
-                    //         }
-                    //       }),
-                    // ),
-                    // SizedBox(
-                    //   height: 30,
-                    // ),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),
@@ -2821,14 +2644,111 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
   }
 
   TextEditingController pinNameController = new TextEditingController();
+  String _chosenValue;
+  var icon1=Icons.ac_unit;
+  var icon2=FontAwesomeIcons.iceCream;
+  var icon3=FontAwesomeIcons.lightbulb;
+  var icon4=FontAwesomeIcons.fan;
+  var icon5=FontAwesomeIcons.handsWash;
+  var icon6=FontAwesomeIcons.lightbulb;
+  var icon7=FontAwesomeIcons.lightbulb;
+  var icon8=FontAwesomeIcons.lightbulb;
+  var icon9=FontAwesomeIcons.lightbulb;
+  var icon10=FontAwesomeIcons.lightbulb;
+  var icon11=FontAwesomeIcons.lightbulb;
+  var icon12=FontAwesomeIcons.lightbulb;
+  List changeIcon=[null,null,null,null,null,null,null,null,null];
 
+List<String> iconCode=['','002','003','','','','','','','','',''];
+String piname;
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Name of Device'),
+            title: Column(
+              children: [
+                DropdownButton<String>(
+                  value: _chosenValue,
+                  //elevation: 5,
+                  style: TextStyle(color: Colors.black),
+
+                  items: <String>[
+                    'Air Conditioner',
+                    'Refrigerator',
+                    'Bulb',
+                    'Fan',
+                    'Washing Machine',
+                    'Heater',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    "Please choose a Icon",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      _chosenValue = value;
+                      if(_chosenValue=='Air Conditioner'){
+                        changeIcon[index]=icon1;
+                        iconCode[index]='001';
+                        print('true');
+                      }else if(_chosenValue=='Refrigerator'){
+                        changeIcon[index]=icon2;
+                        iconCode[index]='002';
+                        print('trueindex $index');
+                      }else if(_chosenValue=='Bulb'){
+                        changeIcon[index]=icon3;
+                      iconCode[index]='003';
+                        print('true');
+                      }else if(_chosenValue=='Fan'){
+                        changeIcon[index]=icon4;
+                        iconCode[index]='004';
+                        print('true');
+                      }else if(_chosenValue=='Washing Machine'){
+                        changeIcon[index]=icon5;
+                        iconCode[index]='005';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon6;
+                        iconCode[index]='006';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon7;
+                        iconCode[index]='007';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon8;
+                        iconCode[index]='008';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon9;
+                        iconCode[index]='009';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon10;
+                        iconCode[index]='0010';
+                        print('true');
+                      }else if(_chosenValue=='Heater'){
+                        changeIcon[index]=icon11;
+                        iconCode[index]='0011';
+                        print('true');
+                      }
+                      // changeIcon=value;
+                    });
+                  },
+                ),
+                Text('Enter the Name of Device'),
+              ],
+            ),
             content: TextField(
               controller: pinNameController,
             ),
@@ -2838,15 +2758,19 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                 child: MaterialButton(
                   elevation: 5.0,
                   child: Text('Submit'),
-                  onPressed: () {
-                    // addDeviceName(index);
-                    addPinsName(pinNameController.text, index);
+                  onPressed: ()async {
+                    piname=pinNameController.text;
+                    print('checkConditioncheck ${iconCode[index]}');
+                    String aa=piname+","+iconCode[index];
+                    var ss= aa.substring(aa.indexOf(","));
+                    print('checkConditioncheck $aa');
+
+                   await addPinsName(aa, index);
                     Navigator.of(context).pop();
                     //
 
-                    print(
-                        'Device Name ----->>>> ${names.map((e) =>
-                            addPinsName(pinNameController.text, index))}');
+                    // print('Device Name ----->>>> ${names.map((e) =>
+                    //         addPinsName(pinNameController.text, index))}');
                     final snackBar = SnackBar(
                       content: Text('Name Added'),
                     );
@@ -3972,8 +3896,10 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
   }
 
   _logout() async {
+    await _deleteCacheDir();
+    await _deleteAppDir();
     final deleteToken = await storage.delete(key: "token");
-    return deleteToken;
+
   }
 
   Future<void> _deleteCacheDir() async {
@@ -4649,7 +4575,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                     SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Hello  ', style: TextStyle(
+                                    Text('Hello  $firstName', style: TextStyle(
                                         fontFamily: fonttest==null?'RobotoMono':fonttest,
                                       // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                         fontSize: 20,
@@ -4787,7 +4713,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SETTINGS()),
+                                      builder: (context) => SettingPage()),
                                 );
                               },
                             ),
@@ -5440,7 +5366,9 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
     print('number147859 ${number}');
   }
 bool switchOn;
+  var deviceId;
   deviceContainer(String dId, int index) async {
+     deviceId=dId;
     getData(dId);
      getPinsName(dId);
     devicePinSensorLocalUsingDeviceId(dId);
@@ -5478,25 +5406,457 @@ bool switchOn;
 
     var namesDataList12 =
     await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+
     // var sensorData=
 
 
     // catchReturn =  getData(dId);
 
-    namesDataList = [
-      widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
-      widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
-      widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
-      widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
-      widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
-      widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
-      widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
-      widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
-      widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
-      widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
-      widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
-      widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+
+     String pin1=namesDataList12[index]['pin1Name'];
+     var indexOfPin1Name=pin1.indexOf(',');
+     var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+     print('indexofpppp $pin1');
+
+
+     String pin2=namesDataList12[index]['pin2Name'];
+     var indexOfPin2Name=pin2.indexOf(',');
+     var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+     print('indexofpppppin2 $pin2');
+
+     String pin3=namesDataList12[index]['pin3Name'];
+     var indexOfPin3Name=pin3.indexOf(',');
+     var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin4=namesDataList12[index]['pin4Name'];
+     var indexOfPin4Name=pin4.indexOf(',');
+     var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin5=namesDataList12[index]['pin5Name'];
+     var indexOfPin5Name=pin5.indexOf(',');
+     var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin6=namesDataList12[index]['pin6Name'];
+     var indexOfPin6Name=pin6.indexOf(',');
+     var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin7=namesDataList12[index]['pin7Name'];
+     var indexOfPin7Name=pin7.indexOf(',');
+     var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin8=namesDataList12[index]['pin8Name'];
+     var indexOfPin8Name=pin8.indexOf(',');
+     var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin9=namesDataList12[index]['pin9Name'];
+     var indexOfPin9Name=pin9.indexOf(',');
+     var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin10=namesDataList12[index]['pin10Name'];
+     var indexOfPin10Name=pin10.indexOf(',');
+     var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+     print('indexofpppppin2 $pin3');
+
+     String pin11=namesDataList12[index]['pin11Name'];
+     var indexOfPin11Name=pin11.indexOf(',');
+     var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+     print('indexofpppppin2 $pin3');
+
+
+     String pin12=namesDataList12[index]['pin12Name'];
+     var indexOfPin12Name=pin12.indexOf(',');
+     var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+     print('indexofpppppin2 $pin3');
+
+     namesDataList = [
+      widget.switch1Name = pin1FinalName,
+      widget.switch2Name = pin2FinalName,
+      widget.switch3Name = pin3FinalName,
+      widget.switch4Name = pin4FinalName,
+      widget.switch5Name = pin5FinalName,
+      widget.switch6Name = pin6FinalName,
+      widget.switch7Name = pin7FinalName,
+      widget.switch8Name = pin8FinalName,
+      widget.switch9Name = pin9FinalName,
+      widget.switch10Name = pin10FinalName,
+      widget.switch11Name = pin11FinalName,
+      widget.switch12Name = pin12FinalName,
     ];
+
+    for(int i=0;i<namesDataList.length;i++){
+      if(pin1.contains('001') || pin1.contains('002')||pin1.contains('003') ||pin1.contains('004' )||pin1.contains('005') ||pin1.contains('006')||pin1.contains('007')||pin1.contains('008')||pin1.contains('009')|| pin1.contains('0010')||pin1.contains('0011')){
+        print('qwertyhgf $index');
+        // icon1=Icons.ac_unit;
+        if(pin1.contains('001')){
+          print('indexofpppp2 $pin1');
+          setState(() {
+            changeIcon[index]=icon1;
+          });
+        }
+        if(pin1.contains('002')){
+          changeIcon[index]=icon2;
+        }
+        if(pin1.contains('003')){
+          // changeIcon[index]=icon3;
+          setState(() {
+            changeIcon[index]=icon3;
+          });
+          print('imcomming ${changeIcon[index]}');
+        }
+        if(pin1.contains('004')){
+          changeIcon[index]=icon5;
+          print('imcomming4 ${changeIcon[index]}');
+        }
+        if(pin1.contains('005')){
+          changeIcon[index]=icon6;
+        }
+        if(pin1.contains('007')){
+          changeIcon[index]=icon6;
+        }
+        if(pin1.contains('008')){
+          changeIcon[index]=icon7;
+        }
+        if(pin1.contains('009')){
+          changeIcon[index]=icon8;
+        }
+        if(pin1.contains('0010')){
+          changeIcon[index]=icon9;
+        }
+        if(pin1.contains('0011')){
+          changeIcon[index]=icon10;
+        }
+        if(pin1.contains('0012')){
+          changeIcon[index]=icon12;
+        }
+      }
+
+      if(pin2.contains('001') || pin2.contains('002')||pin2.contains('003') ||pin2.contains('004' )||pin2.contains('005') ||pin2.contains('006')||pin2.contains('007')||pin2.contains('008')||pin2.contains('009')|| pin2.contains('0010')||pin2.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin2.contains('001')){
+          changeIcon[index+1]=icon1;
+        }
+        if(pin2.contains('002')){
+          changeIcon[index+1]=icon2;
+        }
+        if(pin2.contains('003')){
+
+          changeIcon[index+1]=icon3;
+          print('commnng inde  3');
+        }
+        if(pin2.contains('004')){
+          changeIcon[index+1]=icon5;
+        }
+        if(pin2.contains('005')){
+          changeIcon[index+1]=icon6;
+        }
+        if(pin2.contains('007')){
+          changeIcon[index+1]=icon6;
+        }
+        if(pin2.contains('008')){
+          changeIcon[index+1]=icon7;
+        }
+        if(pin2.contains('009')){
+          changeIcon[index]=icon8;
+        }
+        if(pin2.contains('0010')){
+          changeIcon[index+1]=icon9;
+        }
+        if(pin2.contains('0011')){
+          changeIcon[index+1]=icon10;
+        }
+        if(pin2.contains('0012')){
+          changeIcon[index+1]=icon12;
+        }
+      }
+
+      if(pin3.contains('001') || pin3.contains('002')||pin3.contains('003') ||pin3.contains('004' )||pin3.contains('005') ||pin3.contains('006')||pin3.contains('007')||pin3.contains('008')||pin3.contains('009')|| pin3.contains('0010')||pin3.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin3.contains('001')){
+          changeIcon[index+2]=icon1;
+        }
+        if(pin3.contains('002')){
+          changeIcon[index+2]=icon2;
+        }
+        if(pin3.contains('003')){
+          changeIcon[index+2]=icon3;
+        }
+        if(pin3.contains('004')){
+          changeIcon[index+2]=icon5;
+        }
+        if(pin3.contains('005')){
+          changeIcon[index+2]=icon6;
+        }
+        if(pin3.contains('007')){
+          changeIcon[index+2]=icon6;
+        }
+        if(pin3.contains('008')){
+          changeIcon[index+2]=icon7;
+        }
+        if(pin3.contains('009')){
+          changeIcon[index+2]=icon8;
+        }
+        if(pin3.contains('0010')){
+          changeIcon[index+2]=icon9;
+        }
+        if(pin3.contains('0011')){
+          changeIcon[index+2]=icon10;
+        }
+        if(pin3.contains('0012')){
+          changeIcon[index+2]=icon12;
+        }
+      }
+
+      if(pin4.contains('001') || pin4.contains('002')||pin4.contains('003') ||pin4.contains('004' )||pin4.contains('005') ||pin4.contains('006')||pin4.contains('007')||pin4.contains('008')||pin4.contains('009')|| pin4.contains('0010')||pin4.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin4.contains('001')){
+          changeIcon[index+3]=icon1;
+        }
+        if(pin4.contains('002')){
+          changeIcon[index+3]=icon2;
+        }
+        if(pin4.contains('003')){
+          changeIcon[index+3]=icon3;
+        }
+        if(pin4.contains('004')){
+          changeIcon[index+3]=icon5;
+        }
+        if(pin4.contains('005')){
+          changeIcon[index+3]=icon6;
+        }
+        if(pin4.contains('007')){
+          changeIcon[index+3]=icon6;
+        }
+        if(pin4.contains('008')){
+          changeIcon[index+3]=icon7;
+        }
+        if(pin4.contains('009')){
+          changeIcon[index+3]=icon8;
+        }
+        if(pin4.contains('0010')){
+          changeIcon[index+3]=icon9;
+        }
+        if(pin4.contains('0011')){
+          changeIcon[index+3]=icon10;
+        }
+        if(pin4.contains('0012')){
+          changeIcon[index+3]=icon12;
+        }
+      }
+      if(pin5.contains('001') || pin5.contains('002')||pin5.contains('003') ||pin5.contains('004' )||pin5.contains('005') ||pin5.contains('006')||pin5.contains('007')||pin5.contains('008')||pin5.contains('009')|| pin5.contains('0010')||pin5.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin5.contains('001')){
+          changeIcon[index+4]=icon1;
+        }
+        if(pin5.contains('002')){
+          changeIcon[index+4]=icon2;
+        }
+        if(pin5.contains('003')){
+          changeIcon[index+4]=icon3;
+        }
+        if(pin5.contains('004')){
+          changeIcon[index+4]=icon5;
+        }
+        if(pin5.contains('005')){
+          changeIcon[index+4]=icon6;
+        }
+        if(pin5.contains('007')){
+          changeIcon[index+4]=icon6;
+        }
+        if(pin5.contains('008')){
+          changeIcon[index+4]=icon7;
+        }
+        if(pin5.contains('009')){
+          changeIcon[index+4]=icon8;
+        }
+        if(pin5.contains('0010')){
+          changeIcon[index+4]=icon9;
+        }
+        if(pin5.contains('0011')){
+          changeIcon[index+4]=icon10;
+        }
+        if(pin5.contains('0012')){
+          changeIcon[index+4]=icon12;
+        }
+      }
+      if(pin6.contains('001') || pin6.contains('002')||pin6.contains('003') ||pin6.contains('004' )||pin6.contains('005') ||pin6.contains('006')||pin6.contains('007')||pin6.contains('008')||pin6.contains('009')|| pin6.contains('0010')||pin6.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin6.contains('001')){
+          changeIcon[index+5]=icon1;
+        }
+        if(pin6.contains('002')){
+          changeIcon[index+5]=icon2;
+        }
+        if(pin6.contains('003')){
+          changeIcon[index+5]=icon3;
+        }
+        if(pin6.contains('004')){
+          changeIcon[index+5]=icon5;
+        }
+        if(pin6.contains('005')){
+          changeIcon[index+5]=icon6;
+        }
+        if(pin6.contains('007')){
+          changeIcon[index+5]=icon6;
+        }
+        if(pin6.contains('008')){
+          changeIcon[index+5]=icon7;
+        }
+        if(pin6.contains('009')){
+          changeIcon[index+5]=icon8;
+        }
+        if(pin6.contains('0010')){
+          changeIcon[index+5]=icon9;
+        }
+        if(pin6.contains('0011')){
+          changeIcon[index+5]=icon10;
+        }
+        if(pin6.contains('0012')){
+          changeIcon[index+5]=icon12;
+        }
+      }
+      if(pin7.contains('001') || pin7.contains('002')||pin7.contains('003') ||pin7.contains('004' )||pin7.contains('005') ||pin7.contains('006')||pin7.contains('007')||pin7.contains('008')||pin7.contains('009')|| pin7.contains('0010')||pin7.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin7.contains('001')){
+          changeIcon[index+6]=icon1;
+        }
+        if(pin7.contains('002')){
+          changeIcon[index+6]=icon2;
+        }
+        if(pin7.contains('003')){
+          changeIcon[index+6]=icon3;
+        }
+        if(pin7.contains('004')){
+          changeIcon[index+6]=icon5;
+        }
+        if(pin7.contains('005')){
+          changeIcon[index+6]=icon6;
+        }
+        if(pin7.contains('007')){
+          changeIcon[index+6]=icon6;
+        }
+        if(pin7.contains('008')){
+          changeIcon[index+6]=icon7;
+        }
+        if(pin7.contains('009')){
+          changeIcon[index+6]=icon8;
+        }
+        if(pin7.contains('0010')){
+          changeIcon[index+6]=icon9;
+        }
+        if(pin7.contains('0011')){
+          changeIcon[index+6]=icon10;
+        }
+        if(pin7.contains('0012')){
+          changeIcon[index+6]=icon12;
+        }
+      }
+      if(pin8.contains('001') || pin8.contains('002')||pin8.contains('003') ||pin8.contains('004' )||pin8.contains('005') ||pin8.contains('006')||pin8.contains('007')||pin8.contains('008')||pin8.contains('009')|| pin8.contains('0010')||pin8.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin8.contains('001')){
+          changeIcon[index+7]=icon1;
+        }
+        if(pin8.contains('002')){
+          changeIcon[index+7]=icon2;
+        }
+        if(pin8.contains('003')){
+          changeIcon[index+7]=icon3;
+        }
+        if(pin8.contains('004')){
+          changeIcon[index+7]=icon5;
+        }
+        if(pin8.contains('005')){
+          changeIcon[index+7]=icon6;
+        }
+        if(pin8.contains('007')){
+          changeIcon[index+7]=icon6;
+        }
+        if(pin8.contains('008')){
+          changeIcon[index+7]=icon7;
+        }
+        if(pin8.contains('009')){
+          changeIcon[index+7]=icon8;
+        }
+        if(pin8.contains('0010')){
+          changeIcon[index+7]=icon9;
+        }
+        if(pin8.contains('0011')){
+          changeIcon[index+7]=icon10;
+        }
+        if(pin8.contains('0012')){
+          changeIcon[index+7]=icon12;
+        }
+      }
+      if(pin9.contains('001') || pin9.contains('002')||pin9.contains('003') ||pin9.contains('004' )||pin9.contains('005') ||pin9.contains('006')||pin9.contains('007')||pin9.contains('008')||pin9.contains('009')|| pin9.contains('0010')||pin9.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin9.contains('001')){
+          changeIcon[index+8]=icon1;
+        }
+        if(pin9.contains('002')){
+          changeIcon[index+8]=icon2;
+        }
+        if(pin9.contains('003')){
+          changeIcon[index+8]=icon3;
+        }
+        if(pin9.contains('004')){
+          changeIcon[index+8]=icon5;
+        }
+        if(pin9.contains('005')){
+          changeIcon[index+8]=icon6;
+        }
+        if(pin9.contains('007')){
+          changeIcon[index+8]=icon6;
+        }
+        if(pin9.contains('008')){
+          changeIcon[index+8]=icon7;
+        }
+        if(pin9.contains('009')){
+          changeIcon[index+8]=icon8;
+        }
+        if(pin9.contains('0010')){
+          changeIcon[index+8]=icon9;
+        }
+        if(pin9.contains('0011')){
+          changeIcon[index+8]=icon10;
+        }
+        if(pin9.contains('0012')){
+          changeIcon[index+8]=icon12;
+        }
+      }
+
+      // if(namesDataList[index+2].contains('003')){
+      //   // icon2=Icons.ac_unit;
+      //   changeIcon[index+2]=icon3;
+      // }
+      // if(namesDataList[index+3].contains('004')){
+      //   print('qwertyhgf $index');
+      //   // icon2=Icons.ac_unit;
+      //   changeIcon[index+3]=icon4;
+      // }
+    }
+
     print('namesList123 ${namesDataList}');
     setState(() {
       responseGetData = [
@@ -5514,19 +5874,20 @@ bool switchOn;
         widget.Slider_get3 = catchReturn[index]["pin12Status"],
       ];
       namesDataList = [
-        widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
-        widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
-        widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
-        widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
-        widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
-        widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
-        widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
-        widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
-        widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
-        widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
-        widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
-        widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+        widget.switch1Name = pin1FinalName,
+        widget.switch2Name = pin2FinalName,
+        widget.switch3Name = pin3FinalName,
+        widget.switch4Name = pin4FinalName,
+        widget.switch5Name = pin5FinalName,
+        widget.switch6Name = pin6FinalName,
+        widget.switch7Name = pin7FinalName,
+        widget.switch8Name = pin8FinalName,
+        widget.switch9Name = pin9FinalName,
+        widget.switch10Name = pin10FinalName,
+        widget.switch11Name = pin11FinalName,
+        widget.switch12Name = pin12FinalName,
       ];
+
     });
   }
 
@@ -5963,7 +6324,7 @@ bool switchOn;
 
   deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
-    fetchIp(dId);
+    // fetchIp(dId);
     return Column(
       children: [
         Container(
@@ -6036,7 +6397,7 @@ bool switchOn;
                       value: switchOn,
                       //boolean value
                       onChanged: (val) async {
-                        _showDialog(dId);
+                       await _showDialog(dId);
                       },
                     ),
                     Padding(
@@ -6104,7 +6465,7 @@ bool switchOn;
                                                     width: 145,
                                                     child: GestureDetector(
                                                         child: Text(cutDate
-                                                            .toString() == null
+                                                             == null
                                                             ? _dateString
                                                             : cutDate.toString()
                                                             .toString(),
@@ -6215,17 +6576,6 @@ bool switchOn;
                                       children: [
                                         Row(
                                           children: [
-                                            // GestureDetector(
-                                            //     onTap: () {
-                                            //       print(
-                                            //           'tabbarstateDelete ${tabbarState}');
-                                            //       print(
-                                            //           'tabbarstateDelete ${dId}');
-                                            //
-                                            //       // deleteDevice(tabbarState, dId);
-                                            //     },
-                                            //     child: Icon(Icons.auto_delete)
-                                            // ),
                                             Expanded(
                                               child: TextButton(
                                                 child: Text(
@@ -6238,9 +6588,9 @@ bool switchOn;
                                                   style:
                                                   TextStyle(fontSize: 10,fontFamily: fonttest==null?'RobotoMono':fonttest,),
                                                 ),
-                                                onPressed: () {
+                                                onPressed: ()async {
                                                   print('indexpinNames->  $index');
-                                                  _createAlertDialogForNameDeviceBox(context, index);
+                                                 await _createAlertDialogForNameDeviceBox(context, index);
                                                 },
                                               ),
                                             ),
@@ -6286,20 +6636,14 @@ bool switchOn;
                                                 },
                                               ),
                                             ),
-                                            // Padding(
-                                            //     padding: EdgeInsets.symmetric(
-                                            //       horizontal: 5.5,
-                                            //       // vertical: 10
-                                            //     ),
-                                            //     child: ElevatedButton(
-                                            //       onPressed: () {
-                                            //         print("Message}");
-                                            //         messageSms(context, dId);
-                                            //       },
-                                            //       child: Text('Click'),
-                                            //     )),
+
                                           ],
                                         ),
+                                        GestureDetector(
+                                            onTap:(){
+                                              _createAlertDialogForNameDeviceBox(context,index);
+                                            },
+                                            child: Icon(changeIcon[index]==null?null:changeIcon[index]))
                                       ],
                                     )),
                               ),
@@ -6553,18 +6897,24 @@ bool switchOn;
                                                 maxLines: 2,
                                                 style: TextStyle(fontSize: 10),
                                               ),
-                                              onPressed: () {
-                                                _createAlertDialogForNameDeviceBox(
-                                                    context, index);
+                                              onPressed: ()async {
+                                                await _createAlertDialogForNameDeviceBox(context, index);
 
                                                 // return addDeviceName(index);
                                               },
                                             ),
                                           ),
+                                          GestureDetector(
+                                              onTap:()async{
+                                                _createAlertDialogForNameDeviceBox(context,index);
+                                              },
+                                              child: Icon(changeIcon[index]==null?null:changeIcon[index]))
                                         ],
+
                                       )),
                                 ),
                               ),
+
                             ],
                           ),
                         );
@@ -6681,27 +7031,27 @@ bool switchOn;
         );
         await NewDbProvider.instance.updatePinStatusData(pinStatus);
         print('devicePinJson    ${pinStatus.toJson()}');
-        // String a = listOfPinStatus[i]['pin20Status'].toString();
-        // print('ForLoop123 ${a}');
-        // int aa = int.parse(a);
-        // print('double $aa');
-        // // int aa=int.parse(a);
-        //
-        // int ms =
-        // // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
-        // ((DateTime
-        //     .now()
-        //     .millisecondsSinceEpoch) / 1000).round() -
-        //     100; // -100 for checking a difference for 100 seconds in current time
-        // print('CheckMs ${ms}');
-        // print('Checkaa ${aa}');
-        // if (aa >= ms) {
-        //   print('ifelse');
-        //   statusOfDevice = 1;
-        // } else {
-        //   print('ifelse2');
-        //   statusOfDevice = 0;
-        // }
+        String a = listOfPinStatus[i]['pin20Status'].toString();
+        print('ForLoop123 ${a}');
+        int aa = int.parse(a);
+        print('double $aa');
+        // int aa=int.parse(a);
+
+        int ms =
+        // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
+        ((DateTime
+            .now()
+            .millisecondsSinceEpoch) / 1000).round() -
+            100; // -100 for checking a difference for 100 seconds in current time
+        print('CheckMs ${ms}');
+        print('Checkaa ${aa}');
+        if (aa >= ms) {
+          print('ifelse');
+          statusOfDevice = 1;
+        } else {
+          print('ifelse2');
+          statusOfDevice = 0;
+        }
       }
       print("DATA-->  $data");
       print('\n');
@@ -6791,4 +7141,9 @@ bool switchOn;
     properties
         .add(DiagnosticsProperty<Future<List<AlarmInfo>>>('_alarms', _alarms));
   }
+}
+class Item {
+  const Item(this.name,this.icon);
+  final String name;
+  final Icon icon;
 }

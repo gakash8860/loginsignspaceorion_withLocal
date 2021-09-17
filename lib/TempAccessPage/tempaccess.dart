@@ -60,7 +60,7 @@ class _TempAccessPageState extends State<TempAccessPage> {
   TempUser tempUser;
 
   List tempUserDecodeList;
-  List tempUserDecode;
+  List tempUserDecode=[''];
   List tempUserPlaceNameDecode;
 
   Future openTempUserBox() async {
@@ -389,198 +389,247 @@ TextEditingController phoneController= new TextEditingController();
 var NoPlace='NoPlace';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LayoutBuilder(
+    return LayoutBuilder(
+
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
       if (viewportConstraints.maxWidth > 600) {
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.blue, Colors.lightBlueAccent])),
-          child: Container(
-            color: Colors.green,
-            // height: 789,
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Temp Access'),
+            actions: [
+              MaterialButton(
+                  onPressed: ()async {
+
+                    await _showDialogForTempAccessPge();
+                  },
+                  child: Text(
+                    'Edit PhoneNumber',
+                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 15),
+                  )),
+            ],
+          ),
+          body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: FutureBuilder(
-                future: getTempUsersWeb(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    // getPlaceName();
-                    if (tempUserDecode.isEmpty) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 250,
-                          ),
-                          Center(
-                              child: Text(
-                                'Sorry we cannot find any Temp User please add',
-                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
-                              )),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 25,
-                          ),
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount: tempUserDecode.length,
-                                  itemBuilder: (context, index) {
-                                    // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
-                                    // getPlaceName();
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Card(
-                                        semanticContainer: true,
-                                        shadowColor: Colors.grey,
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                              onTap: (){
-                                                if(tempUserDecode[index]['p_id']!=null){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
-                                                    placeId: tempUserDecode[index]['p_id'].toString(),
-                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
-                                                  )));
-                                                }else if(tempUserDecode[index]['f_id']!=null){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
-                                                    floorId: tempUserDecode[index]['f_id'].toString(),
-                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
-                                                  )));
-                                                }else if(tempUserDecode[index]['flt_id']!=null){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
-                                                    flatId: tempUserDecode[index]['flt_id'].toString(),
-                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
-                                                  )));
-                                                }else if(tempUserDecode[index]['r_id']!=null){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
-                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
-                                                    roomId: tempUserDecode[index]['r_id'],
-                                                  )));
-                                                }else if(tempUserDecode[index]['d_id']!=null){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
-                                                    ownerName: tempUserDecode[index]['owner_name'].toString(),
-                                                    deviceId: tempUserDecode[index]['d_id'],
-                                                  )));
-                                                }
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blue, Colors.lightBlueAccent])),
+            child: Container(
+              color: Colors.green,
+              // height: 789,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: 1,
+                        itemBuilder: (context,index){
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              semanticContainer:true,
+                              shadowColor: Colors.grey,
+                              child: Column(
+                                children: <Widget>[
+                                  ListTile(
+                                    title: Text('Owner Name - Pankaj'),
+                                    subtitle: Row(
+                                      children: [
+                                        SizedBox(height: 25,),
+                                        Text('Place '),
+                                        SizedBox(width: 50,),
+                                        Text('Home '),
+                                      ],
+                                    ),
+                                  ),
 
+                                ],
+                              ),
+                            ),
+                          );
+                        }
 
-                                              },
-                                              title: Text(tempUserDecode[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-
-                                            ),
-
-
-                                            // Column(
-                                            //   children: [
-                                            //     Container(
-                                            //       color: Colors.red,
-                                            //       height: 45,
-                                            //       child: ListView.builder(
-                                            //         itemCount: 1,
-                                            //           itemBuilder: (context,index){
-                                            //             if(tempUserDecodeList[index]['p_id']!=null){
-                                            //               return Row(
-                                            //                 children: [
-                                            //                   Text(tempUserDecodeList[index]['p_id'].toString()),
-                                            //                 ],
-                                            //               );
-                                            //             }else if(tempUserDecodeList[index]['f_id']!=null){
-                                            //               return Row(
-                                            //                 children: [
-                                            //                   Text('aaaa')
-                                            //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
-                                            //                 ],
-                                            //               );
-                                            //             }else{return null;}
-                                            //       }
-                                            //       ),
-                                            //
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-
-                                                Padding(
-                                                  padding: const EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    tempUserDecode[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
-                                                    textAlign: TextAlign.end,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  tempUserDecode[index]
-                                                  ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  tempUserDecode[index]
-                                                  ['flt_id']
-                                                      ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  tempUserDecode[index]
-                                                  ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-
-                                                Text(
-                                                  tempUserDecode[index]
-                                                  ['d_id']==null?"":'Device : ${tempUserDecode[index]['d_id']}',
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                ),
-                                              ],
-                                            ),
-
-                                          ],
-                                        ),
-                                      ),
-                                    );
-
-                                  })),
-                        ],
-                      );
-                    }
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.red,
-                        semanticsLabel: 'Loading...',
-                      ),
-                    );
-                  }
-                }),
-          ),
-        );
+                    ),
+                  )
+                ],
+              ),
+              // child: FutureBuilder(
+              //     future: getTempUsersWeb(),
+              //     builder: (context, snapshot) {
+              //       if (!snapshot.hasData) {
+              //         // getPlaceName();
+              //         if (tempUserDecode.isEmpty) {
+              //           return Column(
+              //             children: [
+              //               SizedBox(
+              //                 height: 250,
+              //               ),
+              //               Center(
+              //                   child: Text(
+              //                     'Sorry we cannot find any Temp User please add',
+              //                     style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
+              //                   )),
+              //             ],
+              //           );
+              //         } else {
+              //           return Column(
+              //             children: [
+              //               SizedBox(
+              //                 height: 25,
+              //               ),
+              //               Expanded(
+              //                   child: ListView.builder(
+              //                       itemCount: tempUserDecode.length,
+              //                       itemBuilder: (context, index) {
+              //                         // print('tempUserDecodeListNames14785 ${tempUserDecodeListNames.length}');
+              //                         // getPlaceName();
+              //                         return Padding(
+              //                           padding: const EdgeInsets.all(8.0),
+              //                           child: Card(
+              //                             semanticContainer: true,
+              //                             shadowColor: Colors.grey,
+              //                             child: Column(
+              //                               children: [
+              //                                 ListTile(
+              //                                   onTap: (){
+              //                                     if(tempUserDecode[index]['p_id']!=null){
+              //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
+              //                                         placeId: tempUserDecode[index]['p_id'].toString(),
+              //                                         ownerName: tempUserDecode[index]['owner_name'].toString(),
+              //                                       )));
+              //                                     }else if(tempUserDecode[index]['f_id']!=null){
+              //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
+              //                                         floorId: tempUserDecode[index]['f_id'].toString(),
+              //                                         ownerName: tempUserDecode[index]['owner_name'].toString(),
+              //                                       )));
+              //                                     }else if(tempUserDecode[index]['flt_id']!=null){
+              //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
+              //                                         flatId: tempUserDecode[index]['flt_id'].toString(),
+              //                                         ownerName: tempUserDecode[index]['owner_name'].toString(),
+              //                                       )));
+              //                                     }else if(tempUserDecode[index]['r_id']!=null){
+              //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
+              //                                         ownerName: tempUserDecode[index]['owner_name'].toString(),
+              //                                         roomId: tempUserDecode[index]['r_id'],
+              //                                       )));
+              //                                     }else if(tempUserDecode[index]['d_id']!=null){
+              //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
+              //                                         ownerName: tempUserDecode[index]['owner_name'].toString(),
+              //                                         deviceId: tempUserDecode[index]['d_id'],
+              //                                       )));
+              //                                     }
+              //
+              //
+              //                                   },
+              //                                   title: Text(tempUserDecode[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+              //
+              //                                 ),
+              //
+              //
+              //                                 // Column(
+              //                                 //   children: [
+              //                                 //     Container(
+              //                                 //       color: Colors.red,
+              //                                 //       height: 45,
+              //                                 //       child: ListView.builder(
+              //                                 //         itemCount: 1,
+              //                                 //           itemBuilder: (context,index){
+              //                                 //             if(tempUserDecodeList[index]['p_id']!=null){
+              //                                 //               return Row(
+              //                                 //                 children: [
+              //                                 //                   Text(tempUserDecodeList[index]['p_id'].toString()),
+              //                                 //                 ],
+              //                                 //               );
+              //                                 //             }else if(tempUserDecodeList[index]['f_id']!=null){
+              //                                 //               return Row(
+              //                                 //                 children: [
+              //                                 //                   Text('aaaa')
+              //                                 //                   // Text(tempUserDecodeList[index]['f_id'].toString()),
+              //                                 //                 ],
+              //                                 //               );
+              //                                 //             }else{return null;}
+              //                                 //       }
+              //                                 //       ),
+              //                                 //
+              //                                 //     ),
+              //                                 //   ],
+              //                                 // ),
+              //                                 Row(
+              //                                   children: [
+              //                                     SizedBox(
+              //                                       width: 5,
+              //                                     ),
+              //
+              //                                     Padding(
+              //                                       padding: const EdgeInsets.all(4.0),
+              //                                       child: Text(
+              //                                         tempUserDecode[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
+              //                                         textAlign: TextAlign.end,
+              //                                       ),
+              //                                     ),
+              //                                     SizedBox(
+              //                                       width: 10,
+              //                                     ),
+              //                                     Text(
+              //                                       tempUserDecode[index]
+              //                                       ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
+              //                                       textAlign: TextAlign.end,
+              //                                       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              //                                     ),
+              //                                     SizedBox(
+              //                                       width: 10,
+              //                                     ),
+              //                                     Text(
+              //                                       tempUserDecode[index]
+              //                                       ['flt_id']
+              //                                           ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
+              //                                       textAlign: TextAlign.end,
+              //                                       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              //                                     ),
+              //                                     SizedBox(
+              //                                       width: 10,
+              //                                     ),
+              //                                     Text(
+              //                                       tempUserDecode[index]
+              //                                       ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
+              //                                       textAlign: TextAlign.end,
+              //                                       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              //                                     ),
+              //                                     SizedBox(
+              //                                       width: 10,
+              //                                     ),
+              //
+              //                                     Text(
+              //                                       tempUserDecode[index]
+              //                                       ['d_id']==null?"":'Device : ${tempUserDecode[index]['d_id']}',
+              //                                       textAlign: TextAlign.end,
+              //                                       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              //                                     ),
+              //                                   ],
+              //                                 ),
+              //
+              //                               ],
+              //                             ),
+              //                           ),
+              //                         );
+              //
+              //                       })),
+              //             ],
+              //           );
+              //         }
+              //       } else {
+              //         return Center(
+              //           child: CircularProgressIndicator(
+              //             color: Colors.red,
+              //             semanticsLabel: 'Loading...',
+              //           ),
+              //         );
+              //       }
+              //     }),
+            ),),);
       }else{
         return Scaffold(
 
@@ -793,7 +842,7 @@ var NoPlace='NoPlace';
       }
         }
 
-      ),
+
     );
   }
 }

@@ -9,7 +9,7 @@ import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../changeFont.dart';
 import '../main.dart';
 import 'AddSubUser.dart';
@@ -219,6 +219,36 @@ class _ShowSubUserState extends State<ShowSubUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('SubUser',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+        actions: [
+          MaterialButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddSubUser()));
+              },
+              child: Text(
+                'Add SubUser',
+                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              )),
+          MaterialButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AlreadySubUser(
+
+                        )));
+              },
+              child: Text(
+                'Assign Place',
+                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+              )),
+        ],
+      ),
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
         if (viewportConstraints.maxWidth > 600) {
@@ -234,172 +264,190 @@ class _ShowSubUserState extends State<ShowSubUser> {
                 // height: 789,
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                child: FutureBuilder(
-                    future: getSubUsers(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (subUserDecodeList.contains('empty')) {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 250,
-                              ),
-                              Center(
-                                  child: Text(
-                                'Sorry we cannot find any sub User please add',
-                                style: TextStyle(fontSize: 18),
-                              )),
-                            ],
-                          );
-                        } else {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 25,
-                              ),
-                              Expanded(
-                                  child: ListView.builder(
-                                      itemCount: subUserDecodeList.length,
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Card(
-                                            semanticContainer: true,
-                                            shadowColor: Colors.grey,
-                                            child: ListTile(
-                                              title: Text(
-                                                  subUserDecodeList[index]
-                                                      ['name']),
-                                              trailing: Text(
-                                                  subUserDecodeList[index]
-                                                      ['email']),
-                                              leading: IconButton(
-                                                icon: Icon(
-                                                  Icons.delete_forever,
-                                                  color: Colors.black,
-                                                  semanticLabel: 'Delete',
-                                                ),
-                                                onPressed: () {
-                                                  print('delete');
-                                                  _showDialogForDeleteSubUser(
-                                                      index);
-                                                },
-                                              ),
-                                              onTap: () {
-                                                print(
-                                                    'printSubUser ${subUserDecodeList[index]['name']}');
-                                                // placeName=
-                                                setState(() {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              SubUserDetails(
-                                                                subUserPlaceId:
-                                                                    subUserDecodeList[
-                                                                            index]
-                                                                        [
-                                                                        'p_id'],
-                                                                subUserEmail:
-                                                                    subUserDecodeList[
-                                                                            index]
-                                                                        [
-                                                                        'email'],
-                                                                subUserName:
-                                                                    subUserDecodeList[
-                                                                            index]
-                                                                        [
-                                                                        'name'],
-                                                              )));
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        );
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (context,index){
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                semanticContainer:true,
+                                shadowColor: Colors.grey,
+                                child: Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: Text('Akash'),
+                                      trailing: Text('akash@gmail.com'),
+                                      leading: IconButton(
+                                        icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                        onPressed: (){
 
-                                        //   Column(
-                                        //   children: <Widget>[
-                                        //     SizedBox(height: 100,),
-                                        //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                        //     SizedBox(height: 15,),
-                                        //     Row(
-                                        //       children: [
-                                        //         SizedBox(width: 55,),
-                                        //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //         SizedBox(width: 15,),
-                                        //         Container(
-                                        //           height: 45,
-                                        //           width: 195,
-                                        //           child:Padding(
-                                        //             padding: const EdgeInsets.all(8.0),
-                                        //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //           ),
-                                        //           decoration: BoxDecoration(
-                                        //             color: Colors.white,
-                                        //             border: Border.all(
-                                        //               color: Colors.black38 ,
-                                        //               width: 5.0 ,
-                                        //             ),
-                                        //             borderRadius: BorderRadius.circular(20),
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //
-                                        //
-                                        //   ],
-                                        //
-                                        //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                        //   // subtitle: Text("${statusData[index]['id']}"),
-                                        //
-                                        // );
-                                      })),
-                            ],
-                          );
-                        }
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.red,
-                            semanticsLabel: 'Loading...',
-                          ),
-                        );
-                      }
-                    }),
+                                          _showDialogForDeleteSubUser(index);
+                                        },
+                                      ),
+                                      subtitle: Text('10:33',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                      ),
+                    )
+                  ],
+                ),
+                // child: FutureBuilder(
+                //     future: getSubUsers(),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.hasData) {
+                //         if (subUserDecodeList.contains('empty')) {
+                //           return Column(
+                //             children: [
+                //               SizedBox(
+                //                 height: 250,
+                //               ),
+                //               Center(
+                //                   child: Text(
+                //                 'Sorry we cannot find any sub User please add',
+                //                 style: TextStyle(fontSize: 18),
+                //               )),
+                //             ],
+                //           );
+                //         } else {
+                //           return Column(
+                //             children: [
+                //               SizedBox(
+                //                 height: 25,
+                //               ),
+                //               Expanded(
+                //                   child: ListView.builder(
+                //                       itemCount: subUserDecodeList.length,
+                //                       itemBuilder: (context, index) {
+                //                         return Padding(
+                //                           padding: const EdgeInsets.all(8.0),
+                //                           child: Card(
+                //                             semanticContainer: true,
+                //                             shadowColor: Colors.grey,
+                //                             child: ListTile(
+                //                               title: Text(
+                //                                   subUserDecodeList[index]
+                //                                       ['name']),
+                //                               trailing: Text(
+                //                                   subUserDecodeList[index]
+                //                                       ['email']),
+                //                               leading: IconButton(
+                //                                 icon: Icon(
+                //                                   Icons.delete_forever,
+                //                                   color: Colors.black,
+                //                                   semanticLabel: 'Delete',
+                //                                 ),
+                //                                 onPressed: () {
+                //                                   print('delete');
+                //                                   _showDialogForDeleteSubUser(
+                //                                       index);
+                //                                 },
+                //                               ),
+                //                               onTap: () {
+                //                                 print(
+                //                                     'printSubUser ${subUserDecodeList[index]['name']}');
+                //                                 // placeName=
+                //                                 setState(() {
+                //                                   Navigator.push(
+                //                                       context,
+                //                                       MaterialPageRoute(
+                //                                           builder: (context) =>
+                //                                               SubUserDetails(
+                //                                                 subUserPlaceId:
+                //                                                     subUserDecodeList[
+                //                                                             index]
+                //                                                         [
+                //                                                         'p_id'],
+                //                                                 subUserEmail:
+                //                                                     subUserDecodeList[
+                //                                                             index]
+                //                                                         [
+                //                                                         'email'],
+                //                                                 subUserName:
+                //                                                     subUserDecodeList[
+                //                                                             index]
+                //                                                         [
+                //                                                         'name'],
+                //                                               )));
+                //                                 });
+                //                               },
+                //                             ),
+                //                           ),
+                //                         );
+                //
+                //                         //   Column(
+                //                         //   children: <Widget>[
+                //                         //     SizedBox(height: 100,),
+                //                         //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                //                         //     SizedBox(height: 15,),
+                //                         //     Row(
+                //                         //       children: [
+                //                         //         SizedBox(width: 55,),
+                //                         //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                //                         //         SizedBox(width: 15,),
+                //                         //         Container(
+                //                         //           height: 45,
+                //                         //           width: 195,
+                //                         //           child:Padding(
+                //                         //             padding: const EdgeInsets.all(8.0),
+                //                         //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                //                         //           ),
+                //                         //           decoration: BoxDecoration(
+                //                         //             color: Colors.white,
+                //                         //             border: Border.all(
+                //                         //               color: Colors.black38 ,
+                //                         //               width: 5.0 ,
+                //                         //             ),
+                //                         //             borderRadius: BorderRadius.circular(20),
+                //                         //           ),
+                //                         //         ),
+                //                         //       ],
+                //                         //     ),
+                //                         //
+                //                         //
+                //                         //   ],
+                //                         //
+                //                         //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                //                         //   // subtitle: Text("${statusData[index]['id']}"),
+                //                         //
+                //                         // );
+                //                       })),
+                //             ],
+                //           );
+                //         }
+                //       } else {
+                //         return Center(
+                //             child:   SpinKitFadingCircle(
+                //               itemBuilder: (BuildContext context, int index) {
+                //                 return DecoratedBox(
+                //                   decoration: BoxDecoration(
+                //                     color: index.isEven ? Colors.red : Colors.green,
+                //                   ),
+                //                 );
+                //               },
+                //             )
+                //           // child: Image.asset('assets/images/navlogo1.gif'),
+                //           // child: CircularProgressIndicator(
+                //           //   color: Colors.red,
+                //           //   semanticsLabel: 'Loading...',
+                //           // ),
+                //         );
+                //       }
+                //     }),
+
               ),
             ),
           );
         } else {
           return Scaffold(
-            appBar: AppBar(
-              title: Text('Sub Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-              actions: [
-                MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddSubUser()));
-                    },
-                    child: Text(
-                      'Add SubUser',
-                      style: TextStyle(fontSize: 15,fontFamily: fonttest==null?changeFont:fonttest,),
-                    )),
-                MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AlreadySubUser(
 
-                              )));
-                    },
-                    child: Text(
-                      'Assign Place',
-                      style: TextStyle(fontSize: 8,fontFamily: fonttest==null?changeFont:fonttest,),
-                    )),
-              ],
-            ),
             body: RefreshIndicator(
               onRefresh: getSubUsers,
               child: SingleChildScrollView(
@@ -538,10 +586,21 @@ class _ShowSubUserState extends State<ShowSubUser> {
                             }
                           } else {
                             return Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.red,
-                                semanticsLabel: 'Loading...',
-                              ),
+                              child:   SpinKitFadingCircle(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: index.isEven ? Colors.red : Colors.green,
+                                    ),
+                                  );
+                                },
+                              )
+
+                              // child: Image.network('https://i.gifer.com/78ff.gif'),
+                              // child: CircularProgressIndicator(
+                              //   color: Colors.red,
+                              //   semanticsLabel: 'Loading...',
+                              // ),
                             );
                           }
                         }),

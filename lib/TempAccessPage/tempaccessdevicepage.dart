@@ -92,6 +92,8 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
   var data;
   List deviceStatus;
 
+  bool switchOn;
+
 
 
 
@@ -368,6 +370,19 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       ];
 
     });
+    if(responseGetData.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetData}');
+    }
   }
 
   deviceContainer2(int x) {
@@ -439,7 +454,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseGetData == 0 ? val2 : val1,
+                      value: switchOn,
                       //boolean value
                       onChanged: (val) async {
                         _showDialog();

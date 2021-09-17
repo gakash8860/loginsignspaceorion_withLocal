@@ -16,6 +16,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 Image setImage;
+var firstName;
+var userQuery;
+var email;
+
+var lastName;
 void main() => runApp(MaterialApp(
       home: ProfilePage(),
       debugShowCheckedModeBanner: false,
@@ -108,6 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
         setImage = Utility.imageFrom64BaseString(imageString);
       });
     }
+  }
+  deleteImageFromLocal()async{
+    final _imageKeyValue = preferences.getString(IMAGE_KEY);
+    preferences.remove(IMAGE_KEY);
   }
 
   @override
@@ -222,6 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
+      deleteImageFromLocal();
       Utility.saveImage(imageData['file']
         // Utility.base64String(_image.readAsBytesSync()),
       );
@@ -262,10 +272,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   List data;
-  var userQuery;
-  var email;
-  var firstName;
-  var lastName;
+
 
   getUserDataOfflineSql() async {
     data = await NewDbProvider.instance.userQuery();

@@ -10,16 +10,13 @@ import 'package:loginsignspaceorion/ModelsForSubUser/allmodels.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/localDatabaseForSubUser/subuserSqlite.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
-import 'package:loginsignspaceorion/Setting_Page.dart';
 import 'package:loginsignspaceorion/SubAccessPage/subaccesslist.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
-import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import '../ProfilePage.dart';
 import '../changeFont.dart';
-import '../dropdown1.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -140,11 +137,15 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   DateTime pickedDate;
   TimeOfDay time;
   TimeOfDay time23;
+  var getPlace;
+  var getFloor;
   @override
   void initState() {
     super.initState();
     getSubUsers();
-    placeQueryFuncSend();
+
+    _getPlaceIndex();
+    // placeQueryFuncSend();
     lengthRoomTab();
 
     loadImageFromPreferences();
@@ -234,30 +235,85 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
   }
 
-  funcIndex(int index){
-    if(index==null){
-      x=0;
-    }else{
-      x=index;
-    }
+
+
+  Future _setPlaceIndex( index)async{
+    final pref= await SharedPreferences.getInstance();
+    pref.setString('placeIndex', index);
+  var  getPlace= pref.getString('placeIndex');
+    print ('sett already $getPlace');
+
   }
 
+  Future _setFloorIndex( index)async{
+    final pref= await SharedPreferences.getInstance();
+    pref.setString('floorIndex', index);
 
+  }
+  Future _deleteFloorIndex( )async{
+    final pref= await SharedPreferences.getInstance();
+    pref.remove('floorIndex');
+
+  }
+  Future _deletePlaceIndex( )async{
+    final pref= await SharedPreferences.getInstance();
+    pref.remove('placeIndex');
+
+  }
+
+  Future _getPlaceIndex()async{
+    final pref= await SharedPreferences.getInstance();
+    getPlace= pref.getString('placeIndex');
+    print('placeIndex $getPlace');
+   await placeQueryFuncSend();
+
+  }
+  Future _getFloorIndex()async{
+    final pref= await SharedPreferences.getInstance();
+    getFloor= pref.getString('floorIndex');
+    print('getFloor $getFloor');
+    // await placeQueryFuncSend();
+
+  }
+  Future _getPlaceIndex2()async{
+    final pref= await SharedPreferences.getInstance();
+    getPlace= pref.getString('placeIndex');
+    print('placeIndex $getPlace');
+    // await placeQueryFuncSend();
+
+  }
+  var placeIdInitstate;
+  var floorIdInitstate;
+  var flatIdInitstate;
   Future placeQueryFuncSend() async {
-    if(x==null){
-      x=0;
-    }
     placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
-    print('queryPlaceSubUser ${placeRows}');
-    var pids = SubUserPlaceType(
-        pId: placeRows[x]['p_id'].toString(),
-        pType: placeRows[x]['p_type'].toString(),
-        user: placeRows[x]['user']
-    );
+
+    if(getPlace==null){
+      print('queryPlaceSubUser ${placeRows}');
+      var pids = SubUserPlaceType(
+          pId: placeRows[0]['p_id'].toString(),
+          pType: placeRows[0]['p_type'].toString(),
+          user: placeRows[0]['user']
+      );
 
       setState(() {
         pt = pids;
       });
+    }else{
+      List pp= await SubUserDataBase.subUserInstance.getPlaceById(getPlace);
+      print('pppppppp $pp');
+      placeIdInitstate=pp[0]['p_id'].toString();
+      var pids = SubUserPlaceType(
+          pId: pp[0]['p_id'].toString(),
+          pType: pp[0]['p_type'].toString(),
+          user: pp[0]['user']
+      );
+
+      setState(() {
+        pt = pids;
+      });
+    }
+
     print('aaadfdfknd ${pt.pType}');
 
    await floorQueryFunc();
@@ -268,17 +324,35 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future floorQueryFunc() async {
     floorQueryRows = await SubUserDataBase.subUserInstance.queryFloorSubUser();
     floorQueryData = floorQueryRows;
-    var pId = placeRows[0]['p_id'].toString();
-    print('placeId $pId');
-    resultFloor = await SubUserDataBase.subUserInstance.getFloorById(pId);
-    print(' checkResult123456 ${resultFloor.first}');
-    var floor = SubUserFloorType(
-        fId: resultFloor[0]['f_id'].toString(),
-        fName: resultFloor[0]['f_name'].toString(),
-        user: resultFloor[0]['user'],
-        pId: resultFloor[0]['p_id'].toString()
-    );
-    fl = floor;
+    if(getPlace==null){
+      var pId = placeRows[0]['p_id'].toString();
+      print('placeId $pId');
+      resultFloor = await SubUserDataBase.subUserInstance.getFloorById(pId);
+      print(' checkResult123456 ${resultFloor.first}');
+
+      var floor = SubUserFloorType(
+          fId: resultFloor[0]['f_id'].toString(),
+          fName: resultFloor[0]['f_name'].toString(),
+          user: resultFloor[0]['user'],
+          pId: resultFloor[0]['p_id'].toString()
+      );
+      fl = floor;
+
+    }else{
+     List resultFloor = await SubUserDataBase.subUserInstance.getFloorById(placeIdInitstate);
+     floorIdInitstate=resultFloor[0]['f_id'].toString();
+      var floor = SubUserFloorType(
+          fId: resultFloor[0]['f_id'].toString(),
+          fName: resultFloor[0]['f_name'].toString(),
+          user: resultFloor[0]['user'],
+          pId: resultFloor[0]['p_id'].toString()
+      );
+
+      fl = floor;
+
+    }
+
+
 
     // floors=floorQueryRows;
     print('floorLocalData ${fl.fName}');
@@ -290,64 +364,116 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
   Future flatQueryFunc() async {
     flatQueryRows2 = await SubUserDataBase.subUserInstance.queryFlatSubUser();
+    floorTypeSingle = floorQueryRows;
+    if(getPlace==null){
+
+      var fId = resultFloor[0]['f_id'].toString();
+      print(fId);
+      resultFlat =
+      await SubUserDataBase.subUserInstance.getFlatById(fId.toString());
+      print('checkFlat123SubUser  ${resultFlat}');
+      var flat12 = SubUserFlatType(
+          fId: resultFlat[0]['f_id'].toString(),
+          fltName: resultFlat[0]['flt_name'].toString(),
+          fltId: resultFlat[0]['flt_id'].toString(),
+          user: resultFlat[0]['user']
+      );
+
+      flat = flat12;
+    }else{
+     List resultFlat =
+      await SubUserDataBase.subUserInstance.getFlatById(floorIdInitstate);
+      print('checkFlat123SubUserElse  ${resultFlat}');
+      var flat12 = SubUserFlatType(
+          fId: resultFlat[0]['f_id'].toString(),
+          fltName: resultFlat[0]['flt_name'].toString(),
+          fltId: resultFlat[0]['flt_id'].toString(),
+          user: resultFlat[0]['user']
+      );
+     flatIdInitstate=resultFlat[0]['flt_id'].toString();
+      flat = flat12;
+    }
+
+
     print("Query $flatQueryRows2");
 
 
-    floorTypeSingle = floorQueryRows;
-    var fId = resultFloor[0]['f_id'].toString();
-    print(fId);
-    resultFlat =
-    await SubUserDataBase.subUserInstance.getFlatById(fId.toString());
-    print('checkFlat123SubUser  ${resultFlat}');
-    var flat12 = SubUserFlatType(
-        fId: resultFlat[0]['f_id'].toString(),
-        fltName: resultFlat[0]['flt_name'].toString(),
-        fltId: resultFlat[0]['flt_id'].toString(),
-        user: resultFlat[0]['user']
-    );
-    flat = flat12;
+
 
     await roomQueryFunc();
   }
 
   List resultRoom;
   List<SubUserRoomType> room123;
-
+  var roomIdInitState;
   Future<List<SubUserRoomType>> roomQueryFunc() async {
     roomQueryRows = await SubUserDataBase.subUserInstance.queryRoomSubUser();
+    print('going to iff');
+    if(getPlace==null){
+      print('going to iff');
+      var id = resultFlat[0]['flt_id'].toString();
+      resultRoom = await SubUserDataBase.subUserInstance.getRoomById(id);
+      print('roomResult $resultRoom');
+      room123 = List.generate(resultRoom.length, (index) =>
+          SubUserRoomType(
+            rId: resultRoom[index]['r_id'].toString(),
+            fltId: resultRoom[index]['flt_id'].toString(),
+            rName: resultRoom[index]['r_name'].toString(),
+            user: resultRoom[index]['user'],
+          ));
+      setState(() {
+        room=room123;
+      });
+    }else{
+     List resultRoom = await SubUserDataBase.subUserInstance.getRoomById(flatIdInitstate.toString());
+      print('roomResultelse $resultRoom');
+     List<SubUserRoomType>  room123 = List.generate(resultRoom.length, (index) =>
+          SubUserRoomType(
+            rId: resultRoom[index]['r_id'].toString(),
+            fltId: resultRoom[index]['flt_id'].toString(),
+            rName: resultRoom[index]['r_name'].toString(),
+            user: resultRoom[index]['user'],
+          ));
+     roomIdInitState=resultRoom[0]['r_id'];
+      setState(() {
+        room=room123;
+      });
+    }
+
     print('qqqq ${roomQueryRows}');
-    var id = resultFlat[0]['flt_id'].toString();
-    resultRoom = await SubUserDataBase.subUserInstance.getRoomById(id);
-    print('roomResult $resultRoom');
-    room123 = List.generate(resultRoom.length, (index) =>
-        SubUserRoomType(
-          rId: resultRoom[index]['r_id'].toString(),
-          fltId: resultRoom[index]['flt_id'].toString(),
-          rName: resultRoom[index]['r_name'].toString(),
-          user: resultRoom[index]['user'],
-        ));
-    setState(() {
-      room=room123;
-    });
+
     await deviceQueryFunc();
     return room;
   }
 
   deviceQueryFunc() async {
-    deviceQueryRows =
-    await SubUserDataBase.subUserInstance.queryDeviceSubUser();
-    print('maindeviceQuery $deviceQueryRows');
-    var roomId = resultRoom[0]['r_id'];
-    // dv=deviceQueryRows;
-    List deviceResult = await SubUserDataBase.subUserInstance.getDeviceByRId(
-        roomId.toString());
-    print('dvlouye ${deviceResult}');
-    dv = List.generate(deviceResult.length, (index) =>
-        SubUserDeviceType(
-            dId: deviceResult[index]['d_id'].toString(),
-            rId: deviceResult[index]['r_id'].toString(),
-            user: deviceResult[index]['user']
-        ));
+    if(getPlace==null){
+      deviceQueryRows =
+      await SubUserDataBase.subUserInstance.queryDeviceSubUser();
+      print('maindeviceQuery $deviceQueryRows');
+      var roomId = resultRoom[0]['r_id'];
+      // dv=deviceQueryRows;
+      List deviceResult = await SubUserDataBase.subUserInstance.getDeviceByRId(
+          roomId.toString());
+      print('dvlouye ${deviceResult}');
+      dv = List.generate(deviceResult.length, (index) =>
+          SubUserDeviceType(
+              dId: deviceResult[index]['d_id'].toString(),
+              rId: deviceResult[index]['r_id'].toString(),
+              user: deviceResult[index]['user']
+          ));
+    }else{
+      List deviceResult = await SubUserDataBase.subUserInstance.getDeviceByRId(
+          roomIdInitState.toString());
+      print('dvlouyeelse ${deviceResult}');
+      dv = List.generate(deviceResult.length, (index) =>
+          SubUserDeviceType(
+              dId: deviceResult[index]['d_id'].toString(),
+              rId: deviceResult[index]['r_id'].toString(),
+              user: deviceResult[index]['user']
+          ));
+    }
+
   }
 
   List placeData;
@@ -726,13 +852,25 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
             if (viewportConstraints.maxWidth > 600) {
               return Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  title: GestureDetector(
+                      child: Row(
+                        children: [
+                          Text('Assigned by Ankit ',style: TextStyle(fontSize: 14),),
+                          SizedBox(width:151),
+                          Text('Home',),
+                        ],
+                      )
+
+                  ),
+                ),
                   body: Container(
                   width: double.maxFinite,
                   child: DefaultTabController(
-                    length: 1,
+                    length: 3,
                     child: CustomScrollView(
                       slivers: [
-
                         SliverToBoxAdapter(
                           child: Column(
                             children: <Widget>[
@@ -781,110 +919,136 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     // _editFloorNameAlertDialog(context);
                                                   },
                                                   child: GestureDetector(
-                                                    child: Row(
-                                                      children: [
-                                                        Text('Floor -',
-                                                          style: TextStyle(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 351.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Text('Floor - ',
+                                                            style: TextStyle(
                                                               color: Colors
                                                                   .white,
                                                               fontFamily: fonttest==null?changeFont:fonttest,
                                                               fontSize: 22,
                                                               fontWeight: FontWeight
                                                                   .bold,
-                                                              fontStyle: FontStyle
-                                                                  .italic),),
-                                                        Text(
-                                                          // fl.fName.toString(),
-                                                          // getFloorData[0]['f_name'].toString(),
-                                                          'Hello ',
-                                                          // + widget.fl.user.first_name,
-                                                          style: TextStyle(
+                                                              // fontStyle: FontStyle.italic
+                                                            ),),
+                                                          Text(
+                                                            // fl.fName.toString(),
+                                                            // getFloorData[0]['f_name'].toString(),
+                                                            'Floor 1 ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
                                                               color: Colors
                                                                   .white,
                                                               fontSize: 22,
                                                               fontFamily: fonttest==null?changeFont:fonttest,
                                                               // fontWeight: FontWeight.bold,
-                                                              fontStyle: FontStyle
-                                                                  .italic),
-                                                        ),
-                                                        Icon(Icons
-                                                            .arrow_drop_down),
-                                                        SizedBox(width: 10,),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    _createAlertDialogDropDown(
-                                                        context);
-                                                  },
-                                                ),
-                                                SizedBox(width: 10,),
-                                                // GestureDetector(
-                                                //   child: Icon(Icons.add),
-                                                //   onTap: () async {
-                                                //
-                                                //     // _createAlertDialogForFloor(context);
-                                                //   },
-                                                // )
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
-                                              children: <Widget>[
-                                                Row(
-                                                  children: <Widget>[
-                                                    GestureDetector(
-                                                      onLongPress: () {
-
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text('Flat- ',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight: FontWeight
-                                                                    .bold,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,
-                                                                fontSize: 22),),
-                                                          Text(
-                                                            // flat.fltName.toString(),
-                                                            // getFlatData[0]['flt_name'].toString(),
-                                                            'Hello ',
-                                                            // + widget.fl.user.first_name,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,
-                                                                // fontWeight: FontWeight.bold,
-                                                                fontStyle: FontStyle
-                                                                    .italic,
-                                                                fontSize: 22),
+                                                              // fontStyle: FontStyle
+                                                              //     .italic
+                                                            ),
                                                           ),
-                                                          Icon(Icons
-                                                              .arrow_drop_down),
+                                                          Icon(Icons.arrow_drop_down),
                                                           SizedBox(width: 10,),
                                                         ],
                                                       ),
-                                                      onTap: () {
-                                                        _createAlertDialogDropDown(
-                                                            context);
-                                                      },
                                                     ),
-                                                    SizedBox(width: 35),
-                                                    // GestureDetector(
-                                                    //     onTap: () async {
-                                                    //
-                                                    //     },
-                                                    //     child: Icon(Icons.add)),
-                                                  ],
-                                                )
+                                                  ),
+                                                  onTap: () {
+                                                    // _createAlertDialogDropDown(
+                                                    //     context);
+                                                  },
+                                                ),
+                                                // SizedBox(width: 10,),
+                                                // // GestureDetector(
+                                                // //   child: Icon(Icons.add),
+                                                // //   onTap: () async {
+                                                // //
+                                                // //     // _createAlertDialogForFloor(context);
+                                                // //   },
+                                                // // )
+                                              ],
+                                            ),
+                                            // SizedBox(
+                                            //   height: 12,
+                                            // ),
 
+                                            Row(
+                                              children: <Widget>[
+                                                GestureDetector(
+                                                  onLongPress: () {
+
+                                                  },
+                                                  child: Row(
+                                                    children: [
+
+                                                      Text('Flat - ', style: TextStyle(
+                                                          color: Colors
+                                                              .white,
+                                                          fontWeight: FontWeight
+                                                              .bold,
+
+                                                          fontFamily: fonttest==null?changeFont:fonttest,
+                                                          fontSize: 22),),
+
+                                                      Text(
+                                                        // flat.fltName.toString(),
+                                                        // getFlatData[0]['flt_name'].toString(),
+                                                        'Flat 1 ',
+                                                        // + widget.fl.user.first_name,
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .white,
+                                                            fontFamily: fonttest==null?changeFont:fonttest,
+                                                            // fontWeight: FontWeight.bold,
+                                                            // fontStyle: FontStyle
+                                                            //     .italic,
+                                                            fontSize: 22),
+                                                      ),
+                                                      Icon(Icons
+                                                          .arrow_drop_down),
+                                                      SizedBox(width: 250,),
+                                                      Row(
+                                                        children: [
+                                                          SizedBox(width: 28,),
+                                                          Container(
+                                                            // color:Colors.red,
+                                                            child: CircularProfileAvatar(
+                                                              '',
+                                                              child: setImage == null
+                                                                  ? Image.asset('assets/images/genLogo.png')
+                                                                  : setImage,
+                                                              radius: 47.5,
+                                                              // elevation: 5,
+                                                              onTap: () {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            ProfilePage()));
+                                                                //     .then((value) =>
+                                                                // loadImageFromPreferences()
+                                                                //     ? _deleteImage()
+                                                                //     : loadImageFromPreferences());
+                                                              },
+                                                              cacheImage: true,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  onTap: () {
+                                                    // _createAlertDialogDropDown(
+                                                    //     context);
+                                                  },
+                                                ),
+                                                SizedBox(width: 35),
+                                                // GestureDetector(
+                                                //     onTap: () async {
+                                                //
+                                                //     },
+                                                //     child: Icon(Icons.add)),
                                               ],
                                             ),
 
@@ -893,134 +1057,153 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 45,
+                                      height: 8,
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        FutureBuilder(
-                                          future: deviceSensorVal,
-                                          builder: (context, snapshot) {
-                                            if (!snapshot.hasData) {
-                                              return Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                // mainAxisAlignment: MainAxisAlignment.center,
+                                    FutureBuilder(
+                                      future: deviceSensorVal,
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            // mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Row(
                                                 children: <Widget>[
-                                                  Row(
-                                                    children: <Widget>[
-                                                      SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.fire,
-                                                          color: Colors.yellow,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 32,
-                                                        ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text('sensor 1',
-                                                                  // sensorData[index]['sensor1'].toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 35,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.temperatureLow,
-                                                          color: Colors.orange,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text('sensor 1',
-                                                                  // sensorData[index][
-                                                                  // 'sensor2']
-                                                                  //     .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 45,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.wind,
-                                                          color: Colors.white,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text('sensor 1',
-                                                                  // sensorData[index]['sensor3'].toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                      SizedBox(
-                                                        width: 42,
-                                                      ),
-                                                      Column(children: <Widget>[
-                                                        Icon(
-                                                          FontAwesomeIcons.cloud,
-                                                          color: Colors.orange,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Container(
-                                                              child: Text('sensor 1',
-                                                                  // sensorData[index]['sensor4'].toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Colors
-                                                                          .white70)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ]),
-                                                    ],
-                                                  ),
                                                   SizedBox(
-                                                    height: 22,
+                                                    width: 8,
                                                   ),
+                                                  Column(children: <Widget>[
+                                                    Icon(
+                                                      FontAwesomeIcons.fire,
+                                                      color: Colors.yellow,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 32,
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          child: Text('2.65',
+                                                              // sensorData[index]['sensor1'].toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white70)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
+                                                  SizedBox(
+                                                    width: 35,
+                                                  ),
+                                                  Column(children: <Widget>[
+                                                    Icon(
+                                                      FontAwesomeIcons.temperatureLow,
+                                                      color: Colors.orange,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          child: Text('45.36',
+                                                              // sensorData[index][
+                                                              // 'sensor2']
+                                                              //     .toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white70)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
+                                                  SizedBox(
+                                                    width: 45,
+                                                  ),
+                                                  Column(children: <Widget>[
+                                                    Icon(
+                                                      FontAwesomeIcons.wind,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          child: Text('41.25',
+                                                              // sensorData[index]['sensor3'].toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white70)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
+                                                  SizedBox(
+                                                    width: 42,
+                                                  ),
+                                                  Column(children: <Widget>[
+                                                    Icon(
+                                                      FontAwesomeIcons.cloud,
+                                                      color: Colors.orange,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          child: Text('45.2',
+                                                              // sensorData[index]['sensor4'].toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white70)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
+                                                  SizedBox(
+                                                    width: 42,
+                                                  ),
+                                                  Column(children: <Widget>[
+                                                    Icon(
+                                                      FontAwesomeIcons.idBadge,
+                                                      color: Colors.orange,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          child: Text('DIDM********A****C',
+                                                              // sensorData[index]['sensor4'].toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white70)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ]),
                                                 ],
-                                              );
-                                            } else {
-                                              return Center(
-                                                child: Text('Loading...'),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                              ),
+                                              SizedBox(
+                                                height: 22,
+                                              ),
+                                            ],
+                                          );
+                                        } else {
+                                          return Center(
+                                            child: Text('Loading...'),
+                                          );
+                                        }
+                                      },
                                     )
                                   ],
                                 ),
@@ -1028,6 +1211,303 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                             ],
                           ),
                         ),
+                        // SliverToBoxAdapter(
+                        //   child: Column(
+                        //     children: <Widget>[
+                        //       Container(
+                        //         height: MediaQuery
+                        //             .of(context)
+                        //             .size
+                        //             .height * 0.41,
+                        //         width: MediaQuery
+                        //             .of(context)
+                        //             .size
+                        //             .width,
+                        //         decoration: BoxDecoration(
+                        //           gradient: LinearGradient(
+                        //               begin: Alignment.topCenter,
+                        //               end: Alignment.bottomCenter,
+                        //               colors: [
+                        //                 Color(0xff669df4),
+                        //                 Color(0xff4e80f3)
+                        //               ]),
+                        //           borderRadius: BorderRadius.only(
+                        //               bottomLeft: Radius.circular(30),
+                        //               bottomRight: Radius.circular(30)),
+                        //         ),
+                        //         padding: EdgeInsets.only(
+                        //           top: 40,
+                        //           bottom: 10,
+                        //           left: 28,
+                        //           right: 30,
+                        //         ),
+                        //         // alignment: Alignment.topLeft,
+                        //         child: Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.start,
+                        //           children: <Widget>[
+                        //             Row(
+                        //               mainAxisAlignment:
+                        //               MainAxisAlignment.spaceBetween,
+                        //               children: <Widget>[
+                        //
+                        //                 Column(
+                        //                   children: <Widget>[
+                        //                     Row(
+                        //                       children: [
+                        //                         GestureDetector(
+                        //                           onLongPress: () {
+                        //                             // _editFloorNameAlertDialog(context);
+                        //                           },
+                        //                           child: GestureDetector(
+                        //                             child: Row(
+                        //                               children: [
+                        //                                 Text('Floor - ',
+                        //                                   style: TextStyle(
+                        //                                       color: Colors
+                        //                                           .white,
+                        //                                       fontFamily: fonttest==null?changeFont:fonttest,
+                        //                                       fontSize: 22,
+                        //                                       fontWeight: FontWeight
+                        //                                           .bold,
+                        //                                       // fontStyle: FontStyle
+                        //                                       //     .italic
+                        //                                   ),),
+                        //                                 Text(
+                        //                                   // fl.fName.toString(),
+                        //                                   // getFloorData[0]['f_name'].toString(),
+                        //                                   'Floor 3 ',
+                        //                                   // + widget.fl.user.first_name,
+                        //                                   style: TextStyle(
+                        //                                       color: Colors
+                        //                                           .white,
+                        //                                       fontSize: 22,
+                        //                                       fontFamily: fonttest==null?changeFont:fonttest,
+                        //                                       // fontWeight: FontWeight.bold,
+                        //                                       // fontStyle: FontStyle
+                        //                                       //     .italic
+                        //                                   ),
+                        //                                 ),
+                        //                                 Icon(Icons
+                        //                                     .arrow_drop_down),
+                        //                                 SizedBox(width: 10,),
+                        //                               ],
+                        //                             ),
+                        //                           ),
+                        //                           onTap: () {
+                        //                             _createAlertDialogDropDown(
+                        //                                 context);
+                        //                           },
+                        //                         ),
+                        //                         SizedBox(width: 10,),
+                        //                         // GestureDetector(
+                        //                         //   child: Icon(Icons.add),
+                        //                         //   onTap: () async {
+                        //                         //
+                        //                         //     // _createAlertDialogForFloor(context);
+                        //                         //   },
+                        //                         // )
+                        //                       ],
+                        //                     ),
+                        //                     SizedBox(
+                        //                       height: 12,
+                        //                     ),
+                        //
+                        //                     Column(
+                        //                       crossAxisAlignment: CrossAxisAlignment
+                        //                           .start,
+                        //                       children: <Widget>[
+                        //                         Row(
+                        //                           children: <Widget>[
+                        //                             GestureDetector(
+                        //                               onLongPress: () {
+                        //
+                        //                               },
+                        //                               child: Row(
+                        //                                 children: [
+                        //                                   Text('Flat - ',
+                        //                                     style: TextStyle(
+                        //                                         color: Colors
+                        //                                             .white,
+                        //                                         fontWeight: FontWeight
+                        //                                             .bold,
+                        //                                         fontFamily: fonttest==null?changeFont:fonttest,
+                        //                                         fontSize: 22),),
+                        //                                   Text(
+                        //                                     // flat.fltName.toString(),
+                        //                                     // getFlatData[0]['flt_name'].toString(),
+                        //                                     'Flat 2 ',
+                        //                                     // + widget.fl.user.first_name,
+                        //                                     style: TextStyle(
+                        //                                         color: Colors
+                        //                                             .white,
+                        //                                         fontFamily: fonttest==null?changeFont:fonttest,
+                        //                                         // fontWeight: FontWeight.bold,
+                        //                                         // fontStyle: FontStyle
+                        //                                         //     .italic,
+                        //                                         fontSize: 22),
+                        //                                   ),
+                        //                                   Icon(Icons
+                        //                                       .arrow_drop_down),
+                        //                                   SizedBox(width: 10,),
+                        //                                 ],
+                        //                               ),
+                        //                               onTap: () {
+                        //                                 _createAlertDialogDropDown(
+                        //                                     context);
+                        //                               },
+                        //                             ),
+                        //                             SizedBox(width: 35),
+                        //                             // GestureDetector(
+                        //                             //     onTap: () async {
+                        //                             //
+                        //                             //     },
+                        //                             //     child: Icon(Icons.add)),
+                        //                           ],
+                        //                         )
+                        //
+                        //                       ],
+                        //                     ),
+                        //
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //             SizedBox(
+                        //               height: 45,
+                        //             ),
+                        //             Row(
+                        //               mainAxisAlignment: MainAxisAlignment.center,
+                        //               children: <Widget>[
+                        //                 FutureBuilder(
+                        //                   future: deviceSensorVal,
+                        //                   builder: (context, snapshot) {
+                        //                     if (!snapshot.hasData) {
+                        //                       return Column(
+                        //                         crossAxisAlignment: CrossAxisAlignment.center,
+                        //                         // mainAxisAlignment: MainAxisAlignment.center,
+                        //                         children: <Widget>[
+                        //                           Row(
+                        //                             children: <Widget>[
+                        //                               SizedBox(
+                        //                                 width: 8,
+                        //                               ),
+                        //                               Column(children: <Widget>[
+                        //                                 Icon(
+                        //                                   FontAwesomeIcons.fire,
+                        //                                   color: Colors.yellow,
+                        //                                 ),
+                        //                                 SizedBox(
+                        //                                   height: 32,
+                        //                                 ),
+                        //                                 Row(
+                        //                                   children: <Widget>[
+                        //                                     Container(
+                        //                                       child: Text(' 14.1',
+                        //                                           // sensorData[index]['sensor1'].toString(),
+                        //                                           style: TextStyle(
+                        //                                               fontSize: 14,
+                        //                                               color: Colors
+                        //                                                   .white70)),
+                        //                                     ),
+                        //                                   ],
+                        //                                 ),
+                        //                               ]),
+                        //                               SizedBox(
+                        //                                 width: 35,
+                        //                               ),
+                        //                               Column(children: <Widget>[
+                        //                                 Icon(
+                        //                                   FontAwesomeIcons.temperatureLow,
+                        //                                   color: Colors.orange,
+                        //                                 ),
+                        //                                 SizedBox(
+                        //                                   height: 30,
+                        //                                 ),
+                        //                                 Row(
+                        //                                   children: <Widget>[
+                        //                                     Container(
+                        //                                       child: Text('43.1',
+                        //                                           // sensorData[index][
+                        //                                           // 'sensor2']
+                        //                                           //     .toString(),
+                        //                                           style: TextStyle(
+                        //                                               fontSize: 14,
+                        //                                               color: Colors
+                        //                                                   .white70)),
+                        //                                     ),
+                        //                                   ],
+                        //                                 ),
+                        //                               ]),
+                        //                               SizedBox(
+                        //                                 width: 45,
+                        //                               ),
+                        //                               Column(children: <Widget>[
+                        //                                 Icon(
+                        //                                   FontAwesomeIcons.wind,
+                        //                                   color: Colors.white,
+                        //                                 ),
+                        //                                 SizedBox(
+                        //                                   height: 30,
+                        //                                 ),
+                        //                                 Row(
+                        //                                   children: <Widget>[
+                        //                                     Container(
+                        //                                       child: Text('45.6',
+                        //                                           // sensorData[index]['sensor3'].toString(),
+                        //                                           style: TextStyle(
+                        //                                               fontSize: 14,
+                        //                                               color: Colors
+                        //                                                   .white70)),
+                        //                                     ),
+                        //                                   ],
+                        //                                 ),
+                        //                               ]),
+                        //                               SizedBox(
+                        //                                 width: 42,
+                        //                               ),
+                        //                               Column(children: <Widget>[
+                        //                                 Icon(
+                        //                                   FontAwesomeIcons.cloud,
+                        //                                   color: Colors.orange,
+                        //                                 ),
+                        //                                 SizedBox(
+                        //                                   height: 30,
+                        //                                 ),
+                        //                                 Row(
+                        //                                   children: <Widget>[
+                        //                                     Container(
+                        //                                       child: Text('41.3',
+                        //                                           // sensorData[index]['sensor4'].toString(),
+                        //                                           style: TextStyle(
+                        //                                               fontSize: 14,
+                        //                                               color: Colors
+                        //                                                   .white70)),
+                        //                                     ),
+                        //                                   ],
+                        //                                 ),
+                        //                               ]),
+                        //                             ],
+                        //                           ),
+                        //                           SizedBox(
+                        //                             height: 22,
+                        //                           ),
+                        //                         ],
+                        //                       );
+                        //                     } else {
+                        //                       return Center(
+                        //                         child: Text('Loading...'),
+                        //                       );
+                        //                     }
+                        //                   },
+                        //                 ),
+                        //               ],
+                        //             )
+                        //           ],
+                        //         ),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                         SliverAppBar(
                           automaticallyImplyLeading: false,
                           // centerTitle: true,
@@ -1044,55 +1524,107 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
                                     children: [
-                                      Container(
-                                          height: 30,
-                                          child: Text(
-                                            'Rooms->', style: TextStyle(
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(right: 10, bottom: 2),
+                                        child: GestureDetector(
+                                          // color: Colors.black,
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.black,
+                                          ),
+                                          onTap: () {
+                                            // _createAlertDialogForAddRoom(context);
+                                          },
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onLongPress: () {
+                                          print('longPress');
+                                          // _editRoomNameAlertDialog(context);
+                                        },
+                                        child: TabBar(
+                                          indicatorColor: Colors.blueAccent,
+                                          controller: tabC,
+                                          labelColor: Colors.blueAccent,
+                                          indicatorWeight: 2.0,
+                                          isScrollable: true,
+                                          tabs: [
+                                            Text('Room 1',),
+                                            Text('Room 2',),
+                                            Text('Room 3',),
+                                          ],
+                                          // tabs: rm.map<Widget>((RoomType rm) {
+                                          //   rIdForName = rm.rId;
+                                          //   print('RoomId  $rIdForName');
+                                          //   print('RoomId  ${rm.rName}');
+                                          //   return Tab(
+                                          //     text: rm.rName,
+                                          //   );
+                                          // }).toList(),
+                                          onTap: (index) async {
 
-                                            // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight
-                                                  .bold,
-                                              color: Colors
-                                                  .black
-                                          ),)),
-                                      // TabBar(
-                                      //   indicatorColor: Colors.blueAccent,
-                                      //   controller: tabC,
-                                      //   labelColor: Colors.blueAccent,
-                                      //   indicatorWeight: 2.0,
-                                      //   isScrollable: true,
-                                      //   tabs: room.map<Widget>((
-                                      //       SubUserRoomType rm) {
-                                      //     return Tab(
-                                      //       text: rm.rName,
-                                      //     );
-                                      //   }).toList(),
-                                      //   onTap: (index) async {
-                                      //     tabState =
-                                      //     await room[index].rId.toString();
-                                      //     funcIndex(index);
-                                      //     setState(() {
-                                      //       getDevicesByDeviceId(tabState);
-                                      //     });
-                                      //
-                                      //
-                                      //
-                                      //
-                                      //     // deviceSensorVal = devicePinSensorLocalUsingDeviceId(dv[index].dId);
-                                      //     // print('tabStateDevice ${dv[index].dId}');
-                                      //
-                                      //   },
-                                      // ),
-
+                                            // getDevices(tabbarState);
+                                          },
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
 
+                                // SizedBox(height: 45,),
                               ],
                             ),
                           ),
                         ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            return deviceContainer2();
+                            // if (index < dv.length) {
+                            //   Text(
+                            //     "Loading",
+                            //     style: TextStyle(fontSize: 44),
+                            //   );
+                            //
+                            //   return Container(
+                            //     child: Column(
+                            //       children: [
+                            //         deviceContainer2(),
+                            //         // Container(
+                            //         //     //
+                            //         //     // color: Colors.green,
+                            //         //     height: 35,
+                            //         //     child: GestureDetector(
+                            //         //       child: RichText(
+                            //         //         text: TextSpan(children: [
+                            //         //           TextSpan(
+                            //         //               text: dv[index].dId,
+                            //         //               style: TextStyle(
+                            //         //                   fontSize: 15, color: Colors.black)),
+                            //         //           TextSpan(text: "   "),
+                            //         //           WidgetSpan(
+                            //         //               child: Icon(
+                            //         //             Icons.settings,
+                            //         //             size: 18,
+                            //         //           ))
+                            //         //         ]),
+                            //         //       ),
+                            //         //       onTap: () {
+                            //         //         // _createAlertDialogForSSIDAndEmergencyNumber(
+                            //         //         //     context);
+                            //         //         print('on tap');
+                            //         //       },
+                            //         //     )),
+                            //       ],
+                            //     ),
+                            //     // child: Text(dv[index].dId),
+                            //   );
+                            // } else {
+                            //   return null;
+                            // }
+                          }),
+                        )
+
                         // SliverList(
                         //   delegate: SliverChildBuilderDelegate((context,
                         //       index) {
@@ -1159,7 +1691,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   title: GestureDetector(
                     child: Text(pt.pType.toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                     onTap: () async {
-                      _createAlertDialogDropDown(context);
+                       _createAlertDialogDropDown(context);
                     },
                   ),
                   backgroundColor: Colors.blueAccent,
@@ -1277,8 +1809,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     ),
                                                   ),
                                                   onTap: () {
-                                                    _createAlertDialogDropDown(
-                                                        context);
+                                                    // _createAlertDialogDropDownForFloor(context);
                                                   },
                                                 ),
                                                 SizedBox(width: 10,),
@@ -1558,7 +2089,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                         onTap: (index) async {
                                           tabState =
                                           await room[index].rId.toString();
-                                          funcIndex(index);
+
                                           setState(() {
                                             getDevicesByDeviceId(tabState);
                                           });
@@ -1777,7 +2308,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   }
 
   var namesDataList12;
-
+  bool switchOn;
   deviceContainer(String dId, index) async {
     allPlaceData =
     await SubUserDataBase.subUserInstance.allPlaceModelData();
@@ -1809,6 +2340,19 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       widget.Slider_get2 = catchReturn[index]["pin11Status"],
       widget.Slider_get3 = catchReturn[index]["pin12Status"],
     ];
+    if(responseDataPinStatusForSubUser.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseDataPinStatusForSubUser}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseDataPinStatusForSubUser}');
+    }
 
     print('nameDataList${namesDataList12}');
     // getSensorData(dId);
@@ -2711,49 +3255,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                               }else{return null;}
                                                             }),
                                                       ),
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Text('Pin 1 -> '),
-                                                      //     Text(listOfScheduledPins[index]['pin1Status'].toString()==1? "On ":listOfScheduledPins[index]['pin1Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 14,),
-                                                      //     Text('Pin 2 -> '),
-                                                      //     Text(listOfScheduledPins[index]['pin2Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 8,),
-                                                      //     Text('Pin 3 -> '),
-                                                      //     Text(listOfScheduledPins[index]['pin3Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     // SizedBox(width: 14,),
-                                                      //     // Text('Pin 4 -> '),
-                                                      //     // Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
-                                                      //   ],
-                                                      // ),
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Text('Pin 4 ->'),
-                                                      //     Text(listOfScheduledPins[index]['pin4Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 10,),
-                                                      //     Text('Pin 5 -> '),
-                                                      //     Text(listOfScheduledPins[index]['pin5Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 10,),
-                                                      //     Text('Pin 6 -> '),
-                                                      //     Text(listOfScheduledPins[index]['pin6Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     // SizedBox(width: 14,),
-                                                      //     // Text('Pin 8 -> '),
-                                                      //     // Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
-                                                      //
-                                                      //   ],
-                                                      // ),
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Text('Pin 7 ->'),
-                                                      //     Text(listOfScheduledPins[index]['pin7Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 8,),
-                                                      //     Text('Pin 8 ->'),
-                                                      //     Text(listOfScheduledPins[index]['pin8Status'].toString(),textAlign: TextAlign.end,),
-                                                      //     SizedBox(width: 8,),
-                                                      //     Text('Pin 9 ->'),
-                                                      //     Text(listOfScheduledPins[index]['pin9Status'].toString(),textAlign: TextAlign.end,),
-                                                      //   ],
-                                                      // ),
                                                     ],
                                                   )
                                                 ],
@@ -2763,42 +3264,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                         );
 
 
-                                        //   Column(
-                                        //   children: <Widget>[
-                                        //     SizedBox(height: 100,),
-                                        //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                        //     SizedBox(height: 15,),
-                                        //     Row(
-                                        //       children: [
-                                        //         SizedBox(width: 55,),
-                                        //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //         SizedBox(width: 15,),
-                                        //         Container(
-                                        //           height: 45,
-                                        //           width: 195,
-                                        //           child:Padding(
-                                        //             padding: const EdgeInsets.all(8.0),
-                                        //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                                        //           ),
-                                        //           decoration: BoxDecoration(
-                                        //             color: Colors.white,
-                                        //             border: Border.all(
-                                        //               color: Colors.black38 ,
-                                        //               width: 5.0 ,
-                                        //             ),
-                                        //             borderRadius: BorderRadius.circular(20),
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //
-                                        //
-                                        //   ],
-                                        //
-                                        //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                                        //   // subtitle: Text("${statusData[index]['id']}"),
-                                        //
-                                        // );
                                       }
                                   )),
 
@@ -2823,6 +3288,583 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
             actions: <Widget>[],
           );
         });
+  }
+
+
+
+  String _chosenValue;
+  var icon1=Icons.ac_unit;
+  var icon2=IconData(0xe800);
+  var icon3=FontAwesomeIcons.lightbulb;
+  var icon4=FontAwesomeIcons.fan;
+  var icon5=FontAwesomeIcons.handsWash;
+  var icon6=FontAwesomeIcons.lightbulb;
+  var icon7=FontAwesomeIcons.lightbulb;
+  var icon8=FontAwesomeIcons.lightbulb;
+  var icon9=FontAwesomeIcons.lightbulb;
+  List changeIcon=[null,null,null,null,null,null,null,null,null];
+
+
+  _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Column(
+              children: [
+                DropdownButton<String>(
+                  value: _chosenValue,
+                  //elevation: 5,
+                  style: TextStyle(color: Colors.black),
+
+                  items: <String>[
+                    'Air Conditioner',
+                    'Refrigerator',
+                    'Bulb',
+                    'Fan',
+                    'Washing Machine',
+                    'Heater',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    "Please choose a Icon",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      _chosenValue = value;
+                      if(_chosenValue=='Air Conditioner'){
+                        changeIcon[index]=icon1;
+                        print('true');
+                      }else if(_chosenValue=='Refrigerator'){
+                        changeIcon[index]=icon2;
+                        print('true');
+                      }else if(_chosenValue=='Bulb'){
+                        changeIcon[index]=icon3;
+                        print('true');
+                      }else if(_chosenValue=='Fan'){
+                        changeIcon[index]=icon4;
+                        print('true');
+                      }else if(_chosenValue=='Washing Machine'){
+                        changeIcon[index]=icon5;
+                        print('true');
+                      }
+                      // changeIcon=value;
+                    });
+                  },
+                ),
+                Text('Enter the Name of Device'),
+              ],
+            ),
+            content: TextField(
+              // controller: pinNameController,
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () {
+                    // addPinsName(pinNameController.text, index);
+                    Navigator.of(context).pop();
+                    //
+
+
+                    final snackBar = SnackBar(
+                      content: Text('Name Added'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+
+
+
+
+
+
+  deviceContainer2() {
+    // deviceContainer(dId);
+    // fetchIp(dId);
+    return Container(
+      height: MediaQuery.of(context).size.height * 4.8,
+      // color: Colors.redAccent,
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 1.2,
+            // color: Colors.amber,
+            child: GridView.count(
+                crossAxisSpacing: 8,
+                childAspectRatio: 2 / 1.8,
+                mainAxisSpacing: 4,
+                physics: NeverScrollableScrollPhysics(),
+                // shrinkWrap: true,
+                crossAxisCount: 3,
+                children: List.generate(
+                    9,
+                    // responseGetData.length - 3,
+                        (index) {
+                      print('Something');
+                      print('catch return --> $index');
+
+                      return Container(
+                        // color: Colors.green,
+                        height: 203,
+                        child: GestureDetector(
+                          // onTap:Text(),
+                          onLongPress: () async {
+                            _alarmTimeString =
+                                DateFormat('HH:mm').format(DateTime.now());
+                            showModalBottomSheet(
+                                useRootNavigator: true,
+                                context: context,
+                                clipBehavior: Clip.antiAlias,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(24),
+                                  ),
+                                ),
+                                builder: (context) {
+                                  return StatefulBuilder(
+                                      builder: (context, setModalState) {
+                                        return Container(
+                                            padding: const EdgeInsets.all(32),
+                                            child: Column(children: [
+                                              // ignore: deprecated_member_use
+                                              FlatButton(
+                                                onPressed: () async {
+                                                  pickTime(index);
+                                                  // s
+                                                  print("index --> $index");
+                                                  // var selectedTime = await showTimePicker(
+                                                  //   context: context,
+                                                  //   initialTime: TimeOfDay.now(),
+                                                  // );
+                                                  // if (selectedTime != null) {
+                                                  //   final now = DateTime.now();
+                                                  //   var selectedDateTime = DateTime(
+                                                  //       now.year,
+                                                  //       now.month,
+                                                  //       now.day,
+                                                  //       selectedTime.hour,
+                                                  //       selectedTime.minute);
+                                                  //   _alarmTime = selectedDateTime;
+                                                  //   setModalState(() {
+                                                  //     _alarmTimeString =
+                                                  //         DateFormat('HH:mm')
+                                                  //             .format(selectedDateTime);
+                                                  //   });
+                                                  // }
+                                                },
+                                                child: Text(
+                                                  _alarmTimeString,
+                                                  style: TextStyle(fontSize: 32),
+                                                ),
+                                              ),
+                                              ListTile(
+                                                title: Text('What Do You Want ??'),
+                                                trailing: Icon(Icons.timer),
+                                              ),
+                                              ListTile(
+                                                title: ToggleSwitch(
+                                                  initialLabelIndex: 0,
+                                                  labels: ['On', 'Off'],
+                                                  onToggle: (index) {
+                                                    print('switched to: $index');
+
+                                                    setState(() {
+                                                      // changeIndex(index);
+                                                    });
+                                                  },
+                                                ),
+                                                // trailing: Icon(Icons.arrow_forward_ios),
+                                              ),
+                                              FloatingActionButton.extended(
+                                                onPressed: () {
+                                                  pickTime(index);
+                                                  Navigator.pop(context);
+
+                                                  print('Sceduled');
+                                                },
+                                                icon: Icon(Icons.alarm),
+                                                label: Text('Save'),
+                                              ),
+                                            ]));
+                                      });
+                                });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Container(
+                              // alignment: new FractionalOffset(1.0, 0.0),
+                              // alignment: Alignment.bottomRight,
+                                height: 20,
+                                // padding: EdgeInsets.symmetric(
+                                //     horizontal: 74, vertical: 10),
+                                // margin: index / 2 == 0
+                                //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                                //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                                // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
+                                margin: EdgeInsets.only(top: 41,right: 41,bottom: 30),
+                                decoration: BoxDecoration(
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                          blurRadius: 10,
+                                          offset: Offset(8, 10),
+                                          color: Colors.black)
+                                    ],
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 1,
+                                        style: BorderStyle.solid,
+                                        color: Color(0xffa3a3a3)),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Column(
+                                  // crossAxisAlignment:
+                                  // CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
+                                      children: [
+
+                                        Expanded(
+                                          child: TextButton(
+                                            child: Text(
+                                              '$index ',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(fontSize: 10),
+                                            ),
+                                            onPressed: () {
+                                              _createAlertDialogForNameDeviceBox(context,index);
+                                              // print('index->  ${names[index]}');
+                                              // setState(() {
+                                              //   if (names[index] != null) {
+                                              //     names[index] =
+                                              //         deviceNameEditing.text;
+                                              //   }
+                                              // });
+                                              // _createAlertDialogForNameDeviceBox(
+                                              //     context);
+                                              //
+                                              // addDeviceName(index);
+                                            },
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 14.5,
+                                              vertical: 10
+                                          ),
+                                          child: Switch(
+                                            // value: responseGetData[index] == 0
+                                            //     ? val2
+                                            //     : val1,
+                                            value: val1,
+                                            onChanged: (val) async {
+                                              // setState(() {
+                                              //   if (responseGetData[index] ==
+                                              //       0) {
+                                              //     responseGetData[index] = 1;
+                                              //   } else {
+                                              //     responseGetData[index] = 0;
+                                              //   }
+                                              //
+                                              //   // print('index of $index --> ${listDynamic[index]}');
+                                              // });
+
+                                              // if Internet is not available then _checkInternetConnectivity = true
+                                              // var result = await Connectivity()
+                                              //     .checkConnectivity();
+                                              // if (result ==
+                                              //     ConnectivityResult.wifi) {
+                                              //   print("True2-->   $result");
+                                              //   // await localUpdate(dId);
+                                              //   await dataUpdate(dId);
+                                              // } else if (result ==
+                                              //     ConnectivityResult.mobile) {
+                                              //   print("mobile-->   $result");
+                                              //   // await localUpdate(d_id);
+                                              //   await dataUpdate(dId);
+                                              // } else {
+                                              //   // messageSms(context, dId);
+                                              // }
+                                            },
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 45,),
+                                        GestureDetector(
+                                            onTap:(){
+                                              // _createAlertDialogForlocalUpdateAndMessage(context,dId);
+                                            },
+                                            child: Icon(changeIcon[index]==null?null:changeIcon[index])),
+                                      ],
+                                    )
+                                  ],
+                                )),
+                          ),
+                        ),
+                      );
+                    })),
+          ),
+          Flexible(
+            child: Container(
+              height: MediaQuery.of(context).size.height - 45,
+              // color: Colors.black,
+              // color: Colors.amber,
+              child: GridView.count(
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 2 / 1.8,
+                  mainAxisSpacing: 4,
+                  physics: NeverScrollableScrollPhysics(),
+                  // shrinkWrap: true,
+                  crossAxisCount: 2,
+                  children: List.generate(
+                      3,
+                      // responseGetData.length - 9,
+                          (index) {
+                        print('Slider Start');
+                        print('catch return --> $catchReturn');
+                        var newIndex = index + 10;
+                        return Container(
+                          // color: Colors.deepOrange,
+                          // height: 2030,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                // onTap:Text(),
+                                onLongPress: () async {
+                                  _alarmTimeString =
+                                      DateFormat('HH:mm').format(DateTime.now());
+                                  showModalBottomSheet(
+                                      useRootNavigator: true,
+                                      context: context,
+                                      clipBehavior: Clip.antiAlias,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(24),
+                                        ),
+                                      ),
+                                      builder: (context) {
+                                        return StatefulBuilder(
+                                            builder: (context, setModalState) {
+                                              return Container(
+                                                  padding: const EdgeInsets.all(32),
+                                                  child: Column(children: [
+                                                    // ignore: deprecated_member_use
+                                                    FlatButton(
+                                                      onPressed: () async {
+                                                        pickTime(index);
+                                                        // s
+                                                        print("index --> $index");
+                                                        // var selectedTime = await showTimePicker(
+                                                        //   context: context,
+                                                        //   initialTime: TimeOfDay.now(),
+                                                        // );
+                                                        // if (selectedTime != null) {
+                                                        //   final now = DateTime.now();
+                                                        //   var selectedDateTime = DateTime(
+                                                        //       now.year,
+                                                        //       now.month,
+                                                        //       now.day,
+                                                        //       selectedTime.hour,
+                                                        //       selectedTime.minute);
+                                                        //   _alarmTime = selectedDateTime;
+                                                        //   setModalState(() {
+                                                        //     _alarmTimeString =
+                                                        //         DateFormat('HH:mm')
+                                                        //             .format(selectedDateTime);
+                                                        //   });
+                                                        // }
+                                                      },
+                                                      child: Text(
+                                                        _alarmTimeString,
+                                                        style: TextStyle(fontSize: 32),
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title:
+                                                      Text('What Do You Want ??'),
+                                                      trailing: Icon(Icons.timer),
+                                                    ),
+                                                    ListTile(
+                                                      title: ToggleSwitch(
+                                                        initialLabelIndex: 0,
+                                                        labels: ['On', 'Off'],
+                                                        onToggle: (index) {
+                                                          print('switched to: $index');
+
+                                                          setState(() {
+                                                            // changeIndex(index);
+                                                          });
+                                                        },
+                                                      ),
+                                                      // trailing: Icon(Icons.arrow_forward_ios),
+                                                    ),
+                                                    FloatingActionButton.extended(
+                                                      onPressed: () {
+                                                        pickTime(index);
+                                                        Navigator.pop(context);
+
+                                                        print('Sceduled');
+                                                      },
+                                                      icon: Icon(Icons.alarm),
+                                                      label: Text('Save'),
+                                                    ),
+                                                  ]));
+                                            });
+                                      });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Container(
+                                    // alignment: new FractionalOffset(1.0, 0.0),
+                                      alignment: Alignment.bottomRight,
+                                      height: 120,
+                                      // padding: EdgeInsets.symmetric(
+                                      //     horizontal: 1, vertical: 10),
+                                      // margin: index % 2 == 0
+                                      //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                                      //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                                      // margin: EdgeInsets.fromLTRB(95, 77.5, 7.5, 75),
+                                      margin: EdgeInsets.only(top: 41,right: 81,bottom: 70),
+                                      decoration: BoxDecoration(
+                                          boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                                blurRadius: 10,
+                                                offset: Offset(8, 10),
+                                                color: Colors.black)
+                                          ],
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              width: 1,
+                                              style: BorderStyle.solid,
+                                              color: Color(0xffa3a3a3)),
+                                          borderRadius: BorderRadius.circular(20)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextButton(
+                                                  child: Text(
+                                                    '$index ',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                    style: TextStyle(fontSize: 10),
+                                                  ),
+                                                  onPressed: () {
+                                                    // print(
+                                                    //     'index->  ${names[index]}');
+                                                    // setState(() {
+                                                    //   if (names[index] != null) {
+                                                    //     names[index] =
+                                                    //         deviceNameEditing.text;
+                                                    //   }
+                                                    // });
+                                                    // _createAlertDialogForNameDeviceBox(
+                                                    //     context);
+                                                    //
+                                                    // return addDeviceName(index);
+                                                  },
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 109,
+                                                child: Slider(
+                                                  value: 5.0,
+                                                  // value: double.parse(
+                                                  //     responseGetData[newIndex - 1]
+                                                  //         .toString()),
+                                                  min: 0,
+                                                  max: 10,
+                                                  divisions: 500,
+                                                  activeColor: Colors.blue,
+                                                  inactiveColor: Colors.black,
+                                                  label:
+                                                  '${widget.Slider_get.round()}',
+                                                  onChanged:
+                                                      (double newValue) async {
+                                                    // print('index of data $index --> ${responseGetData[newIndex - 1]}');
+                                                    print(
+                                                        'index of $index --> ${newIndex - 1}');
+
+                                                    // setState(() {
+                                                    //   // if (responseGetData[newIndex-1] != null) {
+                                                    //   //   responseGetData[newIndex-1] = widget.Slider_get.round();
+                                                    //   // }
+                                                    //
+                                                    //   print(
+                                                    //       "Round-->  ${newValue.round()}");
+                                                    //   var roundVar =
+                                                    //   newValue.round();
+                                                    //   print(
+                                                    //       "Round 2-->  $roundVar");
+                                                    //   responseGetData[
+                                                    //   newIndex - 1] = roundVar;
+                                                    //   print(
+                                                    //       "Response Round-->  ${responseGetData[newIndex - 1]}");
+                                                    // });
+
+                                                    // if Internet is not available then _checkInternetConnectivity = true
+                                                    var result =
+                                                    await Connectivity()
+                                                        .checkConnectivity();
+                                                    if (result ==
+                                                        ConnectivityResult.wifi) {
+                                                      print("True2-->   $result");
+                                                      // await localUpdate(dId);
+                                                      // await dataUpdate(dId);
+                                                    } else if (result ==
+                                                        ConnectivityResult.mobile) {
+                                                      print("mobile-->   $result");
+                                                      // await localUpdate(d_id);
+                                                      // await dataUpdate(dId);
+                                                    } else {
+                                                      // messageSms(context, dId);
+                                                    }
+                                                  },
+                                                  // semanticFormatterCallback: (double newValue) {
+                                                  //   return '${newValue.round()}';
+                                                  // }
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      })),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   subUserDeviceContainer(String dId, int index) {
@@ -2901,9 +3943,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       // child: ...
                     ),
                     Switch(
-                      value: responseDataPinStatusForSubUser[index] == 0
-                          ? val2
-                          : val1,
+                      value: switchOn,
                       //boolean value
                       // value: val1,
                       onChanged: (val) async {
@@ -3440,7 +4480,11 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future returnFloorQuery(String pId) {
     return SubUserDataBase.subUserInstance.queryFloorSubUser();
   }
-
+  Future returnFloorQueryForDropDown(String pId) async{
+    floorQueryRows2= await SubUserDataBase.subUserInstance.getFloorById(pId);
+    print('floorQueryRowsFloor $floorQueryRows');
+    return SubUserDataBase.subUserInstance.queryFloorSubUser();
+  }
   Future returnFlatQuery(String fId) {
     return SubUserDataBase.subUserInstance.queryFlatSubUser();
   }
@@ -3488,8 +4532,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide: BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
@@ -3509,7 +4552,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   ),
 
                                   items: placeRows.map((selectedPlace) {
-                                    print('aaaadsds ${placeRows}');
                                     return DropdownMenuItem(
                                       value: selectedPlace.toString(),
                                       child: Column(
@@ -3523,19 +4565,23 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
-                                    print('checkqwe123c ${selectedPlace
-                                        .toString()}');
 
-                                    var placeId = selectedPlace.substring(
-                                        7, 14);
-                                    var placeName = selectedPlace.substring(
-                                        24, 31);
+                                    print('checkqwe123c ${index}');
+
+                                    var placeId = selectedPlace.substring(7, 14);
+                                    var placeName = selectedPlace.substring(24, 31);
                                     place = SubUserPlaceType(
                                         pId: placeId,
                                         pType: placeName,
                                         user: getUidVariable2
                                     );
-
+                                   // int id= placeRows.
+                                   // print('index of place $id');
+                                   await _getPlaceIndex2();
+                                    if(getPlace!=null || getPlace==null){
+                                     await _deletePlaceIndex();
+                                     await _setPlaceIndex(placeId);
+                                    }
 
                                     var aa = await SubUserDataBase
                                         .subUserInstance.getFloorById(
@@ -3774,6 +4820,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                               rName: result[index]['r_name'].toString(),
                               user: result[index]['user'],
                             )
+
                     );
                     setState(() {
                       pt = place;
@@ -3798,6 +4845,255 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           );
         });
   }
+  _createAlertDialogDropDownForFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Change Place'),
+            content: Container(
+              height: 390,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: returnFloorQueryForDropDown(pt.pId),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Floor'),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  items: floorQueryRows2.map((selectedFloor) {
+                                    return DropdownMenuItem(
+                                      value: selectedFloor.toString(),
+                                      child: Text("${selectedFloor['f_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFloor) async {
+                                    print('Floor selected $selectedFloor');
+
+                                    var floorId = selectedFloor.substring(
+                                        7, 14);
+                                    var floorName = selectedFloor.substring(
+                                        24, 32);
+                                    var placeId = selectedFloor.substring(
+                                        39, 46);
+                                    floor = SubUserFloorType(
+                                        fId: floorId,
+                                        fName: floorName,
+                                        pId: placeId,
+                                        user: getUidVariable2
+                                    );
+                                        _getPlaceIndex2();
+                                    var getFlat = await SubUserDataBase
+                                        .subUserInstance.getFlatById(
+                                        floorId.toString());
+                                    print('GetFlat    ${getFlat}');
+                                    flatVal = returnFlatQuery(floorId);
+                                    flatQueryRows2 = getFlat;
+                                    setState(() {
+                                      flatVal = returnFlatQuery(floorId);
+                                      flatQueryRows2 = getFlat;
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    returnFloorQuery(floorId);
+                                  },
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder(
+                          future: flatVal,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  dropdownColor: Colors.white70,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: Text('Select Flat'),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  items: flatQueryRows2.map((selectedFlat) {
+                                    return DropdownMenuItem(
+                                      value: selectedFlat.toString(),
+                                      child: Text(
+                                          "${selectedFlat['flt_name']}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFlat) async {
+                                    flatId = selectedFlat.substring(9, 16);
+                                    var flatName = selectedFlat.substring(
+                                        28, 35);
+                                    var floorId = selectedFlat.substring(
+                                        39, 46);
+                                    print('flatName $selectedFlat');
+                                    // print('flatName $user');
+                                    // int user2 =int.parse(user);
+                                    // int user2=int.parse(user.toString());
+                                    flat123 = SubUserFlatType(
+                                        fId: floorId,
+                                        fltId: flatId,
+                                        fltName: flatName,
+                                        user: getUidVariable2
+                                    );
+                                    flat = flat123;
+                                    print(flatId);
+
+                                    var aa = await SubUserDataBase
+                                        .subUserInstance.getRoomById(
+                                        flatId.toString());
+                                    print('AA  ${aa}');
+                                    setState(() {
+                                      // roomQueryRows2=aa;
+                                      // roomVal=returnRoomQuery(flatId);
+                                    });
+                                    print('forRoom  ${roomQueryRows2}');
+
+                                    // returnFloorQuery(floorId);
+                                  },
+                                  // items:snapshot.data
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+                    List result = await SubUserDataBase.subUserInstance
+                        .getRoomById(flatId.toString());
+                    print("SubmitAllDetails  ${result}");
+                    List<SubUserRoomType> roomList = List.generate(
+                        result.length,
+                            (index) =>
+                            SubUserRoomType(
+                              rId: result[index]['r_id'].toString(),
+                              fltId: result[index]['flt_id'].toString(),
+                              rName: result[index]['r_name'].toString(),
+                              user: result[index]['user'],
+                            )
+
+                    );
+                    setState(() {
+                      pt = place;
+                      fl = floor;
+                      flat = flat123;
+                      room = roomList;
+                    });
+                    Navigator.of(context)
+                        .pushNamed(SubAccessSinglePage.routeName);
+
+                     // Navigator.pushReplacement(
+                     //    context, MaterialPageRoute(builder: (context) =>
+                     //    SubAccessSinglePage(
+                     //      ptSubUser: pt,
+                     //      flSubUser: fl,
+                     //      flatSubUser: flat,
+                     //      rmSubUser: room,)));
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+
+
 
 
 }

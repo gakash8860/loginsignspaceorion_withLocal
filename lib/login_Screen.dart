@@ -269,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       //   'assets/images/signin.png',
                                       //   height: 130,
                                       // ),
-                                      Text('Login',style: TextStyle(fontSize: 78),),
+                                      // Text('Login',style: TextStyle(fontSize: 78),),
                                       SizedBox(
                                         height: 15,
                                       ),
@@ -396,6 +396,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             textColor: Colors.white,
                                             onPressed: () async {
                                               print('aaaaaaaaaaaaaa');
+                                              // checkDetailsWeb();
                                               Navigator.of(context).pushNamed(DropDown1.routeName);
                                               // if (formKey.currentState.validate()) {
                                               //
