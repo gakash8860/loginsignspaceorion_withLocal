@@ -20,6 +20,7 @@ import 'package:loginsignspaceorion/utility.dart';
 import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'Manage Theme/darkmodeandFont.dart';
 import 'ProfilePage.dart';
 import 'SQLITE_database/NewDatabase.dart';
 import 'Setting_Page.dart';
@@ -91,6 +92,7 @@ void main()async {
       SubAccessSinglePage.routeName:(ctx) => SubAccessSinglePage(),
       TotalUsage.routeName:(ctx) => TotalUsage(),
       BillEstimation.routeName:(ctx) => BillEstimation(),
+      DarkModeAndFont.routeName:(ctx) => DarkModeAndFont(),
       HomeTest.routeName:(ctx) => HomeTest(),
 
       '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),

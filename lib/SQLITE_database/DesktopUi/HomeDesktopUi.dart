@@ -372,7 +372,7 @@ class _DesktopHomeState extends State<DesktopHome> {
 
   String _chosenValue;
   var icon1=Icons.ac_unit;
-  var icon2=IconData(0xe800);
+  var icon2=FontAwesomeIcons.lightbulb;
   var icon3=FontAwesomeIcons.lightbulb;
   var icon4=FontAwesomeIcons.fan;
   var icon5=FontAwesomeIcons.handsWash;

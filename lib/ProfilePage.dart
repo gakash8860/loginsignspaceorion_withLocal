@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   deleteImageFromLocal()async{
     final _imageKeyValue = preferences.getString(IMAGE_KEY);
-    preferences.remove(IMAGE_KEY);
+    preferences.remove(_imageKeyValue);
   }
 
   @override
@@ -226,12 +226,12 @@ class _ProfilePageState extends State<ProfilePage> {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    if (response.statusCode > 0) {
+    if (response.statusCode == 200) {
       print('statusCode ${response.statusCode}');
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-      deleteImageFromLocal();
+      await deleteImageFromLocal();
       Utility.saveImage(imageData['file']
         // Utility.base64String(_image.readAsBytesSync()),
       );

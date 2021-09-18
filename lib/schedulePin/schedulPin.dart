@@ -198,9 +198,88 @@ TimeOfDay time;
 String on="On";
 String off="Off";
 List namesDataList;
-allPinNames(String dId)async{
-  namesDataList =await  NewDbProvider.instance.getPinNamesByDeviceId(dId);
-  print('names123654 ${namesDataList}');
+allPinNames(String dId,int index)async{
+   namesDataList =await  NewDbProvider.instance.getPinNamesByDeviceId(dId);
+  // print('names123654 ${namesDataList}');
+  // String pin1=namesDataList12[index]['pin1Name'].toString();
+  // var indexOfPin1Name=pin1.indexOf(',');
+  // var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+  // print('indexofppppnamesDataList12 $pin1');
+  //
+  //
+  // String pin2=namesDataList12[index]['pin2Name'].toString();
+  // var indexOfPin2Name=pin2.indexOf(',');
+  // var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+  // print('indexofpppppin2 $pin2');
+  //
+  // String pin3=namesDataList12[index]['pin3Name'].toString();
+  // var indexOfPin3Name=pin3.indexOf(',');
+  // var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin4=namesDataList12[index]['pin4Name'].toString();
+  // var indexOfPin4Name=pin4.indexOf(',');
+  // var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin5=namesDataList12[index]['pin5Name'].toString();
+  // var indexOfPin5Name=pin5.indexOf(',');
+  // var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin6=namesDataList12[index]['pin6Name'].toString();
+  // var indexOfPin6Name=pin6.indexOf(',');
+  // var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin7=namesDataList12[index]['pin7Name'].toString();
+  // var indexOfPin7Name=pin7.indexOf(',');
+  // var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin8=namesDataList12[index]['pin8Name'].toString();
+  // var indexOfPin8Name=pin8.indexOf(',');
+  // var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin9=namesDataList12[index]['pin9Name'].toString();
+  // var indexOfPin9Name=pin9.indexOf(',');
+  // var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin10=namesDataList12[index]['pin10Name'].toString();
+  // var indexOfPin10Name=pin10.indexOf(',');
+  // var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // String pin11=namesDataList12[index]['pin11Name'].toString();
+  // var indexOfPin11Name=pin11.indexOf(',');
+  // var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  //
+  // String pin12=namesDataList12[index]['pin12Name'].toString();
+  // var indexOfPin12Name=pin12.indexOf(',');
+  // var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+  // print('indexofpppppin2 $pin3');
+  //
+  // setState(() {
+  //   namesDataList = [
+  //      pin1FinalName,
+  //      pin2FinalName,
+  //     pin3FinalName,
+  //      pin4FinalName,
+  //      pin5FinalName,
+  //      pin6FinalName,
+  //      pin7FinalName,
+  //      pin8FinalName,
+  //      pin9FinalName,
+  //     pin10FinalName,
+  //     pin11FinalName,
+  //      pin12FinalName,
+  //   ];
+  // });
+  // print('names12365147854 ${namesDataList[index]}');
 }
 
   @override
@@ -998,7 +1077,7 @@ allPinNames(String dId)async{
                                   itemCount: listOfScheduledPins.length,
                                   itemBuilder: (context,index){
                                     print('length ${listOfScheduledPins.length}');
-                                    allPinNames(listOfScheduledPins[index]['d_id']);
+                                    allPinNames(listOfScheduledPins[index]['d_id'],index);
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: GestureDetector(
@@ -1299,7 +1378,7 @@ allPinNames(String dId)async{
                                                           if(listOfScheduledPins[index]['pin1Status']==1){
                                                             return Row(
                                                               children: [
-                                                                Text(namesDataList[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                                Text(namesDataList[index]==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                                 SizedBox(width: 14,),
                                                                 Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                               ],

@@ -11,6 +11,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
+import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showEmergencyNumber.dart';
@@ -4575,7 +4576,7 @@ String piname;
                                     SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Hello  $firstName', style: TextStyle(
+                                    Text('Hello $firstName', style: TextStyle(
                                         fontFamily: fonttest==null?'RobotoMono':fonttest,
                                       // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                         fontSize: 20,
@@ -4750,6 +4751,24 @@ String piname;
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => information()),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.quick_contacts_dialer_sharp),
+                              title: Text(
+                                'Contact ',
+                                style: TextStyle(
+                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  color: change_toDark ? Colors.white : Colors
+                                      .black,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ContactPage()),
                                 );
                               },
                             ),
@@ -5367,10 +5386,26 @@ String piname;
   }
 bool switchOn;
   var deviceId;
+
+
+    seprate(int index,dId)async{
+      List namesDataList12 =
+          await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+      var a=  namesDataList12.toString();
+      print('plmkju ${a.indexOf(",")}');
+      while (index!=namesDataList12.length){
+        var nameIndex=a[index].indexOf(",");
+        print('plmkju2 ${a[index].substring(0,nameIndex)}');
+        index++;
+      }
+
+    }
+
   deviceContainer(String dId, int index) async {
      deviceId=dId;
     getData(dId);
      getPinsName(dId);
+     // await seprate(index,dId);
     devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
 
@@ -5404,19 +5439,22 @@ bool switchOn;
       print('else ${responseGetData}');
     }
 
-    var namesDataList12 =
+    List namesDataList12 =
     await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+      // var a=  namesDataList12.toString();
+      //  print('plmkju ${a.indexOf(",")}');
+      // // while (index!=namesDataList12.length){
+      // //   var nameIndex=a[index].indexOf(",");
+      // //   print('plmkju ${a[index].substring(0,nameIndex)}');
+      // // }
 
-    // var sensorData=
-
-
-    // catchReturn =  getData(dId);
 
 
      String pin1=namesDataList12[index]['pin1Name'];
      var indexOfPin1Name=pin1.indexOf(',');
      var pin1FinalName=pin1.substring(0,indexOfPin1Name);
-     print('indexofpppp $pin1');
+
+     print('indexofpppp ${namesDataList12}');
 
 
      String pin2=namesDataList12[index]['pin2Name'];

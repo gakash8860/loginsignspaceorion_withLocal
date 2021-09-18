@@ -108,7 +108,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   Future futureSubUser;
   String token = "774945db6cd2eec12fe92227ab9b811c888227c6";
   List<SubUserDeviceType> dv;
-
+  SubAccessPage _subAccessPageData;
   List getFlatData;
   List getFloorData;
   List<Map<String, dynamic>> deviceQueryRows;
@@ -167,7 +167,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     print('mainUserEmail $mainUserEmail');
     allPlaceId = await NewDbProvider.instance.querySubUser();
     placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
-    print('allSubUserOwnerName ${allSubUserOwnerName}');
+    print('allSubUserOwnerName ${userData}');
     print('allSubUserOwnerName ${allPlaceData}');
     getFloorData = await SubUserDataBase.subUserInstance.queryFloorSubUser();
     getFlatData = await SubUserDataBase.subUserInstance.queryFlatSubUser();
@@ -194,6 +194,13 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       }
       // await subUserBox.clear();
       List subUserDecode = jsonDecode(response.body);
+
+
+      if(subUserDecode.isEmpty){
+        print('asdfsubUserDecode ${subUserDecode}');
+        return Text('No Access');
+      }
+
       if (allPlaceId.length == subUserDecode.length) {
         for (int i = 0; i < subUserDecode.length; i++) {
           var data = SubAccessPage(
@@ -221,7 +228,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       allPlaceId = await NewDbProvider.instance.querySubUser();
       getPlaceName();
       print('tempResponse ${subUserDecode}');
-      print('subUserDecode ${allPlaceId}');
+      print('subUserDecodeallPlaceId ${allPlaceId}');
       setState(() {
         subUserDecodeList = subUserDecode;
         placeId = subUserDecodeList[0]['p_id'].toString();
@@ -285,7 +292,29 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   var placeIdInitstate;
   var floorIdInitstate;
   var flatIdInitstate;
+
+  Future getSubUserData()async{
+  List  allPlaceId = await NewDbProvider.instance.querySubUser();
+  print('zxcvb ${allPlaceId}');
+  if(getPlace==null){
+    var data=SubAccessPage(
+      pId: allPlaceId[0]['p_id'].toString(),
+      name: allPlaceId[0]['name'].toString(),
+      ownerName: allPlaceId[0]['owner_name'].toString(),
+    );
+    _subAccessPageData=data;
+  }else{
+    var data=SubAccessPage(
+      pId: allPlaceId[0]['p_id'].toString(),
+      name: allPlaceId[0]['name'].toString(),
+      ownerName: allPlaceId[0]['owner_name'].toString(),
+    );
+    _subAccessPageData=data;
+  }
+  }
+
   Future placeQueryFuncSend() async {
+   await getSubUserData();
     placeRows = await SubUserDataBase.subUserInstance.queryPlaceSubUser();
 
     if(getPlace==null){
@@ -623,7 +652,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           roomTab = await SubUserDataBase.subUserInstance.queryRoomSubUser();
           print('RoomSubUser ${response.body}');
         }
-        await getAllDeviceForSubUser();
+         getAllDeviceForSubUser();
       }
     }
   }
@@ -1763,12 +1792,36 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Row(
+                                      children: [
+                                        Text('Assigned By - ',
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .white,
+                                              fontFamily: fonttest==null?changeFont:fonttest,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight
+                                                  .bold,
+                                              fontStyle: FontStyle
+                                                  .italic),),
+                                        Text(_subAccessPageData.ownerName  ,
+                                          style: TextStyle(
+                                          color: Colors
+                                          .white,
+                                            fontSize: 22,
+                                            fontFamily: fonttest==null?changeFont:fonttest,
+                                            // fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle
+                                                .italic),),
+                                      ],
+                                    ),
+                                    Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
 
                                         Column(
                                           children: <Widget>[
+
                                             Row(
                                               children: [
                                                 GestureDetector(
@@ -1776,43 +1829,48 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     // _editFloorNameAlertDialog(context);
                                                   },
                                                   child: GestureDetector(
-                                                    child: Row(
-                                                      children: [
-                                                        Text('Floor -',
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white,
-                                                              fontFamily: fonttest==null?changeFont:fonttest,
-                                                              fontSize: 22,
-                                                              fontWeight: FontWeight
-                                                                  .bold,
-                                                              fontStyle: FontStyle
-                                                                  .italic),),
-                                                        Text(
-                                                          fl.fName.toString(),
-                                                          // getFloorData[0]['f_name'].toString(),
-                                                          // 'Hello ',
-                                                          // + widget.fl.user.first_name,
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white,
-                                                              fontSize: 22,
-                                                              fontFamily: fonttest==null?changeFont:fonttest,
-                                                              // fontWeight: FontWeight.bold,
-                                                              fontStyle: FontStyle
-                                                                  .italic),
-                                                        ),
-                                                        Icon(Icons
-                                                            .arrow_drop_down),
-                                                        SizedBox(width: 10,),
-                                                      ],
+                                                    child: SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      child: Row(
+                                                        children: [
+
+                                                          Text('Floor - ',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
+                                                                fontSize: 22,
+                                                                fontWeight: FontWeight
+                                                                    .bold,
+                                                                // fontStyle: FontStyle
+                                                                //     .italic
+                                                            ),),
+                                                          Text(
+                                                            fl.fName.toString(),
+                                                            // getFloorData[0]['f_name'].toString(),
+                                                            // 'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 22,
+                                                                fontFamily: fonttest==null?changeFont:fonttest,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle: FontStyle
+                                                                    .italic),
+                                                          ),
+                                                          Icon(Icons
+                                                              .arrow_drop_down),
+                                                          SizedBox(width: 10,),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                   onTap: () {
                                                     // _createAlertDialogDropDownForFloor(context);
                                                   },
                                                 ),
-                                                SizedBox(width: 10,),
+                                                // SizedBox(width: 10,),
                                                 // GestureDetector(
                                                 //   child: Icon(Icons.add),
                                                 //   onTap: () async {
@@ -1836,35 +1894,38 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                       onLongPress: () {
 
                                                       },
-                                                      child: Row(
-                                                        children: [
-                                                          Text('Flat- ',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight: FontWeight
-                                                                    .bold,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,
-                                                                fontSize: 22),),
-                                                          Text(
-                                                            flat.fltName
-                                                                .toString(),
-                                                            // getFlatData[0]['flt_name'].toString(),
-                                                            // 'Hello ',
-                                                            // + widget.fl.user.first_name,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontFamily: fonttest==null?changeFont:fonttest,
-                                                                // fontWeight: FontWeight.bold,
-                                                                fontStyle: FontStyle
-                                                                    .italic,
-                                                                fontSize: 22),
-                                                          ),
-                                                          Icon(Icons
-                                                              .arrow_drop_down),
-                                                          SizedBox(width: 10,),
-                                                        ],
+                                                      child: SingleChildScrollView(
+                                                        scrollDirection: Axis.horizontal,
+                                                        child: Row(
+                                                          children: [
+                                                            Text('Flat - ',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                                                  fontSize: 22),),
+                                                            Text(
+                                                              flat.fltName
+                                                                  .toString(),
+                                                              // getFlatData[0]['flt_name'].toString(),
+                                                              // 'Hello ',
+                                                              // + widget.fl.user.first_name,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                                                  // fontWeight: FontWeight.bold,
+                                                                  fontStyle: FontStyle
+                                                                      .italic,
+                                                                  fontSize: 22),
+                                                            ),
+                                                            Icon(Icons
+                                                                .arrow_drop_down),
+                                                            SizedBox(width: 10,),
+                                                          ],
+                                                        ),
                                                       ),
                                                       onTap: () {
                                                         _createAlertDialogDropDown(
@@ -2309,6 +2370,23 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
   var namesDataList12;
   bool switchOn;
+  var icon1=Icons.ac_unit;
+  var icon2=FontAwesomeIcons.iceCream;
+  var icon3=FontAwesomeIcons.lightbulb;
+  var icon4=FontAwesomeIcons.fan;
+  var icon5=FontAwesomeIcons.handsWash;
+  var icon6=FontAwesomeIcons.lightbulb;
+  var icon7=FontAwesomeIcons.lightbulb;
+  var icon8=FontAwesomeIcons.lightbulb;
+  var icon9=FontAwesomeIcons.lightbulb;
+  var icon10=FontAwesomeIcons.lightbulb;
+  var icon11=FontAwesomeIcons.lightbulb;
+  var icon12=FontAwesomeIcons.lightbulb;
+  List changeIcon=[null,null,null,null,null,null,null,null,null];
+
+  List<String> iconCode=['','002','003','','','','','','','','',''];
+
+
   deviceContainer(String dId, index) async {
     allPlaceData =
     await SubUserDataBase.subUserInstance.allPlaceModelData();
@@ -2355,22 +2433,455 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     }
 
     print('nameDataList${namesDataList12}');
+
+    String pin1=namesDataList12[index]['pin1Name'];
+    var indexOfPin1Name=pin1.indexOf(',');
+    var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+    print('indexofpppp $pin1');
+
+
+    String pin2=namesDataList12[index]['pin2Name'];
+    var indexOfPin2Name=pin2.indexOf(',');
+    var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+    print('indexofpppppin2 $pin2');
+
+    String pin3=namesDataList12[index]['pin3Name'];
+    var indexOfPin3Name=pin3.indexOf(',');
+    var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin4=namesDataList12[index]['pin4Name'];
+    var indexOfPin4Name=pin4.indexOf(',');
+    var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin5=namesDataList12[index]['pin5Name'];
+    var indexOfPin5Name=pin5.indexOf(',');
+    var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin6=namesDataList12[index]['pin6Name'];
+    var indexOfPin6Name=pin6.indexOf(',');
+    var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin7=namesDataList12[index]['pin7Name'];
+    var indexOfPin7Name=pin7.indexOf(',');
+    var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin8=namesDataList12[index]['pin8Name'];
+    var indexOfPin8Name=pin8.indexOf(',');
+    var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin9=namesDataList12[index]['pin9Name'];
+    var indexOfPin9Name=pin9.indexOf(',');
+    var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin10=namesDataList12[index]['pin10Name'];
+    var indexOfPin10Name=pin10.indexOf(',');
+    var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin11=namesDataList12[index]['pin11Name'];
+    var indexOfPin11Name=pin11.indexOf(',');
+    var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+    print('indexofpppppin2 $pin3');
+
+
+    String pin12=namesDataList12[index]['pin12Name'];
+    var indexOfPin12Name=pin12.indexOf(',');
+    var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+    print('indexofpppppin2 $pin3');
+
+
     // getSensorData(dId);
+
     namesDataList = [
-      widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
-      widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
-      widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
-      widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
-      widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
-      widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
-      widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
-      widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
-      widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
-      widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
-      widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
-      widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+      widget.switch1Name = pin1FinalName,
+      widget.switch2Name = pin2FinalName,
+      widget.switch3Name = pin3FinalName,
+      widget.switch4Name = pin4FinalName,
+      widget.switch5Name = pin5FinalName,
+      widget.switch6Name = pin6FinalName,
+      widget.switch7Name = pin7FinalName,
+      widget.switch8Name = pin8FinalName,
+      widget.switch9Name = pin9FinalName,
+      widget.switch10Name = pin10FinalName,
+      widget.switch11Name = pin11FinalName,
+      widget.switch12Name = pin12FinalName,
     ];
+
     print('responseDataPinStatusForSubUser ${responseDataPinStatusForSubUser}');
+
+    for(int i=0;i<namesDataList.length;i++){
+      if(pin1.contains('001') || pin1.contains('002')||pin1.contains('003') ||pin1.contains('004' )||pin1.contains('005') ||pin1.contains('006')||pin1.contains('007')||pin1.contains('008')||pin1.contains('009')|| pin1.contains('0010')||pin1.contains('0011')){
+        print('qwertyhgf $index');
+        // icon1=Icons.ac_unit;
+        if(pin1.contains('001')){
+          print('indexofpppp2 $pin1');
+          setState(() {
+            changeIcon[index]=icon1;
+          });
+        }
+        if(pin1.contains('002')){
+          changeIcon[index]=icon2;
+        }
+        if(pin1.contains('003')){
+          // changeIcon[index]=icon3;
+          setState(() {
+            changeIcon[index]=icon3;
+          });
+          print('imcomming ${changeIcon[index]}');
+        }
+        if(pin1.contains('004')){
+          changeIcon[index]=icon5;
+          print('imcomming4 ${changeIcon[index]}');
+        }
+        if(pin1.contains('005')){
+          changeIcon[index]=icon6;
+        }
+        if(pin1.contains('007')){
+          changeIcon[index]=icon6;
+        }
+        if(pin1.contains('008')){
+          changeIcon[index]=icon7;
+        }
+        if(pin1.contains('009')){
+          changeIcon[index]=icon8;
+        }
+        if(pin1.contains('0010')){
+          changeIcon[index]=icon9;
+        }
+        if(pin1.contains('0011')){
+          changeIcon[index]=icon10;
+        }
+        if(pin1.contains('0012')){
+          changeIcon[index]=icon12;
+        }
+      }
+
+      if(pin2.contains('001') || pin2.contains('002')||pin2.contains('003') ||pin2.contains('004' )||pin2.contains('005') ||pin2.contains('006')||pin2.contains('007')||pin2.contains('008')||pin2.contains('009')|| pin2.contains('0010')||pin2.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin2.contains('001')){
+          changeIcon[index+1]=icon1;
+        }
+        if(pin2.contains('002')){
+          changeIcon[index+1]=icon2;
+        }
+        if(pin2.contains('003')){
+
+          changeIcon[index+1]=icon3;
+          print('commnng inde  3');
+        }
+        if(pin2.contains('004')){
+          changeIcon[index+1]=icon5;
+        }
+        if(pin2.contains('005')){
+          changeIcon[index+1]=icon6;
+        }
+        if(pin2.contains('007')){
+          changeIcon[index+1]=icon6;
+        }
+        if(pin2.contains('008')){
+          changeIcon[index+1]=icon7;
+        }
+        if(pin2.contains('009')){
+          changeIcon[index]=icon8;
+        }
+        if(pin2.contains('0010')){
+          changeIcon[index+1]=icon9;
+        }
+        if(pin2.contains('0011')){
+          changeIcon[index+1]=icon10;
+        }
+        if(pin2.contains('0012')){
+          changeIcon[index+1]=icon12;
+        }
+      }
+
+      if(pin3.contains('001') || pin3.contains('002')||pin3.contains('003') ||pin3.contains('004' )||pin3.contains('005') ||pin3.contains('006')||pin3.contains('007')||pin3.contains('008')||pin3.contains('009')|| pin3.contains('0010')||pin3.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin3.contains('001')){
+          changeIcon[index+2]=icon1;
+        }
+        if(pin3.contains('002')){
+          changeIcon[index+2]=icon2;
+        }
+        if(pin3.contains('003')){
+          changeIcon[index+2]=icon3;
+        }
+        if(pin3.contains('004')){
+          changeIcon[index+2]=icon5;
+        }
+        if(pin3.contains('005')){
+          changeIcon[index+2]=icon6;
+        }
+        if(pin3.contains('007')){
+          changeIcon[index+2]=icon6;
+        }
+        if(pin3.contains('008')){
+          changeIcon[index+2]=icon7;
+        }
+        if(pin3.contains('009')){
+          changeIcon[index+2]=icon8;
+        }
+        if(pin3.contains('0010')){
+          changeIcon[index+2]=icon9;
+        }
+        if(pin3.contains('0011')){
+          changeIcon[index+2]=icon10;
+        }
+        if(pin3.contains('0012')){
+          changeIcon[index+2]=icon12;
+        }
+      }
+
+      if(pin4.contains('001') || pin4.contains('002')||pin4.contains('003') ||pin4.contains('004' )||pin4.contains('005') ||pin4.contains('006')||pin4.contains('007')||pin4.contains('008')||pin4.contains('009')|| pin4.contains('0010')||pin4.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin4.contains('001')){
+          changeIcon[index+3]=icon1;
+        }
+        if(pin4.contains('002')){
+          changeIcon[index+3]=icon2;
+        }
+        if(pin4.contains('003')){
+          changeIcon[index+3]=icon3;
+        }
+        if(pin4.contains('004')){
+          changeIcon[index+3]=icon5;
+        }
+        if(pin4.contains('005')){
+          changeIcon[index+3]=icon6;
+        }
+        if(pin4.contains('007')){
+          changeIcon[index+3]=icon6;
+        }
+        if(pin4.contains('008')){
+          changeIcon[index+3]=icon7;
+        }
+        if(pin4.contains('009')){
+          changeIcon[index+3]=icon8;
+        }
+        if(pin4.contains('0010')){
+          changeIcon[index+3]=icon9;
+        }
+        if(pin4.contains('0011')){
+          changeIcon[index+3]=icon10;
+        }
+        if(pin4.contains('0012')){
+          changeIcon[index+3]=icon12;
+        }
+      }
+      if(pin5.contains('001') || pin5.contains('002')||pin5.contains('003') ||pin5.contains('004' )||pin5.contains('005') ||pin5.contains('006')||pin5.contains('007')||pin5.contains('008')||pin5.contains('009')|| pin5.contains('0010')||pin5.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin5.contains('001')){
+          changeIcon[index+4]=icon1;
+        }
+        if(pin5.contains('002')){
+          changeIcon[index+4]=icon2;
+        }
+        if(pin5.contains('003')){
+          changeIcon[index+4]=icon3;
+        }
+        if(pin5.contains('004')){
+          changeIcon[index+4]=icon5;
+        }
+        if(pin5.contains('005')){
+          changeIcon[index+4]=icon6;
+        }
+        if(pin5.contains('007')){
+          changeIcon[index+4]=icon6;
+        }
+        if(pin5.contains('008')){
+          changeIcon[index+4]=icon7;
+        }
+        if(pin5.contains('009')){
+          changeIcon[index+4]=icon8;
+        }
+        if(pin5.contains('0010')){
+          changeIcon[index+4]=icon9;
+        }
+        if(pin5.contains('0011')){
+          changeIcon[index+4]=icon10;
+        }
+        if(pin5.contains('0012')){
+          changeIcon[index+4]=icon12;
+        }
+      }
+      if(pin6.contains('001') || pin6.contains('002')||pin6.contains('003') ||pin6.contains('004' )||pin6.contains('005') ||pin6.contains('006')||pin6.contains('007')||pin6.contains('008')||pin6.contains('009')|| pin6.contains('0010')||pin6.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin6.contains('001')){
+          changeIcon[index+5]=icon1;
+        }
+        if(pin6.contains('002')){
+          changeIcon[index+5]=icon2;
+        }
+        if(pin6.contains('003')){
+          changeIcon[index+5]=icon3;
+        }
+        if(pin6.contains('004')){
+          changeIcon[index+5]=icon5;
+        }
+        if(pin6.contains('005')){
+          changeIcon[index+5]=icon6;
+        }
+        if(pin6.contains('007')){
+          changeIcon[index+5]=icon6;
+        }
+        if(pin6.contains('008')){
+          changeIcon[index+5]=icon7;
+        }
+        if(pin6.contains('009')){
+          changeIcon[index+5]=icon8;
+        }
+        if(pin6.contains('0010')){
+          changeIcon[index+5]=icon9;
+        }
+        if(pin6.contains('0011')){
+          changeIcon[index+5]=icon10;
+        }
+        if(pin6.contains('0012')){
+          changeIcon[index+5]=icon12;
+        }
+      }
+      if(pin7.contains('001') || pin7.contains('002')||pin7.contains('003') ||pin7.contains('004' )||pin7.contains('005') ||pin7.contains('006')||pin7.contains('007')||pin7.contains('008')||pin7.contains('009')|| pin7.contains('0010')||pin7.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin7.contains('001')){
+          changeIcon[index+6]=icon1;
+        }
+        if(pin7.contains('002')){
+          changeIcon[index+6]=icon2;
+        }
+        if(pin7.contains('003')){
+          changeIcon[index+6]=icon3;
+        }
+        if(pin7.contains('004')){
+          changeIcon[index+6]=icon5;
+        }
+        if(pin7.contains('005')){
+          changeIcon[index+6]=icon6;
+        }
+        if(pin7.contains('007')){
+          changeIcon[index+6]=icon6;
+        }
+        if(pin7.contains('008')){
+          changeIcon[index+6]=icon7;
+        }
+        if(pin7.contains('009')){
+          changeIcon[index+6]=icon8;
+        }
+        if(pin7.contains('0010')){
+          changeIcon[index+6]=icon9;
+        }
+        if(pin7.contains('0011')){
+          changeIcon[index+6]=icon10;
+        }
+        if(pin7.contains('0012')){
+          changeIcon[index+6]=icon12;
+        }
+      }
+      if(pin8.contains('001') || pin8.contains('002')||pin8.contains('003') ||pin8.contains('004' )||pin8.contains('005') ||pin8.contains('006')||pin8.contains('007')||pin8.contains('008')||pin8.contains('009')|| pin8.contains('0010')||pin8.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin8.contains('001')){
+          changeIcon[index+7]=icon1;
+        }
+        if(pin8.contains('002')){
+          changeIcon[index+7]=icon2;
+        }
+        if(pin8.contains('003')){
+          changeIcon[index+7]=icon3;
+        }
+        if(pin8.contains('004')){
+          changeIcon[index+7]=icon5;
+        }
+        if(pin8.contains('005')){
+          changeIcon[index+7]=icon6;
+        }
+        if(pin8.contains('007')){
+          changeIcon[index+7]=icon6;
+        }
+        if(pin8.contains('008')){
+          changeIcon[index+7]=icon7;
+        }
+        if(pin8.contains('009')){
+          changeIcon[index+7]=icon8;
+        }
+        if(pin8.contains('0010')){
+          changeIcon[index+7]=icon9;
+        }
+        if(pin8.contains('0011')){
+          changeIcon[index+7]=icon10;
+        }
+        if(pin8.contains('0012')){
+          changeIcon[index+7]=icon12;
+        }
+      }
+      if(pin9.contains('001') || pin9.contains('002')||pin9.contains('003') ||pin9.contains('004' )||pin9.contains('005') ||pin9.contains('006')||pin9.contains('007')||pin9.contains('008')||pin9.contains('009')|| pin9.contains('0010')||pin9.contains('0011')){
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if(pin9.contains('001')){
+          changeIcon[index+8]=icon1;
+        }
+        if(pin9.contains('002')){
+          changeIcon[index+8]=icon2;
+        }
+        if(pin9.contains('003')){
+          changeIcon[index+8]=icon3;
+        }
+        if(pin9.contains('004')){
+          changeIcon[index+8]=icon5;
+        }
+        if(pin9.contains('005')){
+          changeIcon[index+8]=icon6;
+        }
+        if(pin9.contains('007')){
+          changeIcon[index+8]=icon6;
+        }
+        if(pin9.contains('008')){
+          changeIcon[index+8]=icon7;
+        }
+        if(pin9.contains('009')){
+          changeIcon[index+8]=icon8;
+        }
+        if(pin9.contains('0010')){
+          changeIcon[index+8]=icon9;
+        }
+        if(pin9.contains('0011')){
+          changeIcon[index+8]=icon10;
+        }
+        if(pin9.contains('0012')){
+          changeIcon[index+8]=icon12;
+        }
+      }
+
+      // if(namesDataList[index+2].contains('003')){
+      //   // icon2=Icons.ac_unit;
+      //   changeIcon[index+2]=icon3;
+      // }
+      // if(namesDataList[index+3].contains('004')){
+      //   print('qwertyhgf $index');
+      //   // icon2=Icons.ac_unit;
+      //   changeIcon[index+3]=icon4;
+      // }
+    }
     setState(() {
       responseDataPinStatusForSubUser = [
         widget.switch1_get = catchReturn[index]["pin1Status"],
@@ -2386,19 +2897,20 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
         widget.Slider_get2 = catchReturn[index]["pin11Status"],
         widget.Slider_get3 = catchReturn[index]["pin12Status"],
       ];
+
       namesDataList = [
-        widget.switch1Name = namesDataList12[index]['pin1Name'].toString(),
-        widget.switch2Name = namesDataList12[index]['pin2Name'].toString(),
-        widget.switch3Name = namesDataList12[index]['pin3Name'].toString(),
-        widget.switch4Name = namesDataList12[index]['pin4Name'].toString(),
-        widget.switch5Name = namesDataList12[index]['pin5Name'].toString(),
-        widget.switch6Name = namesDataList12[index]['pin6Name'].toString(),
-        widget.switch7Name = namesDataList12[index]['pin7Name'].toString(),
-        widget.switch8Name = namesDataList12[index]['pin8Name'].toString(),
-        widget.switch9Name = namesDataList12[index]['pin9Name'].toString(),
-        widget.switch10Name = namesDataList12[index]['pin10Name'].toString(),
-        widget.switch11Name = namesDataList12[index]['pin11Name'].toString(),
-        widget.switch12Name = namesDataList12[index]['pin12Name'].toString(),
+        widget.switch1Name = pin1FinalName,
+        widget.switch2Name = pin2FinalName,
+        widget.switch3Name = pin3FinalName,
+        widget.switch4Name = pin4FinalName,
+        widget.switch5Name = pin5FinalName,
+        widget.switch6Name = pin6FinalName,
+        widget.switch7Name = pin7FinalName,
+        widget.switch8Name = pin8FinalName,
+        widget.switch9Name = pin9FinalName,
+        widget.switch10Name = pin10FinalName,
+        widget.switch11Name = pin11FinalName,
+        widget.switch12Name = pin12FinalName,
       ];
     });
   }
@@ -3293,16 +3805,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
 
 
   String _chosenValue;
-  var icon1=Icons.ac_unit;
-  var icon2=IconData(0xe800);
-  var icon3=FontAwesomeIcons.lightbulb;
-  var icon4=FontAwesomeIcons.fan;
-  var icon5=FontAwesomeIcons.handsWash;
-  var icon6=FontAwesomeIcons.lightbulb;
-  var icon7=FontAwesomeIcons.lightbulb;
-  var icon8=FontAwesomeIcons.lightbulb;
-  var icon9=FontAwesomeIcons.lightbulb;
-  List changeIcon=[null,null,null,null,null,null,null,null,null];
+
 
 
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
@@ -3877,7 +4380,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
               .of(context)
               .size
               .height * 1.95,
-          color: Colors.redAccent,
+          // color: Colors.redAccent,
           child: Column(
             children: [
               SingleChildScrollView(
@@ -4184,6 +4687,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                       ),
                       ],
                       ),
+                        GestureDetector(
+                            onTap:(){
+                            },
+                            child: Icon(changeIcon[index]==null?null:changeIcon[index]))
                       ],
                       )),
                       ),
@@ -4426,6 +4933,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                               },
                                             ),
                                           ),
+                                          GestureDetector(
+                                              onTap:(){
+                                              },
+                                              child: Icon(changeIcon[index]==null?null:changeIcon[index]))
                                         ],
                                       )),
                                 ),

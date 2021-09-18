@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'Manage Theme/darkmodeandFont.dart';
 import 'changeFont.dart';
 import 'chnagedTheme.dart';
 import 'main.dart';
@@ -80,8 +81,8 @@ class _SettingPageState extends State<SettingPage> {
                         ),
 
                       ),
-                    ),ListTile(
-
+                    ),
+                    ListTile(
                       leading: CircleAvatar(
                           radius: 15.0,
                           child: Icon(Icons.home)),
@@ -113,6 +114,24 @@ class _SettingPageState extends State<SettingPage> {
                 elevation: 4.0,
                 child: Column(
                   children: <Widget>[
+                    GestureDetector(
+                      onTap: _launchURL,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            radius: 15.0,
+                            child: Icon(Icons.password_sharp)),
+                        title: Text('Change Password',style: TextStyle(        color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                        selectedTileColor: Colors.blue,
+                        // onTap: ,
+                        trailing: Row(
+                          mainAxisSize:MainAxisSize.min ,
+                          children: <Widget>[
+                            Icon(Icons.arrow_forward_ios),
+                          ],
+                        ),
+
+                      ),
+                    ),
                     ListTile(
                       leading: CircleAvatar(
                           radius: 15.0,
@@ -126,20 +145,20 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       ),
                     ),
-                    ListTile(
-                      leading: CircleAvatar(
-                          radius: 15.0,
-                          child: Icon(Icons.drive_file_rename_outline)),
-                      title: Text('Rename House',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
-                      selectedTileColor: Colors.blue,
-                      // onTap: ,
-                      trailing: Row(
-                        mainAxisSize:MainAxisSize.min ,
-                        children: <Widget>[
-                          Icon(Icons.arrow_forward_ios),
-                        ],
-                      ),
-                    ),
+                    // ListTile(
+                    //   leading: CircleAvatar(
+                    //       radius: 15.0,
+                    //       child: Icon(Icons.drive_file_rename_outline)),
+                    //   title: Text('Rename House',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                    //   selectedTileColor: Colors.blue,
+                    //   // onTap: ,
+                    //   trailing: Row(
+                    //     mainAxisSize:MainAxisSize.min ,
+                    //     children: <Widget>[
+                    //       Icon(Icons.arrow_forward_ios),
+                    //     ],
+                    //   ),
+                    // ),
                     ListTile(
                       leading: CircleAvatar(
                           radius: 15.0,
@@ -160,10 +179,10 @@ class _SettingPageState extends State<SettingPage> {
                           child: Icon(Icons.change_history_sharp)),
                       title: Text('Manage Themes',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
                       onTap: () async {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => ChangedTheme()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DarkModeAndFont()),
+                        );
                       },
                       trailing: Row(
                         mainAxisSize:MainAxisSize.min ,
@@ -212,8 +231,60 @@ class _SettingPageState extends State<SettingPage> {
               padding: EdgeInsets.all(19.0),
               children: <Widget>[
 
+                // Card(
+                //   color: change_toDark ? Colors.black : Colors.white,
+                //   elevation: 4.0,
+                //   child: Column(
+                //     children: <Widget>[
+                //       GestureDetector(
+                //         onTap: _launchURL,
+                //         child: ListTile(
+                //           leading: CircleAvatar(
+                //               radius: 15.0,
+                //               child: Icon(Icons.password_sharp)),
+                //           title: Text('Change Password',style: TextStyle(        color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                //           selectedTileColor: Colors.blue,
+                //           // onTap: ,
+                //           trailing: Row(
+                //             mainAxisSize:MainAxisSize.min ,
+                //             children: <Widget>[
+                //               Icon(Icons.arrow_forward_ios),
+                //             ],
+                //           ),
+                //
+                //         ),
+                //       ),
+                //       ListTile(
+                //
+                //         leading: CircleAvatar(
+                //             radius: 15.0,
+                //             child: Icon(Icons.home)),
+                //         title: Text('Dark Mode',style: TextStyle(color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                //         selectedTileColor: Colors.blue,
+                //         // onTap: ,
+                //         trailing: Row(
+                //           mainAxisSize:MainAxisSize.min ,
+                //           children: <Widget>[
+                //             Switch(
+                //                 value: change_toDark,
+                //                 onChanged: (newValue) {
+                //                   setState(() {
+                //                     change_toDark = newValue;
+                //                   });
+                //                   setToDark(change_toDark);
+                //                 }),
+                //           ],
+                //         ),
+                //       ),
+                //
+                //     ],
+                //   ),
+                // ),
+                // Padding(padding: EdgeInsets.all(16.0)),
+
                 Card(
                   color: change_toDark ? Colors.black : Colors.white,
+
                   elevation: 4.0,
                   child: Column(
                     children: <Widget>[
@@ -234,39 +305,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
 
                         ),
-                      ),ListTile(
-
-                        leading: CircleAvatar(
-                            radius: 15.0,
-                            child: Icon(Icons.home)),
-                        title: Text('Dark Mode',style: TextStyle(color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
-                        selectedTileColor: Colors.blue,
-                        // onTap: ,
-                        trailing: Row(
-                          mainAxisSize:MainAxisSize.min ,
-                          children: <Widget>[
-                            Switch(
-                                value: change_toDark,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    change_toDark = newValue;
-                                  });
-                                  setToDark(change_toDark);
-                                }),
-                          ],
-                        ),
                       ),
-
-                    ],
-                  ),
-                ),Padding(padding: EdgeInsets.all(16.0)),
-
-                Card(
-                  color: change_toDark ? Colors.black : Colors.white,
-
-                  elevation: 4.0,
-                  child: Column(
-                    children: <Widget>[
                       ListTile(
                         leading: CircleAvatar(
                             radius: 15.0,
@@ -280,26 +319,28 @@ class _SettingPageState extends State<SettingPage> {
                           ],
                         ),
                       ),
-                      ListTile(
-                        leading: CircleAvatar(
-                            radius: 15.0,
-                            child: Icon(Icons.drive_file_rename_outline)),
-                        title: Text('Rename House',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
-                        selectedTileColor: Colors.blue,
-                        // onTap: ,
-                        trailing: Row(
-                          mainAxisSize:MainAxisSize.min ,
-                          children: <Widget>[
-                            Icon(Icons.arrow_forward_ios),
-                          ],
-                        ),
-                      ),
+                      // ListTile(
+                      //   leading: CircleAvatar(
+                      //       radius: 15.0,
+                      //       child: Icon(Icons.drive_file_rename_outline)),
+                      //   title: Text('Rename House',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                      //   selectedTileColor: Colors.blue,
+                      //   // onTap: ,
+                      //   trailing: Row(
+                      //     mainAxisSize:MainAxisSize.min ,
+                      //     children: <Widget>[
+                      //       Icon(Icons.arrow_forward_ios),
+                      //     ],
+                      //   ),
+                      // ),
                       ListTile(
                         leading: CircleAvatar(
                             radius: 15.0,
                             child: Icon(Icons.perm_device_information_sharp)),
                         title: Text('Manage Devices',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
-                        // onTap: ,
+                        onTap: (){
+
+                        },
                         trailing: Row(
                           mainAxisSize:MainAxisSize.min ,
                           children: <Widget>[
@@ -314,6 +355,10 @@ class _SettingPageState extends State<SettingPage> {
                             child: Icon(Icons.change_history_sharp)),
                         title: Text('Manage Themes',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
                         onTap: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => DarkModeAndFont()),
+                          );
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(builder: (context) => ChangedTheme()),
@@ -327,25 +372,25 @@ class _SettingPageState extends State<SettingPage> {
                           ],
                         ),
                       ),
-                      ListTile(
-                        leading: CircleAvatar(
-                            radius: 15.0,
-                            child: Icon(Icons.font_download_sharp)),
-                        title: Text('Change Fonts',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
-                        onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ChangeFont()),
-                          );
-                        },
-                        trailing: Row(
-                          mainAxisSize:MainAxisSize.min ,
-                          children: <Widget>[
-                            Icon(Icons.arrow_forward_ios),
-
-                          ],
-                        ),
-                      ),
+                      // ListTile(
+                      //   leading: CircleAvatar(
+                      //       radius: 15.0,
+                      //       child: Icon(Icons.font_download_sharp)),
+                      //   title: Text('Change Fonts',style: TextStyle( color: change_toDark ? Colors.white : Colors.black,fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                      //   onTap: () async {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(builder: (context) => ChangeFont()),
+                      //     );
+                      //   },
+                      //   trailing: Row(
+                      //     mainAxisSize:MainAxisSize.min ,
+                      //     children: <Widget>[
+                      //       Icon(Icons.arrow_forward_ios),
+                      //
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 )
