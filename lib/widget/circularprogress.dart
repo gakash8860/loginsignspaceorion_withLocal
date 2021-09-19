@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdown2.dart';
+import '../login_Screen.dart';
 import '../main.dart';
 
 void main()=>runApp(MaterialApp(
@@ -33,6 +35,7 @@ class _IndicatorState extends State<Indicator> {
     super.initState();
     getToken();
     getUid();
+    getUidWeb();
     allAwait();
     print(getUidVariable);
     // roomResponse=send_RoomName(roomEditingController.text);
@@ -56,6 +59,39 @@ class _IndicatorState extends State<Indicator> {
       print(response.statusCode);
     }
   }
+var tokenWeb;
+  getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+  }
+
+
+  getUidWeb() async{
+    await getTokenWeb();
+    final url=await API+'getuid/';
+    print('tokenweb ${tokenWeb}');
+    final response =
+    await http.get(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $tokenWeb',
+        });
+    if(response.statusCode==200){
+      getUidVariable=response.body;
+      getUidVariable2=int.parse(getUidVariable);
+
+      print('GetUi Variable Integer-->   ${getUidVariable2}');
+    }else{
+      print(response.statusCode);
+    }
+  }
+
+
+
+
+
+
   var placeResponse;
   var floorResponse;
   var flatResponse;

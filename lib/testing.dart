@@ -192,21 +192,24 @@ import 'package:http/http.dart' as http;
 
 import 'main.dart';
 
-Future<Album> createAlbum(String title) async {
-  final response = await http.post(
-    Uri.parse('https://jsonplaceholder.typicode.com/albums'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'title': title,
-    }),
+Future createAlbum() async {
+  String token='d47d6e9a942dc30250308706527ba29343ad975f';
+  final response = await http.get(
+    Uri.parse('https://jsonplaceholder.typicode.com/todos/1'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      }
   );
 
-  if (response.statusCode == 201) {
+  print('response.body');
+  if (response.statusCode >0) {
+
+    print(response.statusCode);
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
+    // return Album.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -275,8 +278,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ElevatedButton(
           onPressed: () {
+            createAlbum();
             setState(() {
-              _futureAlbum = createAlbum(_controller.text);
+
             });
           },
           child: const Text('Create Data'),

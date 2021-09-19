@@ -51,6 +51,7 @@ class _DarkModeAndFontState extends State<DarkModeAndFont> {
                             onChanged: (newValue) {
                               setState(() {
                                 change_toDark = newValue;
+                                setToDark(change_toDark);
                               });
                               setToDark(change_toDark);
                             }),

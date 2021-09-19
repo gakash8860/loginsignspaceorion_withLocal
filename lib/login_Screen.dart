@@ -14,6 +14,7 @@ import 'package:loginsignspaceorion/signUp.dart';
 import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main()=>runApp(
     MaterialApp(
@@ -139,6 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
   }
+
+  setToken(token)async{
+    final pref= await SharedPreferences.getInstance();
+    pref.setString('tokenWeb', token);
+  }
+
   checkDetailsWeb() async {
     print('email ${emailController.text}');
     print('email ${passwordController.text}');
@@ -155,6 +162,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print('response.statusCode ${response.statusCode}');
     if (response.statusCode == 200) {
+     var tokenAuth=jsonDecode(response.body);
+      print('token $tokenAuth');
+      setToken(tokenAuth);
       // Navigator.of(context).pushNamed('/dropDown1');
       Navigator.of(context).pushNamed(DropDown1.routeName);
 
@@ -396,8 +406,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             textColor: Colors.white,
                                             onPressed: () async {
                                               print('aaaaaaaaaaaaaa');
-                                              // checkDetailsWeb();
-                                              Navigator.of(context).pushNamed(DropDown1.routeName);
+                                              checkDetailsWeb();
+                                              // Navigator.of(context).pushNamed(DropDown1.routeName);
                                               // if (formKey.currentState.validate()) {
                                               //
                                               //   checkDetailsWeb();

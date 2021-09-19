@@ -286,7 +286,7 @@ allPinNames(String dId,int index)async{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scheduled Pin",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+        title: Text("Scheduled Pins",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {

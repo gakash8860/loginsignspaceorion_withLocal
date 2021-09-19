@@ -462,7 +462,15 @@ Future<int> checkConnectionForWeb()async{
                 child: Text('Submit'),
                 onPressed: () async {
                   //
-                  Navigator.of(context).pushNamed(HomeTest.routeName);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Indicator(
+                            placeName: editingController.text,
+                            floorName: floorEditingController.text,
+                            flatName: flatEditingController.text,
+                            roomName: roomEditingController.text,
+                          )));
                   // pt = await placeName(editingController.text);
                   // print('After Await  $placeResponse');
                   // fl = await sendFloorName(floorEditingController.text);
@@ -678,12 +686,6 @@ Future<int> checkConnectionForWeb()async{
                       MaterialPageRoute(
                           builder: (context) =>
                               DropDown()));
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             super.widget)));
-
                 },
                 child: Text(
                   'Your places',
@@ -1111,19 +1113,5 @@ Future<int> checkConnectionForWeb()async{
     }),
     ));
     }
-    changePage(){
 
-    Navigator.push(
-
-    context,
-    MaterialPageRoute(
-    builder: (context) => HomeTest(
-    pt: pt,
-    fl: fl,
-    flat: flat,
-    rm: rm,
-    dv: dv,
-    )));
-    isVisible=false;
-    }
   }

@@ -4470,10 +4470,13 @@ String piname;
                       },
                       child: Row(
                         children: [
-                          Text('Place- ', style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                              fontFamily: fonttest==null?'RobotoMono':fonttest,
-                          ),),
+
+                          Flexible(
+                            child: Text('Place - ', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                                fontFamily: fonttest==null?'RobotoMono':fonttest,
+                            ),),
+                          ),
                           Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest),),
                           Icon(Icons.arrow_drop_down)
                         ],
@@ -4703,7 +4706,7 @@ String piname;
                             ListTile(
                               leading: Icon(Icons.settings),
                               title: Text(
-                                'Settings',
+                                'Setting',
                                 style: TextStyle(
                                   fontFamily: fonttest==null?'RobotoMono':fonttest,
                                   color: change_toDark ? Colors.white : Colors
@@ -4853,7 +4856,7 @@ String piname;
                                                       },
                                                       child: Row(
                                                         children: [
-                                                          Text('Floor -',
+                                                          Text('Floor - ',
                                                             style: TextStyle(
                                                               fontFamily: fonttest==null?'RobotoMono':fonttest,
                                                               color: Colors.white,
@@ -4920,7 +4923,7 @@ String piname;
                                                           },
                                                           child: Row(
                                                             children: [
-                                                              Text('Flat- ',
+                                                              Text('Flat - ',
                                                                 style: TextStyle(
                                                                     fontFamily: fonttest==null?'RobotoMono':fonttest,
                                                                     color: Colors
@@ -6971,10 +6974,7 @@ bool switchOn;
     await preferences.clear();
   }
 
-  void loadAlarms() {
-    _alarms = _alarmHelper.getAlarms();
-    if (mounted) setState(() {});
-  }
+
 
   void scheduleAlarm(DateTime scheduledNotificationDateTime,
       AlarmInfo alarmInfo) async {
@@ -7014,14 +7014,8 @@ bool switchOn;
     _alarmHelper.insertAlarm(alarmInfo);
     scheduleAlarm(scheduleAlarmDateTime, alarmInfo);
     Navigator.pop(context);
-    loadAlarms();
   }
 
-  void deleteAlarm(int id) {
-    _alarmHelper.delete(id);
-    //unsubscribe for notification
-    loadAlarms();
-  }
 
   getData(String dId) async {
     print("Vice Id $dId");

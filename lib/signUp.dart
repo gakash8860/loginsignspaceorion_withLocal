@@ -87,15 +87,8 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     map['last_name'] = data.lname;
     map['email'] = data.email;
     map['phone_no'] = data.pno;
-    print('response.body147');
-    var headers = {
-      'Content-type' : 'application/json',
-      'Accept': 'application/json',
-    };
     response = await http.post(url, body: map,
         encoding: Encoding.getByName("utf-8"),
-      // headers: headers
-        // headers: {HttpHeaders.contentTypeHeader:"application/json"}
 
       );
     print('response.body');
@@ -106,52 +99,20 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
       return true;
     } else {
       if (response.statusCode == 400) {
-        print(response.body);
+        // print(response.body);
         print(response.statusCode);
         // Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
         throw ("Details Error");
       }
       if (response.statusCode == 500) {
         print(response.statusCode);
-        print(response.body);
-        print(response.headers);
+        // print(response.body);
         // Navigator.push(context, MaterialPageRoute(builder: (context)=>WrongPassword()));
         throw ("Internal Server Error");
       }
     }
   }
 
-  Future post() async {
-    final url = API+'regflu';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-
-        'username': 'title',
-        'email': 'title',
-        'password1': 'title',
-        'password2': 'title',
-        'first_name': 'title',
-        'last_name': 'title',
-        'phone_no': 'title',
-      }),
-    );
-
-    if (response.statusCode >0) {
-      print('created');
-      print(response.statusCode);
-      // If the server did return a 201 CREATED response,
-      // then parse the JSON.
-      // return Album.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
-      throw Exception('Failed to create album.');
-    }
-  }
   String nameValid(String value) {
     if (value.isEmpty) {
       return 'Required';
@@ -317,10 +278,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                   autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                                   validator: nameValid,
-                                  // onSaved: (String value) {
-                                  //   this.data.fname = value;
-                                  // },
-                                  controller: firstNameController,
+                                  onSaved: (String value) {
+                                    this.data.fname = value;
+                                  },
+                                  // controller: firstNameController,
                                   style:
                                   TextStyle(fontSize: 18, color: Colors.black54),
                                   decoration: InputDecoration(
@@ -351,10 +312,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                                 validator: nameValid,
-                                // onSaved: (String value) {
-                                //   this.data.lname = value;
-                                // },
-                                controller: lastNameController,
+                                onSaved: (String value) {
+                                  this.data.lname = value;
+                                },
+                                // controller: lastNameController,
                                 style:
                                 TextStyle(fontSize: 18, color: Colors.black54),
                                 decoration: InputDecoration(
@@ -386,11 +347,11 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 onEditingComplete: () => node.nextFocus(),
                                 // autovalidateMode: AutovalidateMode.values[2],
                                 // validator: validateEmail,
-                                // onSaved: (String value) {
-                                //   // ignore: unnecessary_statements
-                                //   this.data.email = value;
-                                // },
-                                controller: emailController,
+                                onSaved: (String value) {
+                                  // ignore: unnecessary_statements
+                                  this.data.email = value;
+                                },
+                                // controller: emailController,
                                 style:
                                 TextStyle(fontSize: 18, color: Colors.black54),
                                 decoration: InputDecoration(
@@ -422,10 +383,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                                 validator: validatePass,
-                                // onSaved: (String value) {
-                                //   this.data.password = value;
-                                // },
-                                controller: password1Controller,
+                                onSaved: (String value) {
+                                  this.data.password = value;
+                                },
+                                // controller: password1Controller,
                                 obscureText: isHiddenPassword,
                                 style:
                                 TextStyle(fontSize: 18, color: Colors.black54),
@@ -463,15 +424,15 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                                 validator: validatePass,
-                                // onSaved: (String value) {
-                                //   if(data.password.length==data.password2.length){
-                                //     this.data.password2=value;
-                                //   }else{
-                                //     return Text("Password doesn't match");
-                                //   }
-                                //   // this.data.password2 = value;
-                                // },
-                                controller: password2Controller,
+                                onSaved: (String value) {
+                                  if(data.password.length==data.password2.length){
+                                    this.data.password2=value;
+                                  }else{
+                                    return Text("Password doesn't match");
+                                  }
+                                  // this.data.password2 = value;
+                                },
+                                // controller: password2Controller,
                                 obscureText: isHiddenPassword,
                                 style:
                                 TextStyle(fontSize: 18, color: Colors.black54),
@@ -510,10 +471,10 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 AutovalidateMode.onUserInteraction,
                                 keyboardType: TextInputType.phone,
                                 validator: validateMobile,
-                                // onSaved: (String value) {
-                                //   this.data.pno = value;
-                                // },
-                                controller: phoneController,
+                                onSaved: (String value) {
+                                  this.data.pno = value;
+                                },
+                                // controller: phoneController,
                                 style:
                                 TextStyle(fontSize: 18, color: Colors.black54),
                                 decoration: InputDecoration(
@@ -555,13 +516,13 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                   padding: const EdgeInsets.all(15),
                                   textColor: Colors.white,
                                   onPressed: () async{
-                                    await post();
-                                    // if (formKey.currentState.validate()) {
-                                    //   //data.checkPassword();
-                                    //
-                                    // } else {
-                                    //   print("not validated");
-                                    // }
+
+                                    if (formKey.currentState.validate()) {
+                                      //data.checkPassword();
+                                    goToNextPage();
+                                    } else {
+                                      print("not validated");
+                                    }
                                   }),
                             ),
                           ],

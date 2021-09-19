@@ -8,7 +8,7 @@ import 'chnagedTheme.dart';
 import 'main.dart';
 
 bool change_toDark = false;
-bool changeDark;
+bool changeDark=false;
 void main()=>runApp(MaterialApp(
   home: SettingPage(),
 ));

@@ -2,25 +2,104 @@
 // import 'package:awesome_notifications/awesome_notifications.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
+// import 'dart:async';
+// import 'dart:convert';
+// import 'dart:io';
+// import 'dart:typed_data';
+// import 'dart:ui';
+//
+// import 'package:device_info/device_info.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:path_provider/path_provider.dart';
+// import 'package:rxdart/subjects.dart';
+// final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
+// BehaviorSubject<ReceivedNotification>();
+//
+// final BehaviorSubject<String> selectNotificationSubject =
+// BehaviorSubject<String>();
+//
+// const MethodChannel platform =
+// MethodChannel('dexterx.dev/flutter_local_notifications_example');
+//
+// class ReceivedNotification {
+//   ReceivedNotification({
+//      this.id,
+//      this.title,
+//      this.body,
+//      this.payload,
+//   });
+//
+//   final int id;
+//   final String title;
+//   final String body;
+//   final String payload;
+// }
+//
+// String selectedNotificationPayload;
 // // import 'package:notification_example/NavigationPage.dart';
-// void main() async {
+// Future<void> main() async {
+//   // needed if you intend to initialize in the `main` function
 //   WidgetsFlutterBinding.ensureInitialized();
-//   AwesomeNotifications().initialize(
-//       null,
-//       [
-//         NotificationChannel(
-//             channelKey: 'key1',
-//             channelName: 'Proto Coders Point',
-//             channelDescription: "Notification example",
-//             defaultColor: Color(0XFF9050DD),
-//             ledColor: Colors.white,
-//             playSound: true,
-//             enableLights:true,
-//             enableVibration: true
-//         )
-//       ]
+//
+//   // await _configureLocalTimeZone();
+//
+//   final NotificationAppLaunchDetails notificationAppLaunchDetails =
+//   await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+//
+//
+//   const AndroidInitializationSettings initializationSettingsAndroid =
+//   AndroidInitializationSettings('app_icon');
+//
+//   /// Note: permissions aren't requested here just to demonstrate that can be
+//   /// done later
+//   final IOSInitializationSettings initializationSettingsIOS =
+//   IOSInitializationSettings(
+//       requestAlertPermission: false,
+//       requestBadgePermission: false,
+//       requestSoundPermission: false,
+//       onDidReceiveLocalNotification: (
+//           int id,
+//           String title,
+//           String body,
+//           String payload,
+//           ) async {
+//         didReceiveLocalNotificationSubject.add(
+//           ReceivedNotification(
+//             id: id,
+//             title: title,
+//             body: body,
+//             payload: payload,
+//           ),
+//         );
+//       });
+//    MacOSInitializationSettings initializationSettingsMacOS =
+//   MacOSInitializationSettings(
+//     requestAlertPermission: false,
+//     requestBadgePermission: false,
+//     requestSoundPermission: false,
 //   );
-//   runApp(MyApp());
+//
+//   final InitializationSettings initializationSettings = InitializationSettings(
+//     android: initializationSettingsAndroid,
+//     iOS: initializationSettingsIOS,
+//     macOS: initializationSettingsMacOS,
+//   );
+//   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//       onSelectNotification: (String? payload) async {
+//         if (payload != null) {
+//           debugPrint('notification payload: $payload');
+//         }
+//         selectedNotificationPayload = payload;
+//         selectNotificationSubject.add(payload);
+//       });
+//   runApp(
+//     MyApp(
+//     ),
+//   );
 // }
 // class MyApp extends StatelessWidget {
 //   // This widget is the root of your application.
@@ -43,6 +122,24 @@
 //   _MyHomePageState createState() => _MyHomePageState();
 // }
 // class _MyHomePageState extends State<MyHomePage> {
+//
+//   Future<void> _showNotification() async {
+//     const AndroidNotificationDetails androidPlatformChannelSpecifics =
+//     AndroidNotificationDetails(
+//         'your channel id', 'your channel name', 'your channel description',
+//         importance: Importance.Max,
+//         priority: Priority.High,
+//         ticker: 'ticker');
+//     const NotificationDetails platformChannelSpecifics =
+//     NotificationDetails(android: androidPlatformChannelSpecifics);
+//     await flutterLocalNotificationsPlugin.show(
+//         0, 'plain title', 'plain body', platformChannelSpecifics,
+//         payload: 'item x');
+//   }
+//
+//
+//
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -52,14 +149,10 @@
 //           children: [
 //             ElevatedButton(
 //               onPressed: (){
-//                 showNotification();  //localnotification method call below
+//  //localnotification method call below
 //                 // when user top on notification this listener will work and user will be navigated to notification page
-//                 AwesomeNotifications().actionStream.listen((receivedNotifiction){
-//                   Navigator.of(context).pushNamed(
-//                     '/navigationPage',
-//                   );
-//                 });
-//               },
+//
+//                 },
 //               child: Text("Local Notification"),
 //             ),
 //           ],
@@ -68,27 +161,5 @@
 //     );
 //   }
 // }
-// void Notify()  async{
-//   String timezom = await AwesomeNotifications().getLocalTimeZoneIdentifier();
-//   await AwesomeNotifications().createNotification(
-//     content: NotificationContent(
-//         id: 1,
-//         channelKey: 'key1',
-//         title: 'This is Notification title',
-//         body: 'This is Body of Noti',
-//         bigPicture: 'https://protocoderspoint.com/wp-content/uploads/2021/05/Monitize-flutter-app-with-google-admob-min-741x486.png',
-//         notificationLayout: NotificationLayout.BigPicture
-//     ),
-//     schedule: NotificationInterval(interval: 2,timeZone: timezom,repeats: true),
-//   );
-// }
-// showNotification() async {
-//   var android = AndroidNotificationDetails(
-//       'id', 'channel ', 'description',
-//       priority: Priority.High, importance: Importance.Max);
-//   var iOS = IOSNotificationDetails();
-//   var platform = new NotificationDetails(android, iOS);
-//   await flutterLocalNotificationsPlugin.show(
-//       0, 'Flutter devs', 'Flutter Local Notification Demo', platform,
-//       payload: 'Welcome to the Local Notification demo');
-// }
+//
+//

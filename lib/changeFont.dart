@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Setting_Page.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -82,83 +82,101 @@ class _ChangeFontState extends State<ChangeFont> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+      if (viewportConstraints.maxWidth > 600) {
+        return Container();
+      }else{
+          return Scaffold(
+            appBar: AppBar(
 
-        title: Text("Genorion"  ,
-            style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest)),
-      ),
-      body: Center(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(118.0),
-            child: ElevatedButton(
-                onPressed: ()async{
-                  await _getFont();
-                  if(font==null ||font!=null ){
-                    await _removeFont();
-                    if (fonttest == font1 ||fonttest == null||fonttest != font1) {
-                      fonttest = font1;
-                     await _setFont(fonttest);
-                      print('fonttest');
-                      runApp(MaterialApp(home: ChangeFont(),));
-                    }
-                  }else{
-                    print('eleseFont');
-                    fonttest=font;
-                  }
+              title: Text("Genorion"  ,
+                  style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest)),
+            ),
+            body: Container(
+              color: Colors.yellow,
+              child: SingleChildScrollView(
+                child: Flexible(
+                  child: Column(
+                    children: [
+                      Card(
+                       margin: EdgeInsets.only(
+                           top: MediaQuery.of(context).size.height/40,
+                           left: MediaQuery.of(context).size.height/25,
+                           right: MediaQuery.of(context).size.width/25,
+                           bottom: MediaQuery.of(context).size.height/2.8),
+                       clipBehavior: Clip.antiAlias,
+                       color: change_toDark ? Colors.black : Colors.white,
+                       // elevation: 4.0,
+                       child: Column(
+                         children: <Widget>[
+                           Padding(
+                             padding: const EdgeInsets.all(18.0),
+                             child: Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. '),
+                           ),
+                           ElevatedButton(
+                               onPressed: (){
 
-                },
-                child: Text('Font 1',style: TextStyle(fontFamily: fonttest==null?'Setting':'Setting'))),
-          ),
-          SizedBox(height: 147,),
-          ElevatedButton(
-              onPressed: ()async{
-                // await _getFont();
-                // if(font==null ||font!=null ){
-                //   await _removeFont();
-                //   if (fonttest == font1 ||fonttest == null||fonttest != font1) {
-                //     fonttest = font2;
-                //     await _setFont(fonttest);
-                //     print(fonttest);
-                //
-                //   }
-                // }else{
-                //   print('eleseFont');
-                //   fonttest=font;
-                // }
+                               },
+                               child: Text('Button'))
+                         ],
+                       ),
+                        ),
+                      Card(
+                       margin: EdgeInsets.only(
+                           top: MediaQuery.of(context).size.height/40,
+                           left: MediaQuery.of(context).size.height/25,
+                           right: MediaQuery.of(context).size.width/25,
+                           bottom: MediaQuery.of(context).size.height/2.8),
+                       clipBehavior: Clip.antiAlias,
+                       color: change_toDark ? Colors.black : Colors.white,
+                       // elevation: 4.0,
+                       child: Column(
+                         children: <Widget>[
+                           Padding(
+                             padding: const EdgeInsets.all(8.0),
+                             child: Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. '),
+                           ),
+                           ElevatedButton(
+                               onPressed: (){
 
-                        // if (fonttest == font1 ||fonttest == null||fonttest != font1) {
-                        //   fonttest = font2;
-                        //   print(fonttest);
-                        //   runApp(MaterialApp(home: SettingPage(),));
-                        // }
-              },
-              child: Text('Font 2 ',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':'RobotoMono'))),
-          ElevatedButton(
-              onPressed: ()async{
-                await _getFont();
-                if(font==null ||font!=null ){
-                  await _removeFont();
-                  if (fonttest == font1 ||fonttest == null||fonttest != font1) {
-                    fonttest = font3;
-                    await _setFont(fonttest);
-                    print(fonttest);
-                    runApp(MaterialApp(home: ChangeFont(),));
+                               },
+                               child: Text('Button'))
+                         ],
+                       ),
+                        ),
+                      Card(
+                       margin: EdgeInsets.only(
+                           top: MediaQuery.of(context).size.height/40,
+                           left: MediaQuery.of(context).size.height/25,
+                           right: MediaQuery.of(context).size.width/25,
+                           bottom: MediaQuery.of(context).size.height/2.8),
+                       clipBehavior: Clip.antiAlias,
+                       color: change_toDark ? Colors.black : Colors.white,
+                       // elevation: 4.0,
+                       child: Column(
+                         children: <Widget>[
+                           Padding(
+                             padding: const EdgeInsets.all(8.0),
+                             child: Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. '),
+                           ),
+                           ElevatedButton(
+                               onPressed: (){
 
-                  }
-                }else{
-                  print('eleseFont');
-                  fonttest=font;
-                }
-              },
-              child: Text('Font 3',style: TextStyle(fontFamily: fonttest==null?'Satisfy':'Satisfy'))),
-        ],
-      ),
+                               },
+                               child: Text('Button'))
+                         ],
+                       ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          );
+      }
+        }
 
-      ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _fontfunction,
       // ), // This trailing comma makes auto-formatting nicer for build methods.

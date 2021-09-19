@@ -27,6 +27,7 @@ dependencies:
   workmanager: ^0.2.3
   awesome_notifications: ^0.0.6+7
   google_fonts: ^1.0.0
+  device_info: ^2.0.0
   flutter_spinkit: ^5.1.0
   shared_preferences: ^0.5.12+4
   intl: ^0.16.1

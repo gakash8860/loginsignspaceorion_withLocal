@@ -33,8 +33,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-// var API = 'http://127.0.0.1:8000/';
-var API = 'https://genorion1.herokuapp.com/';
+var API = 'http://127.0.0.1:8000/';
+// var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
@@ -63,17 +63,7 @@ Future<String> getToken() async {
 }
 
 void main()async {
-  // var pathToBuild = join(dirname(Platform.script.toFilePath()), '..', 'build');
-  //
-  // var handler = createStaticHandler(pathToBuild, defaultDocument: 'index.html');
-  //
-  // var portEnv = Platform.environment['PORT'];
-  // var port = portEnv == null ? 9999 : int.parse(portEnv);
-  //
-  // runZoned(() {
-  //   io.serve(handler, '0.0.0.0', port);
-  //   print("Serving $pathToBuild on port $port");
-  // }, onError: (e, stackTrace) => print('Oh noes! $e $stackTrace'));
+
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   runApp(MaterialApp(
@@ -248,11 +238,13 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     // await openPlaceBox();
     String token = await getToken();
     final url = API+'addyourplace/';
-    final response = await http.get(url, headers: {
+    final response = await http.get(url,
+        headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
-    });
+    }
+    );
 
     try {
       if (response.statusCode > 0) {
@@ -1214,9 +1206,10 @@ class Slide {
   final String description;
 
   Slide(
-      {@required this.imageURL,
-        @required this.tittle,
-        @required this.description});
+      {
+      this.imageURL,
+      this.tittle,
+      this.description});
 }
 
 final slideList = [

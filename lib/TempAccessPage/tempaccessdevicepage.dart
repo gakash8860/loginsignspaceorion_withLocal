@@ -172,7 +172,7 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       print(response.statusCode);
       throw Exception('Failed to getData.');
     }
-    getPinsName(widget.deviceId.toString());
+   await getPinsName(widget.deviceId.toString());
     return data;
   }
   List<String> namesDataList;
@@ -328,10 +328,6 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
   }
   List responseGetData;
   deviceContainer() async {
-    getData();
-
-
-
     catchReturn = await getData();
     print('catchReturn123 ${catchReturn}');
     // var sensorData=
@@ -349,7 +345,8 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       widget.Slider_get2 = catchReturn["pin11Status"],
       widget.Slider_get3 = catchReturn["pin12Status"],
     ];
-
+    checkDevice= true;
+    print('asdasdasdad $checkDevice');
 
     // catchReturn =  getData(dId);
     setState(() {
@@ -383,7 +380,9 @@ class _TempAccessDevicePageState extends State<TempAccessDevicePage> {
       print('else ${switchOn}');
       print('else ${responseGetData}');
     }
+
   }
+  bool checkDevice= false;
 
   deviceContainer2(int x) {
     deviceContainer();
