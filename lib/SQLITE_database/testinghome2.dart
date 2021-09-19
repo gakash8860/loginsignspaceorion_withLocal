@@ -381,7 +381,6 @@ class _HomeTestState extends State<HomeTest>
 
   var postDataPlaceName;
 
-// ignore: missing_return
   Future<PlaceType> getPlaceName() async {
     String token = await getToken();
     print('currentPlaceId ${widget.pt.pId}');
@@ -398,8 +397,22 @@ class _HomeTestState extends State<HomeTest>
       print("GetPlaceNameResponseBody  ${response.body}");
     }
   }
+var tokenWeb;
+  getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+  }
 
-  // ignore: missing_return
+  Future<void> checkWebOrNot()async{
+    await getTokenWeb();
+    if(tokenWeb!=null){
+      print('goingtoif');
+    }else{
+      print('goingtoelse');
+    }
+
+  }
+
 
 
   Future<PlaceType> addPlaceName(String data) async {
@@ -4372,7 +4385,7 @@ String piname;
       print(response.statusCode);
       print(response.body);
       tabbarState = jsonDecode(response.body);
-      print(' RoomCrated --> $roomResponse');
+
     } else {
       throw Exception('Failed to create Room.');
     }
@@ -4453,11 +4466,11 @@ String piname;
         child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints viewportConstraints) {
               if (viewportConstraints.maxWidth > 600) {
-                return HomeViewLarge(_currentIndex, (index) {
+                return HomeViewLarge( _currentIndex, (index) {
                   setState(() {
                     _currentIndex = index;
                   });
-                });
+                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,);
               } else {
 
                 return Scaffold(

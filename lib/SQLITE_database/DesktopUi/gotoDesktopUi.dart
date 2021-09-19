@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:loginsignspaceorion/models/modeldefine.dart';
 
 import 'desktopMenu.dart';
 import 'destination.dart';
 import 'destinationview.dart';
 
 class HomeViewLarge extends StatefulWidget {
+  PlaceType pt;
+  Flat flt;
+  FloorType fl;
+  List<RoomType> rm;
+
   final int currentIndex;
   final Function(int selectedIndex) onTapped;
 
-  HomeViewLarge(this.currentIndex, this.onTapped);
+  HomeViewLarge(this.currentIndex, this.onTapped,{
+   this.rm,this.flt,this.fl,this.pt
+  });
 
   @override
   _HomeViewLargeState createState() => _HomeViewLargeState();
@@ -48,7 +56,7 @@ class _HomeViewLargeState extends State<HomeViewLarge> {
               index: _index,
               children: allDestinations.map<Widget>((
                   Destination destination) {
-                return DestinationView(destination);
+                return DestinationView(destination: destination,pt: widget.pt,fl: widget.fl,flat: widget.flt,rm: widget.rm,);
               }).toList(),
             ),
           ),

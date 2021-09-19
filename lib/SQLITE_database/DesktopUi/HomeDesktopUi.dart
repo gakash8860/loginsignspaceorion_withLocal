@@ -19,6 +19,7 @@ class DesktopHome extends StatefulWidget {
 Flat flt;
   FloorType fl;
   List<RoomType> rm;
+
   List<Device> dv;
    DesktopHome({Key key,this.pt,this.fl,this.rm,this.dv,this.flt}) : super(key: key);
   var switch1_get;
@@ -996,7 +997,7 @@ class _DesktopHomeState extends State<DesktopHome> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: GestureDetector(
-            child: Center(child: Text('Place'))
+            child: Center(child: Text(widget.pt.pType ==null?"asds":widget.pt.pType))
 
         ),
 
@@ -1007,12 +1008,9 @@ class _DesktopHomeState extends State<DesktopHome> {
         // color: change_toDark ? Colors.black : Colors.white,
         child: DefaultTabController(
           // length: rm.length,
-          length: 3,
+          length: widget.rm.length,
           // length: widget.rm.length,
           child: CustomScrollView(
-              // key: key,
-
-              // controller: _scrollController,
               slivers: <Widget>[
                 SliverToBoxAdapter(
                   child: Column(
@@ -1077,9 +1075,9 @@ class _DesktopHomeState extends State<DesktopHome> {
                                                         // fontStyle: FontStyle.italic
                                                     ),),
                                                   Text(
-                                                    // fl.fName.toString(),
+                                                    widget.fl.fName.toString(),
                                                     // getFloorData[0]['f_name'].toString(),
-                                                    'Floor 1 ',
+                                                    // 'Floor 1 ',
                                                     // + widget.fl.user.first_name,
                                                     style: TextStyle(
                                                         color: Colors
@@ -1135,9 +1133,9 @@ class _DesktopHomeState extends State<DesktopHome> {
                                                     fontSize: 22),),
 
                                               Text(
-                                                // flat.fltName.toString(),
+                                                widget.flt.fltName.toString(),
                                                 // getFlatData[0]['flt_name'].toString(),
-                                                'Flat 1 ',
+                                                // 'Flat 1 ',
                                                 // + widget.fl.user.first_name,
                                                 style: TextStyle(
                                                     color: Colors
@@ -1397,19 +1395,14 @@ class _DesktopHomeState extends State<DesktopHome> {
                                   labelColor: Colors.blueAccent,
                                   indicatorWeight: 2.0,
                                   isScrollable: true,
-                                  tabs: [
-                                    Text('Room 1',),
-                                    Text('Room 2',),
-                                    Text('Room 3',),
-                                  ],
-                                  // tabs: rm.map<Widget>((RoomType rm) {
-                                  //   rIdForName = rm.rId;
-                                  //   print('RoomId  $rIdForName');
-                                  //   print('RoomId  ${rm.rName}');
-                                  //   return Tab(
-                                  //     text: rm.rName,
-                                  //   );
-                                  // }).toList(),
+                                  tabs: widget.rm.map<Widget>((RoomType rm) {
+                                    rIdForName = rm.rId;
+                                    print('RoomId  $rIdForName');
+                                    print('RoomId  ${rm.rName}');
+                                    return Tab(
+                                      text: rm.rName,
+                                    );
+                                  }).toList(),
                                   onTap: (index) async {
 
                                     getDevices(tabbarState);

@@ -163,8 +163,14 @@ class _LoginScreenState extends State<LoginScreen> {
     print('response.statusCode ${response.statusCode}');
     if (response.statusCode == 200) {
      var tokenAuth=jsonDecode(response.body);
+      String token= tokenAuth.toString();
+      var index= token.indexOf(':');
+     var token12= token.substring(index+1,token.length-1);
+      print('token $index');
+      print('token $token12');
       print('token $tokenAuth');
-      setToken(tokenAuth);
+      print('token $tokenAuth');
+      setToken(token12);
       // Navigator.of(context).pushNamed('/dropDown1');
       Navigator.of(context).pushNamed(DropDown1.routeName);
 
