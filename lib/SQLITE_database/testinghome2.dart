@@ -98,6 +98,7 @@ class HomeTest extends StatefulWidget {
   FloorType fl;
   Flat flat;
   List<RoomType> rm;
+  var tabbarState;
   List<Device> dv;
   SensorData sensorData;
   final int currentIndex;
@@ -109,6 +110,7 @@ class HomeTest extends StatefulWidget {
     this.currentIndex,
     this.flat,
     this.onTapped,
+    this.tabbarState,
     @required this.rm,
     @required this.dv,
     this.sensorData})
@@ -4466,11 +4468,12 @@ String piname;
         child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints viewportConstraints) {
               if (viewportConstraints.maxWidth > 600) {
+                print('webdsd ${widget.tabbarState}');
                 return HomeViewLarge( _currentIndex, (index) {
                   setState(() {
                     _currentIndex = index;
                   });
-                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,);
+                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,tabbarState: widget.tabbarState,);
               } else {
 
                 return Scaffold(

@@ -118,6 +118,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   TabController tabC;
   var tabState;
   Future deviceSensorVal;
+  Future deviceSensorValWeb;
   SubUserFloorType fl;
   SubUserFlatType flat;
   SubUserPlaceType pt;
@@ -127,6 +128,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   var mainUserEmail;
   var flatId;
   int x;
+
+  List responseGetDataWeb;
   get index => null;
   List<SubUserRoomType> room;
   List namesDataList;
@@ -143,7 +146,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   void initState() {
     super.initState();
     getSubUsers();
-
+    getSubUsersWeb();
     _getPlaceIndex();
     // placeQueryFuncSend();
     lengthRoomTab();
@@ -175,6 +178,12 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     print('roomTab ${roomTab}');
   }
 
+  var tokenWeb;
+  Future getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+    return tokenWeb;
+  }
 
   Future<void> getSubUsers() async {
     String token = await getToken();
@@ -241,6 +250,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     }
 
   }
+
 
 
 
@@ -506,6 +516,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   }
 
   List placeData;
+  List placeDataWeb;
   Future getPlaceName() async {
     for (int i = 0; i < allPlaceId.length; i++) {
       print('lengthof ${allPlaceId.length}');
@@ -539,6 +550,173 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       }
     }
 
+  }
+
+  var placeIdWeb;
+  var floorIdWeb;
+  var flatIdWeb;
+  var ownerNameWeb;
+  Future<void> getSubUsersWeb() async {
+    String token = await getTokenWeb();
+    // await openSubUserBox();
+    final url = API+'subfindsubdata/?email=gakash8860@gmail.com';
+    // final url ='http://genorion1.herokuapp.com/subfindsubdata/?email='+mainUserEmail.toString();
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+
+      });
+      if(response.statusCode>0){
+        print('asdf ${response.statusCode}');
+        print('asdf ${response.body}');
+      }
+      // await subUserBox.clear();
+      List subUserDecode = jsonDecode(response.body);
+      placeIdWeb=subUserDecode[0]['p_id'];
+      ownerNameWeb=subUserDecode[0]['owner_name'];
+      print('ppppp ${subUserDecode[0]['p_id']}');
+      await getPlaceNameWeb();
+    } catch (e) {
+      // print('Status Exception $e');
+
+    }
+
+  }
+
+
+  Future getPlaceNameWeb() async {
+    await getTokenWeb();
+    print('tokenweb $tokenWeb');
+  final url = API+'getyouplacename/?p_id='+placeIdWeb;
+    final response =await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if(response.statusCode==200){
+      print('subuserfloorweb ${response.body}');
+      List <dynamic>data=jsonDecode(response.body);
+        for(int i=0; i<1; i++){
+            var place= SubUserPlaceType(
+              pType: data[i]['p_type'],
+              pId: data[i]['p_id'],
+            );
+            setState(() {
+              pt=place;
+            });
+        }
+
+      print('subuserplaceweb ${pt.pType}');
+      await getAllFloorForSubUserWeb();
+    }
+  }
+  Future getAllFloorForSubUserWeb() async {
+    await getTokenWeb();
+    print('tokenweb $tokenWeb');
+  final url = API+'getallfloorsbyonlyplaceidp_id/?p_id='+placeIdWeb;
+    final response =await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if(response.statusCode==200){
+      print('subuserfloorweb ${response.body}');
+      List <dynamic>data=jsonDecode(response.body);
+      floorIdWeb=data[0]['f_id'];
+        for(int i=0; i<1; i++){
+            var floor= SubUserFloorType(
+              fName: data[i]['f_name'],
+              fId: data[i]['f_id'],
+            );
+            setState(() {
+              fl=floor;
+            });
+        }
+
+      print('subuserFloorweb ${fl.fName}');
+     await getAllFlatForSubUserWeb();
+    }
+  }
+  Future getAllFlatForSubUserWeb() async {
+    await getTokenWeb();
+    print('tokenweb $tokenWeb');
+  final url = API+'getallflatbyonlyflooridf_id/?f_id='+floorIdWeb;
+    final response =await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if(response.statusCode==200){
+      print('subuserflatweb ${response.body}');
+      List <dynamic>data=jsonDecode(response.body);
+      flatIdWeb=data[0]['flt_id'];
+        for(int i=0; i<1; i++){
+            var subAccessFlat= SubUserFlatType(
+              fltId: data[i]['flt_id'],
+              fId: data[i]['f_id'],
+              fltName: data[i]['flt_name']
+            );
+            setState(() {
+              flat=subAccessFlat;
+            });
+        }
+        await getAllRoomForSubUserWeb();
+      print('subuserFloorweb ${flat.fltName}');
+
+    }
+  }
+  Future getAllRoomForSubUserWeb() async {
+    await getTokenWeb();
+    print('tokenweb $tokenWeb');
+  final url = API+'getallroomsbyonlyflooridf_id/?flt_id='+flatIdWeb;
+    final response =await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if(response.statusCode==200){
+      print('subuserRoomweb ${response.body}');
+      List <dynamic>resultRoom=jsonDecode(response.body);
+        for(int i=0;i<resultRoom.length;i++){
+          List<SubUserRoomType>  room123 = List.generate(resultRoom.length, (index) =>
+              SubUserRoomType(
+                rId: resultRoom[index]['r_id'].toString(),
+                fltId: resultRoom[index]['flt_id'].toString(),
+                rName: resultRoom[index]['r_name'].toString(),
+                user: resultRoom[index]['user'],
+              ));
+          setState(() {
+            room=room123;
+          });
+        }
+
+      print('subuserRoomweb ${room[0].rName}');
+        var roomId=room[0].rId;
+      await getDevicesWeb(roomId);
+    }
+  }
+
+  Future<List<SubUserDeviceType>> getDevicesWeb(String rId) async {
+    final url = API+'getalldevicesbyonlyroomidr_id/?r_id='+rId;
+      await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      print('asqweds47 ${response.body}');
+     List deviceData = jsonDecode(response.body);
+      dv = deviceData.map((data) => SubUserDeviceType.fromJson(data)).toList();
+      print('------Devicessssssssssssssssssssssssssssss Data ${response.statusCode}');
+      print('------Devicessssssssssssssssssssssssssssss Data ${dv[0].dId}');
+
+
+      return dv;
+    }
   }
 
   Future getAllFloorForSubUser() async {
@@ -886,9 +1064,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   title: GestureDetector(
                       child: Row(
                         children: [
-                          Text('Assigned by Ankit ',style: TextStyle(fontSize: 14),),
+                          Text('Assigned by $ownerNameWeb ',style: TextStyle(fontSize: 14),),
                           SizedBox(width:151),
-                          Text('Home',),
+                          Text(pt.pType.toString(),),
                         ],
                       )
 
@@ -897,7 +1075,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   body: Container(
                   width: double.maxFinite,
                   child: DefaultTabController(
-                    length: 3,
+                    length: room.length,
                     child: CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
@@ -963,9 +1141,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                               // fontStyle: FontStyle.italic
                                                             ),),
                                                           Text(
-                                                            // fl.fName.toString(),
+                                                            fl.fName.toString(),
                                                             // getFloorData[0]['f_name'].toString(),
-                                                            'Floor 1 ',
+                                                            // 'Floor 1 ',
                                                             // + widget.fl.user.first_name,
                                                             style: TextStyle(
                                                               color: Colors
@@ -1021,9 +1199,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                           fontSize: 22),),
 
                                                       Text(
-                                                        // flat.fltName.toString(),
+                                                        flat.fltName.toString(),
                                                         // getFlatData[0]['flt_name'].toString(),
-                                                        'Flat 1 ',
+                                                        // 'Flat 1 ',
                                                         // + widget.fl.user.first_name,
                                                         style: TextStyle(
                                                             color: Colors
@@ -1089,9 +1267,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                       height: 8,
                                     ),
                                     FutureBuilder(
-                                      future: deviceSensorVal,
+                                      future: deviceSensorValWeb,
                                       builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
+                                        if (snapshot.hasData) {
                                           return Column(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             // mainAxisAlignment: MainAxisAlignment.center,
@@ -1112,8 +1290,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     Row(
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text('2.65',
-                                                              // sensorData[index]['sensor1'].toString(),
+                                                          child: Text(
+                                                              // '2.65',
+                                                              sensorDataWeb['sensor1'].toString(),
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -1136,10 +1315,11 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     Row(
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text('45.36',
-                                                              // sensorData[index][
-                                                              // 'sensor2']
-                                                              //     .toString(),
+                                                          child: Text(
+                                                              // '45.36',
+                                                              sensorDataWeb[
+                                                              'sensor2']
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -1162,8 +1342,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     Row(
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text('41.25',
-                                                              // sensorData[index]['sensor3'].toString(),
+                                                          child: Text(
+                                                              // '41.25',
+                                                              sensorDataWeb['sensor3'].toString(),
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -1186,8 +1367,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     Row(
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text('45.2',
-                                                              // sensorData[index]['sensor4'].toString(),
+                                                          child: Text(
+                                                              // '45.2',
+                                                              sensorDataWeb['sensor4'].toString(),
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -1210,8 +1392,9 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                                     Row(
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text('DIDM********A****C',
-                                                              // sensorData[index]['sensor4'].toString(),
+                                                          child: Text(
+                                                              // 'DIDM********A****C',
+                                                              sensorDataWeb['d_id'].toString(),
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -1240,303 +1423,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                             ],
                           ),
                         ),
-                        // SliverToBoxAdapter(
-                        //   child: Column(
-                        //     children: <Widget>[
-                        //       Container(
-                        //         height: MediaQuery
-                        //             .of(context)
-                        //             .size
-                        //             .height * 0.41,
-                        //         width: MediaQuery
-                        //             .of(context)
-                        //             .size
-                        //             .width,
-                        //         decoration: BoxDecoration(
-                        //           gradient: LinearGradient(
-                        //               begin: Alignment.topCenter,
-                        //               end: Alignment.bottomCenter,
-                        //               colors: [
-                        //                 Color(0xff669df4),
-                        //                 Color(0xff4e80f3)
-                        //               ]),
-                        //           borderRadius: BorderRadius.only(
-                        //               bottomLeft: Radius.circular(30),
-                        //               bottomRight: Radius.circular(30)),
-                        //         ),
-                        //         padding: EdgeInsets.only(
-                        //           top: 40,
-                        //           bottom: 10,
-                        //           left: 28,
-                        //           right: 30,
-                        //         ),
-                        //         // alignment: Alignment.topLeft,
-                        //         child: Column(
-                        //           crossAxisAlignment: CrossAxisAlignment.start,
-                        //           children: <Widget>[
-                        //             Row(
-                        //               mainAxisAlignment:
-                        //               MainAxisAlignment.spaceBetween,
-                        //               children: <Widget>[
-                        //
-                        //                 Column(
-                        //                   children: <Widget>[
-                        //                     Row(
-                        //                       children: [
-                        //                         GestureDetector(
-                        //                           onLongPress: () {
-                        //                             // _editFloorNameAlertDialog(context);
-                        //                           },
-                        //                           child: GestureDetector(
-                        //                             child: Row(
-                        //                               children: [
-                        //                                 Text('Floor - ',
-                        //                                   style: TextStyle(
-                        //                                       color: Colors
-                        //                                           .white,
-                        //                                       fontFamily: fonttest==null?changeFont:fonttest,
-                        //                                       fontSize: 22,
-                        //                                       fontWeight: FontWeight
-                        //                                           .bold,
-                        //                                       // fontStyle: FontStyle
-                        //                                       //     .italic
-                        //                                   ),),
-                        //                                 Text(
-                        //                                   // fl.fName.toString(),
-                        //                                   // getFloorData[0]['f_name'].toString(),
-                        //                                   'Floor 3 ',
-                        //                                   // + widget.fl.user.first_name,
-                        //                                   style: TextStyle(
-                        //                                       color: Colors
-                        //                                           .white,
-                        //                                       fontSize: 22,
-                        //                                       fontFamily: fonttest==null?changeFont:fonttest,
-                        //                                       // fontWeight: FontWeight.bold,
-                        //                                       // fontStyle: FontStyle
-                        //                                       //     .italic
-                        //                                   ),
-                        //                                 ),
-                        //                                 Icon(Icons
-                        //                                     .arrow_drop_down),
-                        //                                 SizedBox(width: 10,),
-                        //                               ],
-                        //                             ),
-                        //                           ),
-                        //                           onTap: () {
-                        //                             _createAlertDialogDropDown(
-                        //                                 context);
-                        //                           },
-                        //                         ),
-                        //                         SizedBox(width: 10,),
-                        //                         // GestureDetector(
-                        //                         //   child: Icon(Icons.add),
-                        //                         //   onTap: () async {
-                        //                         //
-                        //                         //     // _createAlertDialogForFloor(context);
-                        //                         //   },
-                        //                         // )
-                        //                       ],
-                        //                     ),
-                        //                     SizedBox(
-                        //                       height: 12,
-                        //                     ),
-                        //
-                        //                     Column(
-                        //                       crossAxisAlignment: CrossAxisAlignment
-                        //                           .start,
-                        //                       children: <Widget>[
-                        //                         Row(
-                        //                           children: <Widget>[
-                        //                             GestureDetector(
-                        //                               onLongPress: () {
-                        //
-                        //                               },
-                        //                               child: Row(
-                        //                                 children: [
-                        //                                   Text('Flat - ',
-                        //                                     style: TextStyle(
-                        //                                         color: Colors
-                        //                                             .white,
-                        //                                         fontWeight: FontWeight
-                        //                                             .bold,
-                        //                                         fontFamily: fonttest==null?changeFont:fonttest,
-                        //                                         fontSize: 22),),
-                        //                                   Text(
-                        //                                     // flat.fltName.toString(),
-                        //                                     // getFlatData[0]['flt_name'].toString(),
-                        //                                     'Flat 2 ',
-                        //                                     // + widget.fl.user.first_name,
-                        //                                     style: TextStyle(
-                        //                                         color: Colors
-                        //                                             .white,
-                        //                                         fontFamily: fonttest==null?changeFont:fonttest,
-                        //                                         // fontWeight: FontWeight.bold,
-                        //                                         // fontStyle: FontStyle
-                        //                                         //     .italic,
-                        //                                         fontSize: 22),
-                        //                                   ),
-                        //                                   Icon(Icons
-                        //                                       .arrow_drop_down),
-                        //                                   SizedBox(width: 10,),
-                        //                                 ],
-                        //                               ),
-                        //                               onTap: () {
-                        //                                 _createAlertDialogDropDown(
-                        //                                     context);
-                        //                               },
-                        //                             ),
-                        //                             SizedBox(width: 35),
-                        //                             // GestureDetector(
-                        //                             //     onTap: () async {
-                        //                             //
-                        //                             //     },
-                        //                             //     child: Icon(Icons.add)),
-                        //                           ],
-                        //                         )
-                        //
-                        //                       ],
-                        //                     ),
-                        //
-                        //                   ],
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //             SizedBox(
-                        //               height: 45,
-                        //             ),
-                        //             Row(
-                        //               mainAxisAlignment: MainAxisAlignment.center,
-                        //               children: <Widget>[
-                        //                 FutureBuilder(
-                        //                   future: deviceSensorVal,
-                        //                   builder: (context, snapshot) {
-                        //                     if (!snapshot.hasData) {
-                        //                       return Column(
-                        //                         crossAxisAlignment: CrossAxisAlignment.center,
-                        //                         // mainAxisAlignment: MainAxisAlignment.center,
-                        //                         children: <Widget>[
-                        //                           Row(
-                        //                             children: <Widget>[
-                        //                               SizedBox(
-                        //                                 width: 8,
-                        //                               ),
-                        //                               Column(children: <Widget>[
-                        //                                 Icon(
-                        //                                   FontAwesomeIcons.fire,
-                        //                                   color: Colors.yellow,
-                        //                                 ),
-                        //                                 SizedBox(
-                        //                                   height: 32,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: <Widget>[
-                        //                                     Container(
-                        //                                       child: Text(' 14.1',
-                        //                                           // sensorData[index]['sensor1'].toString(),
-                        //                                           style: TextStyle(
-                        //                                               fontSize: 14,
-                        //                                               color: Colors
-                        //                                                   .white70)),
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                               ]),
-                        //                               SizedBox(
-                        //                                 width: 35,
-                        //                               ),
-                        //                               Column(children: <Widget>[
-                        //                                 Icon(
-                        //                                   FontAwesomeIcons.temperatureLow,
-                        //                                   color: Colors.orange,
-                        //                                 ),
-                        //                                 SizedBox(
-                        //                                   height: 30,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: <Widget>[
-                        //                                     Container(
-                        //                                       child: Text('43.1',
-                        //                                           // sensorData[index][
-                        //                                           // 'sensor2']
-                        //                                           //     .toString(),
-                        //                                           style: TextStyle(
-                        //                                               fontSize: 14,
-                        //                                               color: Colors
-                        //                                                   .white70)),
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                               ]),
-                        //                               SizedBox(
-                        //                                 width: 45,
-                        //                               ),
-                        //                               Column(children: <Widget>[
-                        //                                 Icon(
-                        //                                   FontAwesomeIcons.wind,
-                        //                                   color: Colors.white,
-                        //                                 ),
-                        //                                 SizedBox(
-                        //                                   height: 30,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: <Widget>[
-                        //                                     Container(
-                        //                                       child: Text('45.6',
-                        //                                           // sensorData[index]['sensor3'].toString(),
-                        //                                           style: TextStyle(
-                        //                                               fontSize: 14,
-                        //                                               color: Colors
-                        //                                                   .white70)),
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                               ]),
-                        //                               SizedBox(
-                        //                                 width: 42,
-                        //                               ),
-                        //                               Column(children: <Widget>[
-                        //                                 Icon(
-                        //                                   FontAwesomeIcons.cloud,
-                        //                                   color: Colors.orange,
-                        //                                 ),
-                        //                                 SizedBox(
-                        //                                   height: 30,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: <Widget>[
-                        //                                     Container(
-                        //                                       child: Text('41.3',
-                        //                                           // sensorData[index]['sensor4'].toString(),
-                        //                                           style: TextStyle(
-                        //                                               fontSize: 14,
-                        //                                               color: Colors
-                        //                                                   .white70)),
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                               ]),
-                        //                             ],
-                        //                           ),
-                        //                           SizedBox(
-                        //                             height: 22,
-                        //                           ),
-                        //                         ],
-                        //                       );
-                        //                     } else {
-                        //                       return Center(
-                        //                         child: Text('Loading...'),
-                        //                       );
-                        //                     }
-                        //                   },
-                        //                 ),
-                        //               ],
-                        //             )
-                        //           ],
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
                         SliverAppBar(
                           automaticallyImplyLeading: false,
                           // centerTitle: true,
@@ -1578,21 +1464,16 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                           labelColor: Colors.blueAccent,
                                           indicatorWeight: 2.0,
                                           isScrollable: true,
-                                          tabs: [
-                                            Text('Room 1',),
-                                            Text('Room 2',),
-                                            Text('Room 3',),
-                                          ],
-                                          // tabs: rm.map<Widget>((RoomType rm) {
-                                          //   rIdForName = rm.rId;
-                                          //   print('RoomId  $rIdForName');
-                                          //   print('RoomId  ${rm.rName}');
-                                          //   return Tab(
-                                          //     text: rm.rName,
-                                          //   );
-                                          // }).toList(),
+                                          tabs: room.map<Widget>((SubUserRoomType rm) {
+                                            rIdForName = rm.rId;
+                                            print('RoomId  $rIdForName');
+                                            print('RoomId  ${rm.rName}');
+                                            return Tab(
+                                              text: rm.rName,
+                                            );
+                                          }).toList(),
                                           onTap: (index) async {
-
+                                           await getDevicesWeb(room[index].rId);
                                             // getDevices(tabbarState);
                                           },
                                         ),
@@ -1608,49 +1489,49 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                         ),
                         SliverList(
                           delegate: SliverChildBuilderDelegate((context, index) {
-                            return deviceContainer2();
-                            // if (index < dv.length) {
-                            //   Text(
-                            //     "Loading",
-                            //     style: TextStyle(fontSize: 44),
-                            //   );
-                            //
-                            //   return Container(
-                            //     child: Column(
-                            //       children: [
-                            //         deviceContainer2(),
-                            //         // Container(
-                            //         //     //
-                            //         //     // color: Colors.green,
-                            //         //     height: 35,
-                            //         //     child: GestureDetector(
-                            //         //       child: RichText(
-                            //         //         text: TextSpan(children: [
-                            //         //           TextSpan(
-                            //         //               text: dv[index].dId,
-                            //         //               style: TextStyle(
-                            //         //                   fontSize: 15, color: Colors.black)),
-                            //         //           TextSpan(text: "   "),
-                            //         //           WidgetSpan(
-                            //         //               child: Icon(
-                            //         //             Icons.settings,
-                            //         //             size: 18,
-                            //         //           ))
-                            //         //         ]),
-                            //         //       ),
-                            //         //       onTap: () {
-                            //         //         // _createAlertDialogForSSIDAndEmergencyNumber(
-                            //         //         //     context);
-                            //         //         print('on tap');
-                            //         //       },
-                            //         //     )),
-                            //       ],
-                            //     ),
-                            //     // child: Text(dv[index].dId),
-                            //   );
-                            // } else {
-                            //   return null;
-                            // }
+
+                            if (index < dv.length) {
+                              Text(
+                                "Loading",
+                                style: TextStyle(fontSize: 44),
+                              );
+
+                              return Container(
+                                child: Column(
+                                  children: [
+                                 deviceContainerWeb(dv[index].dId,index),
+                                    Container(
+                                        //
+                                        // color: Colors.green,
+                                        height: 35,
+                                        child: GestureDetector(
+                                          child: RichText(
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: dv[index].dId,
+                                                  style: TextStyle(
+                                                      fontSize: 15, color: Colors.black)),
+                                              TextSpan(text: "   "),
+                                              WidgetSpan(
+                                                  child: Icon(
+                                                Icons.settings,
+                                                size: 18,
+                                              ))
+                                            ]),
+                                          ),
+                                          onTap: () {
+                                            // _createAlertDialogForSSIDAndEmergencyNumber(
+                                            //     context);
+                                            print('on tap');
+                                          },
+                                        )),
+                                  ],
+                                ),
+                                // child: Text(dv[index].dId),
+                              );
+                            } else {
+                              return null;
+                            }
                           }),
                         )
 
@@ -2237,16 +2118,16 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       ),
     );
   }
-
+  var catchReturn;
   List<dynamic> deviceStatus = [];
   var data;
+  var dataWeb;
 
   getData(String dId) async {
     print("Vice Id $dId");
 
     // print('getDataFunction $deviceIdForSensor');
-    final String url =
-        'http://genorion1.herokuapp.com/getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -2341,8 +2222,121 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     }
     return data;
   }
+  getDataWeb(String dId) async {
+    print("ViceWebId $dId");
 
-  var catchReturn;
+    // print('getDataFunction $deviceIdForSensor');
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
+      await getTokenWeb();
+    http.Response response = await http.get(url, headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+      dataWeb = jsonDecode(response.body);
+      var arr = jsonDecode(response.body);
+      List listOfPinStatus = [
+        arr,
+      ];
+      print('sensorData  ${listOfPinStatus}');
+      print("DATA-->  $data");
+      print('\n');
+      deviceStatus = [
+        widget.switch1_get = dataWeb["pin1Status"],
+        widget.switch2_get = dataWeb["pin2Status"],
+        widget.switch3_get = dataWeb["pin3Status"],
+        widget.switch4_get = dataWeb["pin4Status"],
+        widget.switch5_get = dataWeb["pin5Status"],
+        widget.switch6_get = dataWeb["pin6Status"],
+        widget.switch7_get = dataWeb["pin7Status"],
+        widget.switch8_get = dataWeb["pin8Status"],
+        widget.switch9_get = dataWeb["pin9Status"],
+        widget.Slider_get = dataWeb["pin10Status"],
+        widget.Slider_get2 = dataWeb["pin11Status"],
+        widget.Slider_get3 = dataWeb["pin12Status"],
+      ];
+
+      print('Switch 1 --> ${widget.switch1_get}');
+      print('Switch 2 --> ${widget.switch2_get}');
+      print('Switch 3 --> ${widget.switch3_get}');
+      print('Switch 4 --> ${widget.switch4_get}');
+      print('Switch 5 --> ${widget.switch5_get}');
+      print('Switch 6 --> ${widget.switch6_get}');
+      print('Switch 7 --> ${widget.switch7_get}');
+      print('Switch 8 --> ${widget.switch8_get}');
+      print('Switch 9 --> ${widget.switch9_get}');
+      print('Switch 10 --> ${widget.Slider_get}');
+      print('Switch 11 --> ${widget.Slider_get2}');
+      print('Switch 12 --> ${widget.Slider_get3}');
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to getData.');
+    }
+    return dataWeb;
+  }
+  var pinNameData;
+  dataUpdateWeb(String dId) async {
+    final String url =
+        API+'getpostdevicePinStatus/?d_id=' + dId;
+     await getTokenWeb();
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseGetDataWeb[0],
+      'pin2Status': responseGetDataWeb[1],
+      'pin3Status': responseGetDataWeb[2],
+      'pin4Status': responseGetDataWeb[3],
+      'pin5Status': responseGetDataWeb[4],
+      'pin6Status': responseGetDataWeb[5],
+      'pin7Status': responseGetDataWeb[6],
+      'pin8Status': responseGetDataWeb[7],
+      'pin9Status': responseGetDataWeb[8],
+      'pin10Status': responseGetDataWeb[9],
+      'pin11Status': responseGetDataWeb[10],
+      'pin12Status': responseGetDataWeb[11],
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': q,
+      // 'pin18Status': r,
+      // 'pin19Status': s,
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+      // print(switch_1);
+      // print(switch_2);
+
+
+      await getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
+
+  getAllPinNamesWeb(String dId) async{
+    final String url = API+'editpinnames/?d_id=' + dId;
+    await getTokenWeb();
+    http.Response response = await http.get(url, headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
+    });
+
+    if (response.statusCode == 200) {
+      pinNameData  = jsonDecode(response.body);
+      print('pinNames ${pinNameData}');
+    }
+  return pinNameData;
+
+  }
 
   Future devicePinSensorLocalUsingDeviceId(String dId) async {
     print('ssse $dId');
@@ -2914,6 +2908,83 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       ];
     });
   }
+
+
+  List nameDataListWeb;
+
+  deviceContainerWebData(String dId, index) async {
+    catchReturn = await getDataWeb(dId);
+    var namesOfAllDevice= await getAllPinNamesWeb(dId);
+    print('catchReturn123Web ${catchReturn}');
+    print('catchReturnName3Web ${namesOfAllDevice}');
+    // var sensorData=
+    responseGetDataWeb = [
+      widget.switch1_get = catchReturn["pin1Status"],
+      widget.switch2_get = catchReturn["pin2Status"],
+      widget.switch3_get = catchReturn["pin3Status"],
+      widget.switch4_get = catchReturn["pin4Status"],
+      widget.switch5_get = catchReturn["pin5Status"],
+      widget.switch6_get = catchReturn["pin6Status"],
+      widget.switch7_get = catchReturn["pin7Status"],
+      widget.switch8_get = catchReturn["pin8Status"],
+      widget.switch9_get = catchReturn["pin9Status"],
+      widget.Slider_get = catchReturn["pin10Status"],
+      widget.Slider_get2 = catchReturn["pin11Status"],
+      widget.Slider_get3 = catchReturn["pin12Status"],
+    ];
+    nameDataListWeb=[
+      namesOfAllDevice['pin1Name'],
+      namesOfAllDevice['pin2Name'],
+      namesOfAllDevice['pin3Name'],
+      namesOfAllDevice['pin4Name'],
+      namesOfAllDevice['pin5Name'],
+      namesOfAllDevice['pin6Name'],
+      namesOfAllDevice['pin7Name'],
+      namesOfAllDevice['pin8Name'],
+      namesOfAllDevice['pin9Name'],
+      namesOfAllDevice['pin10Name'],
+      namesOfAllDevice['pin11Name'],
+      namesOfAllDevice['pin12Name'],
+    ];
+    // checkDevice= true;
+    // print('asdasdasdad $checkDevice');
+
+    // catchReturn =  getData(dId);
+    setState(() {
+
+      responseGetDataWeb = [
+        widget.switch1_get = catchReturn["pin1Status"],
+        widget.switch2_get = catchReturn["pin2Status"],
+        widget.switch3_get = catchReturn["pin3Status"],
+        widget.switch4_get = catchReturn["pin4Status"],
+        widget.switch5_get = catchReturn["pin5Status"],
+        widget.switch6_get = catchReturn["pin6Status"],
+        widget.switch7_get = catchReturn["pin7Status"],
+        widget.switch8_get = catchReturn["pin8Status"],
+        widget.switch9_get = catchReturn["pin9Status"],
+        widget.Slider_get = catchReturn["pin10Status"],
+        widget.Slider_get2 = catchReturn["pin11Status"],
+        widget.Slider_get3 = catchReturn["pin12Status"],
+      ];
+      nameDataListWeb=[
+        namesOfAllDevice['pin1Name'],
+        namesOfAllDevice['pin2Name'],
+        namesOfAllDevice['pin3Name'],
+        namesOfAllDevice['pin4Name'],
+        namesOfAllDevice['pin5Name'],
+        namesOfAllDevice['pin6Name'],
+        namesOfAllDevice['pin7Name'],
+        namesOfAllDevice['pin8Name'],
+        namesOfAllDevice['pin9Name'],
+        namesOfAllDevice['pin10Name'],
+        namesOfAllDevice['pin11Name'],
+        namesOfAllDevice['pin12Name'],
+      ];
+
+    });
+    print('catchReturnName3WebList ${nameDataListWeb}');
+  }
+
 
   dataUpdate(String dId) async {
     final String url =
@@ -3893,34 +3964,131 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           );
         });
   }
+    var sensorDataWeb;
+  Future  getSensorDataWeb(String dId) async {
+    await getTokenWeb();
+    final response = await http.get(
+        API+'tensensorsdata/?d_id=' +dId,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $tokenWeb',
+        });
+    if (response.statusCode > 0) {
+      print('SensorTempUserWeb ${response.body}');
+      print('SensorStatsCodeWeb ${response.statusCode}');
+      sensorDataWeb = jsonDecode(response.body);
+
+      print('sensordata123 ${sensorDataWeb['sensor1']}');
+      return sensorDataWeb;
+
+
+
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
 
 
 
 
-
-
-
-  deviceContainer2() {
-    // deviceContainer(dId);
+  deviceContainerWeb(String dId,int index) {
+    print('finally Enter');
+    deviceContainerWebData(dId,index);
     // fetchIp(dId);
     return Container(
       height: MediaQuery.of(context).size.height * 4.8,
       // color: Colors.redAccent,
       child: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 4,
+              ),
+              Text(
+                'Turn Off All Appliances',
+                style: TextStyle(
+                  fontFamily: fonttest==null?changeFont:fonttest,
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.bold,
+                  color: _switchValue ? Colors.white : Colors.black,
+                ),
+              ),
+              SizedBox(
+                width: 14,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4),
+                child: GestureDetector(
+                  child:  Container(
+                    // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                    child: Icon(textSelected==dId.toString()?Icons.update:Icons.sensors),
+                  ),
+
+                  onTap: () async {
+                    print('check123${textSelected}');
+                    deviceSensorValWeb =   getSensorDataWeb(dId);
+                    setState(() {
+                      // textSelected=widget.deviceId.toString();
+                      deviceSensorValWeb =   getSensorDataWeb(dId);
+                    });
+                    // print('check123${textSelected==widget.deviceId.toString()}');
+                    print('_hasBeenPressed ${textSelected}');
+                  },
+                ),
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8),
+              //   child: GestureDetector(
+              //     child: Icon(Icons.schedule),
+              //     onTap: () {
+              //       _createAlertDialogForPinSchedule(context,dId);
+              //       // _createAlertDialogForPin17(context, dId);
+              //     },
+              //   ),
+              // ),
+              Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: statusOfDevice == 1 ? Colors.green : Colors.grey,
+                    shape: BoxShape.circle),
+                // child: ...
+              ),
+              Switch(
+                value: switchOn,
+                //boolean value
+                onChanged: (val) async {
+
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: GestureDetector(
+                  child: Icon(Icons.settings_remote),
+                  onTap: () {
+                    // _createAlertDialogForPin19(context, dId);
+                  },
+                ),
+              ),
+
+            ],
+          ),
           Container(
             height: MediaQuery.of(context).size.height * 1.2,
             // color: Colors.amber,
             child: GridView.count(
                 crossAxisSpacing: 8,
                 childAspectRatio: 2 / 1.8,
-                mainAxisSpacing: 4,
+                mainAxisSpacing: 3,
                 physics: NeverScrollableScrollPhysics(),
                 // shrinkWrap: true,
                 crossAxisCount: 3,
                 children: List.generate(
-                    9,
-                    // responseGetData.length - 3,
+                    // 9,
+                    responseGetDataWeb.length - 3,
                         (index) {
                       print('Something');
                       print('catch return --> $index');
@@ -4047,7 +4215,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                         Expanded(
                                           child: TextButton(
                                             child: Text(
-                                              '$index ',
+                                              nameDataListWeb[index],
+                                              // '$index ',
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
                                               style: TextStyle(fontSize: 10),
@@ -4074,11 +4243,20 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                               vertical: 10
                                           ),
                                           child: Switch(
-                                            // value: responseGetData[index] == 0
-                                            //     ? val2
-                                            //     : val1,
-                                            value: val1,
+                                            value: responseGetDataWeb[index] == 0
+                                                ? val2
+                                                : val1,
+                                            // value: val1,
                                             onChanged: (val) async {
+                                              if (responseGetDataWeb[index] == 0) {
+                                                setState(() {
+                                                  responseGetDataWeb[index] = 1;
+                                                });
+
+                                              } else {
+                                                responseGetDataWeb[index] = 0;
+                                              }
+                                             await dataUpdateWeb(dId);
                                               // setState(() {
                                               //   if (responseGetData[index] ==
                                               //       0) {
@@ -4142,8 +4320,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                   // shrinkWrap: true,
                   crossAxisCount: 2,
                   children: List.generate(
-                      3,
-                      // responseGetData.length - 9,
+                      // 3,
+                      responseGetDataWeb.length - 9,
                           (index) {
                         print('Slider Start');
                         print('catch return --> $catchReturn');
@@ -4272,7 +4450,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                               Expanded(
                                                 child: TextButton(
                                                   child: Text(
-                                                    '$index ',
+                                                    nameDataListWeb[index+9],
+                                                    // '$index ',
                                                     overflow: TextOverflow.ellipsis,
                                                     maxLines: 2,
                                                     style: TextStyle(fontSize: 10),
@@ -4296,10 +4475,10 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                                               Container(
                                                 width: 109,
                                                 child: Slider(
-                                                  value: 5.0,
-                                                  // value: double.parse(
-                                                  //     responseGetData[newIndex - 1]
-                                                  //         .toString()),
+                                                  // value: 5.0,
+                                                  value: double.parse(
+                                                      responseGetDataWeb[newIndex - 1]
+                                                          .toString()),
                                                   min: 0,
                                                   max: 10,
                                                   divisions: 500,
@@ -5602,6 +5781,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           );
         });
   }
+
+
 
 
 

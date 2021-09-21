@@ -10,16 +10,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dropdown2.dart';
 import '../main.dart';
 
-void main()=>runApp(MaterialApp(
-  home:Indicator() ,
-));
+void main() =>
+    runApp(MaterialApp(
+      home: Indicator(),
+    ));
 
 class Indicator extends StatefulWidget {
   var placeName;
   var floorName;
   var flatName;
   var roomName;
-   Indicator({Key key,this.floorName,this.flatName,this.placeName,this.roomName}) : super(key: key);
+
+  Indicator(
+      {Key key, this.floorName, this.flatName, this.placeName, this.roomName})
+      : super(key: key);
 
   @override
   _IndicatorState createState() => _IndicatorState();
@@ -28,8 +32,6 @@ class Indicator extends StatefulWidget {
 
 class _IndicatorState extends State<Indicator> {
   var tokenWeb;
-
-
 
 
   @override
@@ -46,13 +48,8 @@ class _IndicatorState extends State<Indicator> {
   }
 
 
-
-
-
-
-
-  getUid() async{
-    final url=await API+'getuid/';
+  getUid() async {
+    final url = await API + 'getuid/';
     String token = await getToken();
     final response =
     await http.get(url,
@@ -61,36 +58,35 @@ class _IndicatorState extends State<Indicator> {
           'Accept': 'application/json',
           'Authorization': 'Token $token',
         });
-    if(response.statusCode==200){
-      getUidVariable=response.body;
-      getUidVariable2=int.parse(getUidVariable);
+    if (response.statusCode == 200) {
+      getUidVariable = response.body;
+      getUidVariable2 = int.parse(getUidVariable);
 
       print('GetUi Variable Integer-->   ${getUidVariable2}');
-    }else{
+    } else {
       print(response.statusCode);
     }
   }
 
 
-  getTokenWeb()async{
-    final pref= await SharedPreferences.getInstance();
-    tokenWeb=pref.getString('tokenWeb');
+  getTokenWeb() async {
+    final pref = await SharedPreferences.getInstance();
+    tokenWeb = pref.getString('tokenWeb');
   }
 
-  Future<void> checkWebOrNot()async{
-   await getTokenWeb();
-    if(tokenWeb!=null){
+  Future<void> checkWebOrNot() async {
+    await getTokenWeb();
+    if (tokenWeb != null) {
       print('goingtoif');
       getUidWeb().then((value) => allAwaitWeb());
-    }else{
+    } else {
       print('goingtoelse');
       await allAwait();
     }
-
   }
 
-  Future<void> getUidWeb() async{
-    final url=await API+'getuid/';
+  Future<void> getUidWeb() async {
+    final url = await API + 'getuid/';
     final response =
     await http.get(url,
         headers: {
@@ -98,19 +94,15 @@ class _IndicatorState extends State<Indicator> {
           'Accept': 'application/json',
           'Authorization': 'Token $tokenWeb',
         });
-    if(response.statusCode==200){
-      getUidVariable=response.body;
-      getUidVariable2=int.parse(getUidVariable);
+    if (response.statusCode == 200) {
+      getUidVariable = response.body;
+      getUidVariable2 = int.parse(getUidVariable);
 
       print('GetUi Variable Integer-->   ${getUidVariable2}');
-    }else{
+    } else {
       print(response.statusCode);
     }
   }
-
-
-
-
 
 
   var placeResponse;
@@ -121,8 +113,11 @@ class _IndicatorState extends State<Indicator> {
   Future<PlaceType> placeName() async {
     print(getUidVariable2);
     String token = await getToken();
-    final url = API+'addyourplace/';
-    var postData = {"user": getUidVariable2, "p_type": widget.placeName.toString()};
+    final url = API + 'addyourplace/';
+    var postData = {
+      "user": getUidVariable2,
+      "p_type": widget.placeName.toString()
+    };
     final response = await http.post(
       url,
       headers: {
@@ -154,8 +149,12 @@ class _IndicatorState extends State<Indicator> {
 
   Future<PlaceType> placeNameWeb() async {
     print(getUidVariable2);
-    final url = API+'addyourplace/';
-    var postData = {"user": getUidVariable2, "p_type": widget.placeName.toString()};
+    await getTokenWeb();
+    final url = API + 'addyourplace/';
+    var postData = {
+      "user": getUidVariable2,
+      "p_type": widget.placeName.toString()
+    };
     final response = await http.post(
       url,
       headers: {
@@ -186,7 +185,7 @@ class _IndicatorState extends State<Indicator> {
 
   Future<FloorType> sendFloorName() async {
     String token = await getToken();
-    final url = API+'addyourfloor/';
+    final url = API + 'addyourfloor/';
     var postData = {
       "user": getUidVariable2,
       "p_id": placeResponse,
@@ -216,7 +215,8 @@ class _IndicatorState extends State<Indicator> {
 
 
   Future<FloorType> sendFloorNameWeb() async {
-    final url = API+'addyourfloor/';
+    await getTokenWeb();
+    final url = API + 'addyourfloor/';
     var postData = {
       "user": getUidVariable2,
       "p_id": placeResponse,
@@ -247,7 +247,7 @@ class _IndicatorState extends State<Indicator> {
 
   Future<Flat> sendFlatName() async {
     String token = await getToken();
-    final url = API+'addyourflat/';
+    final url = API + 'addyourflat/';
     var postData = {
       "user": getUidVariable2,
       "f_id": floorResponse,
@@ -277,7 +277,8 @@ class _IndicatorState extends State<Indicator> {
 
 
   Future<Flat> sendFlatNameWeb() async {
-    final url = API+'addyourflat/';
+    await getTokenWeb();
+    final url = API + 'addyourflat/';
     var postData = {
       "user": getUidVariable2,
       "f_id": floorResponse,
@@ -307,7 +308,7 @@ class _IndicatorState extends State<Indicator> {
 
   Future<RoomType> sendRoomName() async {
     String token = await getToken();
-    final url = API+'addroom/';
+    final url = API + 'addroom/';
     var postData = {
       "user": getUidVariable2,
       "r_name": widget.roomName.toString(),
@@ -327,14 +328,11 @@ class _IndicatorState extends State<Indicator> {
       print('response.body  ${response.body}');
       roomResponse = jsonDecode(response.body);
       setState(() {
-
         tabbarState = roomResponse;
-        // setRoomValue();
-        // // final  roomResponse2=roomResponse;
-        //   // roomResponsePreference.setInt('r_id', roomResponse2);
       });
       print(' Room- Tabb-> $tabbarState');
       print(' Room- Response-> $roomResponse');
+
       // isVisible=false;
 
       return RoomType.fromJson(postData);
@@ -342,8 +340,10 @@ class _IndicatorState extends State<Indicator> {
       throw Exception('Failed to create Room.');
     }
   }
+  var roomResponseWeb;
   Future<RoomType> sendRoomNameWeb() async {
-    final url = API+'addroom/';
+    await getTokenWeb();
+    final url = API + 'addroom/';
     var postData = {
       "user": getUidVariable2,
       "r_name": widget.roomName.toString(),
@@ -361,16 +361,15 @@ class _IndicatorState extends State<Indicator> {
     if (response.statusCode > 0) {
       print(response.statusCode);
       print('response.body  ${response.body}');
-      roomResponse = jsonDecode(response.body);
+      roomResponseWeb = jsonDecode(response.body);
       setState(() {
-
-        tabbarState = roomResponse;
+         roomResponse;
         // setRoomValue();
         // // final  roomResponse2=roomResponse;
         //   // roomResponsePreference.setInt('r_id', roomResponse2);
       });
-      print(' Room- Tabb-> $tabbarState');
-      print(' Room- Response-> $roomResponse');
+
+      print(' Room- Response-> $roomResponseWeb');
       // isVisible=false;
 
       return RoomType.fromJson(postData);
@@ -379,32 +378,36 @@ class _IndicatorState extends State<Indicator> {
     }
   }
 
-
-  allAwait()async{
+  allAwait() async {
     pt = await placeName();
-    print('After Await  $placeResponse');
+    print('After Await placeResponse $placeResponse');
     fl = await sendFloorName();
+    print('After Await floorResponse $floorResponse');
     flat = await sendFlatName();
+    print('After Await flatResponse $flatResponse');
     rm = [await sendRoomName()];
 
-    Navigator.push(
+    print('After Await roomResponse  $roomResponse');
 
+    Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HomeTest(
-              pt: pt,
-              fl: fl,
-              flat: flat,
-              rm: rm,
-              dv: dv,
-            )));
+            builder: (context) =>
+                HomeTest(
+                  tabbarState:roomResponse ,
+                  pt: pt,
+                  fl: fl,
+                  flat: flat,
+                  rm: rm,
+                  dv: dv,
+
+                )));
   }
 
-  allAwaitWeb()async{
-
+  allAwaitWeb() async {
     PlaceType pt = await placeNameWeb();
     print('After Await  $placeResponse');
-    FloorType  fl = await sendFloorNameWeb();
+    FloorType fl = await sendFloorNameWeb();
     Flat flat = await sendFlatNameWeb();
     List<RoomType> rm = [await sendRoomNameWeb()];
 
@@ -412,48 +415,37 @@ class _IndicatorState extends State<Indicator> {
 
         context,
         MaterialPageRoute(
-            builder: (context) => HomeTest(
-              pt: pt,
-              fl: fl,
-              flat: flat,
-              rm: rm,
-            )));
+            builder: (context) =>
+                HomeTest(
+                  tabbarState: roomResponseWeb,
+                  pt: pt,
+                  fl: fl,
+                  flat: flat,
+                  rm: rm,
+                )));
   }
-
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints viewportConstraints) {
-      if (viewportConstraints.maxWidth > 600) {
-
-        return  Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+        body: Container(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
             decoration: BoxDecoration(
 
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [Colors.blue, Colors.lightBlueAccent])),
-            child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,)));
-      }else{
-        return  Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.blue, Colors.lightBlueAccent])),
-            child: Center(child: CircularProgressIndicator(backgroundColor: Colors.red,)));
-      }
-        }
-
-      ),
+            child: Center(
+                child: CircularProgressIndicator(backgroundColor: Colors.red,)))
     );
   }
 }

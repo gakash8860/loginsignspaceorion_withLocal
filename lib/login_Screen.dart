@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final pref= await SharedPreferences.getInstance();
     pref.setString('tokenWeb', token);
   }
-
+  var token12;
   checkDetailsWeb() async {
     print('email ${emailController.text}');
     print('email ${passwordController.text}');
@@ -161,25 +161,44 @@ class _LoginScreenState extends State<LoginScreen> {
     http.Response response = await  http.post(url, body: map);
 
     print('response.statusCode ${response.statusCode}');
+    print('response.statusCode ${response.body}');
     if (response.statusCode == 200) {
      var tokenAuth=jsonDecode(response.body);
       String token= tokenAuth.toString();
       var index= token.indexOf(':');
-     var token12= token.substring(index+1,token.length-1);
+      token12= token.substring(index+1,token.length-1);
       print('token $index');
       print('token $token12');
       print('token $tokenAuth');
       print('token $tokenAuth');
       setToken(token12);
+      await checkUserPlace(token12);
       // Navigator.of(context).pushNamed('/dropDown1');
-      Navigator.of(context).pushNamed(DropDown1.routeName);
-
+      // Navigator.of(context).pushNamed(DropDown1.routeName);
 
     }else{
       Navigator.of(context).pushNamed(WrongPassword.routeName);
     }
+  }
+List userPlace;
+  Future checkUserPlace(String token)async{
+    final url = API+'addyourplace/';
 
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if(response.statusCode==200){
+      userPlace=jsonDecode(response.body);
+        print('userplace $userPlace');
+        if(userPlace.isEmpty || userPlace.length==null){
+          Navigator.of(context).pushNamed(DropDown1.routeName);
+        }else{
+          Navigator.of(context).pushNamed(DropDown.routeName);
+        }
 
+    }
   }
 
   String validateEmail(String value) {

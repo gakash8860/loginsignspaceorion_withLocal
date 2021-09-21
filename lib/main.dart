@@ -13,6 +13,7 @@ import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
+import 'package:loginsignspaceorion/dropDown.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/signUp.dart';
@@ -33,8 +34,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-// var API = 'http://127.0.0.1:8000/';
-var API = 'https://genorion1.herokuapp.com/';
+var API = 'http://127.0.0.1:8000/';
+// var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
 Box placeBox;
 Box floorBox;
@@ -74,10 +75,10 @@ void main()async {
     debugShowCheckedModeBanner: false,
     home: GettingStartedScreen(),
     routes:{
-      '/dropDown1': (context) => DropDown1(),
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
       DropDown1.routeName:(ctx) => DropDown1(),
+      DropDown.routeName:(ctx) => DropDown(),
       WrongPassword.routeName:(ctx) => WrongPassword(),
       SubAccessSinglePage.routeName:(ctx) => SubAccessSinglePage(),
       TotalUsage.routeName:(ctx) => TotalUsage(),
