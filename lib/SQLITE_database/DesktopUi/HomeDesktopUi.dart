@@ -12,7 +12,9 @@ import 'package:toggle_switch/toggle_switch.dart';
 import '../../ProfilePage.dart';
 import '../../Setting_Page.dart';
 import '../../changeFont.dart';
+import '../../dropdown1.dart';
 import '../../main.dart';
+import '../../setting_icons.dart';
 import '../testinghome2.dart';
 
 
@@ -111,6 +113,13 @@ class _DesktopHomeState extends State<DesktopHome> {
 
   Future flatVal;
 
+  Future floorValWeb;
+
+
+
+
+
+
   addDeviceName(index) {
     names.add("");
     names.add("");
@@ -126,6 +135,9 @@ class _DesktopHomeState extends State<DesktopHome> {
   TextEditingController textEditingController = TextEditingController();
   TextEditingController deviceNameEditing = TextEditingController();
   TextEditingController roomEditing = TextEditingController();
+  TextEditingController roomNameEditing = TextEditingController();
+  TextEditingController flatNameEditing = TextEditingController();
+  TextEditingController flatEditing = TextEditingController();
   TextEditingController floorEditing = TextEditingController();
   TextEditingController deviceController = TextEditingController();
   int switch_1 = 0,
@@ -160,7 +172,7 @@ class _DesktopHomeState extends State<DesktopHome> {
   @override
   void initState(){
     super.initState();
-
+    getUid();
     print('tabbbass147as4s4 ${widget.tabbarState}');
   }
 
@@ -242,55 +254,7 @@ class _DesktopHomeState extends State<DesktopHome> {
       throw Exception('Failed to load album');
     }
   }
-  dataUpdate(String dId) async {
-    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
-    String token = await getToken();
-    Map data = {
-      'put': 'yes',
-      "d_id": dId,
-      'pin1Status': responseGetData[0],
-      'pin2Status': responseGetData[1],
-      'pin3Status': responseGetData[2],
-      'pin4Status': responseGetData[3],
-      'pin5Status': responseGetData[4],
-      'pin6Status': responseGetData[5],
-      'pin7Status': responseGetData[6],
-      'pin8Status': responseGetData[7],
-      'pin9Status': responseGetData[8],
-      'pin10Status': responseGetData[9],
-      'pin11Status': responseGetData[10],
-      'pin12Status': responseGetData[11],
-      // 'pin13Status': m,
-      // 'pin14Status': n,
-      // 'pin15Status': o,
-      // 'pin16Status': p,
-      // 'pin17Status': q,
-      // 'pin18Status': r,
-      // 'pin19Status': s,
-      // 'pin20Status': t
-    };
-    http.Response response =
-    await http.post(url, body: jsonEncode(data), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 201) {
-      print("Data Updated  ${response.body}");
-      // print(switch_1);
-      // print(switch_2);
 
-      print('Switch 1 --> $switch_1');
-      print('Switch 2 --> $switch_2');
-      print('Switch 3 --> $switch_3');
-      print('Switch 4 --> $switch_4');
-
-      //jsonDecode only for get method
-      //return place_type.fromJson(jsonDecode(response.body));
-    } else {
-      print(response.statusCode);
-      throw Exception('Failed to Update data');
-    }
-  }
 
 
   void onOffSchedule() {
@@ -441,7 +405,6 @@ class _DesktopHomeState extends State<DesktopHome> {
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -546,7 +509,7 @@ var tokenWeb;
       print('responseif ${response.statusCode}');
       print('responseif ${response.body}');
       List<dynamic> data = jsonDecode(response.body);
-      List <RoomType> rm = data.map((data) => RoomType.fromJson(data)).toList();
+       widget.rm = data.map((data) => RoomType.fromJson(data)).toList();
       print('rooms147 ${widget.rm[0].rId}');
       return rm;
     }else{
@@ -1049,6 +1012,52 @@ Flat selectedflat;
   }
 
 bool switchOn;
+  dataUpdateWeb(String dId) async {
+    await getTokenWeb();
+    final String url =
+        API+'getpostdevicePinStatus/?d_id=' + dId;
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseGetData[0],
+      'pin2Status': responseGetData[1],
+      'pin3Status': responseGetData[2],
+      'pin4Status': responseGetData[3],
+      'pin5Status': responseGetData[4],
+      'pin6Status': responseGetData[5],
+      'pin7Status': responseGetData[6],
+      'pin8Status': responseGetData[7],
+      'pin9Status': responseGetData[8],
+      'pin10Status': responseGetData[9],
+      'pin11Status': responseGetData[10],
+      'pin12Status': responseGetData[11],
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': q,
+      // 'pin18Status': r,
+      // 'pin19Status': s,
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+      // print(switch_1);
+      // print(switch_2);
+
+
+      await getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
   deviceContainer(String dId,int index) async {
     catchReturn = await getData(dId);
     print('insidedevicecontainercatchreturn $catchReturn');
@@ -1350,22 +1359,32 @@ var textSelected;
                                         vertical: 10
                                       ),
                                       child: Switch(
-                                        // value: responseGetData[index] == 0
-                                        //     ? val2
-                                        //     : val1,
-                                        value: val1,
+                                        value: responseGetData[index] == 0
+                                            ? val2
+                                            : val1,
+                                        // value: val1,
                                         onChanged: (val) async {
-                                          setState(() {
-                                            if (responseGetData[index] ==
-                                                0) {
-                                              responseGetData[index] = 1;
-                                            } else {
-                                              responseGetData[index] = 0;
-                                            }
+                                          if (responseGetData[index] == 0) {
+                                            setState(() {
 
-                                            // print('index of $index --> ${listDynamic[index]}');
+
+                                              responseGetData[index] = 1;                                              // print('index of $index --> ${listDynamic[index]}');
+                                            });
+                                            responseGetData[index] = 1;
+                                          } else {
+                                            setState(() {
+
+
+                                              responseGetData[index] = 0;                                              // print('index of $index --> ${listDynamic[index]}');
+                                            });
+                                            responseGetData[index] = 0;
+                                          }
+                                          setState(() {
+
+
+                                            print('index of update $index --> ${responseGetData[index]}');
                                           });
-                                         await dataUpdate(dId);
+                                         await dataUpdateWeb(dId);
 
                                           // if Internet is not available then _checkInternetConnectivity = true
                                           // var result = await Connectivity()
@@ -1396,7 +1415,7 @@ var textSelected;
                                         onTap:(){
                                           // _createAlertDialogForlocalUpdateAndMessage(context,dId);
                                         },
-                                        child: Icon(changeIcon[index]==null?Icons.add:changeIcon[index],size: 25,)),
+                                        child: Icon(changeIcon[index]==null?null:changeIcon[index],size: 25,)),
                                   ],
                                 ),
 
@@ -1594,14 +1613,10 @@ var textSelected;
                                                 //   responseGetData[newIndex-1] = widget.Slider_get.round();
                                                 // }
 
-                                                print(
-                                                    "Round-->  ${newValue.round()}");
-                                                var roundVar =
-                                                    newValue.round();
-                                                print(
-                                                    "Round 2-->  $roundVar");
-                                                responseGetData[
-                                                    newIndex - 1] = roundVar;
+                                                print("Round-->  ${newValue.round()}");
+                                                var roundVar = newValue.round();
+                                                print("Round 2-->  $roundVar");
+                                                responseGetData[newIndex - 1] = roundVar;
                                                 print(
                                                     "Response Round-->  ${responseGetData[newIndex - 1]}");
                                               });
@@ -1664,6 +1679,1426 @@ var textSelected;
 
 
       return widget.dv;
+    }
+  }
+
+  getUid() async{
+    final url=await API+'getuid/';
+    await getTokenWeb();
+    final response =
+    await http.get(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $tokenWeb',
+        });
+    if(response.statusCode==200){
+      getUidVariable=response.body;
+      getUidVariable2=int.parse(getUidVariable);
+
+      print('GetUi Variable Integer-->   ${getUidVariable2}');
+    }else{
+      print(response.statusCode);
+    }
+  }
+
+var flatResponse;
+  Future<List<Flat>> getflatWeb(String fId) async {
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      print(flatData);
+      return flatData;
+    }
+  }
+
+  Future<RoomType> addRoom(String data) async {
+
+    print('floorwidgetid ${widget.flt.fltId}');
+    print('floorwidgetid ${getUidVariable2}');
+    final url = API+'addroom/';
+    await getTokenWeb();
+    var postData = {
+      "user": getUidVariable2,
+      "r_name": data,
+      "flt_id": widget.flt.fltId,
+
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        tabbarState = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Room Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        await getrooms(widget.flt.fltId);
+      }
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+  Future<Flat> addFlat(String data) async {
+    print('floorwidgetid ${widget.fl.fId}');
+    final url = API+'addyourflat/';
+     await getTokenWeb();
+    var postData = {
+      "user": getUidVariable2,
+      "flt_name": data,
+      "f_id": widget.fl.fId,
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        flatResponse = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Flat Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        // getAllRoom();
+      }
+
+      // setState(() {
+      //   roomResponse2=roomResponse;
+      //   // roomResponsePreference.setInt('r_id', roomResponse2);
+      // });
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+  Future<RoomType> addRoom2(String data) async {
+
+    print('floorwidgetid ${widget.flt.fltId}');
+    print('floorwidgetid ${getUidVariable2}');
+    final url = API+'addroom/';
+    await getTokenWeb();
+    var postData = {
+      "user": getUidVariable2,
+      "r_name": data,
+      "flt_id": flatResponse,
+
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        tabbarState = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Room Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        await getrooms(widget.flt.fltId);
+      }
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+  _createAlertDialogForAddRoom(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Name of Room'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                TextFormField(
+                  autofocus: true,
+                  controller: roomEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Room Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      print('addddd');
+                      await addRoom(roomEditing.text);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
+  List listOfAllFloor;
+  List listOfAllFlat;
+  Future<List<Flat>> getflatWebForDropDown(String fId) async {
+    print('asasdasdsa ${widget.fl.fId}');
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+       listOfAllFlat=data;
+       print('checklendehe ${listOfAllFlat}');
+      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      print(flatData.length);
+      return flatData;
+    }
+  }
+  Future<List<FloorType>> getfloorsWeb(String pId) async {
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      listOfAllFloor=data;
+      List<FloorType> floors = data.map((data) => FloorType.fromJson(data))
+          .toList();
+      print(floors);
+      return floors;
+    }
+  }
+Future flatValWeb;
+  _createAlertDialogDropDownFlat(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Change Flat'),
+            content: Container(
+              height: 250,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                       child: FutureBuilder<List<Flat>>(
+                            future: flatValWeb,
+                            builder:
+                                (context, AsyncSnapshot<List<Flat>> snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Center(
+                                      child: Text("No Devices on this place"));
+                                }
+                                return Column(
+                                  children: [
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(41.0),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 50.0,
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width*2,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [BoxShadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 30,
+                                                    // offset for Upward Effect
+                                                    offset: Offset(20,20)
+                                                )],
+                                                border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 0.5,
+                                                )
+                                            ),
+                                            child: DropdownButtonFormField<Flat>(
+                                              decoration:InputDecoration(
+                                                contentPadding: const EdgeInsets.all(15),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.white),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.white),
+                                                borderRadius: BorderRadius.circular(50),
+                                              ),
+                                              ),
+                                              dropdownColor: Colors.white70,
+                                              icon: Icon(Icons.arrow_drop_down),
+                                              iconSize: 28,
+                                              hint: Text('Select Floor'),
+                                              isExpanded: true,
+                                              value: flt,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              items: snapshot.data
+                                                  .map((selectedFlat) {
+                                                return DropdownMenuItem<Flat>(
+                                                  value: selectedFlat,
+                                                  child: Text(selectedFlat.fltName),
+                                                );
+                                              }).toList(),
+                                              onChanged: (Flat selectedFlat) {
+                                                setState(() {
+                                                  selectedflat=selectedFlat;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      margin: new EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+
+                                  ],
+                                );
+                              } else {
+                                return Center(
+                                    child: Text(
+                                        "Please select a place to proceed further"));
+                              }
+                            }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(8),
+                // ignore: deprecated_member_use
+                child: FlatButton(
+                  child: Text(
+                    'Next',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(12),
+                  shape: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.black54, width: 1),
+                      borderRadius:
+                      BorderRadius.circular(50)),
+                  onPressed: () async {
+
+                    selectedRoom = await getrooms(widget.flt.fltId);
+
+
+                    //print(pt.p_type);
+                    // print(rm[1]);
+                    //  print(rm[0].r_name);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (
+                              context,
+                              ) =>
+                              Container(
+                                child: HomeTest(
+                                    pt: widget.pt,
+                                    fl: widget.fl,
+                                    flat: selectedflat,
+                                    rm: selectedRoom,
+                                    dv: dv),
+                              )),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  _createAlertDialogForDeleteFlatAndAddFlat(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Text(
+                      'Add Flat',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _createAlertDialogForFlat(context);
+
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Delete Flat',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () async{
+                      await getflatWebForDropDown(widget.fl.fId);
+                      deleteFlatOption(context);
+
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Edit Flat Name',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _editFlatNameAlertDialog(context);
+
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+  _createAlertDialogForFlat(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Name of Flat'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                TextFormField(
+                  autofocus: true,
+                  controller: flatEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Flat Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autofocus: true,
+                  controller: roomEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Room Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await addFlat(flatEditing.text);
+                      await addRoom2(roomEditing.text);
+                      //   Navigator.of(context).push(
+                      //       MaterialPageRoute(builder: (context) => DropDown2()));
+                      Navigator.of(context).pop();
+                      final snackBar = SnackBar(
+                        content: Text('Floor Added'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+  _editFlatNameAlertDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Enter Flat Name"),
+            content: TextField(
+              controller: flatNameEditing,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+                    await addFlatName(flatNameEditing.text);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+  Future<FloorType> addFlatName(String data) async {
+    await getTokenWeb();
+    final url = API+'addyourflat/';
+    var postDataFlatName = {
+      "flt_id": widget.flt.fltId,
+      "flt_name": data,
+      "user": getUidVariable2,
+    };
+    final response = await http.put(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postDataFlatName),
+    );
+
+    if (response.statusCode > 0) {
+      print('FlatResposne ${response.statusCode}');
+      print(response.body);
+
+      var flatResponse = jsonDecode(response.body);
+      setState(() {
+        widget.flt.fltName = postDataFlatName['flt_name'];
+      });
+      print(' Flat Response--> $flatResponse');
+// pt.pType=;
+      print(' FlatName--> ${postDataFlatName['flt_name']}');
+
+      // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
+      // placeResponsePreference.setInt('p_id', placeResponse);
+
+      return FloorType.fromJson(postDataFlatName);
+    } else {
+      throw Exception('Failed to create Floor.');
+    }
+  }
+  Future<void> deleteFlat(String flt_Id) async {
+    await getTokenWeb();
+    final url = API+'addyourflat/?flt_id=' + flt_Id;
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+      print('deleteFlat ${response.body}');
+      final snackBar = SnackBar(
+        content: Text('Flat Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+  alertDialogExistingFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Oops',),
+            content: Container(
+              color: Colors.blueGrey,
+              child: MaterialButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ),
+          );
+        }
+    );
+  }
+
+    deleteFlatOption(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Select Flat'),
+            content: Container(
+              color: Colors.amber,
+              width: 78,
+              child: ListView.builder(
+                  itemCount: listOfAllFlat.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      color: Colors.blueGrey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          semanticContainer: true,
+                          shadowColor: Colors.grey,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(listOfAllFlat[index]['flt_name']),
+                              ),
+                              RaisedButton(
+                                child: Text('Delete Floor'),
+                                onPressed: () {
+                                  print(listOfAllFlat[index]['flt_id']);
+                                  var selectedFlat = listOfAllFlat[index]['flt_id']
+                                      .toString();
+                                  var flatId = widget.flt.fltId.toString();
+                                  if (flatId.contains(selectedFlat)) {
+                                    alertDialogExistingFloor(context);
+                                  }
+                                  deleteFlat(listOfAllFlat[index]['flt_id']);
+                                  Navigator.pop(context);
+                                  // deleteFloor(listOfAllFloor[index]['f_id']);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          );
+        }
+    );
+  }
+  _editRoomNameAlertDialog(BuildContext context,index) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Enter Room Name"),
+            content: TextField(
+              controller: roomNameEditing,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+                    await addRoomName(roomNameEditing.text,index);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+  _createAlertDialogDropDownFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Change Place'),
+            content: Container(
+              height: 390,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+
+                    SizedBox(
+                      height: 30,
+                    ),
+                    FutureBuilder<List<FloorType>>(
+                        future: floorValWeb,
+                        builder:
+                            (context, AsyncSnapshot<List<FloorType>> snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data.length == 0) {
+                              return Center(
+                                  child: Text("No Devices on this place"));
+                            }
+                            return Column(
+                              children: [
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(41.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 50.0,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width*2,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                // offset for Upward Effect
+                                                offset: Offset(20,20)
+                                            )],
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 0.5,
+                                            )
+                                        ),
+                                        child: DropdownButtonFormField<FloorType>(
+                                          decoration:InputDecoration(
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                          ),
+                                          dropdownColor: Colors.white70,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 28,
+                                          hint: Text('Select Floor'),
+                                          isExpanded: true,
+                                          value: fl,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          items: snapshot.data
+                                              .map((selectedFloor) {
+                                            return DropdownMenuItem<FloorType>(
+                                              value: selectedFloor,
+                                              child: Text(selectedFloor.fName),
+                                            );
+                                          }).toList(),
+                                          onChanged: (FloorType selectedFloor) {
+                                            setState(() {
+                                              selectedfl = selectedFloor;
+                                              flatValWeb=getflatWeb(selectedFloor.fId);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  margin: new EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                              ],
+                            );
+                          } else {
+                            return Center(
+                                child: Text(
+                                    "Please select a place to proceed further"));
+                          }
+                        }),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    FutureBuilder<List<Flat>>(
+                        future: flatValWeb,
+                        builder:
+                            (context, AsyncSnapshot<List<Flat>> snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data.length == 0) {
+                              return Center(
+                                  child: Text("No Devices on this place"));
+                            }
+                            return Column(
+                              children: [
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(41.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 50.0,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width*2,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                // offset for Upward Effect
+                                                offset: Offset(20,20)
+                                            )],
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 0.5,
+                                            )
+                                        ),
+                                        child: DropdownButtonFormField<Flat>(
+                                          decoration:InputDecoration(
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                          ),
+                                          dropdownColor: Colors.white70,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 28,
+                                          hint: Text('Select Floor'),
+                                          isExpanded: true,
+                                          value: flt,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          items: snapshot.data
+                                              .map((selectedFlat) {
+                                            return DropdownMenuItem<Flat>(
+                                              value: selectedFlat,
+                                              child: Text(selectedFlat.fltName),
+                                            );
+                                          }).toList(),
+                                          onChanged: (Flat selectedFlat) {
+                                            setState(() {
+                                              selectedflat=selectedFlat;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  margin: new EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Center(
+                                child: Text(
+                                    "Please select a place to proceed further"));
+                          }
+                        }),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(8),
+                // ignore: deprecated_member_use
+                child: FlatButton(
+                  child: Text(
+                    'Next',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(12),
+                  shape: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.white, width: 1),
+                      borderRadius:
+                      BorderRadius.circular(50)),
+                  onPressed: () async {
+                    selectedRoom = await getrooms(widget.flt.fltId);
+
+
+                    //print(pt.p_type);
+                    // print(rm[1]);
+                    //  print(rm[0].r_name);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (
+                              context,
+                              ) =>
+                              Container(
+                                child: HomeTest(
+                                    pt: widget.pt,
+                                    fl: selectedfl,
+                                    flat: selectedflat,
+                                    rm: selectedRoom,
+                                    dv: dv),
+                              )),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        });
+  }
+  _createAlertDialogForDeleteFloorAndAddFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One For Floor',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              // height: MediaQuery
+              //     .of(context)
+              //     .size
+              //     .height - 120,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Add Floor',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _createAlertDialogForFloor(context);
+
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Delete Floor',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: ()async  {
+                      await getfloorsWeb(widget.pt.pId);
+                      deleteFloorOption(context);
+                    },
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 54,),
+                        Text(
+                          'Edit Floor Name',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      // _editFloorNameAlertDialog(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
+  _createAlertDialogForFloor(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Enter the Name of Floor'),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // Image.asset(
+                //   'assets/images/signin.png',
+                //   height: 130,
+                // ),
+                SizedBox(
+                  height: 15,
+                ),
+
+                TextFormField(
+                  autofocus: true,
+                  controller: floorEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Floor Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autofocus: true,
+                  controller: flatEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Flat Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autofocus: true,
+                  controller: roomEditing,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.place),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Enter Room Name',
+                    contentPadding: const EdgeInsets.all(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MaterialButton(
+                    elevation: 5.0,
+                    child: Text('Submit'),
+                    onPressed: () async {
+                      await addFloor(floorEditing.text);
+                      await addFlat2(flatEditing.text);
+                      await addRoom2(roomEditing.text);
+
+                      Navigator.of(context).pop();
+                      final snackBar = SnackBar(
+                        content: Text('Floor Added'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+  deleteFloorOption(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Select Floor'),
+            content: Container(
+              color: Colors.amber,
+              width: 78,
+              child: ListView.builder(
+                  itemCount: listOfAllFloor.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      color: Colors.blueGrey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          semanticContainer: true,
+                          shadowColor: Colors.grey,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(listOfAllFloor[index]['f_name']),
+                              ),
+                              RaisedButton(
+                                child: Text('Delete Floor'),
+                                onPressed: () async {
+
+                                  var floorId = widget.fl.fId.toString();
+                                  var selectDelete = listOfAllFloor[index]['f_id']
+                                      .toString();
+                                  if (floorId.contains(selectDelete)) {
+                                    print('true');
+                                    alertDialogExistingFloor(context);
+                                  }
+                                  deleteFloor(listOfAllFloor[index]['f_id'].toString());
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          );
+        }
+    );
+  }
+  Future<void> deleteFloor(String fId) async {
+     await getTokenWeb();
+    final url = API+'addyourfloor/?f_id=' + fId;
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+      print('deleteFloor ${response.body}');
+      final snackBar = SnackBar(
+        content: Text('Floor Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  var floorResponse;
+  Future<void> addFloor(String data) async {
+    await getTokenWeb();
+    final url = API+'addyourfloor/';
+    var postData = {
+      "user": getUidVariable,
+      "p_id": widget.pt.pId,
+      "f_name": data
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      floorResponse = jsonDecode(response.body);
+      print(' Floor--> $floorResponse');
+    } else {
+      throw Exception('Failed to create Floor.');
+    }
+  }
+  Future<void> addFlat2(String data) async {
+    print('floorwidgetid ${widget.fl.fId}');
+    final url = API+'addyourflat/';
+    await getTokenWeb();
+    var postData = {
+      "user": getUidVariable2,
+      "flt_name": data,
+      "f_id": floorResponse,
+    };
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postData),
+    );
+    if (response.statusCode > 0) {
+      print("body");
+      print(response.statusCode);
+      print('  Flat Created ${response.body}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        flatResponse = jsonDecode(response.body);
+
+        final snackBar = SnackBar(
+          content: Text('Flat Added'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      }
+      print(' RoomTabs--> $tabbarState');
+
+      // return RoomType.fromJson(postData);
+    } else {
+      throw Exception('Failed to create Room.');
+    }
+  }
+
+  _createAlertDialogForAddRoomDeleteDevices(BuildContext context, String rId,int index) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Choose One',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Container(
+              height: 90,
+              child: Column(
+                children: [
+                  TextButton(
+                    child: Text(
+                      'Edit Room Name',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _editRoomNameAlertDialog(context,index);
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Delete Room',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      _showDialogForDeleteRoomWithAllDevices(rId);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          );
+        });
+  }
+
+  _showDialogForDeleteRoomWithAllDevices(String rId) {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Alert"),
+            content: Text("Are your sure to delete room with all devices"),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () async {
+                    print('rid ${rId}');
+
+                    // await deleteRoomWithAllDevice(rId);
+                    Navigator.pop(context);
+                  }
+              ),
+              // ignore: deprecated_member_use
+              FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          ),
+    );
+  }
+
+  Future<void> deleteRoomWithAllDevice(String rId) async {
+    await getTokenWeb();
+    final url = API+'addroom/?r_id=' + rId;
+    final response = await http.delete(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+      print('delete ${response.body}');
+      final snackBar = SnackBar(
+        content: Text('Device Deleted'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      await getrooms(widget.flt.fltId);
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Something went wrong'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<RoomType> addRoomName(String data,int index) async {
+    await getTokenWeb();
+    final url = API+'addroom/';
+    print(rIdForName);
+    var postDataRoomName = {
+      "r_id": rIdForName,
+      "f_id": widget.fl.fId,
+      "r_name": data,
+      "user": getUidVariable2,
+    };
+    final response = await http.put(
+      url,
+      headers: {
+        'Authorization': 'Token $tokenWeb',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postDataRoomName),
+    );
+
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      // print(response.body);
+
+      var roomResponse = jsonDecode(response.body);
+      setState(() {
+        widget.rm[index].rName = postDataRoomName['r_name'];
+      });
+      print(' Room Response--> $roomResponse');
+      print(' RoomName--> ${postDataRoomName['r_name'].toString()}');
+
+      // DatabaseHelper.databaseHelper.insertPlaceData(PlaceType.fromJson(postData));
+      // placeResponsePreference.setInt('p_id', placeResponse);
+
+      return RoomType.fromJson(postDataRoomName);
+    } else {
+      throw Exception('Failed to create Room.');
     }
   }
   @override
@@ -1753,10 +3188,7 @@ var textSelected;
                                                         // fontStyle: FontStyle.italic
                                                     ),),
                                                   Text(
-                                                    widget.fl.fName.toString(),
-                                                    // getFloorData[0]['f_name'].toString(),
-                                                    // 'Floor 1 ',
-                                                    // + widget.fl.user.first_name,
+                                                    widget.fl.fId.toString(),
                                                     style: TextStyle(
                                                         color: Colors
                                                             .white,
@@ -1767,8 +3199,19 @@ var textSelected;
                                                         //     .italic
                                                     ),
                                                   ),
-                                                  Icon(Icons.arrow_drop_down),
+                                                  InkWell(
+                                                      onTap: ()async{
+                                                        floorValWeb= getfloorsWeb(widget.pt.pId);
+                                                        _createAlertDialogDropDownFloor(context);
+                                                      },
+                                                      child: Icon(Icons.arrow_drop_down)),
                                                   SizedBox(width: 10,),
+                                                  InkWell(
+                                                    child: Icon(SettingIcon.params,size: 18,),
+                                                    onTap: () async {
+                                                      _createAlertDialogForDeleteFloorAndAddFloor(context);
+                                                    },
+                                                  )
                                                 ],
                                               ),
                                             ),
@@ -1778,89 +3221,78 @@ var textSelected;
                                             //     context);
                                           },
                                         ),
-                                        // SizedBox(width: 10,),
-                                        // // GestureDetector(
-                                        // //   child: Icon(Icons.add),
-                                        // //   onTap: () async {
-                                        // //
-                                        // //     // _createAlertDialogForFloor(context);
-                                        // //   },
-                                        // // )
                                       ],
                                     ),
-                                    // SizedBox(
-                                    //   height: 12,
-                                    // ),
 
                                     Row(
                                       children: <Widget>[
-                                        GestureDetector(
-                                          onLongPress: () {
+                                        Row(
+                                          children: [
 
-                                          },
-                                          child: Row(
-                                            children: [
+                                            Text('Flat - ', style: TextStyle(
+                                                  color: Colors
+                                                      .white,
+                                                  fontWeight: FontWeight
+                                                      .bold,
 
-                                              Text('Flat - ', style: TextStyle(
-                                                    color: Colors
-                                                        .white,
-                                                    fontWeight: FontWeight
-                                                        .bold,
+                                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                                  fontSize: 22),),
 
-                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                    fontSize: 22),),
-
-                                              Text(
-                                                widget.flt.fltName.toString(),
-                                                // getFlatData[0]['flt_name'].toString(),
-                                                // 'Flat 1 ',
-                                                // + widget.fl.user.first_name,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white,
-                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                    // fontWeight: FontWeight.bold,
-                                                    // fontStyle: FontStyle
-                                                    //     .italic,
-                                                    fontSize: 22),
-                                              ),
-                                              Icon(Icons
+                                            Text(
+                                              widget.flt.fltName.toString(),
+                                              style: TextStyle(
+                                                  color: Colors
+                                                      .white,
+                                                  fontFamily: fonttest==null?changeFont:fonttest,
+                                                  // fontWeight: FontWeight.bold,
+                                                  // fontStyle: FontStyle
+                                                  //     .italic,
+                                                  fontSize: 22),
+                                            ),
+                                            InkWell(
+                                              onTap: (){
+                                                flatValWeb=getflatWebForDropDown(widget.fl.fId);
+                                                _createAlertDialogDropDownFlat(context);},
+                                              child: Icon(Icons
                                                   .arrow_drop_down),
-                                              SizedBox(width: 250,),
-                                              Row(
-                                                children: [
-                                                  SizedBox(width: 28,),
-                                                  Container(
-                                                    // color:Colors.red,
-                                                    child: CircularProfileAvatar(
-                                                      '',
-                                                      child: setImage == null
-                                                          ? Image.asset('assets/images/genLogo.png')
-                                                          : setImage,
-                                                      radius: 47.5,
-                                                      // elevation: 5,
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    ProfilePage()));
-                                                        //     .then((value) =>
-                                                        // loadImageFromPreferences()
-                                                        //     ? _deleteImage()
-                                                        //     : loadImageFromPreferences());
-                                                      },
-                                                      cacheImage: true,
-                                                    ),
+                                            ),
+                                            SizedBox(width: 10,),
+                                            InkWell(
+                                              onTap: () async {
+                                                _createAlertDialogForDeleteFlatAndAddFlat(
+                                                    context);
+                                              },
+                                              child: Icon(SettingIcon.params,size: 18,),
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(width: 28,),
+                                                Container(
+                                                  // color:Colors.red,
+                                                  child: CircularProfileAvatar(
+                                                    '',
+                                                    child: setImage == null
+                                                        ? Image.asset('assets/images/genLogo.png')
+                                                        : setImage,
+                                                    radius: 47.5,
+                                                    // elevation: 5,
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfilePage()));
+                                                      //     .then((value) =>
+                                                      // loadImageFromPreferences()
+                                                      //     ? _deleteImage()
+                                                      //     : loadImageFromPreferences());
+                                                    },
+                                                    cacheImage: true,
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          onTap: () {
-                                            // _createAlertDialogDropDown(
-                                            //     context);
-                                          },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(width: 35),
                                         // GestureDetector(
@@ -2062,15 +3494,18 @@ var textSelected;
                                     Icons.add,
                                     color: Colors.black,
                                   ),
-                                  onTap: () {
-                                    // _createAlertDialogForAddRoom(context);
+                                  onTap: () async{
+                                    await    getUid();
+                                    _createAlertDialogForAddRoom(context);
                                   },
                                 ),
                               ),
-                              GestureDetector(
+                              InkWell(
                                 onLongPress: () {
                                   print('longPress');
-                                  // _editRoomNameAlertDialog(context);
+                                  print(widget.rm[index].rId);
+                                  print(widget.rm[index].rName);
+                                  _createAlertDialogForAddRoomDeleteDevices(context,widget.rm[index].rId,index);
                                 },
                                 child: TabBar(
                                   indicatorColor: Colors.blueAccent,
@@ -2092,6 +3527,7 @@ var textSelected;
                                         tabbarStateWeb = widget.tabbarState;
                                       });
                                       await getDevices(tabbarStateWeb);
+                                      await getrooms(widget.flt.fltId);
                                     }else{
 
 
@@ -2104,11 +3540,12 @@ var textSelected;
                                       print('qwedsaxcfr ${widget.rm[index].fltId}');
                                       print('qwedsaxcfr ${widget.rm[index].user}');
                                       print('flat ${widget.flt.fltId}');
-
+                                      await getrooms(widget.flt.fltId);
                                       await getDevices(tabbarStateWeb);
                                     }
 
                                   },
+
                                 ),
                               ),
                             ],
@@ -2177,6 +3614,7 @@ var textSelected;
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
         onPressed: () {
+          print('Add Device-->  $tabbarStateWeb');
           _createAlertDialog(context);
           setState(() {
             // i++;

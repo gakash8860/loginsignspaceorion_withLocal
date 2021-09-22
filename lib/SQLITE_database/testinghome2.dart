@@ -1518,7 +1518,6 @@ var tokenWeb;
     _createAlertDialogDropDownFlat(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Change Flat'),
@@ -3071,7 +3070,6 @@ String piname;
   deleteFlatOption(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Select Flat'),

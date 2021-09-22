@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccessmodels.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Setting_Page.dart';
 import '../changeFont.dart';
 import '../main.dart';
@@ -96,6 +97,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   var textSelected;
 
   List responseGetData;
+  List responseGetDataWeb;
 
   List deviceStatus;
 
@@ -112,10 +114,15 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
   Future flatVal;
 
   bool switchOn;
+
+  List<String> namesDataListWeb;
+
+  Future deviceSensorValWeb;
   @override
   void initState() {
     super.initState();
     getPlaceName();
+    getPlaceNameWeb();
   }
 
   var placeName;
@@ -448,7 +455,13 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
           );
         });
   }
+  var tokenWeb;
 
+  Future getTokenWeb() async {
+    final pref = await SharedPreferences.getInstance();
+    tokenWeb = pref.getString('tokenWeb');
+    return tokenWeb;
+  }
 
 
 
@@ -479,6 +492,37 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
     }
     getFloorForTempUser();
   }
+
+  Future getPlaceNameWeb() async {
+   await getTokenWeb();
+    final url = API+'getyouplacename/?p_id=' +
+        widget.placeId.toString();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode > 0) {
+      print("GetPlaceName  ${response.statusCode}");
+      print("GetPlaceNameResponseBody  ${response.body}");
+      List<dynamic> data = jsonDecode(response.body);
+
+      var placeData = jsonDecode(response.body);
+
+      print('widgetPlace ${widget.tempPlace}');
+      place =
+          data.map((data) => TempAccessPlace.fromJson(data)).toList();
+      setState(() {
+        place =
+            data.map((data) => TempAccessPlace.fromJson(data)).toList();
+        placeName = placeData[0]["p_type"];
+      });
+    }
+    getFloorForTempUserWeb();
+  }
+
+
+
   Future getFloorForTempUser() async {
     final url =
         API+'getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
@@ -501,6 +545,32 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
           });
 
         getFlatForTempUser();
+      }
+    }
+  }
+  Future getFloorForTempUserWeb() async {
+    await getTokenWeb();
+    final url =
+        API+'getallfloorsbyonlyplaceidp_id/?p_id=' + widget.placeId.toString();
+
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode > 0) {
+      print('floorSubUser ${response.statusCode}');
+      print('floorSubUser ${response.body}');
+
+      if (response.statusCode == 200) {
+        List floorData = jsonDecode(response.body);
+        print('floorSubUser ${floorData}');
+        List<dynamic> data = jsonDecode(response.body);
+          setState(() {
+            floor = data.map((data) => TempAccessFloor.fromJson(data)).toList();
+          });
+
+        getFlatForTempUserWeb();
       }
     }
   }
@@ -527,6 +597,28 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
         getRoomForTempUser();
       }
   }
+  Future getFlatForTempUserWeb() async {
+      await getTokenWeb();
+      final url =
+          API+'getallflatbyonlyflooridf_id/?f_id=' + floor[0].fId.toString();
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $tokenWeb',
+      });
+      if (response.statusCode > 0) {
+        print('flatSubUser ${response.statusCode}');
+        print('flatSubUser ${response.body}');
+          if(response.statusCode==200){
+            List<dynamic> data = jsonDecode(response.body);
+            setState(() {
+              flat = data.map((data) => TempAccessFlat.fromJson(data)).toList();
+            });
+          }
+        getRoomForTempUserWeb();
+      }
+  }
 
   Future getRoomForTempUser() async {
       final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
@@ -535,6 +627,28 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('RoomSubUser ${response.statusCode}');
+        print('RoomSubUser ${response.body}');
+        if(response.statusCode==200){
+          List<dynamic> data = jsonDecode(response.body);
+          setState(() {
+            room = data.map((data) => TempAccessRoom.fromJson(data)).toList();
+          });
+          // getDeviceForTempUser();
+        }
+
+    }
+  }
+  Future getRoomForTempUserWeb() async {
+    await getTokenWeb();
+      final url = API+'getallroomsbyonlyflooridf_id/?flt_id=' + flat[0].fltId;
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $tokenWeb',
       });
       if (response.statusCode > 0) {
         print('RoomSubUser ${response.statusCode}');
@@ -558,6 +672,30 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
+      });
+      if (response.statusCode > 0) {
+        print('deviceGetSubUser ${response.statusCode}');
+        print('deviceGetSubUser ${response.body}');
+        if(response.statusCode==200){
+          List<dynamic> data = jsonDecode(response.body);
+          setState(() {
+            dv = data.map((data) => TempAccessDevice.fromJson(data)).toList();
+          });
+
+        }
+      }
+      // getPinStatusData();
+
+  }
+  Future  getDeviceForTempUserWeb(String rId) async {
+    await getTokenWeb();
+      // print('tabbar1 ${tabState}');
+      final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' +rId;
+      // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $tokenWeb',
       });
       if (response.statusCode > 0) {
         print('deviceGetSubUser ${response.statusCode}');
@@ -710,7 +848,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                 // mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   FutureBuilder(
-                                    future: deviceSensorVal,
+                                    future: deviceSensorValWeb,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         print('SnapShot ${snapshot}');
@@ -898,9 +1036,9 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                                   }).toList(),
                                   onTap: (index) async {
                                     tabbarState=room[index].rId.toString();
-                                    getDeviceForTempUser(tabbarState);
+                                    getDeviceForTempUserWeb(tabbarState);
 
-                                    getDevices(tabbarState);
+                                    getDevicesWeb(tabbarState);
 
                                   },
                                 ),
@@ -929,7 +1067,7 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
                         return Container(
                           child: Column(
                             children: [
-                              deviceContainer2(dv[index].dId, index),
+                              deviceContainerWeb(dv[index].dId, index),
                               Container(
                                 //
                                 // color: Colors.green,
@@ -1425,6 +1563,74 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
     getPinsName(dId);
     return data;
   }
+  getDataWeb(String dId) async {
+    final String url = API+'getpostdevicePinStatus/?d_id=' + dId;
+     await getTokenWeb();
+    http.Response response = await http.get(url, headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+
+      data = jsonDecode(response.body);
+      var arr = jsonDecode(response.body);
+      List listOfPinStatus = [
+        arr,
+      ];
+      print('sensorData  ${listOfPinStatus}');
+      // for (int i = 0; i < listOfPinStatus.length; i++) {
+      //
+      //   String a = listOfPinStatus[i]['pin20Status'].toString();
+      //   print('ForLoop123 ${a}');
+      //   int aa = int.parse(a);
+      //   int ms = ((DateTime.now().millisecondsSinceEpoch) / 1000).round() - 100; // -100 for checking a difference for 100 seconds in current time
+      //   print('CheckMs ${ms}');
+      //   print('Checkaa ${aa}');
+      //   if (aa >= ms) {
+      //     print('ifelse');
+      //     statusOfDevice = 1;
+      //   } else {
+      //     print('ifelse2');
+      //     statusOfDevice = 0;
+      //   }
+      // }
+      print("DATA-->  $data");
+      print('\n');
+      deviceStatus = [
+        widget.switch1_get = data["pin1Status"],
+        widget.switch2_get = data["pin2Status"],
+        widget.switch3_get = data["pin3Status"],
+        widget.switch4_get = data["pin4Status"],
+        widget.switch5_get = data["pin5Status"],
+        widget.switch6_get = data["pin6Status"],
+        widget.switch7_get = data["pin7Status"],
+        widget.switch8_get = data["pin8Status"],
+        widget.switch9_get = data["pin9Status"],
+        widget.Slider_get = data["pin10Status"],
+        widget.Slider_get2 = data["pin11Status"],
+        widget.Slider_get3 = data["pin12Status"],
+      ];
+      for (int i = 0; i < data.length; i++) {}
+
+      print('Switch 1 --> ${widget.switch1_get}');
+      print('Switch 2 --> ${widget.switch2_get}');
+      print('Switch 3 --> ${widget.switch3_get}');
+      print('Switch 4 --> ${widget.switch4_get}');
+      print('Switch 5 --> ${widget.switch5_get}');
+      print('Switch 6 --> ${widget.switch6_get}');
+      print('Switch 7 --> ${widget.switch7_get}');
+      print('Switch 8 --> ${widget.switch8_get}');
+      print('Switch 9 --> ${widget.switch9_get}');
+      print('Switch 10 --> ${widget.Slider_get}');
+      print('Switch 11 --> ${widget.Slider_get2}');
+      print('Switch 12 --> ${widget.Slider_get3}');
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to getData.');
+    }
+    getPinsNameWeb(dId);
+    return data;
+  }
 
 
   Future getPinsName(String dId) async {
@@ -1460,6 +1666,41 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       print('namesDataList  $namesDataList');
     }
   }
+  Future getPinsNameWeb(String dId) async {
+    String url = API+"editpinnames/?d_id=" + dId;
+     await getTokenWeb();
+    // try {
+    final response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+     var namesDataList12 = json.decode(response.body);
+      // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
+
+
+
+      print('QWERTY  $namesDataList12');
+      namesDataListWeb = [
+        widget.switch1Name = namesDataList12['pin1Name'].toString(),
+        widget.switch2Name = namesDataList12['pin2Name'].toString(),
+        widget.switch3Name = namesDataList12['pin3Name'].toString(),
+        widget.switch4Name = namesDataList12['pin4Name'].toString(),
+        widget.switch5Name = namesDataList12['pin5Name'].toString(),
+        widget.switch6Name = namesDataList12['pin6Name'].toString(),
+        widget.switch7Name = namesDataList12['pin7Name'].toString(),
+        widget.switch8Name = namesDataList12['pin8Name'].toString(),
+        widget.switch9Name = namesDataList12['pin9Name'].toString(),
+        widget.switch10Name = namesDataList12['pin10Name'].toString(),
+        widget.switch11Name = namesDataList12['pin11Name'].toString(),
+        widget.switch12Name = namesDataList12['pin12Name'].toString(),
+      ];
+      print('namesDataList  $namesDataListWeb');
+    }
+  }
+
+
    var sensorData;
   TempAccessSensor sensors;
   Future<List<TempAccessDevice>> getDevices(String rId) async {
@@ -1483,6 +1724,28 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       return dv;
     }
   }
+  Future<List<TempAccessDevice>> getDevicesWeb(String rId) async {
+    print('tabbas ${tabbarState}');
+    var query = {'r_id': tabbarState};
+    final url = API+'addyourdevice/?r_id='+tabbarState;
+    await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode > 0) {
+      print(response.statusCode);
+      deviceData = jsonDecode(response.body);
+      dv = deviceData.map((data) => TempAccessDevice.fromJson(data)).toList();
+      print('Room Id query ================================   $query');
+      print('------Devicessssssssssssssssssssssssssssss Data $deviceData');
+
+      // getDatafunc2();
+      return dv;
+    }
+    return dv;
+  }
   Future getSensorData(String dId) async {
     String token = await getToken();
     final response = await http.get(
@@ -1491,6 +1754,31 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Token $token',
+        });
+
+// Appropriate action depending upon the
+// server response
+    if (response.statusCode > 0) {
+      print('SensorTempUser ${response.body}');
+      print('SensorStatsCode ${response.statusCode}');
+       sensorData = jsonDecode(response.body);
+       print('sensordata123 ${sensorData['sensor1']}');
+      return sensorData;
+
+
+
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
+  Future getSensorDataWeb(String dId) async {
+     await getTokenWeb();
+    final response = await http.get(
+        API+'tensensorsdata/?d_id=' + dId.toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $tokenWeb',
         });
 
 // Appropriate action depending upon the
@@ -1568,6 +1856,64 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       print('else ${responseGetData}');
     }
   }
+  deviceDataWeb(String dId, int index) async {
+
+    print('namesDataList12 ${namesDataList12}');
+
+   var catchReturn = await getDataWeb(dId);
+    print('catchReturn123 ${catchReturn}');
+
+    print('deviceSensorVal ${deviceSensorVal.toString()}');
+    // var sensorData=
+    responseGetDataWeb = [
+      widget.switch1_get = catchReturn["pin1Status"],
+      widget.switch2_get = catchReturn["pin2Status"],
+      widget.switch3_get = catchReturn["pin3Status"],
+      widget.switch4_get = catchReturn["pin4Status"],
+      widget.switch5_get = catchReturn["pin5Status"],
+      widget.switch6_get = catchReturn["pin6Status"],
+      widget.switch7_get = catchReturn["pin7Status"],
+      widget.switch8_get = catchReturn["pin8Status"],
+      widget.switch9_get = catchReturn["pin9Status"],
+      widget.Slider_get = catchReturn["pin10Status"],
+      widget.Slider_get2 = catchReturn["pin11Status"],
+      widget.Slider_get3 = catchReturn["pin12Status"],
+    ];
+
+    print('namesList123 ${namesDataList}');
+    // catchReturn =  getData(dId);
+    setState(() {
+
+      responseGetDataWeb = [
+        widget.switch1_get = catchReturn["pin1Status"],
+        widget.switch2_get = catchReturn["pin2Status"],
+        widget.switch3_get = catchReturn["pin3Status"],
+        widget.switch4_get = catchReturn["pin4Status"],
+        widget.switch5_get = catchReturn["pin5Status"],
+        widget.switch6_get = catchReturn["pin6Status"],
+        widget.switch7_get = catchReturn["pin7Status"],
+        widget.switch8_get = catchReturn["pin8Status"],
+        widget.switch9_get = catchReturn["pin9Status"],
+        widget.Slider_get = catchReturn["pin10Status"],
+        widget.Slider_get2 = catchReturn["pin11Status"],
+        widget.Slider_get3 = catchReturn["pin12Status"],
+      ];
+
+    });
+    if(responseGetDataWeb.contains(1)){
+      setState(() {
+        switchOn=true;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetDataWeb}');
+    }else{
+      setState(() {
+        switchOn=false;
+      });
+      print('else ${switchOn}');
+      print('else ${responseGetDataWeb}');
+    }
+  }
 
   dataUpdate(String dId) async {
     final String url =
@@ -1600,6 +1946,50 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
     await http.post(url, body: jsonEncode(data), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 201) {
+      print("Data Updated  ${response.body}");
+
+      getData(dId);
+      //jsonDecode only for get method
+      //return place_type.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to Update data');
+    }
+  }
+  dataUpdateWeb(String dId) async {
+    await getTokenWeb();
+    final String url =
+        API+'getpostdevicePinStatus/?d_id=' + dId;
+
+    Map data = {
+      'put': 'yes',
+      "d_id": dId,
+      'pin1Status': responseGetDataWeb[0],
+      'pin2Status': responseGetDataWeb[1],
+      'pin3Status': responseGetDataWeb[2],
+      'pin4Status': responseGetDataWeb[3],
+      'pin5Status': responseGetDataWeb[4],
+      'pin6Status': responseGetDataWeb[5],
+      'pin7Status': responseGetDataWeb[6],
+      'pin8Status': responseGetDataWeb[7],
+      'pin9Status': responseGetDataWeb[8],
+      'pin10Status': responseGetDataWeb[9],
+      'pin11Status': responseGetDataWeb[10],
+      'pin12Status': responseGetDataWeb[11],
+      // 'pin13Status': m,
+      // 'pin14Status': n,
+      // 'pin15Status': o,
+      // 'pin16Status': p,
+      // 'pin17Status': q,
+      // 'pin18Status': r,
+      // 'pin19Status': s,
+    };
+    http.Response response =
+    await http.post(url, body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $tokenWeb',
     });
     if (response.statusCode == 201) {
       print("Data Updated  ${response.body}");
@@ -2038,4 +2428,336 @@ class _TempAccessPlacePageState extends State<TempAccessPlacePage> {
       ],
     );
   }
+
+  deviceContainerWeb(String dId, int x) {
+    deviceDataWeb(dId, x);
+    // fetchIp(dId);
+    return Column(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 1.95,
+          // color: Colors.redAccent,
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Turn Off All Appliances',
+                        style: TextStyle(
+                          fontFamily: fonttest==null?changeFont:fonttest,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.bold,
+                          color: _switchValue ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 14,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: GestureDetector(
+                        child:  Container(
+                          // color:textSelected==dId.toString()?Colors.green:Colors.red,
+                          child: Icon(textSelected==dId.toString()?Icons.update:Icons.sensors),
+                        ),
+
+                        onTap: () async {
+                          print('check123${textSelected}');
+                          deviceSensorValWeb =   getSensorDataWeb(dId);
+                          setState(() {
+                            textSelected=dId.toString();
+                            deviceSensorValWeb = getSensorDataWeb(dId);
+                          });
+                          print('check123${textSelected==dId}');
+                          print('_hasBeenPressed ${textSelected}');
+                        },
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8),
+                    //   child: GestureDetector(
+                    //     child: Icon(Icons.schedule),
+                    //     onTap: () {
+                    //       _createAlertDialogForPinSchedule(context,dId);
+                    //       // _createAlertDialogForPin17(context, dId);
+                    //     },
+                    //   ),
+                    // ),
+                    Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: statusOfDevice == 1 ? Colors.green : Colors.grey,
+                          shape: BoxShape.circle),
+                      // child: ...
+                    ),
+                    Switch(
+                      value: switchOn,
+                      //boolean value
+                      onChanged: (val) async {
+                        _showDialog(dId);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: GestureDetector(
+                        child: Icon(Icons.settings_remote),
+                        onTap: () {
+                          // _createAlertDialogForPin19(context, dId);
+                        },
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 1.2,
+                // color: Colors.amber,
+                child: GridView.count(
+                    crossAxisSpacing: 8,
+                    childAspectRatio: 2 / 1.8,
+                    mainAxisSpacing: 4,
+                    physics: NeverScrollableScrollPhysics(),
+                    // shrinkWrap: true,
+                    crossAxisCount: 4,
+                    children: List.generate(
+                        responseGetDataWeb.length - 3,
+                            (index) {
+                          print('Something');
+                          print('catch return --> $index');
+
+                          return Container(
+                            // color: Colors.green,
+                            height: 203,
+                            child: Padding(
+                              padding:  EdgeInsets.all(12.5),
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width/75,
+                                  alignment: new FractionalOffset(1.0, 0.0),
+                                  // alignment: Alignment.bottomRight,
+                                  height: MediaQuery.of(context).size.height/85,
+                                  padding: EdgeInsets.all(12.0),
+                                  // margin: index / 2 == 0
+                                  //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                                  //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                                  // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
+                                  margin: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height/80,
+                                      right: MediaQuery.of(context).size.height/70,
+                                      bottom: MediaQuery.of(context).size.height/70
+                                  ),
+                                  decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            blurRadius: 10,
+                                            offset: Offset(8, 10),
+                                            color: Colors.black)
+                                      ],
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1,
+                                          style: BorderStyle.solid,
+                                          color: Color(0xffa3a3a3)),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                    // crossAxisAlignment:
+                                    // CrossAxisAlignment.stretch,
+                                    children: [
+                                      Row(
+                                        children: [
+
+                                          Expanded(
+                                            child: TextButton(
+                                              child: Text(
+                                                namesDataListWeb[index],
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                style: TextStyle(fontSize: 10),
+                                              ),
+
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 14.5,
+                                                vertical: 10
+                                            ),
+                                            child: Switch(
+                                              value: responseGetDataWeb[index] == 0
+                                                  ? val2
+                                                  : val1,
+                                              // value: val1,
+                                              onChanged: (val) async {
+                                                if (responseGetDataWeb[index] == 0) {
+                                                  setState(() {
+
+
+                                                    responseGetDataWeb[index] = 1;                                              // print('index of $index --> ${listDynamic[index]}');
+                                                  });
+                                                  responseGetDataWeb[index] = 1;
+                                                } else {
+                                                  setState(() {
+
+
+                                                    responseGetDataWeb[index] = 0;                                              // print('index of $index --> ${listDynamic[index]}');
+                                                  });
+                                                  responseGetDataWeb[index] = 0;
+                                                }
+                                                await dataUpdateWeb(dId);
+
+                                              },
+                                            ),
+                                          ),
+
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          SizedBox(width: 45,),
+                                          // GestureDetector(
+                                          //     onTap:(){
+                                          //       // _createAlertDialogForlocalUpdateAndMessage(context,dId);
+                                          //     },
+                                          //     child: Icon(changeIcon[index]==null?null:changeIcon[index],size: 25,)),
+                                        ],
+                                      ),
+
+                                    ],
+                                  )),
+                            ),
+                          );
+                        })),
+              ),
+              Flexible(
+                child: Container(
+                  height: MediaQuery.of(context).size.height /70,
+                  // color: Colors.black,
+                  // color: Colors.amber,
+                  child: GridView.count(
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 2 / 1.8,
+                      mainAxisSpacing: 4,
+                      physics: NeverScrollableScrollPhysics(),
+                      // shrinkWrap: true,
+                      crossAxisCount: 2,
+                      children: List.generate(
+                        // 3,
+                          responseGetDataWeb.length - 9,
+                              (index) {
+                            print('Slider Start');
+                            print('catch return --> $catchReturn');
+                            var newIndex = index + 10;
+                            return Container(
+                              // color: Colors.deepOrange,
+                              // height: 2030,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    // alignment: new FractionalOffset(1.0, 0.0),
+                                      alignment: Alignment.bottomRight,
+                                      height: 120,
+                                      // padding: EdgeInsets.symmetric(
+                                      //     horizontal: 1, vertical: 10),
+                                      // margin: index % 2 == 0
+                                      //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                                      //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                                      // margin: EdgeInsets.fromLTRB(95, 77.5, 7.5, 75),
+                                      // margin: EdgeInsets.only(top: 41,right: 81,bottom: 70),
+                                      decoration: BoxDecoration(
+                                          boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                                blurRadius: 10,
+                                                offset: Offset(8, 10),
+                                                color: Colors.black)
+                                          ],
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              width: 1,
+                                              style: BorderStyle.solid,
+                                              color: Color(0xffa3a3a3)),
+                                          borderRadius: BorderRadius.circular(20)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextButton(
+                                                  child: Text(
+                                                    namesDataListWeb[index+9],
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                    style: TextStyle(fontSize: 10),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 109,
+                                                child: Slider(
+                                                  value: 5.0,
+                                                  // value: double.parse(
+                                                  //     responseGetData[newIndex - 1]
+                                                  //         .toString()),
+                                                  min: 0,
+                                                  max: 10,
+                                                  divisions: 500,
+                                                  activeColor: Colors.blue,
+                                                  inactiveColor: Colors.black,
+                                                  label:
+                                                  '${widget.Slider_get.round()}',
+                                                  onChanged:
+                                                      (double newValue) async {
+                                                    print(
+                                                        'index of data $index --> ${responseGetDataWeb[newIndex - 1]}');
+                                                    print(
+                                                        'index of $index --> ${newIndex - 1}');
+
+                                                    setState(() {
+                                                      // if (responseGetData[newIndex-1] != null) {
+                                                      //   responseGetData[newIndex-1] = widget.Slider_get.round();
+                                                      // }
+
+                                                      print(
+                                                          "Round-->  ${newValue.round()}");
+                                                      var roundVar =
+                                                      newValue.round();
+                                                      print(
+                                                          "Round 2-->  $roundVar");
+                                                      responseGetDataWeb[
+                                                      newIndex - 1] = roundVar;
+                                                      print(
+                                                          "Response Round-->  ${responseGetDataWeb[newIndex - 1]}");
+                                                    });
+
+                                                  },
+                                                  // semanticFormatterCallback: (double newValue) {
+                                                  //   return '${newValue.round()}';
+                                                  // }
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                            );
+                          })),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
 }

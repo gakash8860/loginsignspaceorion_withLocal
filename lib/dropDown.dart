@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'dropdown2.dart';
 import 'home.dart';
 import 'main.dart';
 import 'models/modeldefine.dart';
@@ -274,6 +275,7 @@ class _DropDownState extends State<DropDown> {
   void initState() {
     super.initState();
     placeVal = getplaces();
+    getUid();
     placeValWeb = getplacesWeb();
     print(placeVal);
     //  timer = Timer.periodic(Duration(seconds: 5), (timer) {
@@ -281,7 +283,25 @@ class _DropDownState extends State<DropDown> {
     // });
     // floorVal = getfloors();
   }
+  getUid() async{
+    final url=await API+'getuid/';
+    String token = await getToken();
+    final response =
+    await http.get(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+    if(response.statusCode==200){
+      getUidVariable=response.body;
+      getUidVariable2=int.parse(getUidVariable);
 
+      print('GetUi Variable Integer-->   ${getUidVariable2}');
+    }else{
+      print(response.statusCode);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Center(
