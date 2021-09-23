@@ -84,7 +84,7 @@ class _DropDownState extends State<DropDown> {
     // }
   }
 
-  // ignore: missing_return
+
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';

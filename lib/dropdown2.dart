@@ -23,6 +23,7 @@ Flat flat;
 RoomType rmtype;
 List<RoomType> rm;
 List <Device>dv;
+Device dv2;
 var getUidVariable;
 int getUidVariable2;
 void main()=> runApp(MaterialApp(

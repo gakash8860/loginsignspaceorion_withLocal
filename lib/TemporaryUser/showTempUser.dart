@@ -10,6 +10,7 @@ import 'package:loginsignspaceorion/TemporaryUser/AddTempUser.dart';
 import 'package:loginsignspaceorion/TemporaryUser/tempUserdetails.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../changeFont.dart';
 import '../main.dart';
@@ -31,6 +32,7 @@ var deleteMobile;
 var deletePid;
 var deleteFid;
 var deleteFlatId;
+var deleteD_Id;
 var deleteRid;
 Timer timer;
 
@@ -40,12 +42,14 @@ Timer timer;
   }
   List subUserList=[];
   List tempUserDecodeList;
+  List tempUserDecodeListWeb;
 
 @override
 void initState(){
 
   super.initState();
   openTempUserBox();
+  getTempUsersWeb();
   timer=Timer.periodic(Duration(seconds: 10), (timer) {
     print('qwertyuiop');
     getTempUsers(); tempAutoDelete();});
@@ -96,6 +100,12 @@ void initState(){
 
 
   }
+  var tokenWeb;
+  Future getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+    return tokenWeb;
+  }
   Future<void> getTempUsers()async{
     await openTempUserBox();
     String token = await getToken();
@@ -138,6 +148,40 @@ void initState(){
     }
     return Future.value(true);
   }
+  Future<void> getTempUsersWeb()async{
+
+      await getTokenWeb();
+    // String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
+    final url = API+'getalldatayouaddedtempuser/';
+        try{
+     final response= await http.get(Uri.parse(url),headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $tokenWeb',
+
+      });
+
+
+
+     var  tempUserDecode=jsonDecode(response.body);
+
+
+     print('tempResponse ${tempUserDecode}');
+      setState(() {
+        tempUserDecodeListWeb=tempUserDecode;
+
+      });
+      print('tempUserDecode ${tempUserDecodeListWeb}');
+      print('Number1123->  ${tempUserDecodeListWeb}');
+
+
+    }catch(e){
+      // print('Status Exception $e');
+
+    }
+
+    return Future.value(true);
+  }
 
   Future putTempUser(data)async{
     await tempUserBox.clear();
@@ -164,6 +208,40 @@ void initState(){
       url= API+'giveaccesstotempuser/?mobile=$deleteMobile&flt_id=$deleteFlatId';
     }else if(deleteRid!=null){
       url= API+'giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteRid';
+    }
+    // final url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
+    final response= await http.delete(url,
+      headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    },
+
+    );
+    if(response.statusCode>0){
+      print('deleteTempUser ${response.statusCode}');
+      print('deleteTempUser ${response.body}');
+      if(response.statusCode==200){
+        snackBarMessage(context);
+      }
+    }
+
+  }
+  Future deleteTempUserWeb()async{
+
+    String token = await getTokenWeb();
+    // String token = 'fc8a8de66981014125077cadbf12bb12cbfe95fb';
+    String url;
+    if(deletePid!=null){
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
+    }else if(deleteFid!=null){
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&f_id=$deleteFid';
+    }else if(deleteFlatId!=null){
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&flt_id=$deleteFlatId';
+    }else if(deleteRid!=null){
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteRid';
+    }else if(deleteD_Id!=null){
+      url= API+'giveaccesstotempuser/?mobile=$deleteMobile&r_id=$deleteD_Id';
     }
     // final url= 'http://genorion1.herokuapp.com/giveaccesstotempuser/?mobile=$deleteMobile&p_id=$deletePid';
     final response= await http.delete(url,
@@ -229,20 +307,53 @@ void initState(){
       ),
     );
   }
+  _showDialogForDeleteSubUserWeb(int index) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete"),
+        content: Text("Are you sure to delete this user"),
+        actions: <Widget>[
+
+          // ignore: deprecated_member_use
+          FlatButton(child: Text("Yes"),
+              onPressed: () async{
+                print('delete');
+
+                print('tempUserBoxDelete ${tempUserDecodeListWeb[index]}   ');
+                deletePid=tempUserDecodeListWeb[index]['p_id'];
+                deleteFid=tempUserDecodeListWeb[index]['f_id'];
+                deleteFlatId=tempUserDecodeListWeb[index]['flt_id'];
+                deleteRid=tempUserDecodeListWeb[index]['r_id'];
+                deleteMobile=tempUserDecodeListWeb[index]['mobile'];
+                print('deletePid ${deletePid}');
+                print('deleteFid ${deleteFid}');
+                print('deleteFlatid ${deleteFlatId}');
+                print('deleteRid ${deleteRid}');
+               await deleteTempUserWeb();
+
+
+                Navigator.of(context).pop();
+
+                // await  _logout().then((value) => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => GettingStartedScreen())));
+              }),
+          // ignore: deprecated_member_use
+
+          MaterialButton(child: Text("No"), onPressed: () {
+            Navigator.of(context).pop();
+          }),
+
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-        actions: [
 
-          MaterialButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
-          }, child: Text('Add TempUser',style: TextStyle(
-              fontSize: 15
-          ),)),
-        ],
-      ),
       body:  Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -252,173 +363,151 @@ void initState(){
         child:LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
             if (viewportConstraints.maxWidth > 600) {
-              return Container(
-                height:MediaQuery.of(context).size.height,
-                // child: FutureBuilder(
-                //     future: getTempUsers(),
-                //     builder: ( context,  snapshot){
-                //       if(snapshot.hasData){
-                //         if(tempUserDecodeList.length==null){
-                //           return Column(
-                //             children: [
-                //               SizedBox(height: 250,),
-                //               Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18),)),
-                //             ],
-                //           );
-                //         }else{
-                //           return Column(
-                //             children: [
-                //               SizedBox(height: 25,),
-                //               Expanded(
-                //                   child: ListView.builder(
-                //                       itemCount: tempUserDecodeList.length,
-                //                       itemBuilder: (context,index){
-                //                         return Padding(
-                //                           padding: const EdgeInsets.all(8.0),
-                //                           child: Container(
-                //                             width: 300,
-                //                             child: Card(
-                //                               semanticContainer:true,
-                //                               shadowColor: Colors.grey,
-                //                               child: Column(
-                //                                 children: [
-                //                                   ListTile(
-                //                                     title: Text(tempUserDecodeList[index]['name']),
-                //                                     trailing: Text(tempUserDecodeList[index]['email']),
-                //                                     leading: IconButton(
-                //                                       icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                //                                       onPressed: (){
-                //
-                //                                         _showDialogForDeleteSubUser(index);
-                //                                       },
-                //                                     ),
-                //                                     subtitle: Text(tempUserDecodeList[index]['timing'].toString()),
-                //
-                //                                     onTap: (){
-                //                                       print('printSubUser ${tempUserDecodeList[index]['name']}');
-                //                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
-                //                                         tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-                //
-                //                                     },
-                //                                   ),
-                //                                   Row(
-                //                                     children: [
-                //                                       Text(tempUserDecodeList[index]['date'].toString(),textAlign: TextAlign.end,),
-                //                                     ],
-                //                                   )
-                //                                 ],
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         );
-                //
-                //
-                //                         //   Column(
-                //                         //   children: <Widget>[
-                //                         //     SizedBox(height: 100,),
-                //                         //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                //                         //     SizedBox(height: 15,),
-                //                         //     Row(
-                //                         //       children: [
-                //                         //         SizedBox(width: 55,),
-                //                         //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                //                         //         SizedBox(width: 15,),
-                //                         //         Container(
-                //                         //           height: 45,
-                //                         //           width: 195,
-                //                         //           child:Padding(
-                //                         //             padding: const EdgeInsets.all(8.0),
-                //                         //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
-                //                         //           ),
-                //                         //           decoration: BoxDecoration(
-                //                         //             color: Colors.white,
-                //                         //             border: Border.all(
-                //                         //               color: Colors.black38 ,
-                //                         //               width: 5.0 ,
-                //                         //             ),
-                //                         //             borderRadius: BorderRadius.circular(20),
-                //                         //           ),
-                //                         //         ),
-                //                         //       ],
-                //                         //     ),
-                //                         //
-                //                         //
-                //                         //   ],
-                //                         //
-                //                         //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
-                //                         //   // subtitle: Text("${statusData[index]['id']}"),
-                //                         //
-                //                         // );
-                //                       }
-                //                   )),
-                //
-                //
-                //             ],
-                //           );
-                //         }
-                //       }else{
-                //         return Center(
-                //           child: Image.asset('assets/images/loader.gif'),
-                //           // child: CircularProgressIndicator(
-                //           //   color: Colors.red,
-                //           //   semanticsLabel: 'Loading...',
-                //           // ),
-                //         );
-                //       }
-                //
-                //     }
-                //
-                // ),
-                child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: 1,
-                              itemBuilder: (context,index){
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Card(
-                                    semanticContainer:true,
-                                    shadowColor: Colors.grey,
-                                    child: Column(
-                                      children: <Widget>[
-                                        GestureDetector(
-                                          onTap:(){
-                                            Navigator.push(context, MaterialPageRoute(builder: (context)=>TempDemo()));
-                                            },
-                                          child: ListTile(
-                                            title: Text('Akash'),
-                                            trailing: Text('akash@gmail.com'),
-                                            leading: IconButton(
-                                              icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
-                                              onPressed: (){
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+                  actions: [
 
-                                                _showDialogForDeleteSubUser(index);
-                                              },
+                    MaterialButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
+                    }, child: Text('Add TempUser',style: TextStyle(
+                        fontSize: 15
+                    ),)),
+                  ],
+                ),
+                body: Container(
+                  color: Colors.green,
+                  // height: 789,
+                  // width:MediaQuery.of(context).size.width,
+                  height:MediaQuery.of(context).size.height,
+                  child: FutureBuilder(
+                      future: getTempUsersWeb(),
+                      builder: ( context,  snapshot){
+                        if(snapshot.hasData){
+                          if(tempUserDecodeListWeb.length==null ||tempUserDecodeListWeb.isEmpty){
+                            print('sacdnull');
+                            return Column(
+                              children: [
+                                SizedBox(height: 250,),
+                                Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 14,fontFamily: fonttest==null?changeFont:fonttest,),)),
+                              ],
+                            );
+                          }else{
+                            return Column(
+                              children: [
+                                SizedBox(height: 25,),
+                                Expanded(
+                                    child: ListView.builder(
+                                        itemCount: tempUserDecodeListWeb.length,
+                                        itemBuilder: (context,index){
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Card(
+                                              semanticContainer:true,
+                                              shadowColor: Colors.grey,
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                    title: Text(tempUserDecodeListWeb[index]['name'],style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                                    trailing: Text(tempUserDecodeListWeb[index]['email'],style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                                    leading: IconButton(
+                                                      icon: Icon(Icons.delete_forever,color: Colors.black,semanticLabel: 'Delete',),
+                                                      onPressed: (){
+
+                                                        _showDialogForDeleteSubUserWeb(index);
+                                                      },
+                                                    ),
+                                                    subtitle: Text(tempUserDecodeListWeb[index]['timing'].toString(),style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+
+                                                    // onTap: (){
+                                                    //   print('printSubUser ${tempUserDecodeListWeb[index]['name']}');
+                                                    //   Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
+                                                    //     tempUserFloorName: tempUserDecodeListWeb[index]['f_id'] ,)));
+                                                    //
+                                                    // },
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(tempUserDecodeListWeb[index]['date'].toString(),textAlign: TextAlign.end,style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                            subtitle: Text('10:33',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text('25-09-2021',textAlign: TextAlign.end,style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,)),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
+                                          );
 
-                          ),
-                        )
-                      ],
+
+                                          //   Column(
+                                          //   children: <Widget>[
+                                          //     SizedBox(height: 100,),
+                                          //     Text('Sub User List',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                          //     SizedBox(height: 15,),
+                                          //     Row(
+                                          //       children: [
+                                          //         SizedBox(width: 55,),
+                                          //         Text('Number 1',textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          //         SizedBox(width: 15,),
+                                          //         Container(
+                                          //           height: 45,
+                                          //           width: 195,
+                                          //           child:Padding(
+                                          //             padding: const EdgeInsets.all(8.0),
+                                          //             child: Text(subUserDecode[0]['email'].toString(),textDirection:TextDirection.ltr ,textAlign: TextAlign.center,),
+                                          //           ),
+                                          //           decoration: BoxDecoration(
+                                          //             color: Colors.white,
+                                          //             border: Border.all(
+                                          //               color: Colors.black38 ,
+                                          //               width: 5.0 ,
+                                          //             ),
+                                          //             borderRadius: BorderRadius.circular(20),
+                                          //           ),
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //
+                                          //
+                                          //   ],
+                                          //
+                                          //   // trailing: Text("Place Id->  ${statusData[index]['d_id']}"),
+                                          //   // subtitle: Text("${statusData[index]['id']}"),
+                                          //
+                                          // );
+                                        }
+                                    )),
+
+
+                              ],
+                            );
+                          }
+                        }else{
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.red,
+                              semanticsLabel: 'Loading...',
+                            ),
+                          );
+                        }
+
+                      }
+
+                  ),
                 ),
               );
             }
             else{
               return Scaffold(
+                appBar: AppBar(
+                  title: Text('Temporary Users',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+                  actions: [
 
+                    MaterialButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTempUser()));
+                    }, child: Text('Add TempUser',style: TextStyle(
+                        fontSize: 15
+                    ),)),
+                  ],
+                ),
                 body: Container(
                   color: Colors.green,
                   // height: 789,

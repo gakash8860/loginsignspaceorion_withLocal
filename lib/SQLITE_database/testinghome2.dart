@@ -845,11 +845,13 @@ var tokenWeb;
     flatQueryRowsFlat=await NewDbProvider.instance.getFlatByFId(fId);
     return NewDbProvider.instance.queryFlat();
   }
+  PlaceType selectedPlace;
+  FloorType selectedFloor;
+  Flat selectedFlat;
 
   _createAlertDialogDropDown(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Change Place'),
@@ -934,7 +936,7 @@ var tokenWeb;
                                         pType: placeName,
                                         user: getUidVariable2
                                     );
-                                    pt = place;
+                                    selectedPlace = place;
                                     print('Floorqwe  ${floorQueryRows2}');
 
                                     // qwe= ;
@@ -1015,7 +1017,7 @@ var tokenWeb;
                                         pId: placeId,
                                         user: getUidVariable2
                                     );
-                                    fl = floor;
+                                    selectedFloor = floor;
                                     var getFlat = await NewDbProvider.instance.getFlatByFId(floorId.toString());
                                     print(getFlat);
                                     flatVal = returnFlatQuery(floorId);
@@ -1106,7 +1108,7 @@ var tokenWeb;
                                         fltName: flatName,
                                         user: getUidVariable2
                                     );
-                                    flat = flt;
+                                    selectedFlat = flt;
                                     print(flatId);
 
                                     // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
@@ -1160,9 +1162,9 @@ var tokenWeb;
                           builder: (context,) =>
                               Container(
                                 child: HomeTest(
-                                  pt: pt,
-                                  fl: fl,
-                                  flat: flat,
+                                  pt: selectedPlace,
+                                  fl: selectedFloor,
+                                  flat: selectedFlat,
                                   rm: rm,
                                   // dv: dv
                                 ),
@@ -2948,7 +2950,6 @@ String piname;
   _createAlertDialogForAddRoomDeleteDevices(BuildContext context, String rId,int index) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text(
@@ -3611,7 +3612,9 @@ String piname;
               user: deviceData[i]['user'],
               rId: deviceData[i]['r_id'],
               dId: deviceData[i]['d_id']);
+          print('deviceQueryFuncInsert   $deviceData}');
           print('deviceQueryFunc   $deviceData}');
+
 
           await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
           // await NewDbProvider.instance.updateDevice(deviceQuery);
@@ -3619,7 +3622,7 @@ String piname;
       }
     }
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
-    return dv;
+    return widget.dv;
   }
 
   Future <void> deleteDevice(String rId, String dId) async {
@@ -4481,7 +4484,7 @@ String piname;
                                 fontFamily: fonttest==null?'RobotoMono':fonttest,
                             ),),
                           ),
-                          Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                          Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
                           Icon(Icons.arrow_drop_down)
                         ],
                       ),
@@ -4520,7 +4523,7 @@ String piname;
                           return Constants.choices.map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice,style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest),),
+                              child: Text(choice,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
                             );
                           }).toList();
                         },
@@ -5217,7 +5220,12 @@ String piname;
                                                 print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
                                                 // tabbarState =
                                                 //     widget.rm[index].rId;
-
+                                                if(widget.rm[index].rId==null) {
+                                                  setState(() {
+                                                    tabbarState = widget.tabbarState;
+                                                  });
+;
+                                                }
                                                 setState(() {
                                                   tabbarState =
                                                       widget.rm[index].rId;
@@ -5410,8 +5418,7 @@ bool switchOn;
 
   deviceContainer(String dId, int index) async {
      deviceId=dId;
-    getData(dId);
-     getPinsName(dId);
+
      // await seprate(index,dId);
     devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);

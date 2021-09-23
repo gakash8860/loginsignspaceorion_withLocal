@@ -509,7 +509,7 @@ var tokenWeb;
       print('responseif ${response.statusCode}');
       print('responseif ${response.body}');
       List<dynamic> data = jsonDecode(response.body);
-       widget.rm = data.map((data) => RoomType.fromJson(data)).toList();
+       List<RoomType> rm= data.map((data) => RoomType.fromJson(data)).toList();
       print('rooms147 ${widget.rm[0].rId}');
       return rm;
     }else{
@@ -518,7 +518,27 @@ var tokenWeb;
     }
   }
 
-
+  Future<List<Device>> getDeviceForDropDown( r_Id) async {
+    await getTokenWeb();
+    print('senddsas $tokenWeb');
+    final url =API+'addyourdevice/?rid='+r_Id;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if (response.statusCode == 200) {
+      print('responseif ${response.statusCode}');
+      print('responseif ${response.body}');
+      List<dynamic> data = jsonDecode(response.body);
+      List<Device> dv = data.map((data) => Device.fromJson(data)).toList();
+      print('rooms147 ${widget.rm[0].rId}');
+      return dv;
+    }else{
+      print('response ${response.statusCode}');
+      print('response ${response.body}');
+    }
+  }
 
   Future<Device> send_DeviceId(String data) async {
     await getTokenWeb();
@@ -606,6 +626,7 @@ PlaceType selectedPt;
 FloorType selectedfl;
 Flat selectedflat;
   List <RoomType> selectedRoom;
+  List <Device> selectedDevice;
 
 
   _createAlertDialogDropDown(BuildContext context) {
@@ -933,7 +954,7 @@ Flat selectedflat;
                   onPressed: () async {
                     print('selectedPt ${selectedflat.fltId}');
                     selectedRoom = await getrooms(selectedflat.fltId);
-
+                    // selectedDevice= await getDeviceForDropDown(selectedRoom.)
 
 
                     // print(rm[1]);
@@ -950,7 +971,8 @@ Flat selectedflat;
                                     fl: selectedfl,
                                     flat: selectedflat,
                                     rm: selectedRoom,
-                                    dv: dv),
+                                    // dv: dv
+                                ),
                               )),
                     );
                     //
@@ -3239,7 +3261,7 @@ Future flatValWeb;
                                                   fontSize: 22),),
 
                                             Text(
-                                              widget.flt.fltId.toString(),
+                                              widget.flt.fltName.toString(),
                                               style: TextStyle(
                                                   color: Colors
                                                       .white,
@@ -3518,7 +3540,7 @@ Future flatValWeb;
                                     print('RoomId  $rIdForName');
                                     print('RoomId  ${rm.rName}');
                                     return Tab(
-                                      text: rm.rId,
+                                      text: rm.rName,
                                     );
                                   }).toList(),
                                   onTap: (index) async {

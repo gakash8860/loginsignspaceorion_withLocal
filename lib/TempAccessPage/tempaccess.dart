@@ -44,18 +44,18 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
   List placeNameList;
   List placeNameListWeb;
-  List<dynamic> floorNameList=[];
-  List<dynamic> floorNameListWeb=[];
-  List<dynamic> flatNameList=[];
-  List<dynamic> flatNameListWeb=[];
-  List<dynamic> roomNameList=[];
-  List<dynamic> roomNameListWeb=[];
+  List floorNameList;
+  List floorNameListWeb;
+  List flatNameList;
+  List flatNameListWeb;
+  List roomNameList;
+  List roomNameListWeb;
   @override
   void initState() {
     super.initState();
     print('initState123 ${widget.mobileNumber}');
     getTempFuture=getTempUsers();
-    getTempFutureWeb=getTempUsersWeb().then((value) => getPlaceNameWeb().then((value) => getFloorNameWeb()));
+    getTempFutureWeb=getTempUsersWeb().then((value) => getPlaceNameWeb().then((value) =>  getFloorNameWeb().then((value) => getFlatNameWeb()).then((value) => getRoomNameWeb())));
     getTempFuture=getTempUsers().then((value) => getPlaceName().then((value) =>  getFloorName().then((value) => getFlatName()).then((value) => getRoomName())));
 
   }
@@ -280,7 +280,7 @@ var pId;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
-          print("GetFloorNameResponseBodynames ${floorNameList[0]['f_name']}");
+          print("GetFloorNameResponseBodynames ${floorNameListWeb[0]['f_name']}");
 
         }
       }else{
@@ -338,13 +338,13 @@ var pId;
         });
         if (response.statusCode > 0) {
           print("getyouflatname  ${response.statusCode}");
-          print("getyouflatname  ${response.body}");
+          print("getyouflatnameWeb  ${response.body}");
           var data = jsonDecode(response.body);
           flatNameListWeb=data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
-          print("getyouflatname ${flatNameList[0]['f_name']}");
+          print("getyouflatnameWeb ${flatNameListWeb[0]['f_name']}");
 
         }
       }else{
@@ -401,13 +401,13 @@ var pId;
         });
         if (response.statusCode > 0) {
           print("getyouroomname  ${response.statusCode}");
-          print("getyouroomname  ${response.body}");
+          print("getyouroomnameWeb  ${response.body}");
           var data = jsonDecode(response.body);
           roomNameListWeb=data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
-          print("GetFloorNameResponseBodynames ${roomNameList[0]['r_name']}");
+          print("GetFloorNameResponseBodynames ${roomNameListWeb[0]['r_name']}");
 
         }
       }else{
@@ -637,59 +637,59 @@ var NoPlace='NoPlace';
 
                                                   ),
 
-                                                  // Row(
-                                                  //   children: [
-                                                  //     SizedBox(
-                                                  //       width: 5,
-                                                  //     ),
-                                                  //
-                                                  //     Padding(
-                                                  //       padding: const EdgeInsets.all(4.0),
-                                                  //       child: Text(
-                                                  //         tempUserDecodeWeb[index]['p_id']==null?null:"PlaceName : ${placeNameListWeb[index]['p_type']}",
-                                                  //         textAlign: TextAlign.end,
-                                                  //       ),
-                                                  //     ),
-                                                  //     SizedBox(
-                                                  //       width: 10,
-                                                  //     ),
-                                                  //     Text(
-                                                  //       tempUserDecodeWeb[index]
-                                                  //       ['f_id']==null?null:"FloorName : ${floorNameListWeb[0]['f_name'].toString()}",
-                                                  //       textAlign: TextAlign.end,
-                                                  //       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  //     ),
-                                                  //     SizedBox(
-                                                  //       width: 10,
-                                                  //     ),
-                                                  //     Text(
-                                                  //       tempUserDecodeWeb[index]
-                                                  //       ['flt_id']
-                                                  //           ==null?null:"Flat Name :  ${flatNameListWeb[0]['flt_name']}",
-                                                  //       textAlign: TextAlign.end,
-                                                  //       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  //     ),
-                                                  //     SizedBox(
-                                                  //       width: 10,
-                                                  //     ),
-                                                  //     Text(
-                                                  //       tempUserDecodeWeb[index]
-                                                  //       ['r_id']==null?"":  "RoomName : ${roomNameListWeb[0]['r_name']}",
-                                                  //       textAlign: TextAlign.end,
-                                                  //       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  //     ),
-                                                  //     SizedBox(
-                                                  //       width: 10,
-                                                  //     ),
-                                                  //
-                                                  //     Text(
-                                                  //       tempUserDecodeWeb[index]
-                                                  //       ['d_id']==null?null:'Device : ${tempUserDecodeWeb[index]['d_id']}',
-                                                  //       textAlign: TextAlign.end,
-                                                  //       style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(4.0),
+                                                        child: Text(
+                                                          tempUserDecodeWeb[index]['p_id']==null?'':"PlaceName : ${placeNameListWeb[index]['p_type']}",
+                                                          textAlign: TextAlign.end,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeWeb[index]
+                                                        ['f_id']==null?'':"FloorName : ${floorNameListWeb[0]['f_name'].toString()}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeWeb[index]
+                                                        ['flt_id']
+                                                            ==null?'':"Flat Name :  ${flatNameListWeb[0]['flt_name']}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        tempUserDecodeWeb[index]
+                                                        ['r_id']==null?"":  "RoomName : ${roomNameListWeb[0]['r_name']}",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+
+                                                      Text(
+                                                        tempUserDecodeWeb[index]
+                                                        ['d_id']==null?'':'Device : ${tempUserDecodeWeb[index]['d_id']}',
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      ),
+                                                    ],
+                                                  ),
 
                                                 ],
                                               ),

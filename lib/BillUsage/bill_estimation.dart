@@ -208,6 +208,8 @@ class _BillEstimationState extends State<BillEstimation> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Bill Estimation'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {

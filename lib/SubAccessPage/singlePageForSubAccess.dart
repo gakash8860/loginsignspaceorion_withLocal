@@ -130,6 +130,12 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   int x;
 
   List responseGetDataWeb;
+
+  Future placeValWeb;
+
+  Future floorValWeb;
+
+  Future flatValWeb;
   get index => null;
   List<SubUserRoomType> room;
   List namesDataList;
@@ -551,11 +557,22 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     }
 
   }
-
+  bool noSubUserAdded=false;
   var placeIdWeb;
   var floorIdWeb;
   var flatIdWeb;
   var ownerNameWeb;
+
+  Widget NoSubUser(){
+    return Container(
+      child: Center(
+        child: Text('No SubUser'),
+      ),
+    );
+  }
+
+
+
   Future<void> getSubUsersWeb() async {
     String token = await getTokenWeb();
     // await openSubUserBox();
@@ -574,6 +591,11 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       }
       // await subUserBox.clear();
       List subUserDecode = jsonDecode(response.body);
+      if(subUserDecode.isEmpty||subUserDecode.length==null){
+          setState(() {
+            noSubUserAdded=true;
+          });
+      }
       placeIdWeb=subUserDecode[0]['p_id'];
       ownerNameWeb=subUserDecode[0]['owner_name'];
       print('ppppp ${subUserDecode[0]['p_id']}');
@@ -612,6 +634,59 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       await getAllFloorForSubUserWeb();
     }
   }
+  Future<List<SubUserPlaceType>> getPlaceNameWebForDropDown(String pId) async {
+    await getTokenWeb();
+    print('tokenweb $tokenWeb');
+  final url = API+'getyouplacename/?p_id='+pId;
+    final response =await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $tokenWeb',
+    });
+    if(response.statusCode==200){
+      print('subuserplaceDropDownweb ${response.body}');
+      List <dynamic>data=jsonDecode(response.body);
+      List<SubUserPlaceType> places= data.map((data) => SubUserPlaceType.fromJson(data));
+
+      print('subuserplaceweb ${pt.pType}');
+   return places;
+    }
+  }
+
+
+  Future<List<SubUserFloorType>> getfloorsWebForDropDown(String pId) async {
+    final url = API + 'getallfloorsbyonlyplaceidp_id/?p_id=' + pId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<SubUserFloorType> floors = data.map((data) => SubUserFloorType.fromJson(data))
+          .toList();
+      print(floors);
+      return floors;
+    }
+  }
+
+  Future<List<SubUserFlatType>> getflatWebForDropDown(String fId) async {
+    final url = API + 'getallflatbyonlyflooridf_id/?f_id=' + fId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<SubUserFlatType> flatData = data.map((data) => SubUserFlatType.fromJson(data)).toList();
+      print(flatData);
+      return flatData;
+    }
+  }
+
   Future getAllFloorForSubUserWeb() async {
     await getTokenWeb();
     print('tokenweb $tokenWeb');
@@ -639,6 +714,8 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
      await getAllFlatForSubUserWeb();
     }
   }
+
+
   Future getAllFlatForSubUserWeb() async {
     await getTokenWeb();
     print('tokenweb $tokenWeb');
@@ -1058,17 +1135,21 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
             if (viewportConstraints.maxWidth > 600) {
-              return Scaffold(
+              return noSubUserAdded==true?NoSubUser():Scaffold(
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
-                  title: GestureDetector(
+                  title: InkWell(
                       child: Row(
                         children: [
                           Text('Assigned by $ownerNameWeb ',style: TextStyle(fontSize: 14),),
                           SizedBox(width:151),
                           Text(pt.pType.toString(),),
                         ],
-                      )
+                      ),
+                      onTap: () async{
+                        placeValWeb=  getPlaceNameWebForDropDown(pt.pId);
+                      _createAlertDialogDropDownForWeb(context);
+                },
 
                   ),
                 ),
@@ -3156,7 +3237,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   _createAlertDialogForlocalUpdateAndMessage(BuildContext context, String dId) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -3523,7 +3603,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
     return showDialog(
 
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Device Id ${dId}'),
@@ -3882,7 +3961,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -5186,7 +5264,6 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
   _createAlertDialogDropDown(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Change Place'),
@@ -5535,10 +5612,332 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
           );
         });
   }
+
+  _createAlertDialogDropDownForWeb(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Change Place'),
+            content: Container(
+              height: 390,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child:FutureBuilder<List<SubUserPlaceType>>(
+                          future: placeValWeb,
+                          builder: (context, AsyncSnapshot<List<SubUserPlaceType>> snapshot) {
+                            print('data searching ');
+                            if (snapshot.hasData) {
+                              print('data hai ');
+                              // print(snapshot.hasData);
+                              if (snapshot.data.length == 0) {
+                                return Center(
+                                    child: Text("No Devices on this place"));
+                              }
+                              return Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(41.0),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width*2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [BoxShadow(
+                                              color: Colors.black,
+                                              blurRadius: 30,
+                                              offset: Offset(20,20)
+                                          )],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )
+                                      ),
+                                      child: DropdownButtonFormField<SubUserPlaceType>(
+                                        decoration:InputDecoration(
+                                          contentPadding: const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Place'),
+                                        isExpanded: true,
+                                        value: pt,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data.map((selectedPlace) {
+                                          return DropdownMenuItem<SubUserPlaceType>(
+                                            value: selectedPlace,
+                                            child: Text(selectedPlace.pType),
+                                          );
+                                        }).toList(),
+                                        onChanged: (SubUserPlaceType selectedPlace) {
+                                          setState(() {
+                                            fl = null;
+                                            pt = selectedPlace;
+                                            floorValWeb =
+                                                getfloorsWebForDropDown(selectedPlace.pId);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: FutureBuilder<List<SubUserFloorType>>(
+                          future: floorValWeb,
+                          builder:
+                              (context, AsyncSnapshot<List<SubUserFloorType>> snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data.length == 0) {
+                                return Center(
+                                    child: Text("No Devices on this place"));
+                              }
+                              return Column(
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(41.0),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 50.0,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [BoxShadow(
+                                                  color: Colors.black,
+                                                  blurRadius: 30,
+                                                  // offset for Upward Effect
+                                                  offset: Offset(20,20)
+                                              )],
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5,
+                                              )
+                                          ),
+                                          child: DropdownButtonFormField<SubUserFloorType>(
+                                            decoration:InputDecoration(
+                                              contentPadding: const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.white),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            ),
+                                            dropdownColor: Colors.white70,
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            iconSize: 28,
+                                            hint: Text('Select Floor'),
+                                            isExpanded: true,
+                                            value: fl,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            items: snapshot.data
+                                                .map((selectedFloor) {
+                                              return DropdownMenuItem<SubUserFloorType>(
+                                                value: selectedFloor,
+                                                child: Text(selectedFloor.fName),
+                                              );
+                                            }).toList(),
+                                            onChanged: (SubUserFloorType selectedFloor) {
+                                              setState(() {
+                                                fl = selectedFloor;
+                                                flatValWeb=getflatWebForDropDown(selectedFloor.fId);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    margin: new EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+
+                                ],
+                              );
+                            } else {
+                              return Center(
+                                  child: Text(
+                                      "Please select a place to proceed further"));
+                            }
+                          }),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child:FutureBuilder<List<SubUserFlatType>>(
+                          future: flatValWeb,
+                          builder:
+                              (context, AsyncSnapshot<List<SubUserFlatType>> snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data.length == 0) {
+                                return Center(
+                                    child: Text("No Devices on this place"));
+                              }
+                              return Column(
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(41.0),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 50.0,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [BoxShadow(
+                                                  color: Colors.black,
+                                                  blurRadius: 30,
+                                                  // offset for Upward Effect
+                                                  offset: Offset(20,20)
+                                              )],
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5,
+                                              )
+                                          ),
+                                          child: DropdownButtonFormField<SubUserFlatType>(
+                                            decoration:InputDecoration(
+                                              contentPadding: const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.white),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            ),
+                                            dropdownColor: Colors.white70,
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            iconSize: 28,
+                                            hint: Text('Select Floor'),
+                                            isExpanded: true,
+                                            value: flat,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            items: snapshot.data
+                                                .map((selectedFlat) {
+                                              return DropdownMenuItem<SubUserFlatType>(
+                                                value: selectedFlat,
+                                                child: Text(selectedFlat.fltName),
+                                              );
+                                            }).toList(),
+                                            onChanged: (SubUserFlatType selectedFlat) {
+                                              setState(() {
+                                                flat=selectedFlat;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    margin: new EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Center(
+                                  child: Text(
+                                      "Please select a place to proceed further"));
+                            }
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MaterialButton(
+                  // elevation: 5.0,
+                  child: Text('Submit'),
+                  onPressed: () async {
+                    List result = await SubUserDataBase.subUserInstance
+                        .getRoomById(flatId.toString());
+                    print("SubmitAllDetails  ${result}");
+                    List<SubUserRoomType> roomList = List.generate(
+                        result.length,
+                            (index) =>
+                            SubUserRoomType(
+                              rId: result[index]['r_id'].toString(),
+                              fltId: result[index]['flt_id'].toString(),
+                              rName: result[index]['r_name'].toString(),
+                              user: result[index]['user'],
+                            )
+
+                    );
+                    setState(() {
+                      pt = place;
+                      fl = floor;
+                      flat = flat123;
+                      room = roomList;
+                    });
+                    Navigator.of(context)
+                        .pushNamed(SubAccessSinglePage.routeName);
+
+                    // Navigator.pushReplacement(
+                    //    context, MaterialPageRoute(builder: (context) =>
+                    //    SubAccessSinglePage(
+                    //      ptSubUser: pt,
+                    //      flSubUser: fl,
+                    //      flatSubUser: flat,
+                    //      rmSubUser: room,)));
+                  },
+                ),
+              )
+            ],
+          );
+        });
+  }
+
   _createAlertDialogDropDownForFloor(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             title: Text('Change Place'),

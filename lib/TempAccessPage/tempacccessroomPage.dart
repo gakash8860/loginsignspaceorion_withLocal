@@ -169,6 +169,7 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
         });
         // getDeviceForTempUser();
       }
+      await getDeviceForTempUserWeb(widget.roomId.toString());
      await getDevices(widget.roomId.toString());
       // getFlatForTempUser();
     }
@@ -591,7 +592,7 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
     }      return dvWeb;
   }
 
-  Future<List<TempAccessDevice>>  getDeviceForTempUserWeb(String rId) async {
+  Future  getDeviceForTempUserWeb(String rId) async {
     await getTokenWeb();
     final url = API+'getalldevicesbyonlyroomidr_id/?r_id=' +rId;
     // String token = 'ec21799a656ff17d2008d531d0be922963f54378';
@@ -611,7 +612,6 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
 
       }
     }
-    return dvWeb;
     // getPinStatusData();
 
   }
@@ -1133,7 +1133,6 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
 
 
   deviceContainerWebForOnlyRoom(String dId, int x) {
-    print('aagye');
     deviceContainerDataWeb(dId, x);
     // fetchIp(dId);
     return Container(
@@ -1699,13 +1698,8 @@ class _TempAccessRoomPageState extends State<TempAccessRoomPage> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
-                      print('asdfirssssssssssst ${dvWeb.length}');
+                      print('aasas');
                       if (index <dvWeb.length) {
-                        print('affluent ${dvWeb.length}');
-                        Text(
-                          "Loading",
-                          style: TextStyle(fontSize: 44),
-                        );
 
                         return Container(
                           child: Column(

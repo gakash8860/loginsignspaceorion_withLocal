@@ -36,9 +36,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 var API = 'http://127.0.0.1:8000/';
 // var API = 'https://genorion1.herokuapp.com/';
-BoxConstraints viewportConstraints;
-
-Box deviceBox;
 List roomData;
 List floorData;
 List placeData;
@@ -740,7 +737,7 @@ List resultFloor;
     var pId=placeTypeSingle[0]['p_id'].toString();
     print('placeId $pId');
     resultFloor= await NewDbProvider.instance.getFloorById(pId);
-    print(' checkResult123456 ${resultFloor[0]}');
+
     var floor=FloorType(
       fId: resultFloor[0]['f_id'].toString(),
       fName: resultFloor[0]['f_name'].toString(),
