@@ -3188,7 +3188,7 @@ Future flatValWeb;
                                                         // fontStyle: FontStyle.italic
                                                     ),),
                                                   Text(
-                                                    widget.fl.fId.toString(),
+                                                    widget.fl.fName.toString(),
                                                     style: TextStyle(
                                                         color: Colors
                                                             .white,
@@ -3239,7 +3239,7 @@ Future flatValWeb;
                                                   fontSize: 22),),
 
                                             Text(
-                                              widget.flt.fltName.toString(),
+                                              widget.flt.fltId.toString(),
                                               style: TextStyle(
                                                   color: Colors
                                                       .white,
@@ -3518,7 +3518,7 @@ Future flatValWeb;
                                     print('RoomId  $rIdForName');
                                     print('RoomId  ${rm.rName}');
                                     return Tab(
-                                      text: rm.rName,
+                                      text: rm.rId,
                                     );
                                   }).toList(),
                                   onTap: (index) async {

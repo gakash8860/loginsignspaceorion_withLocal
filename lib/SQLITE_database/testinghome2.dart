@@ -344,17 +344,7 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future openPlaceBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    placeBox = await Hive.openBox('place');
-    // places.first=placeBox.values.first;
-    setState(() {
-      // places[0]=placeBox.values.first;
-    });
 
-    return;
-  }
 
   var deviceofI;
 

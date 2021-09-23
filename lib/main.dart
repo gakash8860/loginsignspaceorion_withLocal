@@ -37,9 +37,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 var API = 'http://127.0.0.1:8000/';
 // var API = 'https://genorion1.herokuapp.com/';
 BoxConstraints viewportConstraints;
-Box placeBox;
-Box floorBox;
-Box roomBox;
+
 Box deviceBox;
 List roomData;
 List floorData;
