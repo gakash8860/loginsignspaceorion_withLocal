@@ -10,8 +10,11 @@ import 'bill_estimation.dart';
 //     FirebaseDatabase().reference().child('data/2020');
 
 class TotalUsage extends StatefulWidget {
+  var totalEnergy;
   static const routeName = '/total-usage';
-
+  TotalUsage({
+    this.totalEnergy,
+});
   @override
   _TotalUsageState createState() => _TotalUsageState();
 }
@@ -301,7 +304,7 @@ class _TotalUsageState extends State<TotalUsage> {
                         children: [
                           createCard('📆 Total Days : ', '$_totalDays days'),
                           createCard('📊 Total Power : ',
-                              '${_totalPower.toStringAsFixed(2)} Kwh'),
+                              '${widget.totalEnergy} Kwh'),
                           createCard('⏰  Total Time : ', _timeString),
                           createCard('💰 Total Amount : ',
                               '${_totalAmount.toStringAsFixed(3)} ₹'),

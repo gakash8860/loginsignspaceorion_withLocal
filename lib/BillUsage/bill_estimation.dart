@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:http/http.dart' as http;
+import '../main.dart';
 
 
 void  main()=>runApp(MaterialApp(
@@ -88,6 +92,25 @@ class _BillEstimationState extends State<BillEstimation> {
   //     _isLoading = false;
   //   });
   // }
+List<dynamic> tenMinuteEnergy;
+  var last10Minute;
+  Future getEnergyTenMinutes(String dId)async{
+    String token = await getToken();
+    final url=API+'pertenminuteenergy?d_id='+dId;
+    final response = await http.get(url,headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('tenMinuteEnergy ${response.statusCode}');
+    if(response.statusCode==200){
+      tenMinuteEnergy=jsonDecode(response.body);
+      last10Minute=tenMinuteEnergy[0]['enrgy10'];
+      print('tenMinuteEnergy $tenMinuteEnergy');
+      print('tenMinuteEnergy $last10Minute');
+    }
+  }
+
 
   String monthName(var number) {
     String name = 'default';
@@ -206,11 +229,7 @@ class _BillEstimationState extends State<BillEstimation> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Bill Estimation'),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-      ),
+
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
       if (viewportConstraints.maxWidth > 600) {
@@ -220,120 +239,128 @@ class _BillEstimationState extends State<BillEstimation> {
           // child: SpinKitCircle(size: 60, color: Colors.lightBlue),
         ):
         value12==true?
-        total():Center(
-          child:  Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Image.asset(
-                'assets/images/Bill.png',
-                height: 130,
-                width: 130,
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 5,
+        total():Scaffold(
+          appBar: AppBar(
+            title: Text('Bill Estimation'),
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+          ),
+          body: Center(
+            child:  Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  height: 10,
                 ),
-                child: Text(
-                  '👉🏻  The estimated electricity bill 🧾 of $_selectedMonth based on average usage of power will be :-',
-                  softWrap: true,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                Image.asset(
+                  'assets/images/Bill.png',
+                  height: 130,
+                  width: 130,
                 ),
-              ),
-
-              DropdownButton(
-
-
-                  iconEnabledColor: Colors.lightBlue,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.lightBlue,
+                SizedBox(
+                  height: 12,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 5,
                   ),
-                  value: _selectedMonth,
-                  elevation: 8,
-                  items: _months.map((String month) {
-                    return DropdownMenuItem<String>(
-                      child: Container(
-
-                          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10,),
-                          child: Text(month)),
-                      value: month,
-                    );
-                  }).toList(),
-                  onChanged: (String newMonth) {
-                    setState(() {
-                      _selectedMonth = newMonth;
-                      _selectedMonthNumber = (_months.indexOf(newMonth) + 1);
-                    });
-                  }),
-              SizedBox(
-                height: 12,
-              ),
-              Card(
-                child: Container(
-                  margin: const EdgeInsets.all(10),
-                  child: FlatButton(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    color: Colors.teal,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () {},
-                    child: Text(
-                      '${(_averagePower * _selectedMonthNumber).toStringAsFixed(3)} ₹',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child: Text(
+                    '👉🏻  The estimated electricity bill 🧾 of $_selectedMonth based on average usage of power will be :-',
+                    softWrap: true,
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
                   ),
                 ),
-                elevation: 8,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                child: Center(
-                  child: RaisedButton(
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
-                      child: Text('Total Usage',style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
-                      ),
+
+                DropdownButton(
+
+
+                    iconEnabledColor: Colors.lightBlue,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.lightBlue,
                     ),
-                    onPressed:() {
+                    value: _selectedMonth,
+                    elevation: 8,
+                    items: _months.map((String month) {
+                      return DropdownMenuItem<String>(
+                        child: Container(
+
+                            padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10,),
+                            child: Text(month)),
+                        value: month,
+                      );
+                    }).toList(),
+                    onChanged: (String newMonth) {
                       setState(() {
-                        value12=true;
-                        total();
+                        _selectedMonth = newMonth;
+                        _selectedMonthNumber = (_months.indexOf(newMonth) + 1);
+                        print('sss $_selectedMonthNumber');
                       });
-                      total();
-                      // Navigator.of(context)
-                      //     .pushReplacementNamed(TotalUsage.routeName);
-                    },
+                    }),
+                SizedBox(
+                  height: 12,
+                ),
+                Card(
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: FlatButton(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      color: Colors.teal,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      onPressed: () {},
+                      child: Text(
+                        '${(_averagePower * _selectedMonthNumber).toStringAsFixed(3)} ₹',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  elevation: 8,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  child: Center(
+                    child: RaisedButton(
+                      color: Colors.lightBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
+                        child: Text('Total Usage',style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      onPressed:() {
+                        setState(() {
+                          value12=true;
+                          total();
+                        });
+                        total();
+                        // Navigator.of(context)
+                        //     .pushReplacementNamed(TotalUsage.routeName);
+                      },
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
           ),
         ) ;
 
@@ -343,118 +370,127 @@ class _BillEstimationState extends State<BillEstimation> {
           child: CircularProgressIndicator(backgroundColor: Colors.red,),
           // child: SpinKitCircle(size: 60, color: Colors.lightBlue),
         )
-            : Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              // Image(image: AssetImage('assets/images/Bill.png'),),
-              Image.asset(
-                'assets/images/Bill.png',
-                height: 130,
-                width: 130,
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 5,
-                ),
-                child: Text(
-                  '👉🏻  The estimated electricity bill 🧾 of $_selectedMonth based on average usage of power will be :-',
-                  softWrap: true,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-
-              DropdownButton(
-
-
-                  iconEnabledColor: Colors.lightBlue,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.lightBlue,
-                  ),
-                  value: _selectedMonth,
-                  elevation: 8,
-                  items: _months.map((String month) {
-                    return DropdownMenuItem<String>(
-                      child: Container(
-
-                          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10,),
-                          child: Text(month)),
-                      value: month,
-                    );
-                  }).toList(),
-                  onChanged: (String newMonth) {
-                    setState(() {
-                      _selectedMonth = newMonth;
-                      _selectedMonthNumber = (_months.indexOf(newMonth) + 1);
-                    });
-                  }),
-              SizedBox(
-                height: 12,
-              ),
-              Card(
-                child: Container(
-                  margin: const EdgeInsets.all(10),
-                  child: FlatButton(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    color: Colors.teal,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () {},
-                    child: Text(
-                      '${(_averagePower * _selectedMonthNumber).toStringAsFixed(3)} ₹',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                elevation: 8,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                child: Center(
-                  child: RaisedButton(
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
-                      child: Text('Total Usage',style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    onPressed:() {
-                      Navigator.of(context)
-                          .pushReplacementNamed(TotalUsage.routeName);
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
+            : Scaffold(
+          appBar: AppBar(
+            title: Text('Bill Estimation'),
           ),
-        );
+              body: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                // Image(image: AssetImage('assets/images/Bill.png'),),
+                Image.asset(
+                  'assets/images/Bill.png',
+                  height: 130,
+                  width: 130,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 5,
+                  ),
+                  child: Text(
+                    '👉🏻  The estimated electricity bill 🧾 of $_selectedMonth based on average usage of power will be :-',
+                    softWrap: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+                DropdownButton(
+
+                    iconEnabledColor: Colors.lightBlue,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.lightBlue,
+                    ),
+                    value: _selectedMonth,
+                    elevation: 8,
+                    items: _months.map((String month) {
+                      return DropdownMenuItem<String>(
+                        child: Container(
+
+                            padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10,),
+                            child: Text(month)),
+                        value: month,
+                      );
+                    }).toList(),
+                    onChanged: (String newMonth) {
+                      setState(() {
+                        _selectedMonth = newMonth;
+                        _selectedMonthNumber = (_months.indexOf(newMonth) + 1);
+                        print('sss $_selectedMonthNumber');
+                      });
+                    }),
+                SizedBox(
+                  height: 12,
+                ),
+                Card(
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: FlatButton(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      color: Colors.teal,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      onPressed: () {},
+                      child: Text(
+                        '${(_averagePower * _selectedMonthNumber).toStringAsFixed(3)} ₹',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  elevation: 8,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  child: Center(
+                    child: RaisedButton(
+                      color: Colors.lightBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
+                        child: Text('Total Usage',style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      onPressed:() async{
+                       await getEnergyTenMinutes("DIDM12932021AAAAAB");
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
+                         totalEnergy: last10Minute,
+                       )));
+                        // Navigator.of(context)
+                        //     .pushReplacementNamed(TotalUsage.routeName);
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+          ),
+        ),
+            );
       }
         }
       ),

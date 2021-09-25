@@ -13,13 +13,12 @@ import 'models/modeldefine.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: DropDown(),
     ));
 
 class DropDown extends StatefulWidget {
-  static const routeName = '/dropDown1';
+  static const routeName = '/DropDown';
 
   @override
   _DropDownState createState() => _DropDownState();
@@ -72,9 +71,7 @@ class _DropDownState extends State<DropDown> {
       List<Device> devices = data
           .map((data) => Device.fromJson(data))
           .toList()
-          .where((element) =>
-      ((element.rId == fId) &&
-          (element.rId == pId)))
+          .where((element) => ((element.rId == fId) && (element.rId == pId)))
           .toList();
       // print(devices);
       return devices;
@@ -83,7 +80,6 @@ class _DropDownState extends State<DropDown> {
     //   throw "Not Authorised";
     // }
   }
-
 
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
@@ -99,7 +95,7 @@ class _DropDownState extends State<DropDown> {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
-      data.map((data) => PlaceType.fromJson(data)).toList();
+          data.map((data) => PlaceType.fromJson(data)).toList();
       // print(places);
       // floorVal = getfloors(places[0].p_id);
 
@@ -121,7 +117,7 @@ class _DropDownState extends State<DropDown> {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
-      data.map((data) => PlaceType.fromJson(data)).toList();
+          data.map((data) => PlaceType.fromJson(data)).toList();
       // print(places);
       // floorVal = getfloors(places[0].p_id);
 
@@ -153,8 +149,8 @@ class _DropDownState extends State<DropDown> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      List<FloorType> floors = data.map((data) => FloorType.fromJson(data))
-          .toList();
+      List<FloorType> floors =
+          data.map((data) => FloorType.fromJson(data)).toList();
       print(floors);
       return floors;
     }
@@ -170,8 +166,8 @@ class _DropDownState extends State<DropDown> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      List<FloorType> floors = data.map((data) => FloorType.fromJson(data))
-          .toList();
+      List<FloorType> floors =
+          data.map((data) => FloorType.fromJson(data)).toList();
       print(floors);
       return floors;
     }
@@ -220,8 +216,8 @@ class _DropDownState extends State<DropDown> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      List<RoomType> rooms = data.map((data) => RoomType.fromJson(data))
-          .toList();
+      List<RoomType> rooms =
+          data.map((data) => RoomType.fromJson(data)).toList();
       print(rooms);
       return rooms;
     }
@@ -237,10 +233,26 @@ class _DropDownState extends State<DropDown> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      List<RoomType> rooms = data.map((data) => RoomType.fromJson(data))
-          .toList();
+      List<RoomType> rooms =
+          data.map((data) => RoomType.fromJson(data)).toList();
       print(rooms);
       return rooms;
+    }
+  }
+  Future<List<Device>> getDeviceWeb(String r_id) async {
+    final url = API + 'addyourdevice/?r_id=' + r_id;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Device> dv =
+          data.map((data) => Device.fromJson(data)).toList();
+      print(dv);
+      return dv;
     }
   }
 
@@ -283,198 +295,140 @@ class _DropDownState extends State<DropDown> {
     // });
     // floorVal = getfloors();
   }
-  getUid() async{
-    final url=await API+'getuid/';
+
+  getUid() async {
+    final url = await API + 'getuid/';
     String token = await getToken();
-    final response =
-    await http.get(url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-    if(response.statusCode==200){
-      getUidVariable=response.body;
-      getUidVariable2=int.parse(getUidVariable);
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      getUidVariable = response.body;
+      getUidVariable2 = int.parse(getUidVariable);
 
       print('GetUi Variable Integer-->   ${getUidVariable2}');
-    }else{
+    } else {
       print(response.statusCode);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: WillPopScope(
+      child: WillPopScope(
         child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-        title: Text('GenOrion'),
-    automaticallyImplyLeading: false,
-    elevation: 0,
-    ),
-         body: LayoutBuilder(
-            builder: (BuildContext context,
-             BoxConstraints viewportConstraints) {
-            if(viewportConstraints.maxWidth>600){
-            return   Center(
-              child: Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.blue, Colors.blueGrey,Colors.blueAccent])),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 30,
-                      ),
-                      FutureBuilder<List<PlaceType>>(
-                          future: placeValWeb,
-                          builder: (context,
-                              AsyncSnapshot<List<PlaceType>> snapshot) {
-                            if (snapshot.hasData) {
-                              // print(snapshot.hasData);
-                              // setState(() {
-                              //   floorVal = getfloors(snapshot.data[0].p_id);
-                              // });
-                              if (snapshot.data.length == 0) {
-                                return Center(
-                                    child: Text("No Devices on this place"));
-                              }
-                              return Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(41.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width*2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [BoxShadow(
-                                              color: Colors.black,
-                                              blurRadius: 30,
-                                              offset: Offset(20,20)
-                                          )],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )
-                                      ),
-                                      child: DropdownButtonFormField<PlaceType>(
-                                        decoration:InputDecoration(
-                                          contentPadding: const EdgeInsets.all(15),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.black),
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Place'),
-                                        isExpanded: true,
-                                        value: pt,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data.map((selectedPlace) {
-                                          return DropdownMenuItem<PlaceType>(
-                                            value: selectedPlace,
-                                            child: Text(selectedPlace.pType),
-                                          );
-                                        }).toList(),
-                                        onChanged: (PlaceType selectedPlace) {
-                                          setState(() {
-                                            fl = null;
-                                            pt = selectedPlace;
-                                            floorValWeb =
-                                                getfloorsWeb(selectedPlace.pId);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              );
-                            } else {
-                              return CircularProgressIndicator();
-                            }
-                          }
-                      ),
-                      FutureBuilder<List<FloorType>>(
-                          future: floorValWeb,
-                          builder:
-                              (context, AsyncSnapshot<List<FloorType>> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data.length == 0) {
-                                return Center(
-                                    child: Text("No Devices on this place"));
-                              }
-                              return Column(
-                                children: [
-                                  Container(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text('GenOrion'),
+              automaticallyImplyLeading: false,
+              elevation: 0,
+            ),
+            body: LayoutBuilder(builder:
+                (BuildContext context, BoxConstraints viewportConstraints) {
+              if (viewportConstraints.maxWidth > 600) {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                          Colors.blue,
+                          Colors.blueGrey,
+                          Colors.blueAccent
+                        ])),
+                    child: Center(
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 30,
+                          ),
+                          FutureBuilder<List<PlaceType>>(
+                              future: placeValWeb,
+                              builder: (context,
+                                  AsyncSnapshot<List<PlaceType>> snapshot) {
+                                if (snapshot.hasData) {
+                                  // print(snapshot.hasData);
+                                  // setState(() {
+                                  //   floorVal = getfloors(snapshot.data[0].p_id);
+                                  // });
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Container(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(41.0),
+                                      padding: const EdgeInsets.only(right: 58),
                                       child: SizedBox(
-                                        width: double.infinity,
+                                        // width: double.infinity,
                                         height: 50.0,
                                         child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  // offset for Upward Effect
-                                                  offset: Offset(20,20)
-                                              )],
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 10,
+                                                    offset: Offset(7, 7)
+                                                    // offset: Offset(20,20)
+                                                    )
+                                              ],
                                               border: Border.all(
                                                 color: Colors.black,
                                                 width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<FloorType>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
+                                              )),
+                                          child: DropdownButtonFormField<PlaceType>(
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.all(15),
                                               focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
+                                                borderSide: BorderSide(
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.black),
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
                                             ),
                                             dropdownColor: Colors.white70,
                                             icon: Icon(Icons.arrow_drop_down),
                                             iconSize: 28,
-                                            hint: Text('Select Floor'),
+                                            hint: Text('Select Place'),
                                             isExpanded: true,
-                                            value: fl,
+                                            value: pt,
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                             ),
                                             items: snapshot.data
-                                                .map((selectedFloor) {
-                                              return DropdownMenuItem<FloorType>(
-                                                value: selectedFloor,
-                                                child: Text(selectedFloor.fName),
+                                                .map((selectedPlace) {
+                                              return DropdownMenuItem<
+                                                  PlaceType>(
+                                                value: selectedPlace,
+                                                child:
+                                                    Text(selectedPlace.pType),
                                               );
                                             }).toList(),
-                                            onChanged: (FloorType selectedFloor) {
+                                            onChanged:
+                                                (PlaceType selectedPlace) {
                                               setState(() {
-                                                fl = selectedFloor;
-                                                flatValWeb=getflatWeb(selectedFloor.fId);
+                                                fl = null;
+                                                pt = selectedPlace;
+                                                floorValWeb = getfloorsWeb(
+                                                    selectedPlace.pId);
                                               });
                                             },
                                           ),
@@ -483,490 +437,670 @@ class _DropDownState extends State<DropDown> {
                                     ),
                                     margin: new EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-
-                                ],
-                              );
-                            } else {
-                              return Center(
-                                  child: Text(
-                                      "Please select a place to proceed further"));
-                            }
-                          }),
-                      FutureBuilder<List<Flat>>(
-                          future: flatValWeb,
-                          builder:
-                              (context, AsyncSnapshot<List<Flat>> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data.length == 0) {
-                                return Center(
-                                    child: Text("No Devices on this place"));
-                              }
-                              return Column(
-                                children: [
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(41.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  // offset for Upward Effect
-                                                  offset: Offset(20,20)
-                                              )],
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<Flat>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            ),
-                                            dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
-                                            iconSize: 28,
-                                            hint: Text('Select Floor'),
-                                            isExpanded: true,
-                                            value: flt,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: snapshot.data
-                                                .map((selectedFlat) {
-                                              return DropdownMenuItem<Flat>(
-                                                value: selectedFlat,
-                                                child: Text(selectedFlat.fltName),
-                                              );
-                                            }).toList(),
-                                            onChanged: (Flat selectedFlat) {
-                                              setState(() {
-                                                flt=selectedFlat;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    margin: new EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(8),
-                                    // ignore: deprecated_member_use
-                                    child: FlatButton(
-                                      child: Text(
-                                        'Next',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      padding: EdgeInsets.all(12),
-                                      shape: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 1),
-                                          borderRadius:
-                                          BorderRadius.circular(50)),
-                                      onPressed: () async {
-                                        rm = await getroomsWeb(flt.fltId);
-
-
-                                        //print(pt.p_type);
-                                        // print(rm[1]);
-                                        //  print(rm[0].r_name);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (
-                                                  context,
-                                                  ) =>
-                                                  Container(
-                                                    child: HomeTest(
-                                                        pt: pt,
-                                                        fl: fl,
-                                                        flat: flt,
-                                                        rm: rm,
-                                                        dv: dv),
-                                                  )),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Center(
-                                  child: Text(
-                                      "Please select a place to proceed further"));
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-              ),
-            );
-            }else{
-              return Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.blue, Colors.blueGrey,Colors.blueAccent])),
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 30,
-                        ),
-                        FutureBuilder<List<PlaceType>>(
-                            future: placeVal,
-                            builder: (context,
-                                AsyncSnapshot<List<PlaceType>> snapshot) {
-                              if (snapshot.hasData) {
-                                // print(snapshot.hasData);
-                                // setState(() {
-                                //   floorVal = getfloors(snapshot.data[0].p_id);
-                                // });
-                                if (snapshot.data.length == 0) {
-                                  return Center(
-                                      child: Text("No Devices on this place"));
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
                                 }
-                                return Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(41.0),
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 50.0,
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width*2,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 30,
-                                                offset: Offset(20,20)
-                                            )],
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 0.5,
-                                            )
+                              }),
+                          SizedBox(
+                            height: 45,
+                          ),
+                          FutureBuilder<List<FloorType>>(
+                              future: floorValWeb,
+                              builder: (context,
+                                  AsyncSnapshot<List<FloorType>> snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 58),
+                                          child: SizedBox(
+                                            // width: double.infinity,
+                                            height: 50.0,
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black,
+                                                        blurRadius: 10,
+                                                        offset: Offset(7, 7)
+                                                        // blurRadius: 30,
+                                                        // // offset for Upward Effect
+                                                        // offset: Offset(20,20)
+                                                        )
+                                                  ],
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 0.5,
+                                                  )),
+                                              child: DropdownButtonFormField<
+                                                  FloorType>(
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets.all(15),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                  ),
+                                                ),
+                                                dropdownColor: Colors.white70,
+                                                icon:
+                                                    Icon(Icons.arrow_drop_down),
+                                                iconSize: 28,
+                                                hint: Text('Select Floor'),
+                                                isExpanded: true,
+                                                value: fl,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                items: snapshot.data
+                                                    .map((selectedFloor) {
+                                                  return DropdownMenuItem<
+                                                      FloorType>(
+                                                    value: selectedFloor,
+                                                    child: Text(
+                                                        selectedFloor.fName),
+                                                  );
+                                                }).toList(),
+                                                onChanged:
+                                                    (FloorType selectedFloor) {
+                                                  setState(() {
+                                                    fl = selectedFloor;
+                                                    flatValWeb = getflatWeb(
+                                                        selectedFloor.fId);
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        child: DropdownButtonFormField<PlaceType>(
-                                          decoration:InputDecoration(
-                                            contentPadding: const EdgeInsets.all(15),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black),
-                                            borderRadius: BorderRadius.circular(50),
+                                        margin: new EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                      child: Text(
+                                          "Please select a place to proceed further"));
+                                }
+                              }),
+                          SizedBox(
+                            height: 45,
+                          ),
+                          FutureBuilder<List<Flat>>(
+                              future: flatValWeb,
+                              builder: (context,
+                                  AsyncSnapshot<List<Flat>> snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 58),
+                                          child: SizedBox(
+                                            // width: double.infinity,
+                                            height: 50.0,
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black,
+                                                        blurRadius: 10,
+                                                        offset: Offset(7, 7)
+                                                        // blurRadius: 30,
+                                                        // // offset for Upward Effect
+                                                        // offset: Offset(20,20)
+                                                        )
+                                                  ],
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 0.5,
+                                                  )),
+                                              child:
+                                                  DropdownButtonFormField<Flat>(
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets.all(15),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                  ),
+                                                ),
+                                                dropdownColor: Colors.white70,
+                                                icon:
+                                                    Icon(Icons.arrow_drop_down),
+                                                iconSize: 28,
+                                                hint: Text('Select Floor'),
+                                                isExpanded: true,
+                                                value: flt,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                items: snapshot.data
+                                                    .map((selectedFlat) {
+                                                  return DropdownMenuItem<Flat>(
+                                                    value: selectedFlat,
+                                                    child: Text(
+                                                        selectedFlat.fltName),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (Flat selectedFlat) {
+                                                  setState(() {
+                                                    flt = selectedFlat;
+                                                  });
+                                                },
+                                              ),
+                                            ),
                                           ),
+                                        ),
+                                        margin: new EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.all(8),
+                                        // ignore: deprecated_member_use
+                                        child: FlatButton(
+                                          child: Text(
+                                            'Next',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                          dropdownColor: Colors.white70,
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 28,
-                                          hint: Text('Select Place'),
-                                          isExpanded: true,
-                                          value: pt,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          items: snapshot.data.map((selectedPlace) {
-                                            return DropdownMenuItem<PlaceType>(
-                                              value: selectedPlace,
-                                              child: Text(selectedPlace.pType),
+                                          padding: EdgeInsets.all(12),
+                                          shape: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                          onPressed: () async {
+                                            rm = await getroomsWeb(flt.fltId);
+                                            dv= await getDeviceWeb(rm[0].rId);
+                                            //print(pt.p_type);
+                                            // print(rm[1]);
+                                            //  print(rm[0].r_name);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (
+                                                context,
+                                              ) =>
+                                                      Container(
+                                                        child: HomeTest(
+                                                            pt: pt,
+                                                            fl: fl,
+                                                            flat: flt,
+                                                            rm: rm,
+                                                            dv: dv),
+                                                      )),
                                             );
-                                          }).toList(),
-                                          onChanged: (PlaceType selectedPlace) {
-                                            setState(() {
-                                              fl = null;
-                                              pt = selectedPlace;
-                                              floorVal =
-                                                  getfloors(selectedPlace.pId);
-                                            });
                                           },
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  margin: new EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                );
-                              } else {
-                                return CircularProgressIndicator();
-                              }
-                            }
-                        ),
-                        FutureBuilder<List<FloorType>>(
-                            future: floorVal,
-                            builder:
-                                (context, AsyncSnapshot<List<FloorType>> snapshot) {
-                              if (snapshot.hasData) {
-                                if (snapshot.data.length == 0) {
+                                    ],
+                                  );
+                                } else {
                                   return Center(
-                                      child: Text("No Devices on this place"));
+                                      child: Text(
+                                          "Please select a place to proceed further"));
                                 }
-                                return Column(
-                                  children: [
-                                    Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(41.0),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          height: 50.0,
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width*2,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                boxShadow: [BoxShadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 30,
-                                                    // offset for Upward Effect
-                                                    offset: Offset(20,20)
-                                                )],
-                                                border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 0.5,
-                                                )
-                                            ),
-                                            child: DropdownButtonFormField<FloorType>(
-                                              decoration:InputDecoration(
-                                                contentPadding: const EdgeInsets.all(15),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.white),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              ),
-                                              dropdownColor: Colors.white70,
-                                              icon: Icon(Icons.arrow_drop_down),
-                                              iconSize: 28,
-                                              hint: Text('Select Floor'),
-                                              isExpanded: true,
-                                              value: fl,
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              items: snapshot.data
-                                                  .map((selectedFloor) {
-                                                return DropdownMenuItem<FloorType>(
-                                                  value: selectedFloor,
-                                                  child: Text(selectedFloor.fName),
-                                                );
-                                              }).toList(),
-                                              onChanged: (FloorType selectedFloor) {
-                                                setState(() {
-                                                  fl = selectedFloor;
-                                                  flatVal=getflat(selectedFloor.fId);
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      margin: new EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-
-                                  ],
-                                );
-                              } else {
-                                return Center(
-                                    child: Text(
-                                        "Please select a place to proceed further"));
-                              }
-                            }),
-                        FutureBuilder<List<Flat>>(
-                            future: flatVal,
-                            builder:
-                                (context, AsyncSnapshot<List<Flat>> snapshot) {
-                              if (snapshot.hasData) {
-                                if (snapshot.data.length == 0) {
-                                  return Center(
-                                      child: Text("No Devices on this place"));
-                                }
-                                return Column(
-                                  children: [
-                                    Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(41.0),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          height: 50.0,
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width*2,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                boxShadow: [BoxShadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 30,
-                                                    // offset for Upward Effect
-                                                    offset: Offset(20,20)
-                                                )],
-                                                border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 0.5,
-                                                )
-                                            ),
-                                            child: DropdownButtonFormField<Flat>(
-                                              decoration:InputDecoration(
-                                                contentPadding: const EdgeInsets.all(15),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.white),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              ),
-                                              dropdownColor: Colors.white70,
-                                              icon: Icon(Icons.arrow_drop_down),
-                                              iconSize: 28,
-                                              hint: Text('Select Floor'),
-                                              isExpanded: true,
-                                              value: flt,
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              items: snapshot.data
-                                                  .map((selectedFlat) {
-                                                return DropdownMenuItem<Flat>(
-                                                  value: selectedFlat,
-                                                  child: Text(selectedFlat.fltName),
-                                                );
-                                              }).toList(),
-                                              onChanged: (Flat selectedFlat) {
-                                                setState(() {
-                                                  flt=selectedFlat;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      margin: new EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.all(8),
-                                      // ignore: deprecated_member_use
-                                      child: FlatButton(
-                                        child: Text(
-                                          'Next',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        padding: EdgeInsets.all(12),
-                                        shape: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white, width: 1),
-                                            borderRadius:
-                                            BorderRadius.circular(50)),
-                                        onPressed: () async {
-                                          rm = await getrooms(flt.fltId);
-
-
-                                          //print(pt.p_type);
-                                          // print(rm[1]);
-                                          //  print(rm[0].r_name);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (
-                                                    context,
-                                                    ) =>
-                                                    Container(
-                                                      child: HomeTest(
-                                                          pt: pt,
-                                                          fl: fl,
-                                                          flat: flt,
-                                                          rm: rm,
-                                                          dv: dv),
-                                                    )),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return Center(
-                                    child: Text(
-                                        "Please select a place to proceed further"));
-                              }
-                            }),
-                      ],
+                              }),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            }
-            }
-          )
-           ),
-    onWillPop: () => showDialog<bool>(
-    context: context,
-    builder: (c) => poppages(c),
-    ),
-    ),
-    );
-    }
-    }
+                );
+              } else {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                          Colors.blue,
+                          Colors.blueGrey,
+                          Colors.blueAccent
+                        ])),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 30,
+                          ),
+                          FutureBuilder<List<PlaceType>>(
+                              future: placeVal,
+                              builder: (context,
+                                  AsyncSnapshot<List<PlaceType>> snapshot) {
+                                if (snapshot.hasData) {
+                                  // print(snapshot.hasData);
+                                  // setState(() {
+                                  //   floorVal = getfloors(snapshot.data[0].p_id);
+                                  // });
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(41.0),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 50.0,
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 30,
+                                                    offset: Offset(20, 20))
+                                              ],
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5,
+                                              )),
+                                          child: DropdownButtonFormField<
+                                              PlaceType>(
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.black),
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                            ),
+                                            dropdownColor: Colors.white70,
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            iconSize: 28,
+                                            hint: Text('Select Place'),
+                                            isExpanded: true,
+                                            value: pt,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            items: snapshot.data
+                                                .map((selectedPlace) {
+                                              return DropdownMenuItem<
+                                                  PlaceType>(
+                                                value: selectedPlace,
+                                                child:
+                                                    Text(selectedPlace.pType),
+                                              );
+                                            }).toList(),
+                                            onChanged:
+                                                (PlaceType selectedPlace) {
+                                              setState(() {
+                                                fl = null;
+                                                pt = selectedPlace;
+                                                floorVal = getfloors(
+                                                    selectedPlace.pId);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    margin: new EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              }),
+                          FutureBuilder<List<FloorType>>(
+                              future: floorVal,
+                              builder: (context,
+                                  AsyncSnapshot<List<FloorType>> snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(41.0),
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            height: 50.0,
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  2,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black,
+                                                        blurRadius: 30,
+                                                        // offset for Upward Effect
+                                                        offset: Offset(20, 20))
+                                                  ],
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 0.5,
+                                                  )),
+                                              child: DropdownButtonFormField<
+                                                  FloorType>(
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets.all(15),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                  ),
+                                                ),
+                                                dropdownColor: Colors.white70,
+                                                icon:
+                                                    Icon(Icons.arrow_drop_down),
+                                                iconSize: 28,
+                                                hint: Text('Select Floor'),
+                                                isExpanded: true,
+                                                value: fl,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                items: snapshot.data
+                                                    .map((selectedFloor) {
+                                                  return DropdownMenuItem<
+                                                      FloorType>(
+                                                    value: selectedFloor,
+                                                    child: Text(
+                                                        selectedFloor.fName),
+                                                  );
+                                                }).toList(),
+                                                onChanged:
+                                                    (FloorType selectedFloor) {
+                                                  setState(() {
+                                                    fl = selectedFloor;
+                                                    flatVal = getflat(
+                                                        selectedFloor.fId);
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        margin: new EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                      child: Text(
+                                          "Please select a place to proceed further"));
+                                }
+                              }),
+                          FutureBuilder<List<Flat>>(
+                              future: flatVal,
+                              builder: (context,
+                                  AsyncSnapshot<List<Flat>> snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data.length == 0) {
+                                    return Center(
+                                        child:
+                                            Text("No Devices on this place"));
+                                  }
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(41.0),
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            height: 50.0,
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  2,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black,
+                                                        blurRadius: 30,
+                                                        // offset for Upward Effect
+                                                        offset: Offset(20, 20))
+                                                  ],
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 0.5,
+                                                  )),
+                                              child:
+                                                  DropdownButtonFormField<Flat>(
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets.all(15),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                  ),
+                                                ),
+                                                dropdownColor: Colors.white70,
+                                                icon:
+                                                    Icon(Icons.arrow_drop_down),
+                                                iconSize: 28,
+                                                hint: Text('Select Floor'),
+                                                isExpanded: true,
+                                                value: flt,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                items: snapshot.data
+                                                    .map((selectedFlat) {
+                                                  return DropdownMenuItem<Flat>(
+                                                    value: selectedFlat,
+                                                    child: Text(
+                                                        selectedFlat.fltName),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (Flat selectedFlat) {
+                                                  setState(() {
+                                                    flt = selectedFlat;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        margin: new EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.all(8),
+                                        // ignore: deprecated_member_use
+                                        child: FlatButton(
+                                          child: Text(
+                                            'Next',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.all(12),
+                                          shape: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                          onPressed: () async {
+                                            rm = await getrooms(flt.fltId);
 
-    poppages(c) {
-    // Future.delayed(Duration.zero, () {Navigator.pushAndRemoveUntil(c, ModalRoute.of(c), (Route<dynamic> route) => false);});
-    return AlertDialog(
+                                            //print(pt.p_type);
+                                            // print(rm[1]);
+                                            //  print(rm[0].r_name);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (
+                                                context,
+                                              ) =>
+                                                      Container(
+                                                        child: HomeTest(
+                                                            pt: pt,
+                                                            fl: fl,
+                                                            flat: flt,
+                                                            rm: rm,
+                                                            dv: dv),
+                                                      )),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                      child: Text(
+                                          "Please select a place to proceed further"));
+                                }
+                              }),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+            })),
+        onWillPop: () => showDialog<bool>(
+          context: context,
+          builder: (c) => poppages(c),
+        ),
+      ),
+    );
+  }
+}
+
+poppages(c) {
+  // Future.delayed(Duration.zero, () {Navigator.pushAndRemoveUntil(c, ModalRoute.of(c), (Route<dynamic> route) => false);});
+  return AlertDialog(
     title: Text('Warning'),
     content: Text('Do you want to exit'),
     actions: [
-    // ignore: deprecated_member_use
-    FlatButton(
-    child: Text('Yes'),
-    onPressed: () => exit(0),
-    ),
-    // ignore: deprecated_member_use
-    FlatButton(
-    child: Text('No'),
-    onPressed: () => Navigator.pop(c, false),
-    ),
+      // ignore: deprecated_member_use
+      FlatButton(
+        child: Text('Yes'),
+        onPressed: () => exit(0),
+      ),
+      // ignore: deprecated_member_use
+      FlatButton(
+        child: Text('No'),
+        onPressed: () => Navigator.pop(c, false),
+      ),
     ],
-    );
-    }
+  );
+}

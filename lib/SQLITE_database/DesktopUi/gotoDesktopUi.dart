@@ -10,12 +10,13 @@ class HomeViewLarge extends StatefulWidget {
   Flat flt;
   FloorType fl;
   List<RoomType> rm;
+  List<Device> dv;
   var tabbarState;
   final int currentIndex;
   final Function(int selectedIndex) onTapped;
 
   HomeViewLarge(this.currentIndex, this.onTapped,{
-   this.rm,this.flt,this.fl,this.pt,this.tabbarState
+   this.rm,this.flt,this.fl,this.pt,this.tabbarState,this.dv
   });
 
   @override
@@ -57,7 +58,7 @@ class _HomeViewLargeState extends State<HomeViewLarge> {
               index: _index,
               children: allDestinations.map<Widget>((
                   Destination destination) {
-                return DestinationView(destination: destination,pt: widget.pt,fl: widget.fl,flat: widget.flt,rm: widget.rm,tabbarState: widget.tabbarState,);
+                return DestinationView(destination: destination,pt: widget.pt,fl: widget.fl,flat: widget.flt,rm: widget.rm,tabbarState: widget.tabbarState,dv: widget.dv,);
               }).toList(),
             ),
           ),

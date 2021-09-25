@@ -89,6 +89,7 @@ class _DesktopHomeState extends State<DesktopHome> {
 
   String _alarmTimeString;
   var getVariable;
+  String _dateString = "";
   int counter=0;
   TimeOfDay time;
   TimeOfDay time23;
@@ -114,6 +115,8 @@ class _DesktopHomeState extends State<DesktopHome> {
   Future flatVal;
 
   Future floorValWeb;
+
+  TextEditingController pinNameController =TextEditingController();
 
 
 
@@ -153,6 +156,7 @@ class _DesktopHomeState extends State<DesktopHome> {
       slider2 = 0;
   int slider3 = 1;
   var dvlenght;
+  DateTime pickedDate;
   pickTime(index) async {
     time23 = await showTimePicker(
         context: context,
@@ -161,22 +165,47 @@ class _DesktopHomeState extends State<DesktopHome> {
           return Theme(data: ThemeData(), child: child);
         });
     // print(time23);
+    String time12;
     if (time23 != null) {
       setState(() {
         time = time23;
-        print(time);
+        print('Time ${time}');
+
       });
+      time12=time.toString();
+      cutTime=time12.substring(10,15);
+      print('cutTime ${cutTime}');
     }
   }
 
   @override
   void initState(){
     super.initState();
+    pickedDate = DateTime.now();
     getUid();
     print('tabbbass147as4s4 ${widget.tabbarState}');
   }
 
+  pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      initialDate: pickedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (date != null) {
+      setState(() {
+        pickedDate = date;
+      });
+    }
+    String date2 = pickedDate.toString();
+    setState(() {
+      cutDate = date2.substring(0, 10);
+    });
 
+    print('pickedDate ${date2}');
+    print('pickedDate ${cutDate}');
+  }
   getIp() async {
     print('no');
     while(counter<=dv.length-1){
@@ -464,7 +493,7 @@ class _DesktopHomeState extends State<DesktopHome> {
               ],
             ),
             content: TextField(
-              // controller: pinNameController,
+              controller: pinNameController,
             ),
             actions: <Widget>[
               Padding(
@@ -472,8 +501,8 @@ class _DesktopHomeState extends State<DesktopHome> {
                 child: MaterialButton(
                   elevation: 5.0,
                   child: Text('Submit'),
-                  onPressed: () {
-                    // addPinsName(pinNameController.text, index);
+                  onPressed: () async{
+                    await addPinsName(pinNameController.text, index);
                     Navigator.of(context).pop();
                     //
 
@@ -488,6 +517,109 @@ class _DesktopHomeState extends State<DesktopHome> {
             ],
           );
         });
+  }
+  var postDataPinName;
+  Future addPinsName(String data, int index) async {
+    print('editpinnames ${index}');
+    String token = await getTokenWeb();
+    final url = API+'editpinnames/';
+
+
+    if (index == 0) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin1Name": data
+      };
+    } else if (index == 1) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin2Name": data,
+      };
+    } else if (index == 2) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin3Name": data,
+      };
+    } else if (index == 3) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin4Name": data,
+      };
+    } else if (index == 4) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin5Name": data,
+      };
+    } else if (index == 5) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin6Name": data,
+      };
+    } else if (index == 6) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin7Name": data,
+      };
+    } else if (index == 7) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin8Name": data,
+      };
+    } else if (index == 8) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin9Name": data,
+      };
+    } else if (index == 9) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin10Name": data,
+      };
+    } else if (index == 10) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin11Name": data,
+      };
+    } else if (index == 11) {
+      postDataPinName = {
+        "d_id": deviceId,
+        "pin12Name": data,
+      };
+    }
+
+    //
+    //  postDataPinName = {
+    //
+    //   "d_id": deviceIdForSensor,
+    //   "pin1Name": data.toString(),
+    //   "pin2Name": data,
+    //   "pin3Name": data,
+    //   "pin4Name": data,
+    //   "pin5Name": data,
+    //
+    // };
+    final response = await http.put(
+      url,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(postDataPinName),
+    );
+
+    if (response.statusCode > 0) {
+      print('DevicePinResponseCode ${response.statusCode}');
+      print(response.body);
+
+      var devicePinResponse = jsonDecode(response.body);
+      print(' DevicePinResponse--> $devicePinResponse');
+      print(' PinName--> ${postDataPinName['pin2Name']}');
+      namesDataList[index] = postDataPinName[index];
+      print('namesDataList $namesDataList');
+      return DevicePin.fromJson(postDataPinName);
+    } else {
+      throw Exception('Failed to Update Pin Name.');
+    }
   }
 var tokenWeb;
   Future getTokenWeb()async{
@@ -1080,8 +1212,142 @@ bool switchOn;
       throw Exception('Failed to Update data');
     }
   }
+  var deviceId;
+  int checkSwitch;
+  int sliderValue;
+
+  Future schedulingDevicePin(String dId, index) async {
+    final url = API+'schedulingpinsalltheway/';
+    String token = await getTokenWeb();
+    var postData;
+    if (index == 0) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": cutTime.toString(),
+        "pin1Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 1) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": _alarmTimeString.toString(),
+        "pin2Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 2) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate.toString(),
+        "timing1": _alarmTimeString,
+        "pin2Status": checkSwitch,
+        "d_id": dId.toString(),
+      };
+    } else if (index == 3) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin4Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 4) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin5Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 5) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin6Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 6) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin7Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 7) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin8Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 8) {
+      postData = {
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin9Status": checkSwitch,
+        "d_id": dId,
+      };
+    } else if (index == 9) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin10Status": sliderValue,
+        "d_id": dId,
+      };
+    } else if (index == 10) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin11Status": sliderValue,
+        "d_id": dId,
+      };
+    }else if (index == 11) {
+      postData = {
+
+        "user": getUidVariable2,
+        "date1": cutDate,
+        "timing1": _alarmTimeString,
+        "pin12Status": sliderValue,
+        "d_id": dId,
+      };
+    }
+    final response = await http.post(url, body: jsonEncode(postData), headers: {
+      'Content-Type': 'application/json',
+      // 'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print("SchedulingStatus ${response.statusCode}");
+      print("SchedulingStatus ${response.body}");
+      if(response.statusCode==201){
+        final snackBar = SnackBar(
+          content: Text('Device Scheduled '),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+  }
+
+  var cutDate;
+  TimeOfDay pickedTime;
+  var cutTime;
+
+
   deviceContainer(String dId,int index) async {
+    getData(dId);
+    getPinsName(dId);
+    deviceId=dId;
     catchReturn = await getData(dId);
+
     print('insidedevicecontainercatchreturn $catchReturn');
     var namesDataList12= await getPinsName(dId);
     // deviceSensorVal = getSensorData(dId);
@@ -1135,11 +1401,16 @@ bool switchOn;
   }
 var textSelected;
   deviceContainer2(String dId,int index) {
+    var deviceSize= MediaQuery.of(context).size.height;
+    var deviceWidth= MediaQuery.of(context).size.width;
+    print('Mediadsaass $deviceSize');
+    print('deviceWidth $deviceWidth');
     deviceContainer(dId,index);
     // fetchIp(dId);
     return Container(
-      height: MediaQuery.of(context).size.height * 2.8,
-      // color: Colors.redAccent,
+      height: MediaQuery.of(context).size.height * 1.55,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.redAccent,
       child: Column(
         children: [
           Row(
@@ -1215,8 +1486,9 @@ var textSelected;
             ],
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 1.2,
-            // color: Colors.amber,
+            height: MediaQuery.of(context).size.height * 0.98,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.amber,
             child: GridView.count(
                 crossAxisSpacing: 8,
                 childAspectRatio: 2 / 1.8,
@@ -1236,8 +1508,12 @@ var textSelected;
                     child: GestureDetector(
                       // onTap:Text(),
                       onLongPress: () async {
+                        print('finalDate ${cutDate}');
                         _alarmTimeString =
                             DateFormat('HH:mm').format(DateTime.now());
+                        cutDate = DateFormat('dd-MM-yyyy').format(
+                            DateTime.now());
+                        print('finalDate ${cutDate}');
                         showModalBottomSheet(
                             useRootNavigator: true,
                             context: context,
@@ -1253,6 +1529,20 @@ var textSelected;
                                 return Container(
                                     padding: const EdgeInsets.all(32),
                                     child: Column(children: [
+                                      Container(
+                                        width: 145,
+                                        child: GestureDetector(
+                                            child: Text(cutDate
+                                                .toString() == null
+                                                ? _dateString
+                                                : cutDate.toString()
+                                                .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                            onTap: () {
+                                              pickDate();
+                                            }
+
+                                        ),
+                                      ),
                                       // ignore: deprecated_member_use
                                       FlatButton(
                                         onPressed: () async {
@@ -1294,7 +1584,7 @@ var textSelected;
                                           labels: ['On', 'Off'],
                                           onToggle: (index) {
                                             print('switched to: $index');
-
+                                            checkSwitch = index;
                                             setState(() {
                                               changeIndex(index);
                                             });
@@ -1303,8 +1593,8 @@ var textSelected;
                                         // trailing: Icon(Icons.arrow_forward_ios),
                                       ),
                                       FloatingActionButton.extended(
-                                        onPressed: () {
-                                          pickTime(index);
+                                        onPressed: () async{
+                                          await schedulingDevicePin(dId, index);
                                           Navigator.pop(context);
 
                                           print('Sceduled');
@@ -1319,10 +1609,11 @@ var textSelected;
                       child: Padding(
                         padding:  EdgeInsets.all(12.5),
                         child: Container(
-                          width: MediaQuery.of(context).size.width/75,
+                          width: MediaQuery.of(context).size.width*0,
                             alignment: new FractionalOffset(1.0, 0.0),
                             // alignment: Alignment.bottomRight,
-                            height: MediaQuery.of(context).size.height/85,
+                            height: MediaQuery.of(context).size.height*0.85,
+
                             padding: EdgeInsets.all(12.0),
                             // margin: index / 2 == 0
                             //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
@@ -1331,8 +1622,9 @@ var textSelected;
                             margin: EdgeInsets.only(
                                 top: MediaQuery.of(context).size.height/80,
                                 right: MediaQuery.of(context).size.height/70,
-                              bottom: MediaQuery.of(context).size.height/70
+                              bottom: MediaQuery.of(context).size.height/40
                             ),
+
                             decoration: BoxDecoration(
                                 boxShadow: <BoxShadow>[
                                   BoxShadow(
@@ -1352,16 +1644,15 @@ var textSelected;
                               children: [
                                 Row(
                                   children: [
-
                                     Expanded(
-                                      child: TextButton(
+                                      child: InkWell(
                                         child: Text(
                                           namesDataList[index],
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
                                           style: TextStyle(fontSize: 10),
                                         ),
-                                        onPressed: () {
+                                        onTap: () async{
                                           print('index->  ${names[index]}');
                                           setState(() {
                                             if (names[index] != null) {
@@ -1371,15 +1662,12 @@ var textSelected;
                                           });
                                           _createAlertDialogForNameDeviceBox(context,index);
 
-                                           addDeviceName(index);
+                                            addDeviceName(index);
                                         },
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 14.5,
-                                        vertical: 10
-                                      ),
+                                      padding: const EdgeInsets.only(left: 18.0),
                                       child: Switch(
                                         value: responseGetData[index] == 0
                                             ? val2
@@ -1448,234 +1736,237 @@ var textSelected;
                   );
                 })),
           ),
-          Flexible(
-            child: Container(
-              height: MediaQuery.of(context).size.height /70,
-              // color: Colors.black,
-              // color: Colors.amber,
-              child: GridView.count(
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 2 / 1.8,
-                  mainAxisSpacing: 4,
-                  physics: NeverScrollableScrollPhysics(),
-                  // shrinkWrap: true,
-                  crossAxisCount: 2,
-                  children: List.generate(
-                    // 3,
-                      responseGetData.length - 9,
-                          (index) {
-                    print('Slider Start');
-                    print('catch return --> $catchReturn');
-                    var newIndex = index + 10;
-                    return Container(
-                      // color: Colors.deepOrange,
-                      // height: 2030,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            // onTap:Text(),
-                            onLongPress: () async {
-                              _alarmTimeString =
-                                  DateFormat('HH:mm').format(DateTime.now());
-                              showModalBottomSheet(
-                                  useRootNavigator: true,
-                                  context: context,
-                                  clipBehavior: Clip.antiAlias,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(24),
-                                    ),
+          // SizedBox(height: 10,),
+          Container(
+            height: MediaQuery.of(context).size.height *0.35,
+            color: Colors.black,
+            // color: Colors.amber,
+            child: GridView.count(
+                crossAxisSpacing: 8,
+                childAspectRatio: 2 / 1.8,
+                mainAxisSpacing: 4,
+                physics: NeverScrollableScrollPhysics(),
+                // shrinkWrap: true,
+                crossAxisCount: 3,
+                children: List.generate(
+                  // 3,
+                    responseGetData.length - 9,
+                        (index) {
+                  print('Slider Start');
+                  print('catch return --> $catchReturn');
+                  var newIndex = index + 10;
+                  return Container(
+                    // color: Colors.deepOrange,
+                    // height: 2030,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          // onTap:Text(),
+                          onLongPress: () async {
+                            _alarmTimeString =
+                                DateFormat('HH:mm').format(DateTime.now());
+                            showModalBottomSheet(
+                                useRootNavigator: true,
+                                context: context,
+                                clipBehavior: Clip.antiAlias,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(24),
                                   ),
-                                  builder: (context) {
-                                    return StatefulBuilder(
-                                        builder: (context, setModalState) {
-                                      return Container(
-                                          padding: const EdgeInsets.all(32),
-                                          child: Column(children: [
-                                            // ignore: deprecated_member_use
-                                            FlatButton(
-                                              onPressed: () async {
-                                                pickTime(index);
-                                                // s
-                                                print("index --> $index");
-                                                // var selectedTime = await showTimePicker(
-                                                //   context: context,
-                                                //   initialTime: TimeOfDay.now(),
-                                                // );
-                                                // if (selectedTime != null) {
-                                                //   final now = DateTime.now();
-                                                //   var selectedDateTime = DateTime(
-                                                //       now.year,
-                                                //       now.month,
-                                                //       now.day,
-                                                //       selectedTime.hour,
-                                                //       selectedTime.minute);
-                                                //   _alarmTime = selectedDateTime;
-                                                //   setModalState(() {
-                                                //     _alarmTimeString =
-                                                //         DateFormat('HH:mm')
-                                                //             .format(selectedDateTime);
-                                                //   });
-                                                // }
-                                              },
-                                              child: Text(
-                                                _alarmTimeString,
-                                                style: TextStyle(fontSize: 32),
-                                              ),
-                                            ),
-                                            ListTile(
-                                              title:
-                                                  Text('What Do You Want ??'),
-                                              trailing: Icon(Icons.timer),
-                                            ),
-                                            ListTile(
-                                              title: ToggleSwitch(
-                                                initialLabelIndex: 0,
-                                                labels: ['On', 'Off'],
-                                                onToggle: (index) {
-                                                  print('switched to: $index');
-
-                                                  setState(() {
-                                                    changeIndex(index);
-                                                  });
-                                                },
-                                              ),
-                                              // trailing: Icon(Icons.arrow_forward_ios),
-                                            ),
-                                            FloatingActionButton.extended(
-                                              onPressed: () {
-                                                pickTime(index);
-                                                Navigator.pop(context);
-
-                                                print('Sceduled');
-                                              },
-                                              icon: Icon(Icons.alarm),
-                                              label: Text('Save'),
-                                            ),
-                                          ]));
-                                    });
-                                  });
-                            },
-                            child: Container(
-                                // alignment: new FractionalOffset(1.0, 0.0),
-                                alignment: Alignment.bottomRight,
-                                height: 120,
-                                // padding: EdgeInsets.symmetric(
-                                //     horizontal: 1, vertical: 10),
-                                // margin: index % 2 == 0
-                                //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
-                                //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
-                                // margin: EdgeInsets.fromLTRB(95, 77.5, 7.5, 75),
-                                // margin: EdgeInsets.only(top: 41,right: 81,bottom: 70),
-                                decoration: BoxDecoration(
-                                    boxShadow: <BoxShadow>[
-                                      BoxShadow(
-                                          blurRadius: 10,
-                                          offset: Offset(8, 10),
-                                          color: Colors.black)
-                                    ],
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 1,
-                                        style: BorderStyle.solid,
-                                        color: Color(0xffa3a3a3)),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
+                                ),
+                                builder: (context) {
+                                  return StatefulBuilder(
+                                      builder: (context, setModalState) {
+                                    return Container(
+                                        padding: const EdgeInsets.all(32),
+                                        child: Column(children: [
+                                          // ignore: deprecated_member_use
+                                          FlatButton(
+                                            onPressed: () async {
+                                              pickTime(index);
+                                              // s
+                                              print("index --> $index");
+                                              // var selectedTime = await showTimePicker(
+                                              //   context: context,
+                                              //   initialTime: TimeOfDay.now(),
+                                              // );
+                                              // if (selectedTime != null) {
+                                              //   final now = DateTime.now();
+                                              //   var selectedDateTime = DateTime(
+                                              //       now.year,
+                                              //       now.month,
+                                              //       now.day,
+                                              //       selectedTime.hour,
+                                              //       selectedTime.minute);
+                                              //   _alarmTime = selectedDateTime;
+                                              //   setModalState(() {
+                                              //     _alarmTimeString =
+                                              //         DateFormat('HH:mm')
+                                              //             .format(selectedDateTime);
+                                              //   });
+                                              // }
+                                            },
                                             child: Text(
-                                              namesDataList[index+9],
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                              style: TextStyle(fontSize: 10),
+                                              _alarmTimeString,
+                                              style: TextStyle(fontSize: 32),
                                             ),
+                                          ),
+                                          ListTile(
+                                            title:
+                                                Text('What Do You Want ??'),
+                                            trailing: Icon(Icons.timer),
+                                          ),
+                                          ListTile(
+                                            title: ToggleSwitch(
+                                              initialLabelIndex: 0,
+                                              labels: ['On', 'Off'],
+                                              onToggle: (index) {
+                                                print('switched to: $index');
+
+                                                setState(() {
+                                                  changeIndex(index);
+                                                });
+                                              },
+                                            ),
+                                            // trailing: Icon(Icons.arrow_forward_ios),
+                                          ),
+                                          FloatingActionButton.extended(
                                             onPressed: () {
-                                              print(
-                                                  'index->  ${names[index]}');
-                                              setState(() {
-                                                if (names[index] != null) {
-                                                  names[index] =
-                                                      deviceNameEditing.text;
-                                                }
-                                              });
-                                              _createAlertDialogForNameDeviceBox(context,index);
+                                              pickTime(index);
+                                              Navigator.pop(context);
 
-                                              return addDeviceName(index);
+                                              print('Sceduled');
                                             },
+                                            icon: Icon(Icons.alarm),
+                                            label: Text('Save'),
                                           ),
-                                        ),
-                                        Container(
-                                          width: 109,
-                                          child: Slider(
-                                            value: 5.0,
-                                            // value: double.parse(
-                                            //     responseGetData[newIndex - 1]
-                                            //         .toString()),
-                                            min: 0,
-                                            max: 10,
-                                            divisions: 500,
-                                            activeColor: Colors.blue,
-                                            inactiveColor: Colors.black,
-                                            label:
-                                                '${widget.Slider_get.round()}',
-                                            onChanged:
-                                                (double newValue) async {
-                                              print(
-                                                  'index of data $index --> ${responseGetData[newIndex - 1]}');
-                                              print(
-                                                  'index of $index --> ${newIndex - 1}');
+                                        ]));
+                                  });
+                                });
+                          },
+                          child: Container(
 
-                                              setState(() {
-                                                // if (responseGetData[newIndex-1] != null) {
-                                                //   responseGetData[newIndex-1] = widget.Slider_get.round();
-                                                // }
-
-                                                print("Round-->  ${newValue.round()}");
-                                                var roundVar = newValue.round();
-                                                print("Round 2-->  $roundVar");
-                                                responseGetData[newIndex - 1] = roundVar;
-                                                print(
-                                                    "Response Round-->  ${responseGetData[newIndex - 1]}");
-                                              });
-
-                                              // if Internet is not available then _checkInternetConnectivity = true
-                                              var result =
-                                                  await Connectivity()
-                                                      .checkConnectivity();
-                                              if (result ==
-                                                  ConnectivityResult.wifi) {
-                                                print("True2-->   $result");
-                                                // await localUpdate(dId);
-                                                // await dataUpdate(dId);
-                                              } else if (result ==
-                                                  ConnectivityResult.mobile) {
-                                                print("mobile-->   $result");
-                                                // await localUpdate(d_id);
-                                                // await dataUpdate(dId);
-                                              } else {
-                                                // messageSms(context, dId);
-                                              }
-                                            },
-                                            // semanticFormatterCallback: (double newValue) {
-                                            //   return '${newValue.round()}';
-                                            // }
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              // alignment: new FractionalOffset(1.0, 0.0),
+                              alignment: Alignment.bottomRight,
+                              height: 120,
+                              // padding: EdgeInsets.symmetric(
+                              //     horizontal: 1, vertical: 10),
+                              // margin: index % 2 == 0
+                              //     ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
+                              //     : EdgeInsets.fromLTRB(7.5, 7.5, 15, 7.5),
+                              // margin: EdgeInsets.fromLTRB(95, 77.5, 7.5, 75),
+                              margin: EdgeInsets.only(top: 11,
+                                  right: deviceWidth/70,
+                                  left: 55
+                                  ),
+                              decoration: BoxDecoration(
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                        blurRadius: 10,
+                                        offset: Offset(8, 10),
+                                        color: Colors.black)
                                   ],
-                                )),
-                          ),
-                        ],
-                      ),
-                    );
-                  })),
-            ),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1,
+                                      style: BorderStyle.solid,
+                                      color: Color(0xffa3a3a3)),
+                                  borderRadius: BorderRadius.circular(20)),
+                                child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextButton(
+                                          child: Text(
+                                            namesDataList[index+9],
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                          onPressed: ()async {
+                                            // print(
+                                            //     'index->  ${names[index]}');
+                                            // setState(() {
+                                            //   if (names[index] != null) {
+                                            //     names[index] =
+                                            //         deviceNameEditing.text;
+                                            //   }
+                                            // });
+                                           await  _createAlertDialogForNameDeviceBox(context,index+9);
+
+
+                                          },
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 109,
+                                        child: Slider(
+                                          value: 5.0,
+                                          // value: double.parse(
+                                          //     responseGetData[newIndex - 1]
+                                          //         .toString()),
+                                          min: 0,
+                                          max: 10,
+                                          divisions: 500,
+                                          activeColor: Colors.blue,
+                                          inactiveColor: Colors.black,
+                                          label:
+                                              '${widget.Slider_get.round()}',
+                                          onChanged:
+                                              (double newValue) async {
+                                            print(
+                                                'index of data $index --> ${responseGetData[newIndex - 1]}');
+                                            print(
+                                                'index of $index --> ${newIndex - 1}');
+
+                                            setState(() {
+                                              // if (responseGetData[newIndex-1] != null) {
+                                              //   responseGetData[newIndex-1] = widget.Slider_get.round();
+                                              // }
+
+                                              print("Round-->  ${newValue.round()}");
+                                              var roundVar = newValue.round();
+                                              print("Round 2-->  $roundVar");
+                                              responseGetData[newIndex - 1] = roundVar;
+                                              print(
+                                                  "Response Round-->  ${responseGetData[newIndex - 1]}");
+                                            });
+
+                                            // if Internet is not available then _checkInternetConnectivity = true
+                                            var result =
+                                                await Connectivity()
+                                                    .checkConnectivity();
+                                            if (result ==
+                                                ConnectivityResult.wifi) {
+                                              print("True2-->   $result");
+                                              // await localUpdate(dId);
+                                              // await dataUpdate(dId);
+                                            } else if (result ==
+                                                ConnectivityResult.mobile) {
+                                              print("mobile-->   $result");
+                                              // await localUpdate(d_id);
+                                              // await dataUpdate(dId);
+                                            } else {
+                                              // messageSms(context, dId);
+                                            }
+                                          },
+                                          // semanticFormatterCallback: (double newValue) {
+                                          //   return '${newValue.round()}';
+                                          // }
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                        ),
+                      ],
+                    ),
+                  );
+                })),
           ),
         ],
       ),
@@ -3245,85 +3536,211 @@ Future flatValWeb;
                                         ),
                                       ],
                                     ),
-
+                                    SizedBox(
+                                    height: 45,
+                                      // height: MediaQuery.of(context).size.height/70.2,
+                                    ),
                                     Row(
-                                      children: <Widget>[
-                                        Row(
-                                          children: [
-
-                                            Text('Flat - ', style: TextStyle(
-                                                  color: Colors
-                                                      .white,
-                                                  fontWeight: FontWeight
-                                                      .bold,
-
-                                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                                  fontSize: 22),),
-
-                                            Text(
-                                              widget.flt.fltName.toString(),
-                                              style: TextStyle(
-                                                  color: Colors
-                                                      .white,
-                                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                                  // fontWeight: FontWeight.bold,
-                                                  // fontStyle: FontStyle
-                                                  //     .italic,
-                                                  fontSize: 22),
-                                            ),
-                                            InkWell(
-                                              onTap: (){
-                                                flatValWeb=getflatWebForDropDown(widget.fl.fId);
-                                                _createAlertDialogDropDownFlat(context);},
-                                              child: Icon(Icons
-                                                  .arrow_drop_down),
-                                            ),
-                                            SizedBox(width: 10,),
-                                            InkWell(
-                                              onTap: () async {
-                                                _createAlertDialogForDeleteFlatAndAddFlat(
-                                                    context);
-                                              },
-                                              child: Icon(SettingIcon.params,size: 18,),
-                                            ),
-                                            Row(
-                                              children: [
-                                                SizedBox(width: 28,),
-                                                Container(
-                                                  // color:Colors.red,
-                                                  child: CircularProfileAvatar(
-                                                    '',
-                                                    child: setImage == null
-                                                        ? Image.asset('assets/images/genLogo.png')
-                                                        : setImage,
-                                                    radius: 47.5,
-                                                    // elevation: 5,
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ProfilePage()));
-                                                      //     .then((value) =>
-                                                      // loadImageFromPreferences()
-                                                      //     ? _deleteImage()
-                                                      //     : loadImageFromPreferences());
-                                                    },
-                                                    cacheImage: true,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        GestureDetector(
+                                          onLongPress: () {
+                                            // _editFloorNameAlertDialog(context);
+                                          },
+                                          child: GestureDetector(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 290.0),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 18.0),
+                                                    child: Text('Flat - ',
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .white,
+                                                          fontFamily: fonttest==null?changeFont:fonttest,
+                                                          fontSize: 22,
+                                                          fontWeight: FontWeight
+                                                              .bold,
+                                                          // fontStyle: FontStyle.italic
+                                                      ),),
                                                   ),
-                                                ),
-                                              ],
+                                                  Text(
+                                                    widget.flt.fltName.toString(),
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontSize: 22,
+                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                        // fontWeight: FontWeight.bold,
+                                                        // fontStyle: FontStyle
+                                                        //     .italic
+                                                    ),
+                                                  ),
+                                                  InkWell(
+                                                      onTap: ()async{
+                                                        flatValWeb=getflatWebForDropDown(widget.fl.fId);
+                                                        _createAlertDialogDropDownFlat(context);
+                                                      },
+                                                      child: Icon(Icons.arrow_drop_down)),
+                                                  SizedBox(width: 10,),
+                                                  InkWell(
+                                                    child: Icon(SettingIcon.params,size: 18,),
+                                                    onTap: () async {
+                                                      _createAlertDialogForDeleteFlatAndAddFlat(
+                                                          context);
+                                                    },
+                                                  ),
+                                                  // Row(
+                                                  //   children: [
+                                                  //     SizedBox(width: 28,),
+                                                  //     Container(
+                                                  //       // color:Colors.red,
+                                                  //       child: CircularProfileAvatar(
+                                                  //         '',
+                                                  //         child: setImage == null
+                                                  //             ? Image.asset('assets/images/genLogo.png')
+                                                  //             : setImage,
+                                                  //         radius: 47.5,
+                                                  //         // elevation: 5,
+                                                  //         onTap: () {
+                                                  //           Navigator.push(
+                                                  //               context,
+                                                  //               MaterialPageRoute(
+                                                  //                   builder: (context) =>
+                                                  //                       ProfilePage()));
+                                                  //           //     .then((value) =>
+                                                  //           // loadImageFromPreferences()
+                                                  //           //     ? _deleteImage()
+                                                  //           //     : loadImageFromPreferences());
+                                                  //         },
+                                                  //         cacheImage: true,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
+                                          ),
+                                          onTap: () {
+                                            // _createAlertDialogDropDown(
+                                            //     context);
+                                          },
                                         ),
-                                        SizedBox(width: 35),
-                                        // GestureDetector(
-                                        //     onTap: () async {
-                                        //
-                                        //     },
-                                        //     child: Icon(Icons.add)),
+                                        Divider(
+                                         thickness: 45.3,
+                                        ),
+                                        // Row(
+                                        //   children: [
+                                        //     SizedBox(width: 28,),
+                                        //     Center(
+                                        //       // color:Colors.red,
+                                        //       child: CircularProfileAvatar(
+                                        //         '',
+                                        //         child: setImage == null
+                                        //             ? Image.asset('assets/images/genLogo.png')
+                                        //             : setImage,
+                                        //         radius: 47.5,
+                                        //         // elevation: 5,
+                                        //         onTap: () {
+                                        //           Navigator.push(
+                                        //               context,
+                                        //               MaterialPageRoute(
+                                        //                   builder: (context) =>
+                                        //                       ProfilePage()));
+                                        //           //     .then((value) =>
+                                        //           // loadImageFromPreferences()
+                                        //           //     ? _deleteImage()
+                                        //           //     : loadImageFromPreferences());
+                                        //         },
+                                        //         cacheImage: true,
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
+
+                                    // Row(
+                                    //   children: <Widget>[
+                                    //     Row(
+                                    //       children: [
+                                    //
+                                    //         Text('Flat - ', style: TextStyle(
+                                    //               color: Colors
+                                    //                   .white,
+                                    //               fontWeight: FontWeight
+                                    //                   .bold,
+                                    //
+                                    //               fontFamily: fonttest==null?changeFont:fonttest,
+                                    //               fontSize: 22),),
+                                    //
+                                    //         Text(
+                                    //           widget.flt.fltName.toString(),
+                                    //           style: TextStyle(
+                                    //               color: Colors
+                                    //                   .white,
+                                    //               fontFamily: fonttest==null?changeFont:fonttest,
+                                    //               // fontWeight: FontWeight.bold,
+                                    //               // fontStyle: FontStyle
+                                    //               //     .italic,
+                                    //               fontSize: 22),
+                                    //         ),
+                                    //         InkWell(
+                                    //           onTap: (){
+                                    //             flatValWeb=getflatWebForDropDown(widget.fl.fId);
+                                    //             _createAlertDialogDropDownFlat(context);
+                                    //             },
+                                    //           child: Icon(Icons
+                                    //               .arrow_drop_down),
+                                    //         ),
+                                    //         SizedBox(width: 10,),
+                                    //         InkWell(
+                                    //           onTap: () async {
+                                    //             _createAlertDialogForDeleteFlatAndAddFlat(
+                                    //                 context);
+                                    //           },
+                                    //           child: Icon(SettingIcon.params,size: 18,),
+                                    //         ),
+                                    //         Row(
+                                    //           children: [
+                                    //             SizedBox(width: 28,),
+                                    //             Container(
+                                    //               // color:Colors.red,
+                                    //               child: CircularProfileAvatar(
+                                    //                 '',
+                                    //                 child: setImage == null
+                                    //                     ? Image.asset('assets/images/genLogo.png')
+                                    //                     : setImage,
+                                    //                 radius: 47.5,
+                                    //                 // elevation: 5,
+                                    //                 onTap: () {
+                                    //                   Navigator.push(
+                                    //                       context,
+                                    //                       MaterialPageRoute(
+                                    //                           builder: (context) =>
+                                    //                               ProfilePage()));
+                                    //                   //     .then((value) =>
+                                    //                   // loadImageFromPreferences()
+                                    //                   //     ? _deleteImage()
+                                    //                   //     : loadImageFromPreferences());
+                                    //                 },
+                                    //                 cacheImage: true,
+                                    //               ),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //     SizedBox(width: 35),
+                                    //     // GestureDetector(
+                                    //     //     onTap: () async {
+                                    //     //
+                                    //     //     },
+                                    //     //     child: Icon(Icons.add)),
+                                    //   ],
+                                    // ),
 
                                   ],
                                 ),

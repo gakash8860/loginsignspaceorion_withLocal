@@ -211,9 +211,11 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
       List subUserDecode = jsonDecode(response.body);
 
 
-      if(subUserDecode.isEmpty){
+      if(subUserDecode.isEmpty ||subUserDecode.length==null ){
         print('asdfsubUserDecode ${subUserDecode}');
-        return Text('No Access');
+        setState(() {
+          noSubUserAdded=true;
+        });
       }
 
       if (allPlaceId.length == subUserDecode.length) {
@@ -1677,7 +1679,7 @@ class _SubAccessSinglePageState extends State<SubAccessSinglePage> {
                 ),
               );
             } else {
-              return Scaffold(
+              return noSubUserAdded==true?NoSubUser():Scaffold(
                 appBar: AppBar(
                   title: GestureDetector(
                     child: Text(pt.pType.toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),

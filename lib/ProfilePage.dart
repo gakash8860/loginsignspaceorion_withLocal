@@ -226,6 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
+    print('statusCode ${response.statusCode}');
     if (response.statusCode == 200) {
       print('statusCode ${response.statusCode}');
       print('statusCode ${response.body}');

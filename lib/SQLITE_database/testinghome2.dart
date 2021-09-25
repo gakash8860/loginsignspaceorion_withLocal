@@ -11,6 +11,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
+import 'package:loginsignspaceorion/BillUsage/billui.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
@@ -750,7 +751,7 @@ var tokenWeb;
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                    addPlaceName(placeEditing.text);
+                    await addPlaceName(placeEditing.text);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -1769,7 +1770,6 @@ var tokenWeb;
                     child: Text('Submit'),
                     onPressed: () async {
                       await addRoom(roomEditing.text);
-                      await getAllRoom();
                      await roomQueryFunc();
 
                       Navigator.of(context).pop();
@@ -4464,7 +4464,7 @@ String piname;
                   setState(() {
                     _currentIndex = index;
                   });
-                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,tabbarState: widget.tabbarState,);
+                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,tabbarState: widget.tabbarState,dv: widget.dv,);
               } else {
 
                 return Scaffold(
@@ -4690,7 +4690,7 @@ String piname;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BillEstimation(),
+                                      builder: (context) => BillUi(),
                                     ),
                                   );
                                 }),
@@ -5232,8 +5232,6 @@ String piname;
                                                 });
                                                 widget.dv = await NewDbProvider.instance
                                                     .getDeviceByRoomId(tabbarState);
-                                                widget.dv = await NewDbProvider.instance
-                                                    .getDeviceByRoomId(tabbarState);
 
                                                 print("tabbarState Tabs->  $tabbarState");
 
@@ -5418,7 +5416,8 @@ bool switchOn;
 
   deviceContainer(String dId, int index) async {
      deviceId=dId;
-
+     getData(dId);
+     getPinsName(dId);
      // await seprate(index,dId);
     devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
@@ -6346,7 +6345,6 @@ bool switchOn;
     print('pickedDate ${date2}');
     print('pickedDate ${cutDate}');
   }
-
   pickTime(index) async {
     time23 = await showTimePicker(
         context: context,
@@ -6491,11 +6489,13 @@ bool switchOn;
                           children: [
                             GestureDetector(
                               // onTap:Text(),
-                              onLongPress: () async {
+                              onLongPress: (){
+                                print('finalDate ${cutDate}');
                                 _alarmTimeString =
                                     DateFormat('HH:mm').format(DateTime.now());
                                 cutDate = DateFormat('dd-MM-yyyy').format(
                                     DateTime.now());
+                                print('finalDate ${cutDate}');
                                 showModalBottomSheet(
                                     useRootNavigator: true,
                                     context: context,
@@ -6517,11 +6517,10 @@ bool switchOn;
                                                     width: 145,
                                                     child: GestureDetector(
                                                         child: Text(cutDate
-                                                             == null
+                                                            .toString() == null
                                                             ? _dateString
                                                             : cutDate.toString()
-                                                            .toString(),
-                                                        style:TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
+                                                            .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                         onTap: () {
                                                           pickDate();
                                                         }
@@ -6561,7 +6560,7 @@ bool switchOn;
                                                   ),
                                                   ListTile(
                                                     title:
-                                                    Text('What Do You Want ??',style:TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
+                                                    Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                     trailing: Icon(Icons.timer),
                                                   ),
                                                   ListTile(
@@ -6580,16 +6579,15 @@ bool switchOn;
                                                     ),
                                                     // trailing: Icon(Icons.arrow_forward_ios),
                                                   ),
-
                                                   FloatingActionButton.extended(
-                                                    onPressed: () async {
+                                                    onPressed: () async{
                                                       await schedulingDevicePin(dId, index);
                                                       Navigator.pop(context);
 
                                                       print('Sceduled');
                                                     },
                                                     icon: Icon(Icons.alarm),
-                                                    label: Text('Save',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                    label: Text('Save'),
                                                   ),
                                                 ]));
                                           });
@@ -6733,11 +6731,13 @@ bool switchOn;
                             children: [
                               GestureDetector(
                                 // onTap:Text(),
-                                onLongPress: () async {
-                                  _alarmTimeString = DateFormat('HH:mm')
-                                      .format(DateTime.now());
+                                onLongPress: (){
+                                  print('finalDate ${cutDate}');
+                                  _alarmTimeString =
+                                      DateFormat('HH:mm').format(DateTime.now());
                                   cutDate = DateFormat('dd-MM-yyyy').format(
                                       DateTime.now());
+                                  print('finalDate ${cutDate}');
                                   showModalBottomSheet(
                                       useRootNavigator: true,
                                       context: context,
@@ -6754,28 +6754,26 @@ bool switchOn;
                                                   padding: const EdgeInsets.all(
                                                       32),
                                                   child: Column(children: [
+                                                    // ignore: deprecated_member_use
                                                     Container(
                                                       width: 145,
                                                       child: GestureDetector(
                                                           child: Text(cutDate
                                                               .toString() == null
                                                               ? _dateString
-                                                              : cutDate
-                                                              .toString(),
-                                                          style:TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
+                                                              : cutDate.toString()
+                                                              .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                                           onTap: () {
                                                             pickDate();
                                                           }
 
                                                       ),
                                                     ),
-                                                    // ignore: deprecated_member_use
+
                                                     FlatButton(
                                                       onPressed: () async {
                                                         pickTime(index);
-                                                        // s
-                                                        print(
-                                                            "index --> $index");
+                                                        print("index --> $index");
                                                         // var selectedTime = await showTimePicker(
                                                         //   context: context,
                                                         //   initialTime: TimeOfDay.now(),
@@ -6803,52 +6801,37 @@ bool switchOn;
                                                       ),
                                                     ),
                                                     ListTile(
-                                                      title: Text(
-                                                          'What Do You Want ??'),
-                                                      trailing: Icon(
-                                                          Icons.timer),
+                                                      title:
+                                                      Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                      trailing: Icon(Icons.timer),
                                                     ),
                                                     ListTile(
-                                                      title:  Slider(
-                                                        min: 0.0,
-                                                        max: 10.0,
-                                                        value: double.parse(
-                                                            responseGetData[
-                                                            newIndex - 1]
-                                                                .toString()),
-                                                        divisions: 500,
-                                                        activeColor: Colors.blue,
-                                                        inactiveColor: Colors.black,
-                                                        onChanged: (double value) async{
-                                                          // print('valuecheck ${value}');
+                                                      title: ToggleSwitch(
+                                                        initialLabelIndex: 0,
+                                                        labels: ['Off', 'On'],
+                                                        onToggle: (index) {
+                                                          print(
+                                                              'switched to: $index');
+                                                          checkSwitch = index;
+                                                          // changeIndex(index);
                                                           // setState(() {
-                                                          _value = value;
+                                                          //
                                                           // });
-                                                          var roundVar = value.round();
-                                                          sliderValue=roundVar.round();
-                                                          await dataUpdate(dId);
-                                                          // sliderValue=int.parse(_value.toString());
-                                                          print('valuecheck $sliderValue');
                                                         },
                                                       ),
                                                       // trailing: Icon(Icons.arrow_forward_ios),
                                                     ),
-                                                    FloatingActionButton
-                                                        .extended(
-                                                      onPressed: ()async {
-                                                        // pickTime(index);
-                                                        await schedulingDevicePin(
-                                                            dId, newIndex-1);
+                                                    FloatingActionButton.extended(
+                                                      onPressed: () async{
+                                                        await schedulingDevicePin(dId, index);
                                                         Navigator.pop(context);
 
                                                         print('Sceduled');
                                                       },
                                                       icon: Icon(Icons.alarm),
-                                                      label: Text('Save',style:TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
+                                                      label: Text('Save'),
                                                     ),
-                                                  ]
-                                                  )
-                                              );
+                                                  ]));
                                             });
                                       });
                                 },

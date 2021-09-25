@@ -34,8 +34,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-var API = 'http://127.0.0.1:8000/';
-// var API = 'https://genorion1.herokuapp.com/';
+// var API = 'http://127.0.0.1:8000/';
+var API = 'https://genorion1.herokuapp.com/';
 List roomData;
 List floorData;
 List placeData;
@@ -52,6 +52,7 @@ List<PlaceType> placeType;
 List<RoomType>  room;
 final storage = new FlutterSecureStorage();
 var statusOfDevice;
+
 Future<String> getToken() async {
   final token = await storage.read(key: "token");
   print(token);
@@ -676,10 +677,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
   getImage() async {
     String token = await getToken();
-    // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
     final url =
         API+'testimages123/?user=' + getUidVariable;
-    // final url = 'http://192.168.0.105:8000/testimages123/?user=1';;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
