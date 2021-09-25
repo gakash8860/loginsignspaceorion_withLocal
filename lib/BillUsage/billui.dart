@@ -1,11 +1,11 @@
 import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../main.dart';
-
+import 'package:dio/dio.dart' as dio;
 class BillUi extends StatefulWidget {
   const BillUi({Key key}) : super(key: key);
 
@@ -14,6 +14,8 @@ class BillUi extends StatefulWidget {
 }
 
 class _BillUiState extends State<BillUi> {
+  String datefinal;
+  var difference;
   List minute = [
     '10 minute',
     '20 minute',
@@ -58,18 +60,22 @@ class _BillUiState extends State<BillUi> {
   int changeValue;
   List<dynamic> tenMinuteEnergy;
   List<dynamic> hourEnergy;
+  List<dynamic> dayEnergy= List(366);
   var last10Minute = 'Please Select';
   var pleaseSelect = 'Please Select';
-  String difference = "";
+  // String difference = "";
   DateTime pickedDate;
+  DateTime pickedDate2;
   var currentDate;
 
   String cutDate;
+  String cutDate2;
   @override
   void initState() {
     super.initState();
 
     pickedDate = DateTime.now();
+    pickedDate2 = DateTime.now();
 
   }
   Future getEnergyTenMinutes(String dId) async {
@@ -135,6 +141,23 @@ class _BillUiState extends State<BillUi> {
       print('tenMinuteEnergy $last10Minute');
     }
   }
+
+  Future getEnergyDay(String dId) async {
+    String token = await getToken();
+    final url = API + 'perdaysenergy?d_id=' + dId;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('tenMinuteEnergy ${response.statusCode}');
+    print('tenMinuteEnergy ${response.body}');
+    if (response.statusCode == 200) {
+      dayEnergy=jsonDecode(response.body);
+      print('dayEnergy ${dayEnergy[0]['day366']}');
+    }
+  }
+
 
   Future getEnergyHour(String dId) async {
     String token = await getToken();
@@ -773,30 +796,31 @@ class _BillUiState extends State<BillUi> {
     }
   }
 
-  pickDate() async {
-    DateTime date = await showDatePicker(
-      context: context,
-      initialDate: pickedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (date != null) {
-      setState(() {
-        pickedDate = date;
-      });
-    }
-    String date2 = pickedDate.toString();
-    setState(() {
-      cutDate = date2.substring(0, 10);
-    });
-
-    print('pickedDate ${date2}');
-    print('pickedDate ${cutDate}');
-  }
+  // pickDate() async {
+  //   DateTime date = await showDatePicker(
+  //     context: context,
+  //     initialDate: pickedDate,
+  //     firstDate: DateTime.now(),
+  //     lastDate: DateTime(2100),
+  //   );
+  //   if (date != null) {
+  //     setState(() {
+  //       pickedDate = date;
+  //     });
+  //   }
+  //   String date2 = pickedDate.toString();
+  //   setState(() {
+  //     cutDate = date2.substring(0, 10);
+  //   });
+  //
+  //   print('pickedDate ${date2}');
+  //   print('pickedDate ${cutDate}');
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: Text('App'),
       ),
@@ -853,16 +877,37 @@ class _BillUiState extends State<BillUi> {
                 Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
               ],
             ),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 InkWell(
                   onTap: () {
-                    dateRange();
+                    showDatePicker1();
                   },
                   child: Text(cutDate == null ? 'Select Date' : cutDate),
                 ),
-                Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                InkWell(
+                  onTap: () {
+                    showDatePicker2();
+                    // print12();
+                    },
+                  child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+
+                  },
+                  child: Text(difference.toString()),
+                ),
+                ElevatedButton(onPressed: (){print12();}, child: Text('Click'))
               ],
             ),
           ],
@@ -870,26 +915,49 @@ class _BillUiState extends State<BillUi> {
       ),
     );
   }
+  DateRangePickerController _datePickerController = DateRangePickerController();
 
-  Widget dateRange(){
-    return SafeArea(
-        child: Scaffold(
-          body: SfDateRangePicker(
-            view: DateRangePickerView.month,
-            monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 6),
-            selectionMode: DateRangePickerSelectionMode.multiRange,
-            //onSelectionChanged: _onSelectionChanged,
-            showActionButtons: true,
-            controller: _datePickerController,
-            onSubmit: (Object val) {
-              print(val);
-            },
-            onCancel: () {
-              _datePickerController.selectedRanges = null;
-            },
-          ),
-        ));
+  DateTime date2;
+  DateTime date1;
+   showDatePicker1(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date1=date;
+        datefinal = date.toString();
+        cutDate = datefinal.substring(0, 10);
+
+      })
+    });
   }
+
+   showDatePicker2(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date2=date;
+        datefinal = date.toString();
+        cutDate2 = datefinal.substring(0, 10);
+
+      })
+    });
+  }
+
+  void print12(){
+     print(date1);
+     print(date2);
+     difference = date1.difference(date2).inDays;
+    print('difference $difference');
+  }
+
 
 
 }
