@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
+import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../main.dart';
 import 'package:dio/dio.dart' as dio;
@@ -141,7 +142,10 @@ class _BillUiState extends State<BillUi> {
       print('tenMinuteEnergy $last10Minute');
     }
   }
-
+int data;
+  var onlyDayEnergyList = List(366);
+  List<PerDayEnergy> perDayEnergy;
+double total;
   Future getEnergyDay(String dId) async {
     String token = await getToken();
     final url = API + 'perdaysenergy?d_id=' + dId;
@@ -153,8 +157,31 @@ class _BillUiState extends State<BillUi> {
     print('tenMinuteEnergy ${response.statusCode}');
     print('tenMinuteEnergy ${response.body}');
     if (response.statusCode == 200) {
-      dayEnergy=jsonDecode(response.body);
-      print('dayEnergy ${dayEnergy[0]['day366']}');
+     List<dynamic> data=jsonDecode(response.body);
+
+     for(int i=0;i<366;i++){
+       onlyDayEnergyList[i]=0.0;
+     }
+     print('beforeSsumData ${onlyDayEnergyList}');
+    for(int i=0;i<366;i++){
+      onlyDayEnergyList[i]=data[0]['day$i'];
+    }
+     print('sumData ${onlyDayEnergyList}');
+    int i=1;
+    double change;
+double value;
+    while(i<=difference){
+      print(' asasa ${onlyDayEnergyList[i]}');
+      // change=double.parse(onlyDayEnergyList[i].toString());
+      value=total+onlyDayEnergyList[i];
+      i++;
+    }
+     print('sumDatatotal ${value}');
+
+     perDayEnergy=data.map((data) => PerDayEnergy.fromJson(data)).toList();
+      print('data ${perDayEnergy[0].day1}');
+      double sumData=perDayEnergy[0].day1+perDayEnergy[0].day2+perDayEnergy[0].day3;
+
     }
   }
 
@@ -907,9 +934,18 @@ class _BillUiState extends State<BillUi> {
                   },
                   child: Text(difference.toString()),
                 ),
-                ElevatedButton(onPressed: (){print12();}, child: Text('Click'))
+                ElevatedButton(
+                    onPressed: ()async{
+                    print12();
+                  }, child: Text('Click'))
               ],
+
             ),
+            ElevatedButton(
+                onPressed: ()async{
+                  await getEnergyDay('DIDM12932021AAAAAB');
+                }, child: Text('Click')),
+            Text('data'),
           ],
         ),
       ),
@@ -950,11 +986,15 @@ class _BillUiState extends State<BillUi> {
       })
     });
   }
+  // m-1*30+d date
 
   void print12(){
      print(date1);
      print(date2);
-     difference = date1.difference(date2).inDays;
+      setState(() {
+        difference = date1.difference(date2).inDays;
+      });
+
     print('difference $difference');
   }
 

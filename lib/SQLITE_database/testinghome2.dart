@@ -5426,7 +5426,7 @@ bool switchOn;
     print('catchReturn123 ${catchReturn}');
     responseGetData = [
       widget.switch1_get = catchReturn[index]["pin1Status"],
-      widget.switch2_get = catchReturn[index]["pin2Status"],
+      catchReturn[index]["pin2Status"],
       widget.switch3_get = catchReturn[index]["pin3Status"],
       widget.switch4_get = catchReturn[index]["pin4Status"],
       widget.switch5_get = catchReturn[index]["pin5Status"],
@@ -5437,6 +5437,10 @@ bool switchOn;
       widget.Slider_get = catchReturn[index]["pin10Status"],
       widget.Slider_get2 = catchReturn[index]["pin11Status"],
       widget.Slider_get3 = catchReturn[index]["pin12Status"],
+      //
+      // for(i=0;i<367;i++){
+      //   catchReturn[i][""]
+      // }
     ];
     if(responseGetData.contains(1)){
       setState(() {
