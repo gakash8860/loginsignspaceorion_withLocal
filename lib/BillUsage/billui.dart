@@ -145,7 +145,7 @@ class _BillUiState extends State<BillUi> {
 int data;
   var onlyDayEnergyList = List(366);
   List<PerDayEnergy> perDayEnergy;
-double total;
+double total=0.0;
   Future getEnergyDay(String dId) async {
     String token = await getToken();
     final url = API + 'perdaysenergy?d_id=' + dId;
@@ -168,15 +168,15 @@ double total;
     }
      print('sumData ${onlyDayEnergyList}');
     int i=1;
-    double change;
-double value;
+
     while(i<=difference){
       print(' asasa ${onlyDayEnergyList[i]}');
       // change=double.parse(onlyDayEnergyList[i].toString());
-      value=total+onlyDayEnergyList[i];
+      total=total+onlyDayEnergyList[i];
       i++;
+      print('sumDatatotal ${total}');
     }
-     print('sumDatatotal ${value}');
+     print('sumDatatotal_final ${total}');
 
      perDayEnergy=data.map((data) => PerDayEnergy.fromJson(data)).toList();
       print('data ${perDayEnergy[0].day1}');
