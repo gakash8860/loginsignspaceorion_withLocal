@@ -4,6 +4,7 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:ui';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:control_pad/control_pad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/painting.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -1843,9 +1844,7 @@ var tokenWeb;
   }
   _createAlertDialogForPin19(BuildContext context, String dId) {
     return showDialog(
-
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Any Text For Pin 19',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
@@ -4330,7 +4329,6 @@ String piname;
         }
       } else {
         await NewDbProvider.instance.deleteRoomModel();
-
         for (int i = 0; i < roomData.length; i++) {
           roomQuery = RoomType(
               rId: roomData[i]['r_id'],
@@ -5359,6 +5357,156 @@ String piname;
 
     );
   }
+
+
+  remoteUiWidget(BuildContext context){
+    return showDialog(
+      context: context,
+      builder: (context){
+      return AlertDialog(
+        title: Text('Remote'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: ClipOval(
+                    child: Material(
+                      child: InkWell(
+                        splashColor: Colors.white24,
+                        child:SizedBox(
+                          height: 56,
+                          width: 56,
+                          child: Icon(Icons.dialpad),
+                        ),
+                        onTap: (){},
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  child: ClipOval(
+                    child: Material(
+                      color: Colors.red,
+                      child: InkWell(
+                        splashColor: Colors.white24,
+                        child:SizedBox(
+                          height: 56,
+                          width: 56,
+                          child: Icon(Icons.power_settings_new),
+                        ),
+                        onTap: (){},
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  child: ClipOval(
+                    child: Material(
+                      child: InkWell(
+                        splashColor: Colors.white24,
+                        child:SizedBox(
+                          height: 56,
+                          width: 56,
+                          child: Icon(Icons.bubble_chart),
+                        ),
+                        onTap: (){},
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 156,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.arrow_drop_up),
+                        Text('VOL',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
+                  ),
+                  JoystickView(
+
+                    innerCircleColor: Colors.grey,
+                    backgroundColor: Colors.grey.shade400,
+                    iconsColor: Colors.white,
+                    showArrows: true,
+                    size: 200.0,
+                  ),
+                  Container(
+                    height: 156,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.arrow_drop_up),
+                        Text('CH',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(18.0),
+                    color: Colors.white,
+                  ),
+                  child: Padding(padding: EdgeInsets.all(2.0),
+                    child: Image.asset('assets/netflix.png'),
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(18.0),
+                    color: Colors.white,
+                  ),
+                  child: Padding(padding: EdgeInsets.all(8.0),
+                    child: Image.asset('assets/prime.png'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      }
+    );
+  }
+
+
+
 
   _openGoggleAssistant() async {
     try {
@@ -6459,7 +6607,8 @@ bool switchOn;
                       child: GestureDetector(
                         child: Icon(Icons.settings_remote , color: change_toDark ? Colors.white : Colors.black,),
                         onTap: () {
-                          _createAlertDialogForPin19(context, dId);
+                          remoteUiWidget(context);
+                          // _createAlertDialogForPin19(context, dId);
                         },
                       ),
                     ),

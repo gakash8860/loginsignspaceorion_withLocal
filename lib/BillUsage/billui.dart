@@ -17,6 +17,12 @@ class BillUi extends StatefulWidget {
 class _BillUiState extends State<BillUi> {
   String datefinal;
   var difference;
+  List<PerDayEnergy> perDayEnergy;
+  double total=0.0;
+  var currentDifference;
+  int data;
+  var onlyDayEnergyList = List(366);
+  var finalEnergyValue;
   List minute = [
     '10 minute',
     '20 minute',
@@ -55,7 +61,7 @@ class _BillUiState extends State<BillUi> {
   String chooseValueMinute;
   String chooseValueHour;
   String chooseValueDay;
-  int _valueMinute;
+  double _valueMinute;
   int _valueHour;
   int _valueDay;
   int changeValue;
@@ -92,48 +98,48 @@ class _BillUiState extends State<BillUi> {
       tenMinuteEnergy = jsonDecode(response.body);
       if (chooseValueMinute == '10 minute') {
         setState(() {
-          last10Minute = tenMinuteEnergy[0]['enrgy10'];
-          changeValue = int.parse(last10Minute);
+         var last10Minute = tenMinuteEnergy[0]['enrgy10'].toString();
+         double changeValue = double.parse(tenMinuteEnergy[0]['enrgy10']);
           _valueMinute = changeValue;
         });
       } else if (chooseValueMinute == '20 minute') {
         setState(() {
-          int op1 = int.parse(tenMinuteEnergy[0]['enrgy10']);
-          int op2 = int.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
           _valueMinute = op1 + op2;
         });
       } else if (chooseValueMinute == '30 minute') {
         setState(() {
-          int op1 = int.parse(tenMinuteEnergy[0]['enrgy10']);
-          int op2 = int.parse(tenMinuteEnergy[0]['enrgy20']);
-          int op3 = int.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
           _valueMinute = op1 + op2 + op3;
         });
       } else if (chooseValueMinute == '40 minute') {
         setState(() {
-          int op1 = int.parse(tenMinuteEnergy[0]['enrgy10']);
-          int op2 = int.parse(tenMinuteEnergy[0]['enrgy20']);
-          int op3 = int.parse(tenMinuteEnergy[0]['enrgy30']);
-          int op4 = int.parse(tenMinuteEnergy[0]['enrgy40']);
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
           _valueMinute = op1 + op2 + op3 + op4;
         });
       } else if (chooseValueMinute == '50 minute') {
         setState(() {
-          int op1 = int.parse(tenMinuteEnergy[0]['enrgy10']);
-          int op2 = int.parse(tenMinuteEnergy[0]['enrgy20']);
-          int op3 = int.parse(tenMinuteEnergy[0]['enrgy30']);
-          int op4 = int.parse(tenMinuteEnergy[0]['enrgy40']);
-          int op5 = int.parse(tenMinuteEnergy[0]['enrgy50']);
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[0]['enrgy50']);
           _valueMinute = op1 + op2 + op3 + op4 + op5;
         });
       } else if (chooseValueMinute == '60 minute') {
         setState(() {
-          int op1 = int.parse(tenMinuteEnergy[0]['enrgy10']);
-          int op2 = int.parse(tenMinuteEnergy[0]['enrgy20']);
-          int op3 = int.parse(tenMinuteEnergy[0]['enrgy30']);
-          int op4 = int.parse(tenMinuteEnergy[0]['enrgy40']);
-          int op5 = int.parse(tenMinuteEnergy[0]['enrgy50']);
-          int op6 = int.parse(tenMinuteEnergy[0]['enrgy60']);
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[0]['enrgy50']);
+          double op6 = double.parse(tenMinuteEnergy[0]['enrgy60']);
           _valueMinute = op1 + op2 + op3 + op4 + op5;
         });
       }
@@ -142,11 +148,8 @@ class _BillUiState extends State<BillUi> {
       print('tenMinuteEnergy $last10Minute');
     }
   }
-int data;
-  var onlyDayEnergyList = List(366);
-  var finalEnergyValue;
-  List<PerDayEnergy> perDayEnergy;
-    double total=0.0;
+
+
   Future getEnergyDay(String dId) async {
     String token = await getToken();
     final url = API + 'perdaysenergy?d_id=' + dId;
@@ -171,9 +174,9 @@ int data;
     int i=1;
 
     while(i<=difference){
-      print(' asasa ${onlyDayEnergyList[i]}');
+      print(' asasa ${onlyDayEnergyList[i+currentDifference]}');
       setState(() {
-        total=total+onlyDayEnergyList[i];
+        total=total+onlyDayEnergyList[i+currentDifference];
         finalEnergyValue=total.toString();
       });
       i++;
@@ -912,8 +915,9 @@ int data;
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 InkWell(
-                  onTap: () {
-                    showDatePicker1();
+                  onTap: () async{
+                    await showDatePicker1();
+
                   },
                   child: Text(cutDate == null ? 'Select Date' : cutDate),
                 ),
@@ -930,13 +934,14 @@ int data;
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 InkWell(
-                  onTap: () {
+                  onTap: () async{
 
                   },
                   child: Text(finalEnergyValue.toString()),
                 ),
                 ElevatedButton(
                     onPressed: ()async{
+                    await differenceCurrentDateToSelectedDate();
                    await findDifferenceBetweenDates();
                    await getEnergyDay('DIDM12932021AAAAAB');
                   }, child: Text('Click'))
@@ -985,6 +990,11 @@ int data;
     });
   }
   // m-1*30+d date
+
+  differenceCurrentDateToSelectedDate(){
+     currentDifference=DateTime.now().difference(date1).inDays;
+    print('currentDifference ${currentDifference}');
+  }
 
   void findDifferenceBetweenDates(){
      print(date1);
