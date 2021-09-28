@@ -144,8 +144,9 @@ class _BillUiState extends State<BillUi> {
   }
 int data;
   var onlyDayEnergyList = List(366);
+  var finalEnergyValue;
   List<PerDayEnergy> perDayEnergy;
-double total=0.0;
+    double total=0.0;
   Future getEnergyDay(String dId) async {
     String token = await getToken();
     final url = API + 'perdaysenergy?d_id=' + dId;
@@ -171,16 +172,16 @@ double total=0.0;
 
     while(i<=difference){
       print(' asasa ${onlyDayEnergyList[i]}');
-      // change=double.parse(onlyDayEnergyList[i].toString());
-      total=total+onlyDayEnergyList[i];
+      setState(() {
+        total=total+onlyDayEnergyList[i];
+        finalEnergyValue=total.toString();
+      });
       i++;
       print('sumDatatotal ${total}');
     }
+    total=0.0;
      print('sumDatatotal_final ${total}');
 
-     perDayEnergy=data.map((data) => PerDayEnergy.fromJson(data)).toList();
-      print('data ${perDayEnergy[0].day1}');
-      double sumData=perDayEnergy[0].day1+perDayEnergy[0].day2+perDayEnergy[0].day3;
 
     }
   }
@@ -932,20 +933,17 @@ double total=0.0;
                   onTap: () {
 
                   },
-                  child: Text(difference.toString()),
+                  child: Text(finalEnergyValue.toString()),
                 ),
                 ElevatedButton(
                     onPressed: ()async{
-                    print12();
+                   await findDifferenceBetweenDates();
+                   await getEnergyDay('DIDM12932021AAAAAB');
                   }, child: Text('Click'))
               ],
 
             ),
-            ElevatedButton(
-                onPressed: ()async{
-                  await getEnergyDay('DIDM12932021AAAAAB');
-                }, child: Text('Click')),
-            Text('data'),
+
           ],
         ),
       ),
@@ -988,7 +986,7 @@ double total=0.0;
   }
   // m-1*30+d date
 
-  void print12(){
+  void findDifferenceBetweenDates(){
      print(date1);
      print(date2);
       setState(() {
