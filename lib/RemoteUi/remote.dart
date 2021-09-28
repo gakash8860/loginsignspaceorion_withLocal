@@ -110,7 +110,7 @@ class _TVRemoteDemoState extends State<TVRemoteDemo> {
                   backgroundColor: Colors.grey.shade400,
                   iconsColor: Colors.white,
                   showArrows: true,
-                  size: 200.0,
+                  size: 100.0,
                 ),
                 Container(
                   height: 156,

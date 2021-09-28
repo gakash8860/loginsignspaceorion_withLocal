@@ -152,7 +152,6 @@ void initState(){
 
   Future<List<PlaceType>> getplacesWeb() async {
     await getTokenWeb();
-    // final url = 'https://genorion.herokuapp.com/place/';
     final url = API + 'addyourplace/';
 
     final response = await http.get(url, headers: {
@@ -160,7 +159,7 @@ void initState(){
       'Accept': 'application/json',
       'Authorization': 'Token $tokenWeb',
     });
-    if (response.statusCode > 0) {
+    if (response.statusCode ==200) {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
@@ -169,6 +168,8 @@ void initState(){
       // floorVal = getfloors(places[0].p_id);
 
       return places;
+    }else{
+      return null;
     }
   }
 

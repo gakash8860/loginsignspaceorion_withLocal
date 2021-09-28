@@ -21,6 +21,14 @@ class _BillUiState extends State<BillUi> {
   double total=0.0;
   var currentDifference;
   int data;
+  PlaceType pt;
+  FloorType fl;
+  Flat flt;
+  List<RoomType> rm;
+  RoomType rm2;
+  Device dv2;
+  List<Device> dv;
+
   var onlyDayEnergyList = List(366);
   var finalEnergyValue;
   List minute = [
@@ -77,14 +85,48 @@ class _BillUiState extends State<BillUi> {
 
   String cutDate;
   String cutDate2;
+
+  Future placeVal;
+
+  Future floorVal;
+
+  Future flatVal;
+  Future roomVal;
+  var selectedflat;
+  var selectedroom;
+  var selecteddeviceId;
   @override
   void initState() {
     super.initState();
-
+    placeVal = getplaces();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
 
   }
+
+
+  Future<List<PlaceType>> getplaces() async {
+    String token = await getToken();
+    // final url = 'https://genorion.herokuapp.com/place/';
+    final url = API + 'addyourplace/';
+
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print('place');
+      List<dynamic> data = jsonDecode(response.body);
+      List<PlaceType> places =
+      data.map((data) => PlaceType.fromJson(data)).toList();
+      // print(places);
+      // floorVal = getfloors(places[0].p_id);
+
+      return places;
+    }
+  }
+
   Future getEnergyTenMinutes(String dId) async {
     String token = await getToken();
     final url = API + 'pertenminuteenergy?d_id=' + dId;
@@ -149,6 +191,38 @@ class _BillUiState extends State<BillUi> {
     }
   }
 
+  Future<List<FloorType>> getfloors(String pId) async {
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<FloorType> floors =
+      data.map((data) => FloorType.fromJson(data)).toList();
+      print(floors);
+      return floors;
+    }
+  }
+
+  Future<List<Flat>> getflat(String fId) async {
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      print(flatData);
+      return flatData;
+    }
+  }
 
   Future getEnergyDay(String dId) async {
     String token = await getToken();
@@ -189,6 +263,22 @@ class _BillUiState extends State<BillUi> {
     }
   }
 
+  Future<List<RoomType>> getrooms(String flt_id) async {
+    final url = API + 'addroom/?flt_id=' + flt_id;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<RoomType> rooms =
+      data.map((data) => RoomType.fromJson(data)).toList();
+      print(rooms);
+      return rooms;
+    }
+  }
 
   Future getEnergyHour(String dId) async {
     String token = await getToken();
@@ -827,6 +917,25 @@ class _BillUiState extends State<BillUi> {
     }
   }
 
+
+  Future<List<Device>> getDevice(String r_id) async {
+    final url = API + 'addyourdevice/?r_id=' + r_id;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Device> dv =
+      data.map((data) => Device.fromJson(data)).toList();
+      print('DeviceId-->  ${dv[0].dId}');
+      return dv;
+    }else{
+      return null;
+    }
+  }
   // pickDate() async {
   //   DateTime date = await showDatePicker(
   //     context: context,
@@ -855,101 +964,636 @@ class _BillUiState extends State<BillUi> {
       appBar: AppBar(
         title: Text('App'),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 45,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                DropdownButton(
-                    value: chooseValueMinute,
-                    onChanged: (index) async {
-                      setState(() {
-                        chooseValueMinute = index;
-                      });
-
-                      await getEnergyTenMinutes('DIDM12932021AAAAAB');
-                    },
-                    items: minute.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 45,
+              ),
+              FutureBuilder<List<PlaceType>>(
+                  future: placeVal,
+                  builder: (context,
+                      AsyncSnapshot<List<PlaceType>> snapshot) {
+                    if (snapshot.hasData) {
+                      // print(snapshot.hasData);
+                      // setState(() {
+                      //   floorVal = getfloors(snapshot.data[0].p_id);
+                      // });
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                            child:
+                            Text("No Devices on this place"));
+                      }
+                      return Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 58),
+                          child: SizedBox(
+                            // width: double.infinity,
+                            height: 50.0,
+                            child: Container(
+                              width: MediaQuery.of(context)
+                                  .size
+                                  .width /
+                                  2,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 10,
+                                        offset: Offset(7, 7)
+                                      // offset: Offset(20,20)
+                                    )
+                                  ],
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 0.5,
+                                  )),
+                              child: DropdownButtonFormField<PlaceType>(
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                  const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.white),
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder:
+                                  UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black),
+                                    borderRadius:
+                                    BorderRadius.circular(50),
+                                  ),
+                                ),
+                                dropdownColor: Colors.white70,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: Text('Select Place'),
+                                isExpanded: true,
+                                value: pt,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                items: snapshot.data
+                                    .map((selectedPlace) {
+                                  return DropdownMenuItem<
+                                      PlaceType>(
+                                    value: selectedPlace,
+                                    child:
+                                    Text(selectedPlace.pType),
+                                  );
+                                }).toList(),
+                                onChanged:
+                                    (PlaceType selectedPlace) {
+                                  setState(() {
+                                    fl = null;
+                                    pt = selectedPlace;
+                                    floorVal = getfloors(
+                                        selectedPlace.pId);
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        margin: new EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
                       );
-                    }).toList()),
-                Text(_valueMinute == null
-                    ? pleaseSelect
-                    : _valueMinute.toString()),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                DropdownButton(
-                    value: chooseValueHour,
-                    onChanged: (index) async {
-                      setState(() {
-                        chooseValueHour = index;
-                      });
-
-                      await getEnergyHour('DIDM12932021AAAAAB');
-                    },
-                    items: hour.map((valueItem) {
-                      return DropdownMenuItem(
-                        value: valueItem,
-                        child: Text(valueItem),
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+              SizedBox(
+                height: 45,
+              ),
+              FutureBuilder<List<FloorType>>(
+                  future: floorVal,
+                  builder: (context,
+                      AsyncSnapshot<List<FloorType>> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                            child:
+                            Text("No Devices on this place"));
+                      }
+                      return Column(
+                        children: [
+                          Container(
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(right: 58),
+                              child: SizedBox(
+                                // width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                          // blurRadius: 30,
+                                          // // offset for Upward Effect
+                                          // offset: Offset(20,20)
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child: DropdownButtonFormField<
+                                      FloorType>(
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                      const EdgeInsets.all(15),
+                                      focusedBorder:
+                                      OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            10),
+                                      ),
+                                      enabledBorder:
+                                      UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon:
+                                    Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Floor'),
+                                    isExpanded: true,
+                                    value: fl,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data
+                                        .map((selectedFloor) {
+                                      return DropdownMenuItem<
+                                          FloorType>(
+                                        value: selectedFloor,
+                                        child: Text(
+                                            selectedFloor.fName),
+                                      );
+                                    }).toList(),
+                                    onChanged:
+                                        (FloorType selectedFloor) {
+                                      setState(() {
+                                        fl = selectedFloor;
+                                        flatVal = getflat(
+                                            selectedFloor.fId);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
                       );
-                    }).toList()),
-                Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                InkWell(
-                  onTap: () async{
-                    await showDatePicker1();
+                    } else {
+                      return Center(
+                          child: Text(
+                              "Please select a place to proceed further"));
+                    }
+                  }),
+              SizedBox(
+                height: 45,
+              ),
+              FutureBuilder<List<Flat>>(
+                  future: flatVal,
+                  builder: (context,
+                      AsyncSnapshot<List<Flat>> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                            child:
+                            Text("No Devices on this place"));
+                      }
+                      return Column(
+                        children: [
+                          Container(
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(right: 58),
+                              child: SizedBox(
+                                // width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                          // blurRadius: 30,
+                                          // // offset for Upward Effect
+                                          // offset: Offset(20,20)
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child:
+                                  DropdownButtonFormField<Flat>(
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                      const EdgeInsets.all(15),
+                                      focusedBorder:
+                                      OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            10),
+                                      ),
+                                      enabledBorder:
+                                      UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon:
+                                    Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Floor'),
+                                    isExpanded: true,
+                                    value: flt,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data
+                                        .map((selectedFlat) {
+                                      return DropdownMenuItem<Flat>(
+                                        value: selectedFlat,
+                                        child: Text(
+                                            selectedFlat.fltName),
+                                      );
+                                    }).toList(),
+                                    onChanged: (Flat selectedFlat) {
+                                      setState(() {
+                                        flt = selectedFlat;
+                                        selectedflat=selectedFlat.fltId;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          ),
 
-                  },
-                  child: Text(cutDate == null ? 'Select Date' : cutDate),
-                ),
-                InkWell(
-                  onTap: () {
-                    showDatePicker2();
-                    // print12();
+                        ],
+                      );
+                    } else {
+                      return Center(
+                          child: Text(
+                              "Please select a place to proceed further"));
+                    }
+                  }),
+              SizedBox(
+                height: 45,
+              ),
+              FutureBuilder<List<RoomType>>(
+                  future: getrooms(selectedflat),
+                  builder: (context,
+                      AsyncSnapshot<List<RoomType>> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                            child:
+                            Text("No Devices on this place"));
+                      }
+                      return Column(
+                        children: [
+                          Container(
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(right: 58),
+                              child: SizedBox(
+                                // width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                          // blurRadius: 30,
+                                          // // offset for Upward Effect
+                                          // offset: Offset(20,20)
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child:
+                                  DropdownButtonFormField<RoomType>(
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                      const EdgeInsets.all(15),
+                                      focusedBorder:
+                                      OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            10),
+                                      ),
+                                      enabledBorder:
+                                      UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon:
+                                    Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Room'),
+                                    isExpanded: true,
+                                    value: rm2,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data
+                                        .map((selectedRoom) {
+                                      return DropdownMenuItem<RoomType>(
+                                        value: selectedRoom,
+                                        child: Text(
+                                            selectedRoom.rName),
+                                      );
+                                    }).toList(),
+                                    onChanged: (RoomType selectedRoom) {
+                                      setState(() {
+                                        rm2 = selectedRoom;
+                                        selectedroom=selectedRoom.rId;
+
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+
+                        ],
+                      );
+                    } else {
+                      return Center(
+                          child: Text(
+                              "Please select a place to proceed further"));
+                    }
+                  }),
+              SizedBox(
+                height: 45,
+              ),
+              FutureBuilder<List<Device>>(
+                  future: getDevice(selectedroom),
+                  builder: (context,
+                      AsyncSnapshot<List<Device>> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return Center(
+                            child:
+                            Text("No Devices on this place"));
+                      }
+                      return Column(
+                        children: [
+                          Container(
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.only(right: 58),
+                              child: SizedBox(
+                                // width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                          // blurRadius: 30,
+                                          // // offset for Upward Effect
+                                          // offset: Offset(20,20)
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child:
+                                  DropdownButtonFormField<Device>(
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                      const EdgeInsets.all(15),
+                                      focusedBorder:
+                                      OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            10),
+                                      ),
+                                      enabledBorder:
+                                      UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon:
+                                    Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Room'),
+                                    isExpanded: true,
+                                    value: dv2,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data
+                                        .map((selectedDevice) {
+                                      return DropdownMenuItem<Device>(
+                                        value: selectedDevice,
+                                        child: Text(
+                                            selectedDevice.dId),
+                                      );
+                                    }).toList(),
+                                    onChanged: (Device selectedRoom) {
+                                      setState(() {
+                                        // rm2 = selectedRoom;
+                                        // selectedroom=selectedRoom.rId;
+
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+
+                        ],
+                      );
+                    } else {
+                      return Center(
+                          child: Text(
+                              "Please select a place to proceed further"));
+                    }
+                  }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                      value: chooseValueMinute,
+                      onChanged: (index) async {
+                        setState(() {
+                          chooseValueMinute = index;
+                        });
+
+                        await getEnergyTenMinutes(selecteddeviceId);
+                      },
+                      items: minute.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                  Text(_valueMinute == null
+                      ? pleaseSelect
+                      : _valueMinute.toString()),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                      value: chooseValueHour,
+                      onChanged: (index) async {
+                        setState(() {
+                          chooseValueHour = index;
+                        });
+
+                        await getEnergyHour(selecteddeviceId);
+                      },
+                      items: hour.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                  Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
+                      await showDatePicker1();
+
                     },
-                  child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                InkWell(
-                  onTap: () async{
+                    child: Text(cutDate == null ? 'Select Date' : cutDate),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDatePicker2();
+                      // print12();
+                      },
+                    child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
 
-                  },
-                  child: Text(finalEnergyValue.toString()),
-                ),
-                ElevatedButton(
-                    onPressed: ()async{
-                    await differenceCurrentDateToSelectedDate();
-                   await findDifferenceBetweenDates();
-                   await getEnergyDay('DIDM12932021AAAAAB');
-                  }, child: Text('Click'))
-              ],
+                    },
+                    child: Text(finalEnergyValue.toString()),
+                  ),
+                  ElevatedButton(
+                      onPressed: ()async{
+                      await differenceCurrentDateToSelectedDate();
+                     await findDifferenceBetweenDates();
+                     await getEnergyDay(selecteddeviceId);
+                    }, child: Text('Click'))
+                ],
 
-            ),
+              ),
 
-          ],
+            ],
+          ),
         ),
       ),
     );
