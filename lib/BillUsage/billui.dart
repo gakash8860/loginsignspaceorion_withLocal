@@ -150,7 +150,6 @@ class _BillUiState extends State<BillUi> {
       print('tenMinuteEnergy ${tenMinuteEnergy}');
       if (chooseValueMinute == '10 minute') {
         setState(() {
-         var last10Minute = tenMinuteEnergy[0]['enrgy10'].toString();
          double changeValue = double.parse(tenMinuteEnergy[0]['enrgy10']);
           _valueMinute = changeValue;
         });

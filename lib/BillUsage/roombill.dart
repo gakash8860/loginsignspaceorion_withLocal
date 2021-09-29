@@ -162,7 +162,7 @@ class _RoomBillState extends State<RoomBill> {
       }
   }
 
-var data;
+  var data;
   double total=0.0;
   Future getEnergyTenMinutes() async {
     data= List(length);
@@ -192,17 +192,97 @@ var data;
 
       }
     }
-    await sumOfEnergyTenMinutes();
+
 
   }
-
+double changeValue=0.0;
+double totalValue;
   sumOfEnergyTenMinutes()async{
-    // for(int i=0;i<length;i++){
-    //   total= tenMinuteEnergy[i][0]['enrgy10']+tenMinuteEnergy[i][0]['enrgy20']+tenMinuteEnergy[i][0]['enrgy30']+
-    //   tenMinuteEnergy[i][0]['enrgy40']+tenMinuteEnergy[i][0]['enrgy50']+tenMinuteEnergy[i][0]['enrgy60'];
-    //   print('total of $i is total ${total}');
-    //   print('total of $i is ${tenMinuteEnergy[i][0]}');
-    // }
+    if(chooseValueMinute == '10 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          changeValue=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          totalValue=totalValue+changeValue;
+          _valueMinute = totalValue;
+        });
+      }
+      print('totalans $totalValue');
+    }
+    if(chooseValueMinute == '20 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          totalValue=totalValue+op1+op2;
+          _valueMinute = totalValue;
+        });
+        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
+
+    if(chooseValueMinute == '30 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          totalValue=totalValue+op1+op2+op3;
+          _valueMinute = totalValue;
+        });
+        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
+    if(chooseValueMinute == '40 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          totalValue=totalValue+op1+op2+op3+op4;
+          _valueMinute = totalValue;
+        });
+        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
+
+    if(chooseValueMinute == '50 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
+          totalValue=totalValue+op1+op2+op3+op4+op5;
+          _valueMinute = totalValue;
+        });
+        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
+
+    if(chooseValueMinute == '60 minute'){
+      for(int i=0;i<length;i++){
+        setState(() {
+          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
+          double op6=double.parse(tenMinuteEnergy[i][0]['enrgy60']);
+          totalValue=totalValue+op1+op2+op3+op4+op5+op6;
+          _valueMinute = totalValue;
+        });
+        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
+
+
   }
 
   @override
@@ -652,8 +732,8 @@ var data;
                         setState(() {
                           chooseValueMinute = index;
                         });
-
-                        await getEnergyTenMinutes();
+                          totalValue=0.0;
+                        await sumOfEnergyTenMinutes();
                       },
                       items: minute.map((valueItem) {
                         return DropdownMenuItem(
