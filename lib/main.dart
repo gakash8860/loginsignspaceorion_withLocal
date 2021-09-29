@@ -792,7 +792,7 @@ List resultFloor;
 return room;
   }
 List deviceResult;
-  deviceQueryFunc()async{
+  Future<List<Device>> deviceQueryFunc()async{
     deviceQueryRows = await NewDbProvider.instance.queryDevice();
     print('maindeviceQuery $deviceQueryRows');
     List dv1= deviceQueryRows;
@@ -805,6 +805,7 @@ List deviceResult;
         rId: deviceResult[index]['r_id'].toString(),
         user: deviceResult[index]['user']
     ));
+    // return dvdata;
 
   }
   Future devicePinNamesQueryFunc()async{

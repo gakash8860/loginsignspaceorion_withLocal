@@ -7,12 +7,12 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:control_pad/control_pad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/painting.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillUsage/billui.dart';
+import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
@@ -21,12 +21,9 @@ import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showSSID.d
 import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
-import 'package:loginsignspaceorion/bill2.dart';
-import 'package:loginsignspaceorion/BillUsage/bill_estimation.dart';
 import 'package:loginsignspaceorion/changeFont.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
-import 'package:loginsignspaceorion/icons/my_flutter_app_icons.dart';
 import 'package:loginsignspaceorion/information.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
@@ -52,11 +49,7 @@ import 'package:loginsignspaceorion/whatNew.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loginsignspaceorion/ProfilePage.dart';
 import '../Setting_Page.dart';
-import '../mobilesettingpage.dart';
 import '../setting_icons.dart';
-import 'DesktopUi/desktopMenu.dart';
-import 'DesktopUi/destination.dart';
-import 'DesktopUi/destinationview.dart';
 import 'DesktopUi/gotoDesktopUi.dart';
 
 var tabbarState = "";
@@ -4688,7 +4681,7 @@ String piname;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BillUi(),
+                                      builder: (context) => RoomBill(),
                                     ),
                                   );
                                 }),

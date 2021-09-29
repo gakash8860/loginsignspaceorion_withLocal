@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:animated_button/animated_button.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -92,6 +93,7 @@ class _BillUiState extends State<BillUi> {
 
   Future flatVal;
   Future roomVal;
+  Future deviceVal;
   var selectedflat;
   var selectedroom;
   var selecteddeviceId;
@@ -138,6 +140,14 @@ class _BillUiState extends State<BillUi> {
     print('tenMinuteEnergy ${response.statusCode}');
     if (response.statusCode == 200) {
       tenMinuteEnergy = jsonDecode(response.body);
+      if(tenMinuteEnergy.isEmpty ){
+        setState(() {
+          pleaseSelect='There is not Data';
+        });
+        thereIsNoData(context);
+
+      }
+      print('tenMinuteEnergy ${tenMinuteEnergy}');
       if (chooseValueMinute == '10 minute') {
         setState(() {
          var last10Minute = tenMinuteEnergy[0]['enrgy10'].toString();
@@ -957,6 +967,22 @@ class _BillUiState extends State<BillUi> {
   //   print('pickedDate ${cutDate}');
   // }
 
+  thereIsNoData(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Oops !'),
+            content: Card(
+              child: Text('No Data'),
+            ),
+          );
+        }
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -969,7 +995,7 @@ class _BillUiState extends State<BillUi> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 45,
+                height: 15,
               ),
               FutureBuilder<List<PlaceType>>(
                   future: placeVal,
@@ -1068,7 +1094,7 @@ class _BillUiState extends State<BillUi> {
                     }
                   }),
               SizedBox(
-                height: 45,
+                height: 15,
               ),
               FutureBuilder<List<FloorType>>(
                   future: floorVal,
@@ -1179,7 +1205,7 @@ class _BillUiState extends State<BillUi> {
                     }
                   }),
               SizedBox(
-                height: 45,
+                height: 15,
               ),
               FutureBuilder<List<Flat>>(
                   future: flatVal,
@@ -1266,6 +1292,7 @@ class _BillUiState extends State<BillUi> {
                                       setState(() {
                                         flt = selectedFlat;
                                         selectedflat=selectedFlat.fltId;
+                                        roomVal=getrooms(selectedflat);
                                       });
                                     },
                                   ),
@@ -1285,10 +1312,10 @@ class _BillUiState extends State<BillUi> {
                     }
                   }),
               SizedBox(
-                height: 45,
+                height: 15,
               ),
               FutureBuilder<List<RoomType>>(
-                  future: getrooms(selectedflat),
+                  future: roomVal,
                   builder: (context,
                       AsyncSnapshot<List<RoomType>> snapshot) {
                     if (snapshot.hasData) {
@@ -1372,7 +1399,7 @@ class _BillUiState extends State<BillUi> {
                                       setState(() {
                                         rm2 = selectedRoom;
                                         selectedroom=selectedRoom.rId;
-
+                                        deviceVal=getDevice(selectedroom);
                                       });
                                     },
                                   ),
@@ -1395,10 +1422,10 @@ class _BillUiState extends State<BillUi> {
                     }
                   }),
               SizedBox(
-                height: 45,
+                height: 15,
               ),
               FutureBuilder<List<Device>>(
-                  future: getDevice(selectedroom),
+                  future: deviceVal,
                   builder: (context,
                       AsyncSnapshot<List<Device>> snapshot) {
                     if (snapshot.hasData) {
@@ -1463,7 +1490,7 @@ class _BillUiState extends State<BillUi> {
                                     icon:
                                     Icon(Icons.arrow_drop_down),
                                     iconSize: 28,
-                                    hint: Text('Select Room'),
+                                    hint: Text('Select Device'),
                                     isExpanded: true,
                                     value: dv2,
                                     style: TextStyle(
@@ -1478,10 +1505,10 @@ class _BillUiState extends State<BillUi> {
                                             selectedDevice.dId),
                                       );
                                     }).toList(),
-                                    onChanged: (Device selectedRoom) {
+                                    onChanged: (Device selectedDevice) {
                                       setState(() {
                                         // rm2 = selectedRoom;
-                                        // selectedroom=selectedRoom.rId;
+                                        selecteddeviceId=selectedDevice.dId;
 
                                       });
                                     },
