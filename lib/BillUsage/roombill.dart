@@ -134,7 +134,7 @@ class _RoomBillState extends State<RoomBill> {
     }
   }
 
-  Future<List<Device>> getDevice(String r_id) async {
+  Future getDevice(String r_id) async {
       final url = API + 'addyourdevice/?r_id=' + r_id;
       String token = await getToken();
       final response = await http.get(url, headers: {
@@ -144,23 +144,15 @@ class _RoomBillState extends State<RoomBill> {
       });
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        List<Device> dv =
-        data.map((data) => Device.fromJson(data)).toList();
         allDeviceId=List.from(data);
         print('allDeviceIdDeviceId-->  ${allDeviceId}');
         print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
-        setState(() {
-          length=allDeviceId.length;
-          tenMinuteEnergy=List(length+1);
 
-        });
 
-        for(int i=0;i<length;i++){
-          tenMinuteEnergy[i]='';
-        }
+
         print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
         await getEnergyTenMinutes();
-        return dv;
+
       }else{
         return null;
       }
@@ -168,15 +160,11 @@ class _RoomBillState extends State<RoomBill> {
 
 
   Future getEnergyTenMinutes() async {
-    data= List(length);
-
-    for(int i=0;i<length;i++){
-      data[i]='';
-    }
-    print('tenMinuteRoomdata ${data}');
+    tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
     for(int i=0;i<allDeviceId.length;i++){
+
       dId=allDeviceId[i]['d_id'];
       print('deviceIdEnergyRoom $dId');
       final url = API + 'pertenminuteenergy?d_id=' + dId;
@@ -187,14 +175,18 @@ class _RoomBillState extends State<RoomBill> {
       });
       print('tenMinuteEnergy ${response.statusCode}');
       if (response.statusCode == 200){
-         data[i] = jsonDecode(response.body);
-        tenMinuteEnergy=List.from(data);
+        tenMinuteEnergy.addAll(jsonDecode(response.body));
 
-        print('tenMinuteRoomdata2 $data');
-        print('tenMinuteRoomd ${tenMinuteEnergy}');
+
+        print('tenMinuteRoomdata2 $tenMinuteEnergy');
+
+
 
       }
+
+
     }
+
 
 
   }
@@ -203,7 +195,7 @@ class _RoomBillState extends State<RoomBill> {
     if(chooseValueMinute == '10 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          changeValue=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
           totalValue=totalValue+changeValue;
           _valueMinute = totalValue;
         });

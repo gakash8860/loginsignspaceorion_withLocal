@@ -49,11 +49,18 @@ class _FlatBillState extends State<FlatBill> {
   ];
   String r_id;
   List dataResponse=List.empty(growable: true);
+
   List tenMinuteEnergy;
+
   double total=0.0;
+
   double totalValue;
+
   bool completeTask=false;
+
   double changeValue;
+
+
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -121,8 +128,7 @@ class _FlatBillState extends State<FlatBill> {
     }
   }
 
-  Future<List<RoomType>> getrooms(String flt_id) async {
-
+  Future getrooms(String flt_id) async {
         final url = API + 'addroom/?flt_id=' + flt_id;
         String token = await getToken();
         final response = await http.get(url, headers: {
@@ -133,8 +139,7 @@ class _FlatBillState extends State<FlatBill> {
         if (response.statusCode == 200) {
           List<dynamic> data = jsonDecode(response.body);
           print('allRoomData $data');
-          List<RoomType> rooms =
-          data.map((data) => RoomType.fromJson(data)).toList();
+
           setState(() {
 
             allRoomId=List.from(data);
@@ -142,12 +147,12 @@ class _FlatBillState extends State<FlatBill> {
 
           });
           await getDevice();
-          return rooms;
+
       }
   }
 
 
-  Future<List<Device>> getDevice() async {
+  Future getDevice() async {
     for(int i=0;i<allRoomId.length;i++){
       r_id=allRoomId[i]['r_id'];
       final url = API + 'addyourdevice/?r_id=' + r_id;
@@ -158,7 +163,7 @@ class _FlatBillState extends State<FlatBill> {
         'Authorization': 'Token $token',
       });
       if (response.statusCode == 200) {
-        dataResponse.add(jsonDecode(response.body))  ;
+        dataResponse.addAll(jsonDecode(response.body))  ;
         print('allDeviceIdDeviceIddata-->  ${dataResponse}');
 
 
@@ -185,14 +190,9 @@ class _FlatBillState extends State<FlatBill> {
     tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
-    for(int i=0;i<=allDeviceId.length;i++){
-      for(int j=0;j<=allDeviceId.length;j++){
+    for(int i=0;i<allDeviceId.length;i++){
 
-        if(allDeviceId[i][j]['d_id']==null){
-          print("khtm tata bye bye");
-          break;
-        }
-        dId=allDeviceId[i][j]['d_id'];
+       dId=allDeviceId[i]['d_id'];
         print('deviceIdEnergyRoom $dId');
         final url = API + 'pertenminuteenergy?d_id=' + dId;
         final response = await http.get(url, headers: {
@@ -202,7 +202,7 @@ class _FlatBillState extends State<FlatBill> {
         });
         print('tenMinuteEnergy ${response.statusCode}');
         if (response.statusCode == 200){
-          tenMinuteEnergy.add(jsonDecode(response.body));
+          tenMinuteEnergy.addAll(jsonDecode(response.body));
 
 
           print('tenMinuteRoomdata2 $tenMinuteEnergy');
@@ -210,7 +210,7 @@ class _FlatBillState extends State<FlatBill> {
 
 
         }
-      }
+
 
     }
 
@@ -218,15 +218,14 @@ class _FlatBillState extends State<FlatBill> {
 
   }
 
-
   sumOfEnergyTenMinutes()async{
     setState(() {
       length=tenMinuteEnergy.length;
     });
     if(chooseValueMinute == '10 minute'){
-      for(int i=0;i<=tenMinuteEnergy.length;i++){
+      for(int i=0;i<tenMinuteEnergy.length;i++){
         setState(() {
-          changeValue=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
           totalValue=totalValue+changeValue;
           _valueMinute = totalValue;
         });
@@ -236,12 +235,12 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '20 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
           totalValue=totalValue+op1+op2;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -249,23 +248,23 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '30 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
           totalValue=totalValue+op1+op2+op3;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
     if(chooseValueMinute == '40 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
           totalValue=totalValue+op1+op2+op3+op4;
           _valueMinute = totalValue;
         });
@@ -277,15 +276,15 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '50 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
           totalValue=totalValue+op1+op2+op3+op4+op5;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -293,24 +292,22 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '60 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
-          double op6=double.parse(tenMinuteEnergy[i][0]['enrgy60']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
+          double op6=double.parse(tenMinuteEnergy[i]['enrgy60']);
           totalValue=totalValue+op1+op2+op3+op4+op5+op6;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
 
 
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -616,11 +613,15 @@ class _FlatBillState extends State<FlatBill> {
                                             selectedFlat.fltName),
                                       );
                                     }).toList(),
-                                    onChanged: (Flat selectedFlat) {
+                                    onChanged: (Flat selectedFlat)async {
                                       setState(() {
                                         flt = selectedFlat;
                                         selectedflat=selectedFlat.fltId;
-                                        getrooms(selectedflat);
+
+                                      });
+                                      await getrooms(selectedflat);
+                                      setState(() {
+                                        completeTask=true;
                                       });
                                     },
                                   ),
