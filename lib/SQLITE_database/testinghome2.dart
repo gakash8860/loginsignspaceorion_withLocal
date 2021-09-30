@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillUsage/billui.dart';
+import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
@@ -4246,7 +4247,7 @@ String piname;
         'Authorization': 'Token $token',
 
       });
-      if (response.statusCode > 0) {
+      if (response.statusCode ==200) {
         List flatData = jsonDecode(response.body);
         flatQueryRows2 = await NewDbProvider.instance.queryFlat();
         if (flatQueryRows2.length == flatData.length) {
@@ -4258,7 +4259,11 @@ String piname;
                 user: flatData[i]['user']
             );
             await NewDbProvider.instance.updateFlat(flatQuery);
-            print('FlatFlatQuery  ${flatQuery.fltName}');
+            // print('FlatFlatQuery  ${flatQuery.fltName}');
+            print('FlatFlatQuery  ${flatData[i]['f_id']}');
+            print('FlatFlatQuery  ${flatData[i]['flt_id']}');
+            print('FlatFlatQuery  ${flatData[i]['flt_name']}');
+            print('FlatFlatQuery  ${flatData[i]['user']}');
           }
         } else {
           await NewDbProvider.instance.deleteFlatModel();
@@ -4270,7 +4275,10 @@ String piname;
                 user: flatData[i]['user']
             );
             await NewDbProvider.instance.insertFlatModelData(flatQuery);
-            print('FlatFlatQuery  ${flatQuery.fltName}');
+            print('FlatFlatQuery  ${flatData[i]['f_id']}');
+            print('FlatFlatQuery  ${flatData[i]['flt_id']}');
+            print('FlatFlatQuery  ${flatData[i]['flt_name']}');
+            print('FlatFlatQuery  ${flatData[i]['user']}');
           }
         }
         getAllRoom();
@@ -4681,7 +4689,7 @@ String piname;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => RoomBill(),
+                                      builder: (context) => FlatBill(),
                                     ),
                                   );
                                 }),

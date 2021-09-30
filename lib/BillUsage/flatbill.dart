@@ -1,19 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
 import '../main.dart';
 
-class RoomBill extends StatefulWidget {
-  const RoomBill({Key key}) : super(key: key);
+
+class FlatBill extends StatefulWidget {
+  const FlatBill({Key key}) : super(key: key);
 
   @override
-  _RoomBillState createState() => _RoomBillState();
+  _FlatBillState createState() => _FlatBillState();
 }
 
-class _RoomBillState extends State<RoomBill> {
+class _FlatBillState extends State<FlatBill> {
+
   Future placeVal;
   DateTime pickedDate;
   DateTime pickedDate2;
@@ -27,18 +28,17 @@ class _RoomBillState extends State<RoomBill> {
   int length=0;
   Device dv2;
   String chooseValueMinute;
-  List tenMinuteEnergy;
-  var data;
-  double total=0.0;
+  // List tenMinuteEnergy;
   List<Device> dv;
   var selectedflat;
   var selectedroom;
   var selecteddeviceId;
   Future floorVal;
-  List<dynamic> allRoomId;
+  List<dynamic> allFlatId;
   var allDeviceId=List.empty(growable: true);
   Future flatVal;
   Future roomVal;
+  List allRoomId;
   List minute = [
     '10 minute',
     '20 minute',
@@ -47,8 +47,13 @@ class _RoomBillState extends State<RoomBill> {
     '50 minute',
     '60 minute'
   ];
-  double changeValue=0.0;
+  String r_id;
+  List dataResponse=List.empty(growable: true);
+  List tenMinuteEnergy;
+  double total=0.0;
   double totalValue;
+
+  double changeValue;
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -57,7 +62,6 @@ class _RoomBillState extends State<RoomBill> {
 
 
   }
-
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
@@ -80,7 +84,6 @@ class _RoomBillState extends State<RoomBill> {
       return places;
     }
   }
-
   Future<List<FloorType>> getfloors(String pId) async {
     final url = API + 'addyourfloor/?p_id=' + pId;
     String token = await getToken();
@@ -108,33 +111,45 @@ class _RoomBillState extends State<RoomBill> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
+
       List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
-      print(flatData);
+      allFlatId=List.from(data);
+      print('allFlatId $allFlatId');
+      print('allFlatId ${allFlatId.length}');
+
       return flatData;
     }
   }
 
   Future<List<RoomType>> getrooms(String flt_id) async {
-    final url = API + 'addroom/?flt_id=' + flt_id;
-    String token = await getToken();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      List<RoomType> rooms =
-      data.map((data) => RoomType.fromJson(data)).toList();
-      print(rooms);
-      allRoomId=List.from(data);
-      print('allRoomId $allRoomId');
 
-      return rooms;
-    }
+        final url = API + 'addroom/?flt_id=' + flt_id;
+        String token = await getToken();
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        if (response.statusCode == 200) {
+          List<dynamic> data = jsonDecode(response.body);
+          print('allRoomData $data');
+          List<RoomType> rooms =
+          data.map((data) => RoomType.fromJson(data)).toList();
+          setState(() {
+
+            allRoomId=List.from(data);
+            print('allRoomData ${allRoomId.length}');
+
+          });
+          await getDevice();
+          return rooms;
+      }
   }
 
-  Future<List<Device>> getDevice(String r_id) async {
+
+  Future<List<Device>> getDevice() async {
+    for(int i=0;i<allRoomId.length;i++){
+      r_id=allRoomId[i]['r_id'];
       final url = API + 'addyourdevice/?r_id=' + r_id;
       String token = await getToken();
       final response = await http.get(url, headers: {
@@ -143,65 +158,72 @@ class _RoomBillState extends State<RoomBill> {
         'Authorization': 'Token $token',
       });
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        List<Device> dv =
-        data.map((data) => Device.fromJson(data)).toList();
-        allDeviceId=List.from(data);
-        print('allDeviceIdDeviceId-->  ${allDeviceId}');
-        print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
-        setState(() {
-          length=allDeviceId.length;
-          tenMinuteEnergy=List(length+1);
+        dataResponse.add(jsonDecode(response.body))  ;
+        print('allDeviceIdDeviceIddata-->  ${dataResponse}');
 
-        });
 
-        for(int i=0;i<length;i++){
-          tenMinuteEnergy[i]='';
-        }
-        print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
-        await getEnergyTenMinutes();
-        return dv;
+
+
       }else{
         return null;
       }
-  }
+    }
+    allDeviceId=List.from(dataResponse);
+  
+    // print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
 
+
+    print('allDeviceIdDeviceId14785-->  ${allDeviceId}');
+    print('allDeviceIdDeviceId14785-->  ${allDeviceId.length}');
+
+
+    await getEnergyTenMinutes();
+
+  }
 
   Future getEnergyTenMinutes() async {
-    data= List(length);
-
-    for(int i=0;i<length;i++){
-      data[i]='';
-    }
-    print('tenMinuteRoomdata ${data}');
+    tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
-    for(int i=0;i<allDeviceId.length;i++){
-      dId=allDeviceId[i]['d_id'];
-      print('deviceIdEnergyRoom $dId');
-      final url = API + 'pertenminuteenergy?d_id=' + dId;
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      print('tenMinuteEnergy ${response.statusCode}');
-      if (response.statusCode == 200){
-         data[i] = jsonDecode(response.body);
-        tenMinuteEnergy=List.from(data);
+    for(int i=0;i<=allDeviceId.length;i++){
+      for(int j=0;j<=allDeviceId.length;j++){
 
-        print('tenMinuteRoomdata2 $data');
-        print('tenMinuteRoomd ${tenMinuteEnergy}');
+        if(allDeviceId[i][j]['d_id']==null){
+          print("khtm tata bye bye");
+          break;
+        }
+        dId=allDeviceId[i][j]['d_id'];
+        print('deviceIdEnergyRoom $dId');
+        final url = API + 'pertenminuteenergy?d_id=' + dId;
+        final response = await http.get(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        });
+        print('tenMinuteEnergy ${response.statusCode}');
+        if (response.statusCode == 200){
+          tenMinuteEnergy.add(jsonDecode(response.body));
 
+
+          print('tenMinuteRoomdata2 $tenMinuteEnergy');
+
+
+
+        }
       }
+
     }
 
 
   }
 
+
   sumOfEnergyTenMinutes()async{
+    setState(() {
+      length=tenMinuteEnergy.length;
+    });
     if(chooseValueMinute == '10 minute'){
-      for(int i=0;i<length;i++){
+      for(int i=0;i<=tenMinuteEnergy.length;i++){
         setState(() {
           changeValue=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
           totalValue=totalValue+changeValue;
@@ -287,13 +309,15 @@ class _RoomBillState extends State<RoomBill> {
 
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Room Bill'),
+        title: Text('FLat Bill'),
       ),
-      body: SingleChildScrollView(
+      body:SingleChildScrollView(
         child: Container(
           child: Column(
             children: <Widget>[
@@ -595,7 +619,7 @@ class _RoomBillState extends State<RoomBill> {
                                       setState(() {
                                         flt = selectedFlat;
                                         selectedflat=selectedFlat.fltId;
-                                        roomVal=getrooms(selectedflat);
+                                        getrooms(selectedflat);
                                       });
                                     },
                                   ),
@@ -604,117 +628,6 @@ class _RoomBillState extends State<RoomBill> {
                             ),
                             margin: new EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 10),
-                          ),
-
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<RoomType>>(
-                  future: roomVal,
-                  builder: (context,
-                      AsyncSnapshot<List<RoomType>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child:
-                                  DropdownButtonFormField<RoomType>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Room'),
-                                    isExpanded: true,
-                                    value: rm2,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedRoom) {
-                                      return DropdownMenuItem<RoomType>(
-                                        value: selectedRoom,
-                                        child: Text(
-                                            selectedRoom.rName),
-                                      );
-                                    }).toList(),
-                                    onChanged: (RoomType selectedRoom)async{
-                                      setState(() {
-                                        rm2 = selectedRoom;
-                                        selectedroom=selectedRoom.rId;
-
-                                      });
-                                     await getDevice(selectedroom);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          ),
-                          SizedBox(
-                            height: 10,
                           ),
 
                         ],
@@ -734,7 +647,7 @@ class _RoomBillState extends State<RoomBill> {
                         setState(() {
                           chooseValueMinute = index;
                         });
-                          totalValue=0.0;
+                        totalValue=0.0;
                         await sumOfEnergyTenMinutes();
                       },
                       items: minute.map((valueItem) {
@@ -750,8 +663,10 @@ class _RoomBillState extends State<RoomBill> {
               ),
             ],
           ),
-        ),
-      ),
+
+    ),
+      ) ,
+
     );
   }
 }
