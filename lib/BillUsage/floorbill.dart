@@ -1,19 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import '../main.dart';
-
-
-class FlatBill extends StatefulWidget {
-  const FlatBill({Key key}) : super(key: key);
+class FloorBill extends StatefulWidget {
+  const FloorBill({Key key}) : super(key: key);
 
   @override
-  _FlatBillState createState() => _FlatBillState();
+  _FloorBillState createState() => _FloorBillState();
 }
 
-class _FlatBillState extends State<FlatBill> {
+class _FloorBillState extends State<FloorBill> {
 
   Future placeVal;
   DateTime pickedDate;
@@ -39,6 +37,7 @@ class _FlatBillState extends State<FlatBill> {
   Future flatVal;
   Future roomVal;
   List allRoomId;
+  List allFloorId;
   List minute = [
     '10 minute',
     '20 minute',
@@ -52,16 +51,19 @@ class _FlatBillState extends State<FlatBill> {
   List tenMinuteEnergy;
   double total=0.0;
   double totalValue;
-  bool completeTask=false;
+  bool completeTask=true;
   double changeValue;
+
+
+
   void initState() {
     super.initState();
     placeVal = getplaces();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
-
-
   }
+
+
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
@@ -84,6 +86,8 @@ class _FlatBillState extends State<FlatBill> {
       return places;
     }
   }
+  List floorData= List.empty(growable: true);
+
   Future<List<FloorType>> getfloors(String pId) async {
     final url = API + 'addyourfloor/?p_id=' + pId;
     String token = await getToken();
@@ -101,7 +105,8 @@ class _FlatBillState extends State<FlatBill> {
     }
   }
 
-  Future<List<Flat>> getflat(String fId) async {
+  Future getflat(String fId) async {
+    List data=List.empty(growable: true);
     final url = API + 'addyourflat/?f_id=' + fId;
     String token = await getToken();
     final response = await http.get(url, headers: {
@@ -110,46 +115,55 @@ class _FlatBillState extends State<FlatBill> {
       'Authorization': 'Token $token',
     });
     if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-
-      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      data.addAll(jsonDecode(response.body));
       allFlatId=List.from(data);
       print('allFlatId $allFlatId');
       print('allFlatId ${allFlatId.length}');
 
-      return flatData;
+      await getrooms();
+
+
     }
   }
 
-  Future<List<RoomType>> getrooms(String flt_id) async {
+  Future getrooms() async {
+    List data= List.empty(growable: true);
+    String flt_id;
+    String token = await getToken();
+
+    for(int i=0;i<allFlatId.length;i++) {
+
+        // print('allFlatId147852 ${allFlatId[i][j]['flt_id']}');
+        flt_id=allFlatId[i]['flt_id'];
 
         final url = API + 'addroom/?flt_id=' + flt_id;
-        String token = await getToken();
+
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Token $token',
         });
         if (response.statusCode == 200) {
-          List<dynamic> data = jsonDecode(response.body);
+          data.addAll(jsonDecode(response.body)) ;
           print('allRoomData $data');
-          List<RoomType> rooms =
-          data.map((data) => RoomType.fromJson(data)).toList();
-          setState(() {
 
-            allRoomId=List.from(data);
-            print('allRoomData ${allRoomId.length}');
+          // await getDevice();
 
-          });
-          await getDevice();
-          return rooms;
-      }
+        }
+
+    }
+    setState(() {
+      allRoomId=List.from(data);
+      print('allRoomData45859 ${allRoomId.length}');
+
+    });
+    await getDevice();
   }
-
 
   Future<List<Device>> getDevice() async {
     for(int i=0;i<allRoomId.length;i++){
       r_id=allRoomId[i]['r_id'];
+
       final url = API + 'addyourdevice/?r_id=' + r_id;
       String token = await getToken();
       final response = await http.get(url, headers: {
@@ -158,7 +172,7 @@ class _FlatBillState extends State<FlatBill> {
         'Authorization': 'Token $token',
       });
       if (response.statusCode == 200) {
-        dataResponse.add(jsonDecode(response.body))  ;
+        dataResponse.addAll(jsonDecode(response.body))  ;
         print('allDeviceIdDeviceIddata-->  ${dataResponse}');
 
 
@@ -169,13 +183,12 @@ class _FlatBillState extends State<FlatBill> {
       }
     }
     allDeviceId=List.from(dataResponse);
-  
+
     // print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
 
 
     print('allDeviceIdDeviceId14785-->  ${allDeviceId}');
     print('allDeviceIdDeviceId14785-->  ${allDeviceId.length}');
-
 
     await getEnergyTenMinutes();
 
@@ -185,14 +198,8 @@ class _FlatBillState extends State<FlatBill> {
     tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
-    for(int i=0;i<=allDeviceId.length;i++){
-      for(int j=0;j<=allDeviceId.length;j++){
-
-        if(allDeviceId[i][j]['d_id']==null){
-          print("khtm tata bye bye");
-          break;
-        }
-        dId=allDeviceId[i][j]['d_id'];
+    for(int i=0;i<allDeviceId.length;i++){
+        dId=allDeviceId[i]['d_id'];
         print('deviceIdEnergyRoom $dId');
         final url = API + 'pertenminuteenergy?d_id=' + dId;
         final response = await http.get(url, headers: {
@@ -202,15 +209,13 @@ class _FlatBillState extends State<FlatBill> {
         });
         print('tenMinuteEnergy ${response.statusCode}');
         if (response.statusCode == 200){
-          tenMinuteEnergy.add(jsonDecode(response.body));
-
+          tenMinuteEnergy.addAll(jsonDecode(response.body));
 
           print('tenMinuteRoomdata2 $tenMinuteEnergy');
 
 
-
         }
-      }
+
 
     }
 
@@ -218,15 +223,14 @@ class _FlatBillState extends State<FlatBill> {
 
   }
 
-
   sumOfEnergyTenMinutes()async{
     setState(() {
       length=tenMinuteEnergy.length;
     });
     if(chooseValueMinute == '10 minute'){
-      for(int i=0;i<=tenMinuteEnergy.length;i++){
+      for(int i=0;i<tenMinuteEnergy.length;i++){
         setState(() {
-          changeValue=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
+          changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
           totalValue=totalValue+changeValue;
           _valueMinute = totalValue;
         });
@@ -236,12 +240,12 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '20 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
           totalValue=totalValue+op1+op2;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -249,23 +253,23 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '30 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
           totalValue=totalValue+op1+op2+op3;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
     if(chooseValueMinute == '40 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
           totalValue=totalValue+op1+op2+op3+op4;
           _valueMinute = totalValue;
         });
@@ -277,15 +281,15 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '50 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
           totalValue=totalValue+op1+op2+op3+op4+op5;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -293,16 +297,16 @@ class _FlatBillState extends State<FlatBill> {
     if(chooseValueMinute == '60 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
-          double op6=double.parse(tenMinuteEnergy[i][0]['enrgy60']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
+          double op6=double.parse(tenMinuteEnergy[i]['enrgy60']);
           totalValue=totalValue+op1+op2+op3+op4+op5+op6;
           _valueMinute = totalValue;
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -311,12 +315,11 @@ class _FlatBillState extends State<FlatBill> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FLat Bill'),
+        title: Text('Floor Bill'),
       ),
       body:SingleChildScrollView(
         child: Container(
@@ -535,110 +538,6 @@ class _FlatBillState extends State<FlatBill> {
               SizedBox(
                 height: 15,
               ),
-              FutureBuilder<List<Flat>>(
-                  future: flatVal,
-                  builder: (context,
-                      AsyncSnapshot<List<Flat>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child:
-                                  DropdownButtonFormField<Flat>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Floor'),
-                                    isExpanded: true,
-                                    value: flt,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedFlat) {
-                                      return DropdownMenuItem<Flat>(
-                                        value: selectedFlat,
-                                        child: Text(
-                                            selectedFlat.fltName),
-                                      );
-                                    }).toList(),
-                                    onChanged: (Flat selectedFlat) {
-                                      setState(() {
-                                        flt = selectedFlat;
-                                        selectedflat=selectedFlat.fltId;
-                                        getrooms(selectedflat);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          ),
-
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
               completeTask? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -666,7 +565,7 @@ class _FlatBillState extends State<FlatBill> {
             ],
           ),
 
-    ),
+        ),
       ) ,
 
     );
