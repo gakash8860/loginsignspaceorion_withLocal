@@ -14,12 +14,24 @@ class FlatBill extends StatefulWidget {
 }
 
 class _FlatBillState extends State<FlatBill> {
-
+  String chooseValueHour;
+  String chooseValueDay;
+  var onlyDayEnergyList ;
   Future placeVal;
   DateTime pickedDate;
+  var finalEnergyValue;
   DateTime pickedDate2;
   PlaceType pt;
   FloorType fl;
+  DateTime date2;
+  DateTime date1;
+  String datefinal;
+  var currentDifference;
+  var currentDate;
+  var difference;
+  String cutDate;
+  String cutDate2;
+
   Flat flt;
   List<RoomType> rm;
   double _valueMinute;
@@ -32,7 +44,7 @@ class _FlatBillState extends State<FlatBill> {
   List<Device> dv;
   var selectedflat;
   var selectedroom;
-  var selecteddeviceId;
+
   Future floorVal;
   List<dynamic> allFlatId;
   var allDeviceId=List.empty(growable: true);
@@ -51,6 +63,7 @@ class _FlatBillState extends State<FlatBill> {
   List dataResponse=List.empty(growable: true);
 
   List tenMinuteEnergy;
+  List hourMinuteEnergy;
 
   double total=0.0;
 
@@ -59,7 +72,34 @@ class _FlatBillState extends State<FlatBill> {
   bool completeTask=false;
 
   double changeValue;
-
+  double _valueHour;
+  List hourEnergy;
+  List hour = [
+    '1 hour',
+    '2 hour',
+    '3 hour',
+    '4 hour',
+    '5 hour',
+    '6 hour',
+    '7 hour',
+    '8 hour',
+    '9 hour',
+    '10 hour',
+    '11 hour',
+    '12 hour',
+    '13 hour',
+    '14 hour',
+    '15 hour',
+    '16 hour',
+    '17 hour',
+    '18 hour',
+    '19 hour',
+    '20 hour',
+    '21 hour',
+    '22 hour',
+    '23 hour',
+    '24 hour'
+  ];
 
   void initState() {
     super.initState();
@@ -214,7 +254,7 @@ class _FlatBillState extends State<FlatBill> {
 
     }
 
-
+    await getEnergyHour();
 
   }
 
@@ -308,6 +348,749 @@ class _FlatBillState extends State<FlatBill> {
 
 
   }
+
+
+  Future getEnergyHour() async {
+    var dId;
+    hourEnergy=List.empty(growable: true);
+    String token = await getToken();
+    for(int i=0;i<allDeviceId.length;i++) {
+       dId=allDeviceId[i]['d_id'];
+      final url = API + 'perhourenergy?d_id=' + dId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      print('tenMinuteEnergyResponse ${response.statusCode}');
+      if (response.statusCode == 200) {
+
+        hourEnergy.addAll(jsonDecode(response.body));
+        print('hour $hourEnergy');
+
+      }
+    }
+  }
+int lengthHour;
+  sumOfEnergyHour()async{
+   double totalValue=0.0;
+    setState(() {
+      lengthHour=hourEnergy.length;
+    });
+    if(chooseValueHour == '1 hour') {
+      for(int i=0;i<lengthHour;i++){
+        setState(() {
+          var last1Hour = hourEnergy[i]['hour1'];
+          changeValue = double.parse(last1Hour);
+          totalValue=totalValue+changeValue;
+          _valueHour = totalValue;
+          print('sasa $last1Hour');
+        });
+      }
+
+    }
+   if(chooseValueHour == '2 hour') {
+     for(int i=0;i<lengthHour;i++){
+         setState(() {
+           double op1 = double.parse(hourEnergy[i]['hour1']);
+           double op2 = double.parse(hourEnergy[i]['hour2']);
+           print('sasa ${hourEnergy[i]['hour1']}');
+           print('2sasa ${hourEnergy[i]['hour2']}');
+
+           _valueHour =_valueHour+ op1 + op2;
+           print('_valueHour ${_valueHour}');
+         });
+
+     }
+
+   }
+   if(chooseValueHour == '3 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '4 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '5 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '6 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '7 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '8 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '9 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '10 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '11 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '12 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '13 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '14 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '15 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '16 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '17 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '18 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '19 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '20 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         double op20 = double.parse(hourEnergy[i]['hour20']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '21 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         double op20 = double.parse(hourEnergy[i]['hour20']);
+         double op21 = double.parse(hourEnergy[i]['hour21']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '22 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         double op20 = double.parse(hourEnergy[i]['hour20']);
+         double op21 = double.parse(hourEnergy[i]['hour21']);
+         double op22 = double.parse(hourEnergy[i]['hour22']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '23 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         double op20 = double.parse(hourEnergy[i]['hour20']);
+         double op21 = double.parse(hourEnergy[i]['hour21']);
+         double op22 = double.parse(hourEnergy[i]['hour22']);
+         double op23 = double.parse(hourEnergy[i]['hour23']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+   if(chooseValueHour == '24 hour') {
+     for(int i=0;i<lengthHour;i++){
+       setState(() {
+         double op1 = double.parse(hourEnergy[i]['hour1']);
+         double op2 = double.parse(hourEnergy[i]['hour2']);
+         double op3 = double.parse(hourEnergy[i]['hour3']);
+         double op4 = double.parse(hourEnergy[i]['hour4']);
+         double op5 = double.parse(hourEnergy[i]['hour5']);
+         double op6 = double.parse(hourEnergy[i]['hour6']);
+         double op7 = double.parse(hourEnergy[i]['hour7']);
+         double op8 = double.parse(hourEnergy[i]['hour8']);
+         double op9 = double.parse(hourEnergy[i]['hour9']);
+         double op10 = double.parse(hourEnergy[i]['hour10']);
+         double op11 = double.parse(hourEnergy[i]['hour11']);
+         double op12 = double.parse(hourEnergy[i]['hour12']);
+         double op13 = double.parse(hourEnergy[i]['hour13']);
+         double op14 = double.parse(hourEnergy[i]['hour14']);
+         double op15 = double.parse(hourEnergy[i]['hour15']);
+         double op16 = double.parse(hourEnergy[i]['hour16']);
+         double op17 = double.parse(hourEnergy[i]['hour17']);
+         double op18 = double.parse(hourEnergy[i]['hour18']);
+         double op19 = double.parse(hourEnergy[i]['hour19']);
+         double op20 = double.parse(hourEnergy[i]['hour20']);
+         double op21 = double.parse(hourEnergy[i]['hour21']);
+         double op22 = double.parse(hourEnergy[i]['hour22']);
+         double op23 = double.parse(hourEnergy[i]['hour23']);
+         double op24 = double.parse(hourEnergy[i]['hour24']);
+         print('sasa ${hourEnergy[i]['hour1']}');
+         print('2sasa ${hourEnergy[i]['hour2']}');
+
+         _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24;
+         print('_valueHour ${_valueHour}');
+       });
+
+     }
+
+   }
+  }
+
+
+  showDatePicker1(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date1=date;
+        datefinal = date.toString();
+        cutDate = datefinal.substring(0, 10);
+
+      })
+    });
+  }
+
+  showDatePicker2(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date2=date;
+        datefinal = date.toString();
+        cutDate2 = datefinal.substring(0, 10);
+
+      })
+    });
+  }
+  // m-1*30+d date
+
+  differenceCurrentDateToSelectedDate(){
+    currentDifference=DateTime.now().difference(date1).inDays;
+    print('currentDifference ${currentDifference}');
+  }
+
+  void findDifferenceBetweenDates(){
+    print(date1);
+    print(date2);
+    setState(() {
+      difference = date1.difference(date2).inDays;
+    });
+
+    print('difference $difference');
+  }
+
+
+  Future getEnergyDay() async {
+    var dId;
+    List data= List.empty(growable: true);
+    onlyDayEnergyList=List.empty(growable: true);
+    String token = await getToken();
+    for(int i=0;i<allDeviceId.length;i++){
+      dId=allDeviceId[i]['d_id'];
+      final url = API + 'perdaysenergy?d_id=' + dId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      print('tenMinuteEnergy ${response.statusCode}');
+      print('tenMinuteEnergy ${response.body}');
+      if (response.statusCode == 200) {
+        data.addAll(jsonDecode(response.body));
+            print('dayEnergy ${data[0]['d_id']}');
+
+
+      }
+    }
+      int i=0;
+
+    while(i<allDeviceId.length){
+      onlyDayEnergyList=List.from(data);
+      print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
+      print('beforeSsumData ${onlyDayEnergyList[i]['day${i+currentDifference}']}');
+      i++;
+
+    }
+    print('sumData ${onlyDayEnergyList}');
+
+  }
+
+sumYearData(){
+  int i=0;
+
+  while(i<=difference){
+    print(' asasa ${onlyDayEnergyList[i][i+currentDifference]}');
+    setState(() {
+      total=total+onlyDayEnergyList[i+currentDifference];
+      finalEnergyValue=total.toString();
+    });
+    i++;
+    print('sumDatatotal ${total}');
+  }
+  total=0.0;
+  print('sumDatatotal_final ${total}');
+
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -664,6 +1447,70 @@ class _FlatBillState extends State<FlatBill> {
                       : _valueMinute.toString()),
                 ],
               ):Text('Wait'),
+              SizedBox(
+                height: 15,
+              ),
+              completeTask? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                      value: chooseValueHour,
+                      onChanged: (index) async {
+                        setState(() {
+                          chooseValueHour = index;
+                        });
+
+                        await sumOfEnergyHour();
+                      },
+                      items: hour.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                  Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                ],
+              ):Text('Wait'),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
+                      await showDatePicker1();
+
+                    },
+                    child: Text(cutDate == null ? 'Select Date' : cutDate),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDatePicker2();
+                      // print12();
+                    },
+                    child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
+
+                    },
+                    child: Text(finalEnergyValue.toString()),
+                  ),
+                  ElevatedButton(
+                      onPressed: ()async{
+                        await differenceCurrentDateToSelectedDate();
+                        await findDifferenceBetweenDates();
+                        await getEnergyDay();
+                      }, child: Text('Click'))
+                ],
+
+              ),
             ],
           ),
 

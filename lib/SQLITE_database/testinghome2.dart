@@ -14,6 +14,7 @@ import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillUsage/billui.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
+import 'package:loginsignspaceorion/BillUsage/placebill.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
@@ -4690,7 +4691,7 @@ String piname;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => RoomBill(),
+                                      builder: (context) => FlatBill(),
                                     ),
                                   );
                                 }),
