@@ -4691,7 +4691,7 @@ String piname;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => FlatBill(),
+                                      builder: (context) => PlaceBill(),
                                     ),
                                   );
                                 }),

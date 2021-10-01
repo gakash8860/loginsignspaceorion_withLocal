@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
@@ -1446,7 +1446,11 @@ sumYearData(){
                       ? pleaseSelect
                       : _valueMinute.toString()),
                 ],
-              ):Text('Wait'),
+              ):AnimatedTextKit(
+                animatedTexts: [
+                  TyperAnimatedText('Please wait ',  )
+                  ],
+              ),
               SizedBox(
                 height: 15,
               ),
@@ -1470,7 +1474,11 @@ sumYearData(){
                       }).toList()),
                   Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
                 ],
-              ):Text('Wait'),
+              ):AnimatedTextKit(
+                animatedTexts: [
+                  TyperAnimatedText('Please wait ',  )
+                ],
+              ),
               SizedBox(
                 height: 15,
               ),
