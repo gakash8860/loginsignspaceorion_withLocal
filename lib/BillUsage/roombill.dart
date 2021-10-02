@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
@@ -1617,6 +1618,30 @@ await getEnergyHour();
                 ],
 
               ):Text("Please Wait"),
+              Container(
+                child: Center(
+                  child: RaisedButton(
+                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
+                      child: Text('Total Usage',style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    onPressed:() async{
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
+                        // totalEnergy: last10Minute,
+                      )));
+                      // Navigator.of(context)
+                      //     .pushReplacementNamed(TotalUsage.routeName);
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),

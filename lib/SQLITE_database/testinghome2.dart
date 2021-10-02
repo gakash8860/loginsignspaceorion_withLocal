@@ -5372,36 +5372,36 @@ String piname;
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                InkWell(
-                  onTap: (){
+                TextButton(
+                  onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
                   },
                   child: Text("Place Bill Prediction"),
                 ),
-                SizedBox(height: 8,),
-                InkWell(
-                  onTap: (){
+
+                TextButton(
+                  onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
                   },
                   child: Text("Floor Bill Prediction"),
                 ),
-                SizedBox(height: 8,),
-                InkWell(
-                  onTap: (){
+
+                TextButton(
+                  onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
                   },
                   child: Text("Flat Bill Prediction"),
                 ),
-                SizedBox(height: 8,),
-                InkWell(
-                  onTap: (){
+
+                TextButton(
+                  onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
                   },
                   child: Text("Room Bill Prediction"),
                 ),
-                SizedBox(height: 8,),
-                InkWell(
-                  onTap: (){
+
+                TextButton(
+                  onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
                   },
                   child: Text("Device Bill Prediction"),
@@ -5563,7 +5563,49 @@ String piname;
 
 
 
-  _openGoggleAssistant() async {
+ _asyncSimpleDialog(BuildContext context) async {
+  return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Please Select '),
+          children: <Widget>[
+            TextButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                },
+                child: const Text('Place Bill Prediction',style:TextStyle(fontSize: 14))),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+              },
+              child: const Text('Floor Bill Prediction'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+              },
+              child: const Text('Flat Bill Prediction'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+              },
+              child: const Text('Room Bill Prediction'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+              },
+              child: const Text('Device Bill Prediction'),
+            ),
+          ],
+        );
+      });
+}
+
+
+_openGoggleAssistant() async {
     try {
       bool isInstalled = await DeviceApps.isAppInstalled(
           'com.google.android.apps.googleassistant');
