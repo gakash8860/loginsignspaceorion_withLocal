@@ -11,7 +11,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
-import 'package:loginsignspaceorion/BillUsage/billui.dart';
+import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
 import 'package:loginsignspaceorion/BillUsage/placebill.dart';
@@ -1843,7 +1843,7 @@ var tokenWeb;
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Any Text For Pin 19',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+            title: Text('Enter the Any Text For Pin 19',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -1860,7 +1860,7 @@ var tokenWeb;
                   controller: pin19Controller,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                  style: TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.place),
                     filled: true,
@@ -1914,7 +1914,7 @@ var tokenWeb;
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
             content: Container(
               color:Colors.red,
               width: MediaQuery.of(context).size.width,
@@ -1927,7 +1927,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                         return Column(
                           children: [
                             SizedBox(height: 250,),
-                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?'RobotoMono':fonttest,),)),
+                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,),)),
                           ],
                         );
                       }else{
@@ -1950,9 +1950,9 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                             child: Column(
                                               children: [
                                                 ListTile(
-                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
-                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
-                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,)),
+                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,)),
+                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,)),
 
                                                   onTap: (){
                                                     print('printSubUser ${listOfScheduledPins[index]['name']}');
@@ -1973,7 +1973,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                                             if(listOfScheduledPins[index]['pin1Status']==1){
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                                  Text(namesDataList2[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                   SizedBox(width: 14,),
                                                                   Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                 ],
@@ -1981,7 +1981,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?'Robo
                                                             }else if(listOfScheduledPins[index]['pin1Status']==0){
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                                  Text(namesDataList2[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                                   SizedBox(width: 14,),
                                                                   Text(off,style: TextStyle(fontSize: 22,fontFamily:  fonttest==null?changeFont:fonttest,),),
                                                                 ],
@@ -4482,7 +4482,7 @@ String piname;
                           Flexible(
                             child: Text('Place - ', style: TextStyle(
                               fontWeight: FontWeight.bold,
-                                fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                fontFamily: fonttest==null?changeFont:fonttest,
                             ),),
                           ),
                           Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
@@ -4588,7 +4588,7 @@ String piname;
                                       height: 8,
                                     ),
                                     Text('Hello $firstName', style: TextStyle(
-                                        fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                        fontFamily: fonttest==null?changeFont:fonttest,
                                       // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
@@ -4604,7 +4604,7 @@ String piname;
                                 'Add Place',
                                 style: TextStyle(
                                   color: change_toDark ? Colors.white : Colors.black,
-                                    fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                    fontFamily: fonttest==null?changeFont:fonttest,
                                 ),
                               ),
                               onTap: () {
@@ -4618,7 +4618,7 @@ String piname;
                                 style: TextStyle(
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
-                                    fontFamily: fonttest==null?'RobotoMono':fonttest
+                                    fontFamily: fonttest==null?changeFont:fonttest
                                 ),
                               ),
                               onTap: () async {
@@ -4633,7 +4633,7 @@ String piname;
                               leading: Icon(Icons.supervised_user_circle),
                               title: Text(
                                 'Temp Access',
-                                style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4665,7 +4665,7 @@ String piname;
                                 leading: Icon(Icons.perm_identity),
                                 title: Text(
                                   'Add Members',
-                                  style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
                                     color: change_toDark ? Colors.white : Colors
                                         .black,
                                   ),
@@ -4683,23 +4683,24 @@ String piname;
                                 leading: Icon(Icons.power_rounded),
                                 title: Text('Bill Prediction',
                                     style: TextStyle(
-                                      fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                      fontFamily: fonttest==null?changeFont:fonttest,
                                       color: change_toDark ? Colors.white : Colors
                                           .black,
                                     )),
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PlaceBill(),
-                                    ),
-                                  );
+                                  _billPredictionNavigation(context);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => FlatBill(),
+                                  //   ),
+                                  // );
                                 }),
                             ListTile(
                                 leading: Icon(Icons.schedule),
                                 title: Text('Scheduled device /pins ',
                                     style: TextStyle(
-                                      fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                      fontFamily: fonttest==null?changeFont:fonttest,
                                       color: change_toDark ? Colors.white : Colors
                                           .black,
                                     )),
@@ -4716,7 +4717,7 @@ String piname;
                               title: Text(
                                 'Setting',
                                 style: TextStyle(
-                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4734,7 +4735,7 @@ String piname;
                               title: Text(
                                 'Help',
                                 style: TextStyle(
-                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4752,7 +4753,7 @@ String piname;
                               title: Text(
                                 'About GenOrion',
                                 style: TextStyle(
-                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4770,7 +4771,7 @@ String piname;
                               title: Text(
                                 'Contact ',
                                 style: TextStyle(
-                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4788,7 +4789,7 @@ String piname;
                               title: Text(
                                 'Logout',
                                 style: TextStyle(
-                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                   color: change_toDark ? Colors.white : Colors
                                       .black,
                                 ),
@@ -4866,7 +4867,7 @@ String piname;
                                                         children: [
                                                           Text('Floor - ',
                                                             style: TextStyle(
-                                                              fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                              fontFamily: fonttest==null?changeFont:fonttest,
                                                               color: Colors.white,
                                                               fontSize: 22,
                                                               fontWeight: FontWeight
@@ -4883,7 +4884,7 @@ String piname;
                                                                 // 'Hello ',
                                                                 // + widget.fl.user.first_name,
                                                                 style: TextStyle(
-                                                                        fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                        fontFamily: fonttest==null?changeFont:fonttest,
                                                                     color: Colors.white,
                                                                     fontSize: 22,
 
@@ -4933,7 +4934,7 @@ String piname;
                                                             children: [
                                                               Text('Flat - ',
                                                                 style: TextStyle(
-                                                                    fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     color: Colors
                                                                         .white,
                                                                     fontWeight: FontWeight
@@ -4944,7 +4945,7 @@ String piname;
                                                                 // 'Hello ',
                                                                 // + widget.fl.user.first_name,
                                                                 style: TextStyle(
-                                                                    fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     color: Colors
                                                                         .white,
                                                                     // fontWeight: FontWeight.bold,
@@ -4998,7 +4999,7 @@ String piname;
                                                           children: <Widget>[
                                                             Text('Sensors- ',
                                                               style: TextStyle(
-                                                                  fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                  fontFamily: fonttest==null?changeFont:fonttest,
                                                                 // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                                                   fontSize: 14,
                                                                   fontWeight: FontWeight
@@ -5024,7 +5025,7 @@ String piname;
                                                                         'sensor1']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                                             fontSize: 14,
                                                                             color: Colors
                                                                                 .white70)),
@@ -5052,7 +5053,7 @@ String piname;
                                                                         'sensor2']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                                             fontSize: 14,
                                                                             color: Colors
                                                                                 .white70)),
@@ -5079,7 +5080,7 @@ String piname;
                                                                         'sensor3']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                                             fontSize: 14,
                                                                             color: Colors
                                                                                 .white70)),
@@ -5108,7 +5109,7 @@ String piname;
                                                                             .toString(),
                                                                         style: TextStyle(
                                                                             fontSize: 14,
-                                                                            fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                            fontFamily: fonttest==null?changeFont:fonttest,
                                                                             color: Colors
                                                                                 .white70)),
                                                                   ),
@@ -5179,7 +5180,7 @@ String piname;
                                                             children: [
                                                               Text('Rooms-',
                                                                 style: TextStyle(
-                                                                    fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                   // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight
@@ -5274,7 +5275,7 @@ String piname;
                                                   TextSpan(
                                                       text: widget.dv[index].dId,
                                                       style: TextStyle(
-                                                          fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                                          fontFamily: fonttest==null?changeFont:fonttest,
                                                           fontSize: 15,
                                                         color: change_toDark ? Colors.white : Colors.black,)),
                                                   TextSpan(text: "   "),
@@ -5360,6 +5361,57 @@ String piname;
 
     );
   }
+
+
+     _billPredictionNavigation(BuildContext context){
+      return showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Please Select'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                  },
+                  child: Text("Place Bill Prediction"),
+                ),
+                SizedBox(height: 8,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+                  },
+                  child: Text("Floor Bill Prediction"),
+                ),
+                SizedBox(height: 8,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                  },
+                  child: Text("Flat Bill Prediction"),
+                ),
+                SizedBox(height: 8,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                  },
+                  child: Text("Room Bill Prediction"),
+                ),
+                SizedBox(height: 8,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                  },
+                  child: Text("Device Bill Prediction"),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+    }
 
 
   remoteUiWidget(BuildContext context){
@@ -6548,7 +6600,7 @@ bool switchOn;
                         'Turn Off All Appliances',
                         style: TextStyle(
                           color: change_toDark ? Colors.white : Colors.black,
-                          fontFamily: fonttest==null?'RobotoMono':fonttest,
+                          fontFamily: fonttest==null?changeFont:fonttest,
                           fontSize: 12.5,
                           fontWeight: FontWeight.bold,
 
@@ -6676,7 +6728,7 @@ bool switchOn;
                                                             .toString() == null
                                                             ? _dateString
                                                             : cutDate.toString()
-                                                            .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                            .toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                         onTap: () {
                                                           pickDate();
                                                         }
@@ -6711,12 +6763,12 @@ bool switchOn;
                                                     child: Text(
                                                       _alarmTimeString,
                                                       style:
-                                                      TextStyle(fontSize: 32,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                                                      TextStyle(fontSize: 32,fontFamily: fonttest==null?changeFont:fonttest,),
                                                     ),
                                                   ),
                                                   ListTile(
                                                     title:
-                                                    Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                    Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                     trailing: Icon(Icons.timer),
                                                   ),
                                                   ListTile(
@@ -6792,7 +6844,7 @@ bool switchOn;
                                                   TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   style:
-                                                  TextStyle(fontSize: 10,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                                                  TextStyle(fontSize: 10,fontFamily: fonttest==null?changeFont:fonttest,),
                                                 ),
                                                 onPressed: ()async {
                                                   print('indexpinNames->  $index');
@@ -6918,7 +6970,7 @@ bool switchOn;
                                                               .toString() == null
                                                               ? _dateString
                                                               : cutDate.toString()
-                                                              .toString(),style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                              .toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                           onTap: () {
                                                             pickDate();
                                                           }
@@ -6953,12 +7005,12 @@ bool switchOn;
                                                       child: Text(
                                                         _alarmTimeString,
                                                         style:
-                                                        TextStyle(fontSize: 32,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                                                        TextStyle(fontSize: 32,fontFamily: fonttest==null?changeFont:fonttest,),
                                                       ),
                                                     ),
                                                     ListTile(
                                                       title:
-                                                      Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                                      Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
                                                       trailing: Icon(Icons.timer),
                                                     ),
                                                     ListTile(

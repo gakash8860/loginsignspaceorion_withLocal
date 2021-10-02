@@ -80,6 +80,18 @@ class _RoomBillState extends State<RoomBill> {
   ];
   double changeValue=0.0;
   double totalValue;
+  int lengthHour;
+  DateTime date2;
+  DateTime date1;
+  String datefinal;
+  var currentDifference;
+  var currentDate;
+  var difference;
+  String cutDate;
+  String cutDate2;
+  var finalEnergyValue;
+  List onlyDayEnergyList ;
+
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -334,7 +346,7 @@ await getEnergyHour();
       }
     }
   }
-  int lengthHour;
+
   sumOfEnergyHour()async{
     double totalValue=0.0;
     setState(() {
@@ -951,6 +963,134 @@ await getEnergyHour();
 
     }
   }
+
+  showDatePicker1(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date1=date;
+        datefinal = date.toString();
+        cutDate = datefinal.substring(0, 10);
+
+      })
+    });
+  }
+
+  showDatePicker2(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2080)
+    ).then((date) => {
+      setState(() {
+        date2=date;
+        datefinal = date.toString();
+        cutDate2 = datefinal.substring(0, 10);
+
+      })
+    });
+  }
+
+
+
+
+  differenceCurrentDateToSelectedDate(){
+    currentDifference=DateTime.now().difference(date1).inDays;
+    print('currentDifference ${currentDifference}');
+  }
+
+  void findDifferenceBetweenDates(){
+    print(date1);
+    print(date2);
+    setState(() {
+      difference = date1.difference(date2).inDays;
+    });
+
+    print('difference $difference');
+  }
+
+
+  Future getEnergyDay() async {
+    var dId;
+    List data= List.empty(growable: true);
+    onlyDayEnergyList=List.empty(growable: true);
+    String token = await getToken();
+
+
+    for(int i=0;i<allDeviceId.length;i++){
+      dId=allDeviceId[i]['d_id'];
+      final url = API + 'perdaysenergy?d_id=' + dId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      print('tenMinuteEnergy ${response.statusCode}');
+      print('tenMinuteEnergy ${response.body}');
+      if (response.statusCode == 200) {
+        data.addAll(jsonDecode(response.body));
+        print('dayEnergy ${data[0]['d_id']}');
+
+
+      }
+    }
+    onlyDayEnergyList=List.from(data);
+
+    await sumYearData();
+    print('beforeSsumData ${onlyDayEnergyList}');
+    int i=0;
+
+    // while(i<onlyDayEnergyList.length){
+    //
+    //   for(int j=1;j<onlyDayEnergyList.length;i++){
+    //     print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
+    //     print('JbeforeSsumData ${onlyDayEnergyList[i]['day${j}']}');
+    //   }
+    //
+    //   i++;
+    //
+    // }
+    print('sumData ${onlyDayEnergyList}');
+
+  }
+
+  sumYearData(){
+    int i=0;
+
+    while(i<onlyDayEnergyList.length){
+      for(int j=1;j<=difference;j++){
+        print(' asasadaya ${onlyDayEnergyList[i]['day${j}']}');
+        setState(() {
+          total=total+onlyDayEnergyList[i]['day${j+currentDifference}'];
+          finalEnergyValue=total.toString();
+        });
+      }
+
+
+      i++;
+      print('sumDatatotal ${total}');
+    }
+    total=0.0;
+    print('sumDatatotal_final ${total}');
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1439,6 +1579,44 @@ await getEnergyHour();
                   Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
                 ],
               ):Text("Wait"),
+              completeTask?Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
+                      await showDatePicker1();
+
+                    },
+                    child: Text(cutDate == null ? 'Select Date' : cutDate),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDatePicker2();
+                      // print12();
+                    },
+                    child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                  ),
+                ],
+              ):Text("Please Wait"),
+              completeTask?Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async{
+
+                    },
+                    child: Text(finalEnergyValue.toString()),
+                  ),
+                  ElevatedButton(
+                      onPressed: ()async{
+                        await differenceCurrentDateToSelectedDate();
+                        await findDifferenceBetweenDates();
+                        await getEnergyDay();
+                        await sumYearData();
+                      }, child: Text('Click'))
+                ],
+
+              ):Text("Please Wait"),
             ],
           ),
         ),

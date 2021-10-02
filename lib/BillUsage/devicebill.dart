@@ -8,14 +8,14 @@ import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../main.dart';
 import 'package:dio/dio.dart' as dio;
-class BillUi extends StatefulWidget {
-  const BillUi({Key key}) : super(key: key);
+class DeviceBill extends StatefulWidget {
+  const DeviceBill({Key key}) : super(key: key);
 
   @override
-  _BillUiState createState() => _BillUiState();
+  _DeviceBillState createState() => _DeviceBillState();
 }
 
-class _BillUiState extends State<BillUi> {
+class _DeviceBillState extends State<DeviceBill> {
   String datefinal;
   var difference;
   List<PerDayEnergy> perDayEnergy;
@@ -88,7 +88,7 @@ class _BillUiState extends State<BillUi> {
   String cutDate2;
 
   Future placeVal;
-
+  bool completeTask=false;
   Future floorVal;
 
   Future flatVal;
@@ -940,6 +940,9 @@ class _BillUiState extends State<BillUi> {
       List<Device> dv =
       data.map((data) => Device.fromJson(data)).toList();
       print('DeviceId-->  ${dv[0].dId}');
+      setState(() {
+        completeTask=true;
+      });
       return dv;
     }else{
       return null;
@@ -1530,7 +1533,7 @@ class _BillUiState extends State<BillUi> {
                               "Please select a place to proceed further"));
                     }
                   }),
-              Row(
+              completeTask?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   DropdownButton(
@@ -1541,6 +1544,7 @@ class _BillUiState extends State<BillUi> {
                         });
 
                         await getEnergyTenMinutes(selecteddeviceId);
+
                       },
                       items: minute.map((valueItem) {
                         return DropdownMenuItem(
@@ -1552,11 +1556,11 @@ class _BillUiState extends State<BillUi> {
                       ? pleaseSelect
                       : _valueMinute.toString()),
                 ],
-              ),
+              ):Text('Wait'),
               SizedBox(
                 height: 15,
               ),
-              Row(
+              completeTask?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   DropdownButton(
@@ -1576,11 +1580,11 @@ class _BillUiState extends State<BillUi> {
                       }).toList()),
                   Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
                 ],
-              ),
+              ):Text("Wait"),
               SizedBox(
                 height: 15,
               ),
-              Row(
+              completeTask? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   InkWell(
@@ -1598,8 +1602,8 @@ class _BillUiState extends State<BillUi> {
                     child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
                   ),
                 ],
-              ),
-              Row(
+              ):Text("Wait"),
+              completeTask?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   InkWell(
@@ -1616,7 +1620,7 @@ class _BillUiState extends State<BillUi> {
                     }, child: Text('Click'))
                 ],
 
-              ),
+              ):Text("Wait"),
 
             ],
           ),

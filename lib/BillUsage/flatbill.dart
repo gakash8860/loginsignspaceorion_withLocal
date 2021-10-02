@@ -16,7 +16,7 @@ class FlatBill extends StatefulWidget {
 class _FlatBillState extends State<FlatBill> {
   String chooseValueHour;
   String chooseValueDay;
-  var onlyDayEnergyList ;
+  List onlyDayEnergyList ;
   Future placeVal;
   DateTime pickedDate;
   var finalEnergyValue;
@@ -72,7 +72,7 @@ class _FlatBillState extends State<FlatBill> {
   bool completeTask=false;
 
   double changeValue;
-  double _valueHour;
+  double _valueHour=0.0;
   List hourEnergy;
   List hour = [
     '1 hour',
@@ -100,7 +100,7 @@ class _FlatBillState extends State<FlatBill> {
     '23 hour',
     '24 hour'
   ];
-
+  int lengthHour;
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -371,7 +371,8 @@ class _FlatBillState extends State<FlatBill> {
       }
     }
   }
-int lengthHour;
+
+
   sumOfEnergyHour()async{
    double totalValue=0.0;
     setState(() {
@@ -1044,6 +1045,8 @@ int lengthHour;
     List data= List.empty(growable: true);
     onlyDayEnergyList=List.empty(growable: true);
     String token = await getToken();
+
+
     for(int i=0;i<allDeviceId.length;i++){
       dId=allDeviceId[i]['d_id'];
       final url = API + 'perdaysenergy?d_id=' + dId;
@@ -1061,28 +1064,39 @@ int lengthHour;
 
       }
     }
+    onlyDayEnergyList=List.from(data);
+
+    await sumYearData();
+    print('beforeSsumData ${onlyDayEnergyList}');
       int i=0;
 
-    while(i<allDeviceId.length){
-      onlyDayEnergyList=List.from(data);
-      print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
-      print('beforeSsumData ${onlyDayEnergyList[i]['day${i+currentDifference}']}');
-      i++;
-
-    }
+    // while(i<onlyDayEnergyList.length){
+    //
+    //   for(int j=1;j<onlyDayEnergyList.length;i++){
+    //     print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
+    //     print('JbeforeSsumData ${onlyDayEnergyList[i]['day${j}']}');
+    //   }
+    //
+    //   i++;
+    //
+    // }
     print('sumData ${onlyDayEnergyList}');
 
   }
 
-sumYearData(){
+  sumYearData(){
   int i=0;
 
-  while(i<=difference){
-    print(' asasa ${onlyDayEnergyList[i][i+currentDifference]}');
-    setState(() {
-      total=total+onlyDayEnergyList[i+currentDifference];
-      finalEnergyValue=total.toString();
-    });
+  while(i<onlyDayEnergyList.length){
+    for(int j=1;j<=difference;j++){
+      print(' asasadaya ${onlyDayEnergyList[i]['day${j}']}');
+      setState(() {
+        total=total+onlyDayEnergyList[i]['day${j+currentDifference}'];
+        finalEnergyValue=total.toString();
+      });
+    }
+
+
     i++;
     print('sumDatatotal ${total}');
   }
@@ -1381,7 +1395,7 @@ sumYearData(){
                                     icon:
                                     Icon(Icons.arrow_drop_down),
                                     iconSize: 28,
-                                    hint: Text('Select Floor'),
+                                    hint: Text('Select Flat'),
                                     isExpanded: true,
                                     value: flt,
                                     style: TextStyle(
@@ -1482,7 +1496,7 @@ sumYearData(){
               SizedBox(
                 height: 15,
               ),
-              Row(
+              completeTask?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   InkWell(
@@ -1500,8 +1514,8 @@ sumYearData(){
                     child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
                   ),
                 ],
-              ),
-              Row(
+              ):Text("Please Wait"),
+              completeTask?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   InkWell(
@@ -1515,10 +1529,11 @@ sumYearData(){
                         await differenceCurrentDateToSelectedDate();
                         await findDifferenceBetweenDates();
                         await getEnergyDay();
+                        await sumYearData();
                       }, child: Text('Click'))
                 ],
 
-              ),
+              ):Text("Please Wait"),
             ],
           ),
 
