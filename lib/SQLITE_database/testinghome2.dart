@@ -5263,8 +5263,8 @@ String piname;
                                   return Container(
                                     child: Column(
                                       children: [
-                                        deviceContainer2(
-                                            widget.dv[index].dId, index),
+                                        // deviceContainer2(
+                                        //     widget.dv[index].dId, index),
                                         Container(
                                           //
                                           // color: Colors.green,

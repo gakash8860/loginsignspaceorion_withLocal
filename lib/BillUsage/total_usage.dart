@@ -11,9 +11,13 @@ import 'bill_estimation.dart';
 
 class TotalUsage extends StatefulWidget {
   var totalEnergy;
+  var chooseValueMinute;
+  Map<String ,double> deviceId;
   static const routeName = '/total-usage';
   TotalUsage({
+    this.deviceId,
     this.totalEnergy,
+    this.chooseValueMinute,
 });
   @override
   _TotalUsageState createState() => _TotalUsageState();
@@ -159,13 +163,16 @@ class _TotalUsageState extends State<TotalUsage> {
   void initState() {
     // _getTotal();
     super.initState();
+    dataMap=widget.deviceId;
+    print('datamap $dataMap');
   }
-  Map<String, double> dataMap = {
-    "Bedroom": 5,
-    "Kitchen": 3,
-    "Living Room": 2,
-    "Bathroom": 2,
-  };
+  Map<String, double> dataMap;
+  // Map<String, double> dataMap = {
+  //   "Bedroom": 5,
+  //   "Kitchen": 3,
+  //   "Living Room": 2,
+  //   "Bathroom": 2,
+  // };
   @override
   Widget build(BuildContext context) {
 
@@ -305,9 +312,11 @@ class _TotalUsageState extends State<TotalUsage> {
                           createCard('📆 Total Days : ', '$_totalDays days'),
                           createCard('📊 Total Power : ',
                               '${widget.totalEnergy} Kwh'),
-                          createCard('⏰  Total Time : ', _timeString),
+                          createCard('⏰  Total Time : ', widget.chooseValueMinute),
                           createCard('💰 Total Amount : ',
                               '${_totalAmount.toStringAsFixed(3)} ₹'),
+                          // createCard('⏰  Based On : ', widget.chooseValueMinute),
+                          // createCard('⏰  Based On : ', widget.totalEnergy),
                         ],
                       ),
                       SizedBox(

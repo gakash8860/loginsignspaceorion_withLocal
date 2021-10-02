@@ -18,7 +18,7 @@ class _RoomBillState extends State<RoomBill> {
   Future placeVal;
   DateTime pickedDate;
   DateTime pickedDate2;
-  double _valueHour;
+  double _valueHour=0.0;
   List hourEnergy;
   List hour = [
     '1 hour',
@@ -60,6 +60,8 @@ class _RoomBillState extends State<RoomBill> {
   Device dv2;
   String chooseValueMinute;
   List tenMinuteEnergy;
+  Map<String,double> dataMap;
+  List<String> onlyDeviceId=List.empty(growable: true);
   var data;
   double total=0.0;
   List<Device> dv;
@@ -207,9 +209,12 @@ class _RoomBillState extends State<RoomBill> {
     tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
+
+
     for(int i=0;i<allDeviceId.length;i++){
 
       dId=allDeviceId[i]['d_id'];
+
       print('deviceIdEnergyRoom $dId');
       final url = API + 'pertenminuteenergy?d_id=' + dId;
       final response = await http.get(url, headers: {
@@ -219,10 +224,13 @@ class _RoomBillState extends State<RoomBill> {
       });
       print('tenMinuteEnergy ${response.statusCode}');
       if (response.statusCode == 200){
+        List<dynamic> data=jsonDecode(response.body);
+        print('sssssaaassa ${data[0]['d_id']}');
         tenMinuteEnergy.addAll(jsonDecode(response.body));
 
 
         print('tenMinuteRoomdata2 $tenMinuteEnergy');
+        print('onlyDeviceId $onlyDeviceId');
 
 
 
@@ -235,57 +243,111 @@ await getEnergyHour();
 
   }
 
+  dataMapFunc(){
+    int j=0;
+    setState(() {
+      length=tenMinuteEnergy.length;
+    });
+    while(j<length){
+      setState(() {
+
+
+        // dataMap={
+        //   tenMinuteEnergy[j]['d_id']:double.parse(tenMinuteEnergy[j]['enrgy10']),
+        //
+        //   // "energy": double.parse(tenMinuteEnergy[i]['enrgy10']),
+        //
+        // };
+      });
+      j++;
+    }
+  }
+
+
+var tenMinuteTotalUsage;
+
   sumOfEnergyTenMinutes()async{
+    dataMap={
+
+
+    };
     setState(() {
       length=tenMinuteEnergy.length;
     });
     if(chooseValueMinute == '10 minute'){
+      int j=0;
+
       for(int i=0;i<tenMinuteEnergy.length;i++){
+        dataMapFunc();
+        print('tenMinuteRoomdata214 ${tenMinuteEnergy[i]}');
         setState(() {
+          //
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => double.parse(tenMinuteEnergy[i]['enrgy10']));
+
+
+
           changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
           totalValue=totalValue+changeValue;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           _valueMinute = totalValue;
         });
+        j++;
       }
-      print('totalans $totalValue');
+      print('totalans ${dataMap}');
     }
     if(chooseValueMinute == '20 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
+
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
           totalValue=totalValue+op1+op2;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
           _valueMinute = totalValue;
+
+
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
-      print('totalans $totalValue');
+      print('totalans $dataMap');
     }
 
     if(chooseValueMinute == '30 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
           totalValue=totalValue+op1+op2+op3;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
     if(chooseValueMinute == '40 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
           totalValue=totalValue+op1+op2+op3+op4;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -293,15 +355,19 @@ await getEnergyHour();
     if(chooseValueMinute == '50 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
           totalValue=totalValue+op1+op2+op3+op4+op5;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -309,16 +375,21 @@ await getEnergyHour();
     if(chooseValueMinute == '60 minute'){
       for(int i=0;i<length;i++){
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i][0]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i][0]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i][0]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i][0]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i][0]['enrgy50']);
-          double op6=double.parse(tenMinuteEnergy[i][0]['enrgy60']);
+          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
+          double op6=double.parse(tenMinuteEnergy[i]['enrgy60']);
+
           totalValue=totalValue+op1+op2+op3+op4+op5+op6;
+
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5+op6);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
@@ -349,6 +420,9 @@ await getEnergyHour();
   }
 
   sumOfEnergyHour()async{
+    dataMap={
+
+    };
     double totalValue=0.0;
     setState(() {
       lengthHour=hourEnergy.length;
@@ -360,7 +434,8 @@ await getEnergyHour();
           changeValue = double.parse(last1Hour);
           totalValue=totalValue+changeValue;
           _valueHour = totalValue;
-          print('sasa $last1Hour');
+          dataMap.putIfAbsent(hourEnergy[i]['d_id'], () => double.parse(hourEnergy[i]['hour1']));
+          print('sasa $dataMap');
         });
       }
 
@@ -375,6 +450,7 @@ await getEnergyHour();
 
           _valueHour =_valueHour+ op1 + op2;
           print('_valueHour ${_valueHour}');
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
 
       }
@@ -390,7 +466,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3;
-          print('_valueHour ${_valueHour}');
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3);
         });
 
       }
@@ -407,6 +483,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4);
           print('_valueHour ${_valueHour}');
         });
 
@@ -425,6 +502,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5);
           print('_valueHour ${_valueHour}');
         });
 
@@ -444,6 +522,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6);
           print('_valueHour ${_valueHour}');
         });
 
@@ -464,6 +543,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7);
           print('_valueHour ${_valueHour}');
         });
 
@@ -485,6 +565,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8);
           print('_valueHour ${_valueHour}');
         });
 
@@ -507,6 +588,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9);
           print('_valueHour ${_valueHour}');
         });
 
@@ -530,6 +612,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10);
           print('_valueHour ${_valueHour}');
         });
 
@@ -554,6 +637,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11);
           print('_valueHour ${_valueHour}');
         });
 
@@ -579,6 +663,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12);
           print('_valueHour ${_valueHour}');
         });
 
@@ -605,6 +690,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13);
           print('_valueHour ${_valueHour}');
         });
 
@@ -632,6 +718,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14);
           print('_valueHour ${_valueHour}');
         });
 
@@ -660,6 +747,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15);
           print('_valueHour ${_valueHour}');
         });
 
@@ -689,6 +777,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16);
           print('_valueHour ${_valueHour}');
         });
 
@@ -719,6 +808,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17);
           print('_valueHour ${_valueHour}');
         });
 
@@ -750,6 +840,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18);
           print('_valueHour ${_valueHour}');
         });
 
@@ -782,6 +873,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19);
           print('_valueHour ${_valueHour}');
         });
 
@@ -815,6 +907,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20);
           print('_valueHour ${_valueHour}');
         });
 
@@ -849,6 +942,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21);
           print('_valueHour ${_valueHour}');
         });
 
@@ -884,6 +978,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22);
           print('_valueHour ${_valueHour}');
         });
 
@@ -920,6 +1015,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23);
           print('_valueHour ${_valueHour}');
         });
 
@@ -957,6 +1053,7 @@ await getEnergyHour();
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1543,6 +1640,7 @@ await getEnergyHour();
                           chooseValueMinute = index;
                         });
                           totalValue=0.0;
+
                         await sumOfEnergyTenMinutes();
                       },
                       items: minute.map((valueItem) {
@@ -1634,7 +1732,9 @@ await getEnergyHour();
                     ),
                     onPressed:() async{
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                        // totalEnergy: last10Minute,
+                        totalEnergy: tenMinuteTotalUsage.toString(),
+                        chooseValueMinute:chooseValueMinute.toString(),
+                        deviceId: dataMap,
                       )));
                       // Navigator.of(context)
                       //     .pushReplacementNamed(TotalUsage.routeName);
