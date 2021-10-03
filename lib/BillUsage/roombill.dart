@@ -243,25 +243,6 @@ await getEnergyHour();
 
   }
 
-  dataMapFunc(){
-    int j=0;
-    setState(() {
-      length=tenMinuteEnergy.length;
-    });
-    while(j<length){
-      setState(() {
-
-
-        // dataMap={
-        //   tenMinuteEnergy[j]['d_id']:double.parse(tenMinuteEnergy[j]['enrgy10']),
-        //
-        //   // "energy": double.parse(tenMinuteEnergy[i]['enrgy10']),
-        //
-        // };
-      });
-      j++;
-    }
-  }
 
 
 var tenMinuteTotalUsage;
@@ -278,11 +259,10 @@ var tenMinuteTotalUsage;
       int j=0;
 
       for(int i=0;i<tenMinuteEnergy.length;i++){
-        dataMapFunc();
         print('tenMinuteRoomdata214 ${tenMinuteEnergy[i]}');
         setState(() {
           //
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => double.parse(tenMinuteEnergy[i]['enrgy10']));
+
 
 
 
@@ -292,6 +272,7 @@ var tenMinuteTotalUsage;
           tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
 
           _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => double.parse(tenMinuteEnergy[i]['enrgy10']));
         });
         j++;
       }
@@ -433,7 +414,9 @@ var tenMinuteTotalUsage;
           var last1Hour = hourEnergy[i]['hour1'];
           changeValue = double.parse(last1Hour);
           totalValue=totalValue+changeValue;
+
           _valueHour = totalValue;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(hourEnergy[i]['d_id'], () => double.parse(hourEnergy[i]['hour1']));
           print('sasa $dataMap');
         });
@@ -450,6 +433,7 @@ var tenMinuteTotalUsage;
 
           _valueHour =_valueHour+ op1 + op2;
           print('_valueHour ${_valueHour}');
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
 
@@ -466,6 +450,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3);
         });
 
@@ -483,6 +468,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4);
           print('_valueHour ${_valueHour}');
         });
@@ -502,6 +488,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5);
           print('_valueHour ${_valueHour}');
         });
@@ -522,6 +509,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6);
           print('_valueHour ${_valueHour}');
         });
@@ -543,6 +531,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7);
           print('_valueHour ${_valueHour}');
         });
@@ -565,6 +554,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8);
           print('_valueHour ${_valueHour}');
         });
@@ -588,6 +578,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9);
           print('_valueHour ${_valueHour}');
         });
@@ -612,6 +603,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10);
           print('_valueHour ${_valueHour}');
         });
@@ -637,6 +629,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11);
           print('_valueHour ${_valueHour}');
         });
@@ -663,6 +656,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12);
           print('_valueHour ${_valueHour}');
         });
@@ -690,6 +684,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13);
           print('_valueHour ${_valueHour}');
         });
@@ -718,6 +713,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14);
           print('_valueHour ${_valueHour}');
         });
@@ -747,6 +743,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15);
           print('_valueHour ${_valueHour}');
         });
@@ -777,6 +774,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16);
           print('_valueHour ${_valueHour}');
         });
@@ -808,6 +806,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17);
           print('_valueHour ${_valueHour}');
         });
@@ -840,6 +839,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18);
           print('_valueHour ${_valueHour}');
         });
@@ -873,6 +873,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19);
           print('_valueHour ${_valueHour}');
         });
@@ -907,6 +908,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20);
           print('_valueHour ${_valueHour}');
         });
@@ -942,6 +944,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21);
           print('_valueHour ${_valueHour}');
         });
@@ -978,6 +981,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22);
           print('_valueHour ${_valueHour}');
         });
@@ -1015,6 +1019,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23);
           print('_valueHour ${_valueHour}');
         });
@@ -1053,6 +1058,7 @@ var tenMinuteTotalUsage;
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24;
+          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24);
           print('_valueHour ${_valueHour}');
         });
@@ -1716,7 +1722,7 @@ var tenMinuteTotalUsage;
                 ],
 
               ):Text("Please Wait"),
-              Container(
+              completeTask?Container(
                 child: Center(
                   child: RaisedButton(
                     color: Colors.lightBlue,
@@ -1741,7 +1747,7 @@ var tenMinuteTotalUsage;
                     },
                   ),
                 ),
-              ),
+              ):Container(),
             ],
           ),
         ),

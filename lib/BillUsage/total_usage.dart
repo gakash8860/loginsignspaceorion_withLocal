@@ -295,6 +295,7 @@ class _TotalUsageState extends State<TotalUsage> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: PieChart(
+
                                 dataMap: dataMap,
                                 animationDuration: Duration(milliseconds: 2200),
                                 chartType:ChartType.disc

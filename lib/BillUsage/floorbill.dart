@@ -12,7 +12,7 @@ class FloorBill extends StatefulWidget {
 }
 
 class _FloorBillState extends State<FloorBill> {
-
+  Map<String,double> dataMap={};
   Future placeVal;
   DateTime pickedDate;
   DateTime pickedDate2;
@@ -264,7 +264,9 @@ class _FloorBillState extends State<FloorBill> {
 
   }
 
+  var tenMinuteTotalUsage;
   sumOfEnergyTenMinutes()async{
+    dataMap={};
     setState(() {
       length=tenMinuteEnergy.length;
     });
@@ -274,6 +276,8 @@ class _FloorBillState extends State<FloorBill> {
           changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
           totalValue=totalValue+changeValue;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => double.parse(tenMinuteEnergy[i]['enrgy10']));
         });
       }
       print('totalans $totalValue');
@@ -285,6 +289,8 @@ class _FloorBillState extends State<FloorBill> {
           double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
           totalValue=totalValue+op1+op2;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
@@ -299,6 +305,8 @@ class _FloorBillState extends State<FloorBill> {
           double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
           totalValue=totalValue+op1+op2+op3;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
@@ -313,6 +321,8 @@ class _FloorBillState extends State<FloorBill> {
           double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
           totalValue=totalValue+op1+op2+op3+op4;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4);
         });
         print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
       }
@@ -329,6 +339,8 @@ class _FloorBillState extends State<FloorBill> {
           double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
           totalValue=totalValue+op1+op2+op3+op4+op5;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
@@ -346,6 +358,8 @@ class _FloorBillState extends State<FloorBill> {
           double op6=double.parse(tenMinuteEnergy[i]['enrgy60']);
           totalValue=totalValue+op1+op2+op3+op4+op5+op6;
           _valueMinute = totalValue;
+          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5+op6);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
@@ -499,7 +513,11 @@ class _FloorBillState extends State<FloorBill> {
 
 
   int lengthHour;
+
   sumOfEnergyHour()async{
+    dataMap={
+
+    };
     double totalValue=0.0;
     setState(() {
       lengthHour=hourEnergy.length;
@@ -511,7 +529,8 @@ class _FloorBillState extends State<FloorBill> {
           changeValue = double.parse(last1Hour);
           totalValue=totalValue+changeValue;
           _valueHour = totalValue;
-          print('sasa $last1Hour');
+          dataMap.putIfAbsent(hourEnergy[i]['d_id'], () => double.parse(hourEnergy[i]['hour1']));
+          print('sasa $dataMap');
         });
       }
 
@@ -526,6 +545,7 @@ class _FloorBillState extends State<FloorBill> {
 
           _valueHour =_valueHour+ op1 + op2;
           print('_valueHour ${_valueHour}');
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
 
       }
@@ -541,7 +561,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3;
-          print('_valueHour ${_valueHour}');
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3);
         });
 
       }
@@ -558,6 +578,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4);
           print('_valueHour ${_valueHour}');
         });
 
@@ -576,6 +597,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5);
           print('_valueHour ${_valueHour}');
         });
 
@@ -595,6 +617,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6);
           print('_valueHour ${_valueHour}');
         });
 
@@ -615,6 +638,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7);
           print('_valueHour ${_valueHour}');
         });
 
@@ -636,6 +660,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8);
           print('_valueHour ${_valueHour}');
         });
 
@@ -658,6 +683,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9);
           print('_valueHour ${_valueHour}');
         });
 
@@ -681,6 +707,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10);
           print('_valueHour ${_valueHour}');
         });
 
@@ -705,6 +732,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11);
           print('_valueHour ${_valueHour}');
         });
 
@@ -730,6 +758,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12);
           print('_valueHour ${_valueHour}');
         });
 
@@ -756,6 +785,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13);
           print('_valueHour ${_valueHour}');
         });
 
@@ -783,6 +813,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14);
           print('_valueHour ${_valueHour}');
         });
 
@@ -811,6 +842,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15);
           print('_valueHour ${_valueHour}');
         });
 
@@ -840,6 +872,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16);
           print('_valueHour ${_valueHour}');
         });
 
@@ -870,6 +903,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17);
           print('_valueHour ${_valueHour}');
         });
 
@@ -901,6 +935,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18);
           print('_valueHour ${_valueHour}');
         });
 
@@ -933,6 +968,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19);
           print('_valueHour ${_valueHour}');
         });
 
@@ -966,6 +1002,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1000,6 +1037,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1035,6 +1073,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1071,6 +1110,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1108,6 +1148,7 @@ class _FloorBillState extends State<FloorBill> {
           print('2sasa ${hourEnergy[i]['hour2']}');
 
           _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24);
           print('_valueHour ${_valueHour}');
         });
 
@@ -1115,6 +1156,7 @@ class _FloorBillState extends State<FloorBill> {
 
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

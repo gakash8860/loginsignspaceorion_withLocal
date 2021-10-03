@@ -19,6 +19,7 @@ import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/SQLITE_database/database_helper.dart';
+import 'package:loginsignspaceorion/SQLITE_database/remoteuipage.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showEmergencyNumber.dart';
 import 'package:loginsignspaceorion/SSID_PASSWORD_and_EmergencyNumber/showSSID.dart';
 import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
@@ -5263,8 +5264,8 @@ String piname;
                                   return Container(
                                     child: Column(
                                       children: [
-                                        // deviceContainer2(
-                                        //     widget.dv[index].dId, index),
+                                        deviceContainer2(
+                                            widget.dv[index].dId, index),
                                         Container(
                                           //
                                           // color: Colors.green,
@@ -6704,7 +6705,15 @@ bool switchOn;
                       child: GestureDetector(
                         child: Icon(Icons.settings_remote , color: change_toDark ? Colors.white : Colors.black,),
                         onTap: () {
-                          remoteUiWidget(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (
+                                    context,
+                                    ) =>
+                                RemoteUIPage()),
+                          );
+                          // remoteUiWidget(context);
                           // _createAlertDialogForPin19(context, dId);
                         },
                       ),
