@@ -109,6 +109,8 @@ class _FlatBillState extends State<FlatBill> {
     '23 hour',
     '24 hour'
   ];
+  double total14=0.0;
+
   int lengthHour;
   void initState() {
     super.initState();
@@ -220,6 +222,15 @@ class _FlatBillState extends State<FlatBill> {
         print('dataweallDeviceIdDeviceIddata-->  ${datawe}');
         print('allDeviceIdDeviceIddata-->  ${dataResponse.length}');
        await totalEnergyAccordingRoom();
+        if(datawe.isEmpty){
+          print('dataisEmpty');
+          total14=0.0;
+          dataMap.putIfAbsent(allRoomId[i]['r_id'], () => total14);
+          print('dataisEmpty $dataMap');
+        }
+
+        dataMap.putIfAbsent(allRoomId[i]['r_id'], () => total14);
+        print('741dataisEmpty $dataMap');
       }else{
         return null;
       }
@@ -232,13 +243,14 @@ class _FlatBillState extends State<FlatBill> {
     await getEnergyTenMinutes();
 
   }
-  double total14=0.0;
 
 
 
   Future totalEnergyAccordingRoom()async{
+    total14=0.0;
     String token = await getToken();
     print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
+
     for(int j=0;j<datawe.length;j++){
       print('forLoopdataweallDeviceIdDeviceIddata-->  ${datawe}');
       final url1 = API + 'pertenminuteenergy?d_id='+datawe[j]['d_id'];
@@ -254,8 +266,7 @@ class _FlatBillState extends State<FlatBill> {
         for(int k=0;k<data.length;k++){
           total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
           print('pororro $total14');
-          print('pororro $j');
-          dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
         }
         // int ko=0;
         // while(ko<j){
@@ -264,7 +275,7 @@ class _FlatBillState extends State<FlatBill> {
         // }
 
 
-        total14=0.0;
+        // total14=0.0;
 
         print('dataMapKroomaccrodinfsol $dataMap ');
 
