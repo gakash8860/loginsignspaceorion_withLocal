@@ -61,6 +61,12 @@ class _FlatBillState extends State<FlatBill> {
     '50 minute',
     '60 minute'
   ];
+  var singleRoomId;
+  var singleRoomName;
+  var listOfEnergy10Minutes= List.empty(growable: true);
+
+
+
   String r_id;
   List dataResponse=List.empty(growable: true);
 
@@ -193,17 +199,13 @@ class _FlatBillState extends State<FlatBill> {
 
       }
   }
+  List datawe=[];
 
-var singleRoomId;
-  var singleRoomName;
-  var listOfEnergy10Minutes= List.empty(growable: true);
-List<dynamic>datawe=[];
   Future getDevice() async {
-
     String token = await getToken();
     for(int i=0;i<allRoomId.length;i++){
       r_id=allRoomId[i]['r_id'];
-      print('going to getDevice');
+      print('going to getDevice $i');
       print( allRoomId[i]['r_id']);
       final url = API + 'addyourdevice/?r_id=' + r_id;
 
@@ -218,26 +220,11 @@ List<dynamic>datawe=[];
         print('dataweallDeviceIdDeviceIddata-->  ${datawe}');
         print('allDeviceIdDeviceIddata-->  ${dataResponse.length}');
        await totalEnergyAccordingRoom();
-
-
-          // if(dataResponse[i]['r_id']==dataResponse[i+1]['r_id']){
-          //   print('going to getDevicedataResponse ${dataResponse[i]['r_id']}');
-          //   singleRoomId=dataResponse[i]['r_id'];
-          //   singleRoomId=dataResponse[i]['r_id'];
-          //   await getDeviceSingleRoom(singleRoomId);
-          //   break;
-          // }
-
-
       }else{
         return null;
       }
     }
     allDeviceId=List.from(dataResponse);
-
-    // print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
-
-
     print('allDeviceIdDeviceId14785-->  ${allDeviceId}');
     print('allDeviceIdDeviceId14785-->  ${allDeviceId.length}');
 
@@ -246,10 +233,14 @@ List<dynamic>datawe=[];
 
   }
   double total14=0.0;
-  Future totalEnergyAccordingRoom()async{
 
+
+
+  Future totalEnergyAccordingRoom()async{
     String token = await getToken();
+    print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
     for(int j=0;j<datawe.length;j++){
+      print('forLoopdataweallDeviceIdDeviceIddata-->  ${datawe}');
       final url1 = API + 'pertenminuteenergy?d_id='+datawe[j]['d_id'];
       final response1= await http.get(url1,headers: {
         'Content-Type': 'application/json',
@@ -260,20 +251,24 @@ List<dynamic>datawe=[];
         List<dynamic>data =jsonDecode(response1.body);
         print('energyData ${data.length}');
         print('energyData ${data}');
-        if(data.isEmpty){
-          listOfEnergy10Minutes.add(0);
-        }
         for(int k=0;k<data.length;k++){
           total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
           print('pororro $total14');
-          // listOfEnergy10Minutes.add(total);
+          print('pororro $j');
+          dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
         }
+        // int ko=0;
+        // while(ko<j){
+        //   dataMap.putIfAbsent(allRoomId[ko]['r_name'], () => total14);
+        //   ko+1;
+        // }
 
-        print('roomaccrodinfsol $listOfEnergy10Minutes ');
+
+        total14=0.0;
+
+        print('dataMapKroomaccrodinfsol $dataMap ');
 
       }
-
-
 
     }
   }
@@ -1816,7 +1811,8 @@ Future getEnergyTenMinute1()async{
                       ),
                     ),
                     onPressed:() async{
-                     await totalUsageFuncRoom();
+                      print('navigation $dataMap');
+                     // await totalUsageFuncRoom();
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
                         totalEnergy: tenMinuteTotalUsage.toString(),
                         chooseValueMinute:chooseValueMinute.toString(),
