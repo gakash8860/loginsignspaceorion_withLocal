@@ -176,188 +176,378 @@ class _TotalUsageState extends State<TotalUsage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Total Usage'),
-      ),
-      body:  LayoutBuilder(
+    return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          if(viewportConstraints.maxWidth>600){
-          return _isLoading? Center(child: SpinKitCircle(size: 60, color: Colors.lightBlue),)
-                : Container(
-                child: SingleChildScrollView(
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'Power Usage Chart Month Wise',
-                          style: GoogleFonts.josefinSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            _chartType=!_chartType;
-                          });
-                        },
-                        child: PieChart(
-                            dataMap: dataMap,
-                            chartRadius: MediaQuery.of(context).size.width / 3,
-                            animationDuration: Duration(milliseconds: 2200),
-                            chartType:ChartType.disc
-                          // _chartType ? ChartType.disc : ChartType.ring,
-                        ),
-                      ),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      Column(
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          createCard('📆 Total Days : ', '$_totalDays days'),
-                          createCard('📊 Total Power : ',
-                              '${_totalPower.toStringAsFixed(2)} Kwh'),
-                          createCard('⏰  Total Time : ', _timeString),
-                          createCard('💰 Total Amount :  ',
-                              '${_totalAmount.toStringAsFixed(3)} ₹'),
-                        ],
-                      ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      Container(
-                        child: Center(
-                          child: RaisedButton(
-                            color: Colors.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 60),
+      if (viewportConstraints.maxWidth > 600) {
+        return Scaffold(
+            appBar: AppBar(
+              title: Text('Total Usage'),
+            ),
+            body:  LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                  if(viewportConstraints.maxWidth>600){
+                    return _isLoading? Center(child: SpinKitCircle(size: 60, color: Colors.lightBlue),)
+                        : Container(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
                               child: Text(
-                                'Bill Estimation',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
+                                'Power Usage Chart Month Wise',
+                                style: GoogleFonts.josefinSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushReplacementNamed(BillEstimation.routeName);
-                            },
-                          ),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  _chartType=!_chartType;
+                                });
+                              },
+                              child: PieChart(
+                                  dataMap: dataMap,
+                                  chartRadius: MediaQuery.of(context).size.width / 5,
+                                  animationDuration: Duration(milliseconds: 2200),
+                                  chartType:ChartType.disc
+                                // _chartType ? ChartType.disc : ChartType.ring,
+                              ),
+                            ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+                            Column(
+                              // crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                createCard('📆 Total Days : ', '$_totalDays days'),
+                                createCard('📊 Total Power : ',
+                                    '${_totalPower.toStringAsFixed(2)} Kwh'),
+                                createCard('⏰  Total Time : ', _timeString),
+                                createCard('💰 Total Amount :  ',
+                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                              ],
+                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
+                            // Container(
+                            //   child: Center(
+                            //     child: RaisedButton(
+                            //       color: Colors.lightBlue,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(6.0)),
+                            //       child: Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             vertical: 12, horizontal: 60),
+                            //         child: Text(
+                            //           'Bill Estimation',
+                            //           style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontSize: 18.0,
+                            //               fontWeight: FontWeight.bold),
+                            //         ),
+                            //       ),
+                            //       onPressed: () {
+                            //         Navigator.of(context)
+                            //             .pushReplacementNamed(BillEstimation.routeName);
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-          }else{
-            return _isLoading ? Center(
-                child: SpinKitCircle(size: 60, color: Colors.lightBlue),
-              )
-                  : Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'Power Usage Chart Month Wise',
-                          style: GoogleFonts.josefinSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
-                        ),
-                      ),
-                      Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        elevation: 8,
-                        margin:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        child: InkWell(
-                          onTap: (){
-                            setState(() {
-                              _chartType=!_chartType;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: PieChart(
+                    );
+                  }else{
+                    return _isLoading ? Center(
+                      child: SpinKitCircle(size: 60, color: Colors.lightBlue),
+                    )
+                        : Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'Power Usage Chart Month Wise',
+                                style: GoogleFonts.josefinSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            ),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              elevation: 8,
+                              margin:
+                              const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              child: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    _chartType=!_chartType;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  child: PieChart(
 
-                                dataMap: dataMap,
-                                animationDuration: Duration(milliseconds: 2200),
-                                chartType:ChartType.disc
-                              // _chartType ? ChartType.disc : ChartType.ring,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          createCard('📆 Total Days : ', '$_totalDays days'),
-                          createCard('📊 Total Power : ',
-                              '${widget.totalEnergy} Kwh'),
-                          createCard('⏰  Total Time : ', widget.chooseValueMinute),
-                          createCard('💰 Total Amount : ',
-                              '${_totalAmount.toStringAsFixed(3)} ₹'),
-                          // createCard('⏰  Based On : ', widget.chooseValueMinute),
-                          // createCard('⏰  Based On : ', widget.totalEnergy),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        child: Center(
-                          child: RaisedButton(
-                            color: Colors.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 60),
-                              child: Text(
-                                'Bill Estimation',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
+                                      dataMap: dataMap,
+                                      animationDuration: Duration(milliseconds: 2200),
+                                      chartType:ChartType.disc
+                                    // _chartType ? ChartType.disc : ChartType.ring,
+                                  ),
+                                ),
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushReplacementNamed(BillEstimation.routeName);
-                            },
-                          ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                createCard('📆 Total Days : ', '$_totalDays days'),
+                                createCard('📊 Total Power : ',
+                                    '${widget.totalEnergy} Kwh'),
+                                createCard('⏰  Total Time : ', widget.chooseValueMinute),
+                                createCard('💰 Total Amount : ',
+                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                                // createCard('⏰  Based On : ', widget.chooseValueMinute),
+                                // createCard('⏰  Based On : ', widget.totalEnergy),
+                              ],
+                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
+                            // Container(
+                            //   child: Center(
+                            //     child: RaisedButton(
+                            //       color: Colors.lightBlue,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(6.0)),
+                            //       child: Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             vertical: 12, horizontal: 60),
+                            //         child: Text(
+                            //           'Bill Estimation',
+                            //           style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontSize: 18.0,
+                            //               fontWeight: FontWeight.bold),
+                            //         ),
+                            //       ),
+                            //       onPressed: () {
+                            //         Navigator.of(context)
+                            //             .pushReplacementNamed(BillEstimation.routeName);
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
+                    );
+                  }
+                }
+            )
+
+        );
+      }else{
+        return Scaffold(
+            appBar: AppBar(
+              title: Text('Total Usage'),
+            ),
+            body:  LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                  if(viewportConstraints.maxWidth>600){
+                    return _isLoading? Center(child: SpinKitCircle(size: 60, color: Colors.lightBlue),)
+                        : Container(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'Power Usage Chart Month Wise',
+                                style: GoogleFonts.josefinSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  _chartType=!_chartType;
+                                });
+                              },
+                              child: PieChart(
+                                  dataMap: dataMap,
+                                  chartRadius: MediaQuery.of(context).size.width / 3,
+                                  animationDuration: Duration(milliseconds: 2200),
+                                  chartType:ChartType.disc
+                                // _chartType ? ChartType.disc : ChartType.ring,
+                              ),
+                            ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+                            Column(
+                              // crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                createCard('📆 Total Days : ', '$_totalDays days'),
+                                createCard('📊 Total Power : ',
+                                    '${_totalPower.toStringAsFixed(2)} Kwh'),
+                                createCard('⏰  Total Time : ', _timeString),
+                                createCard('💰 Total Amount :  ',
+                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                              ],
+                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
+                            // Container(
+                            //   child: Center(
+                            //     child: RaisedButton(
+                            //       color: Colors.lightBlue,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(6.0)),
+                            //       child: Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             vertical: 12, horizontal: 60),
+                            //         child: Text(
+                            //           'Bill Estimation',
+                            //           style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontSize: 18.0,
+                            //               fontWeight: FontWeight.bold),
+                            //         ),
+                            //       ),
+                            //       onPressed: () {
+                            //         Navigator.of(context)
+                            //             .pushReplacementNamed(BillEstimation.routeName);
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-          }
+                    );
+                  }else{
+                    return _isLoading ? Center(
+                      child: SpinKitCircle(size: 60, color: Colors.lightBlue),
+                    )
+                        : Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'Power Usage Chart Month Wise',
+                                style: GoogleFonts.josefinSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            ),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              elevation: 8,
+                              margin:
+                              const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              child: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    _chartType=!_chartType;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  child: PieChart(
+
+                                      dataMap: dataMap,
+                                      animationDuration: Duration(milliseconds: 2200),
+                                      chartType:ChartType.disc
+                                    // _chartType ? ChartType.disc : ChartType.ring,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                createCard('📆 Total Days : ', '$_totalDays days'),
+                                createCard('📊 Total Power : ',
+                                    '${widget.totalEnergy} Kwh'),
+                                createCard('⏰  Total Time : ', widget.chooseValueMinute),
+                                createCard('💰 Total Amount : ',
+                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                                // createCard('⏰  Based On : ', widget.chooseValueMinute),
+                                // createCard('⏰  Based On : ', widget.totalEnergy),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            // Container(
+                            //   child: Center(
+                            //     child: RaisedButton(
+                            //       color: Colors.lightBlue,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(6.0)),
+                            //       child: Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             vertical: 12, horizontal: 60),
+                            //         child: Text(
+                            //           'Bill Estimation',
+                            //           style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontSize: 18.0,
+                            //               fontWeight: FontWeight.bold),
+                            //         ),
+                            //       ),
+                            //       onPressed: () {
+                            //         Navigator.of(context)
+                            //             .pushReplacementNamed(BillEstimation.routeName);
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }
+            )
+
+        );
+      }
         }
-      )
-
-    );
+        );
   }
 }

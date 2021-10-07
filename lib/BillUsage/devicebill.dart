@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:animated_button/animated_button.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../main.dart';
 import 'package:dio/dio.dart' as dio;
@@ -71,9 +72,9 @@ class _DeviceBillState extends State<DeviceBill> {
   String chooseValueHour;
   String chooseValueDay;
   double _valueMinute;
-  int _valueHour;
+  double _valueHour;
   int _valueDay;
-  int changeValue;
+  double changeValue;
   List<dynamic> tenMinuteEnergy;
   List<dynamic> hourEnergy;
   List<dynamic> dayEnergy= List(366);
@@ -89,26 +90,60 @@ class _DeviceBillState extends State<DeviceBill> {
 
   Future placeVal;
   bool completeTask=false;
+  Future floorValWeb;
   Future floorVal;
 
+
   Future flatVal;
+  Future flatValWeb;
   Future roomVal;
+  Future roomValWeb;
   Future deviceVal;
+  Future deviceValWeb;
   var selectedflat;
   var selectedroom;
   var selecteddeviceId;
+
+  Future placeValWeb;
   @override
   void initState() {
     super.initState();
     placeVal = getplaces();
+    placeValWeb = getplacesWeb();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
 
   }
 
-
+  var tokenWeb;
+  Future getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+    return tokenWeb;
+  }
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
+    // final url = 'https://genorion.herokuapp.com/place/';
+    final url = API + 'addyourplace/';
+
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode > 0) {
+      print('place');
+      List<dynamic> data = jsonDecode(response.body);
+      List<PlaceType> places =
+      data.map((data) => PlaceType.fromJson(data)).toList();
+      // print(places);
+      // floorVal = getfloors(places[0].p_id);
+
+      return places;
+    }
+  }
+  Future<List<PlaceType>> getplacesWeb() async {
+    String token = await getTokenWeb();
     // final url = 'https://genorion.herokuapp.com/place/';
     final url = API + 'addyourplace/';
 
@@ -199,10 +234,97 @@ class _DeviceBillState extends State<DeviceBill> {
       print('tenMinuteEnergy $last10Minute');
     }
   }
+  Future getEnergyTenMinutesWeb(String dId) async {
+    String token = await getTokenWeb();
+    final url = API + 'pertenminuteenergy?d_id=' + dId;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('tenMinuteEnergy ${response.statusCode}');
+    if (response.statusCode == 200) {
+      tenMinuteEnergy = jsonDecode(response.body);
+      print('webtenMinuet $tenMinuteEnergy');
+      if(tenMinuteEnergy.isEmpty ){
+        setState(() {
+          pleaseSelect='There is not Data';
+        });
+        thereIsNoData(context);
+
+      }
+      print('tenMinuteEnergy ${tenMinuteEnergy}');
+      if (chooseValueMinute == '10 minute') {
+        setState(() {
+         double changeValue = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          _valueMinute = changeValue;
+        });
+      } else if (chooseValueMinute == '20 minute') {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          _valueMinute = op1 + op2;
+        });
+      } else if (chooseValueMinute == '30 minute') {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          _valueMinute = op1 + op2 + op3;
+        });
+      } else if (chooseValueMinute == '40 minute') {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
+          _valueMinute = op1 + op2 + op3 + op4;
+        });
+      } else if (chooseValueMinute == '50 minute') {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[0]['enrgy50']);
+          _valueMinute = op1 + op2 + op3 + op4 + op5;
+        });
+      } else if (chooseValueMinute == '60 minute') {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[0]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[0]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[0]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[0]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[0]['enrgy50']);
+          double op6 = double.parse(tenMinuteEnergy[0]['enrgy60']);
+          _valueMinute = op1 + op2 + op3 + op4 + op5;
+        });
+      }
+
+      print('tenMinuteEnergy $tenMinuteEnergy');
+      print('tenMinuteEnergy $last10Minute');
+    }
+  }
 
   Future<List<FloorType>> getfloors(String pId) async {
     final url = API + 'addyourfloor/?p_id=' + pId;
     String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<FloorType> floors =
+      data.map((data) => FloorType.fromJson(data)).toList();
+      print(floors);
+      return floors;
+    }
+  }
+  Future<List<FloorType>> getfloorsWeb(String pId) async {
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getTokenWeb();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -232,9 +354,62 @@ class _DeviceBillState extends State<DeviceBill> {
       return flatData;
     }
   }
+  Future<List<Flat>> getflatWeb(String fId) async {
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
+      print(flatData);
+      return flatData;
+    }
+  }
 
   Future getEnergyDay(String dId) async {
     String token = await getToken();
+    final url = API + 'perdaysenergy?d_id=' + dId;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('tenMinuteEnergy ${response.statusCode}');
+    print('tenMinuteEnergy ${response.body}');
+    if (response.statusCode == 200) {
+     List<dynamic> data=jsonDecode(response.body);
+
+     for(int i=0;i<366;i++){
+       onlyDayEnergyList[i]=0.0;
+     }
+     print('beforeSsumData ${onlyDayEnergyList}');
+    for(int i=0;i<366;i++){
+      onlyDayEnergyList[i]=data[0]['day$i'];
+    }
+     print('sumData ${onlyDayEnergyList}');
+    int i=1;
+
+    while(i<=difference){
+      print(' asasa ${onlyDayEnergyList[i+currentDifference]}');
+      setState(() {
+        total=total+onlyDayEnergyList[i+currentDifference];
+        finalEnergyValue=total.toString();
+      });
+      i++;
+      print('sumDatatotal ${total}');
+    }
+    total=0.0;
+     print('sumDatatotal_final ${total}');
+
+
+    }
+  }
+  Future getEnergyDayWeb(String dId) async {
+    String token = await getTokenWeb();
     final url = API + 'perdaysenergy?d_id=' + dId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -288,6 +463,22 @@ class _DeviceBillState extends State<DeviceBill> {
       return rooms;
     }
   }
+  Future<List<RoomType>> getroomsWeb(String flt_id) async {
+    final url = API + 'addroom/?flt_id=' + flt_id;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<RoomType> rooms =
+      data.map((data) => RoomType.fromJson(data)).toList();
+      print(rooms);
+      return rooms;
+    }
+  }
 
   Future getEnergyHour(String dId) async {
     String token = await getToken();
@@ -304,131 +495,131 @@ class _DeviceBillState extends State<DeviceBill> {
       if (chooseValueHour == '1 hour') {
         setState(() {
           var last10Minute = hourEnergy[0]['hour1'];
-          changeValue = int.parse(last10Minute);
+          changeValue = double.parse(last10Minute);
           _valueHour = changeValue;
           print('sasa $last10Minute');
         });
       } else if (chooseValueHour == '2 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
           _valueHour = op1 + op2;
         });
       } else if (chooseValueHour == '3 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
           _valueHour = op1 + op2 + op3;
         });
       } else if (chooseValueHour == '4 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
           _valueHour = op1 + op2 + op3 + op4;
         });
       } else if (chooseValueHour == '5 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
           _valueHour = op1 + op2 + op3 + op4 + op5;
         });
       } else if (chooseValueHour == '6 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
           _valueHour = op1 + op2 + op3 + op4 + op5 + op6;
         });
       } else if (chooseValueHour == '7 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
           _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7;
         });
       } else if (chooseValueHour == '8 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
           _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8;
         });
       } else if (chooseValueHour == '9 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
           _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9;
         });
       } else if (chooseValueHour == '10 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
           _valueHour =
               op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9 + op10;
         });
       } else if (chooseValueHour == '11 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
           _valueHour =
               op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9 + op10 + op11;
         });
       } else if (chooseValueHour == '12 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -444,19 +635,19 @@ class _DeviceBillState extends State<DeviceBill> {
         });
       } else if (chooseValueHour == '13 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -473,20 +664,20 @@ class _DeviceBillState extends State<DeviceBill> {
         });
       } else if (chooseValueHour == '14 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -504,21 +695,21 @@ class _DeviceBillState extends State<DeviceBill> {
         });
       } else if (chooseValueHour == '15 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -537,22 +728,22 @@ class _DeviceBillState extends State<DeviceBill> {
         });
       } else if (chooseValueHour == '16 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -570,25 +761,26 @@ class _DeviceBillState extends State<DeviceBill> {
               op15 +
               op16;
         });
-      } else if (chooseValueHour == '17 hour') {
+      }
+      else if (chooseValueHour == '17 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -607,26 +799,27 @@ class _DeviceBillState extends State<DeviceBill> {
               op16 +
               op17;
         });
-      } else if (chooseValueHour == '18 hour') {
+      }
+      else if (chooseValueHour == '18 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -646,27 +839,28 @@ class _DeviceBillState extends State<DeviceBill> {
               op17 +
               op18;
         });
-      } else if (chooseValueHour == '19 hour') {
+      }
+      else if (chooseValueHour == '19 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -687,28 +881,29 @@ class _DeviceBillState extends State<DeviceBill> {
               op18 +
               op19;
         });
-      } else if (chooseValueHour == '20 hour') {
+      }
+      else if (chooseValueHour == '20 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
-          int op20 = int.parse(hourEnergy[0]['hour20']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -730,29 +925,30 @@ class _DeviceBillState extends State<DeviceBill> {
               op19 +
               op20;
         });
-      } else if (chooseValueHour == '21 hour') {
+      }
+      else if (chooseValueHour == '21 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
-          int op20 = int.parse(hourEnergy[0]['hour20']);
-          int op21 = int.parse(hourEnergy[0]['hour21']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -772,33 +968,33 @@ class _DeviceBillState extends State<DeviceBill> {
               op17 +
               op18 +
               op19 +
-              op20 +
-              op21;
+              op20+op21;
         });
-      } else if (chooseValueHour == '22 hour') {
+      }
+      else if (chooseValueHour == '22 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
-          int op20 = int.parse(hourEnergy[0]['hour20']);
-          int op21 = int.parse(hourEnergy[0]['hour21']);
-          int op22 = int.parse(hourEnergy[0]['hour22']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -818,35 +1014,34 @@ class _DeviceBillState extends State<DeviceBill> {
               op17 +
               op18 +
               op19 +
-              op20 +
-              op21 +
-              op22;
+              op20+op21+op22;
         });
-      } else if (chooseValueHour == '23 hour') {
+      }
+      else if (chooseValueHour == '23 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
-          int op20 = int.parse(hourEnergy[0]['hour20']);
-          int op21 = int.parse(hourEnergy[0]['hour21']);
-          int op22 = int.parse(hourEnergy[0]['hour22']);
-          int op23 = int.parse(hourEnergy[0]['hour23']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
+          double op23 = double.parse(hourEnergy[0]['hour23']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -866,37 +1061,35 @@ class _DeviceBillState extends State<DeviceBill> {
               op17 +
               op18 +
               op19 +
-              op20 +
-              op21 +
-              op22 +
-              op23;
+              op20+op21+op22+op23;
         });
-      } else if (chooseValueHour == '24 hour') {
+      }
+      else if (chooseValueHour == '24 hour') {
         setState(() {
-          int op1 = int.parse(hourEnergy[0]['hour1']);
-          int op2 = int.parse(hourEnergy[0]['hour2']);
-          int op3 = int.parse(hourEnergy[0]['hour3']);
-          int op4 = int.parse(hourEnergy[0]['hour4']);
-          int op5 = int.parse(hourEnergy[0]['hour5']);
-          int op6 = int.parse(hourEnergy[0]['hour6']);
-          int op7 = int.parse(hourEnergy[0]['hour7']);
-          int op8 = int.parse(hourEnergy[0]['hour8']);
-          int op9 = int.parse(hourEnergy[0]['hour9']);
-          int op10 = int.parse(hourEnergy[0]['hour10']);
-          int op11 = int.parse(hourEnergy[0]['hour11']);
-          int op12 = int.parse(hourEnergy[0]['hour12']);
-          int op13 = int.parse(hourEnergy[0]['hour13']);
-          int op14 = int.parse(hourEnergy[0]['hour14']);
-          int op15 = int.parse(hourEnergy[0]['hour15']);
-          int op16 = int.parse(hourEnergy[0]['hour16']);
-          int op17 = int.parse(hourEnergy[0]['hour17']);
-          int op18 = int.parse(hourEnergy[0]['hour18']);
-          int op19 = int.parse(hourEnergy[0]['hour19']);
-          int op20 = int.parse(hourEnergy[0]['hour20']);
-          int op21 = int.parse(hourEnergy[0]['hour21']);
-          int op22 = int.parse(hourEnergy[0]['hour22']);
-          int op23 = int.parse(hourEnergy[0]['hour23']);
-          int op24 = int.parse(hourEnergy[0]['hour24']);
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
+          double op23 = double.parse(hourEnergy[0]['hour23']);
+          double op24 = double.parse(hourEnergy[0]['hour24']);
           _valueHour = op1 +
               op2 +
               op3 +
@@ -916,20 +1109,673 @@ class _DeviceBillState extends State<DeviceBill> {
               op17 +
               op18 +
               op19 +
-              op20 +
-              op21 +
-              op22 +
-              op23 +
-              op24;
+              op20+op21+op22+op23;
+        });
+      }
+    }
+  }
+
+  Future getEnergyHourWeb(String dId) async {
+    String token = await getTokenWeb();
+    final url = API + 'perhourenergy?d_id=' + dId;
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    print('tenMinuteEnergy ${response.statusCode}');
+    if (response.statusCode == 200) {
+      hourEnergy = jsonDecode(response.body);
+      print('hour $hourEnergy');
+      if (chooseValueHour == '1 hour') {
+        setState(() {
+          var last10Minute = hourEnergy[0]['hour1'];
+          changeValue = double.parse(last10Minute);
+          _valueHour = changeValue;
+          print('sasa $last10Minute');
+        });
+      } else if (chooseValueHour == '2 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          _valueHour = op1 + op2;
+        });
+      } else if (chooseValueHour == '3 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          _valueHour = op1 + op2 + op3;
+        });
+      } else if (chooseValueHour == '4 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          _valueHour = op1 + op2 + op3 + op4;
+        });
+      } else if (chooseValueHour == '5 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          _valueHour = op1 + op2 + op3 + op4 + op5;
+        });
+      } else if (chooseValueHour == '6 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          _valueHour = op1 + op2 + op3 + op4 + op5 + op6;
+        });
+      } else if (chooseValueHour == '7 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7;
+        });
+      } else if (chooseValueHour == '8 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8;
+        });
+      } else if (chooseValueHour == '9 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          _valueHour = op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9;
+        });
+      } else if (chooseValueHour == '10 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          _valueHour =
+              op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9 + op10;
+        });
+      } else if (chooseValueHour == '11 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          _valueHour =
+              op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9 + op10 + op11;
+        });
+      } else if (chooseValueHour == '12 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12;
+        });
+      } else if (chooseValueHour == '13 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13;
+        });
+      } else if (chooseValueHour == '14 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14;
+        });
+      } else if (chooseValueHour == '15 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15;
+        });
+      } else if (chooseValueHour == '16 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16;
+        });
+      }
+      else if (chooseValueHour == '17 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17;
+        });
+      }
+      else if (chooseValueHour == '18 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18;
+        });
+      }
+      else if (chooseValueHour == '19 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19;
+        });
+      }
+      else if (chooseValueHour == '20 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20;
+        });
+      }
+      else if (chooseValueHour == '21 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20+op21;
+        });
+      }
+      else if (chooseValueHour == '22 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20+op21+op22;
+        });
+      }
+      else if (chooseValueHour == '23 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
+          double op23 = double.parse(hourEnergy[0]['hour23']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20+op21+op22+op23;
+        });
+      }
+      else if (chooseValueHour == '24 hour') {
+        setState(() {
+          double op1 = double.parse(hourEnergy[0]['hour1']);
+          double op2 = double.parse(hourEnergy[0]['hour2']);
+          double op3 = double.parse(hourEnergy[0]['hour3']);
+          double op4 = double.parse(hourEnergy[0]['hour4']);
+          double op5 = double.parse(hourEnergy[0]['hour5']);
+          double op6 = double.parse(hourEnergy[0]['hour6']);
+          double op7 = double.parse(hourEnergy[0]['hour7']);
+          double op8 = double.parse(hourEnergy[0]['hour8']);
+          double op9 = double.parse(hourEnergy[0]['hour9']);
+          double op10 = double.parse(hourEnergy[0]['hour10']);
+          double op11 = double.parse(hourEnergy[0]['hour11']);
+          double op12 = double.parse(hourEnergy[0]['hour12']);
+          double op13 = double.parse(hourEnergy[0]['hour13']);
+          double op14 = double.parse(hourEnergy[0]['hour14']);
+          double op15 = double.parse(hourEnergy[0]['hour15']);
+          double op16 = double.parse(hourEnergy[0]['hour16']);
+          double op17 = double.parse(hourEnergy[0]['hour17']);
+          double op18 = double.parse(hourEnergy[0]['hour18']);
+          double op19 = double.parse(hourEnergy[0]['hour19']);
+          double op20 = double.parse(hourEnergy[0]['hour20']);
+          double op21 = double.parse(hourEnergy[0]['hour21']);
+          double op22 = double.parse(hourEnergy[0]['hour22']);
+          double op23 = double.parse(hourEnergy[0]['hour23']);
+          double op24 = double.parse(hourEnergy[0]['hour24']);
+          _valueHour = op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20+op21+op22+op23;
         });
       }
     }
   }
 
 
+
   Future<List<Device>> getDevice(String r_id) async {
     final url = API + 'addyourdevice/?r_id=' + r_id;
     String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Device> dv =
+      data.map((data) => Device.fromJson(data)).toList();
+      print('DeviceId-->  ${dv[0].dId}');
+      setState(() {
+        completeTask=true;
+      });
+      return dv;
+    }else{
+      return null;
+    }
+  }
+  Future<List<Device>> getDeviceWeb(String r_id) async {
+    final url = API + 'addyourdevice/?r_id=' + r_id;
+    String token = await getTokenWeb();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -987,133 +1833,38 @@ class _DeviceBillState extends State<DeviceBill> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+      if (viewportConstraints.maxWidth > 600) {
+       return Scaffold(
 
-      appBar: AppBar(
-        title: Text('App'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<PlaceType>>(
-                  future: placeVal,
-                  builder: (context,
-                      AsyncSnapshot<List<PlaceType>> snapshot) {
-                    if (snapshot.hasData) {
-                      // print(snapshot.hasData);
-                      // setState(() {
-                      //   floorVal = getfloors(snapshot.data[0].p_id);
-                      // });
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 58),
-                          child: SizedBox(
-                            // width: double.infinity,
-                            height: 50.0,
-                            child: Container(
-                              width: MediaQuery.of(context)
-                                  .size
-                                  .width /
-                                  2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 10,
-                                        offset: Offset(7, 7)
-                                      // offset: Offset(20,20)
-                                    )
-                                  ],
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField<PlaceType>(
-                                decoration: InputDecoration(
-                                  contentPadding:
-                                  const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.white),
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                  ),
-                                  enabledBorder:
-                                  UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.black),
-                                    borderRadius:
-                                    BorderRadius.circular(50),
-                                  ),
-                                ),
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Place'),
-                                isExpanded: true,
-                                value: pt,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                items: snapshot.data
-                                    .map((selectedPlace) {
-                                  return DropdownMenuItem<
-                                      PlaceType>(
-                                    value: selectedPlace,
-                                    child:
-                                    Text(selectedPlace.pType),
-                                  );
-                                }).toList(),
-                                onChanged:
-                                    (PlaceType selectedPlace) {
-                                  setState(() {
-                                    fl = null;
-                                    pt = selectedPlace;
-                                    floorVal = getfloors(
-                                        selectedPlace.pId);
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        margin: new EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<FloorType>>(
-                  future: floorVal,
-                  builder: (context,
-                      AsyncSnapshot<List<FloorType>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
+          appBar: AppBar(
+            title: Text('App'),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<PlaceType>>(
+                      future: placeValWeb,
+                      builder: (context,
+                          AsyncSnapshot<List<PlaceType>> snapshot) {
+                        if (snapshot.hasData) {
+                          // print(snapshot.hasData);
+                          // setState(() {
+                          //   floorVal = getfloors(snapshot.data[0].p_id);
+                          // });
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Container(
                             child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
+                              padding: const EdgeInsets.only(right: 58),
                               child: SizedBox(
                                 // width: double.infinity,
                                 height: 50.0,
@@ -1129,8 +1880,6 @@ class _DeviceBillState extends State<DeviceBill> {
                                             color: Colors.black,
                                             blurRadius: 10,
                                             offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
                                           // offset: Offset(20,20)
                                         )
                                       ],
@@ -1138,54 +1887,50 @@ class _DeviceBillState extends State<DeviceBill> {
                                         color: Colors.black,
                                         width: 0.5,
                                       )),
-                                  child: DropdownButtonFormField<
-                                      FloorType>(
+                                  child: DropdownButtonFormField<PlaceType>(
                                     decoration: InputDecoration(
                                       contentPadding:
                                       const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
+                                      focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.white),
                                         borderRadius:
-                                        BorderRadius.circular(
-                                            10),
+                                        BorderRadius.circular(10),
                                       ),
                                       enabledBorder:
                                       UnderlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.white),
+                                            color: Colors.black),
                                         borderRadius:
-                                        BorderRadius.circular(
-                                            50),
+                                        BorderRadius.circular(50),
                                       ),
                                     ),
                                     dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 28,
-                                    hint: Text('Select Floor'),
+                                    hint: Text('Select Place'),
                                     isExpanded: true,
-                                    value: fl,
+                                    value: pt,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     items: snapshot.data
-                                        .map((selectedFloor) {
+                                        .map((selectedPlace) {
                                       return DropdownMenuItem<
-                                          FloorType>(
-                                        value: selectedFloor,
-                                        child: Text(
-                                            selectedFloor.fName),
+                                          PlaceType>(
+                                        value: selectedPlace,
+                                        child:
+                                        Text(selectedPlace.pType),
                                       );
                                     }).toList(),
                                     onChanged:
-                                        (FloorType selectedFloor) {
+                                        (PlaceType selectedPlace) {
                                       setState(() {
-                                        fl = selectedFloor;
-                                        flatVal = getflat(
-                                            selectedFloor.fId);
+                                        fl = null;
+                                        pt = selectedPlace;
+                                        floorValWeb = getfloorsWeb(
+                                            selectedPlace.pId);
                                       });
                                     },
                                   ),
@@ -1194,438 +1939,1186 @@ class _DeviceBillState extends State<DeviceBill> {
                             ),
                             margin: new EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 10),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<Flat>>(
-                  future: flatVal,
-                  builder: (context,
-                      AsyncSnapshot<List<Flat>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child:
-                                  DropdownButtonFormField<Flat>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Floor'),
-                                    isExpanded: true,
-                                    value: flt,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedFlat) {
-                                      return DropdownMenuItem<Flat>(
-                                        value: selectedFlat,
-                                        child: Text(
-                                            selectedFlat.fltName),
-                                      );
-                                    }).toList(),
-                                    onChanged: (Flat selectedFlat) {
-                                      setState(() {
-                                        flt = selectedFlat;
-                                        selectedflat=selectedFlat.fltId;
-                                        roomVal=getrooms(selectedflat);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          ),
-
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<RoomType>>(
-                  future: roomVal,
-                  builder: (context,
-                      AsyncSnapshot<List<RoomType>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child:
-                                  DropdownButtonFormField<RoomType>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Room'),
-                                    isExpanded: true,
-                                    value: rm2,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedRoom) {
-                                      return DropdownMenuItem<RoomType>(
-                                        value: selectedRoom,
-                                        child: Text(
-                                            selectedRoom.rName),
-                                      );
-                                    }).toList(),
-                                    onChanged: (RoomType selectedRoom) {
-                                      setState(() {
-                                        rm2 = selectedRoom;
-                                        selectedroom=selectedRoom.rId;
-                                        deviceVal=getDevice(selectedroom);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              FutureBuilder<List<Device>>(
-                  future: deviceVal,
-                  builder: (context,
-                      AsyncSnapshot<List<Device>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child:
-                            Text("No Devices on this place"));
-                      }
-                      return Column(
-                        children: [
-                          Container(
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // blurRadius: 30,
-                                          // // offset for Upward Effect
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child:
-                                  DropdownButtonFormField<Device>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder:
-                                      OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon:
-                                    Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Device'),
-                                    isExpanded: true,
-                                    value: dv2,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedDevice) {
-                                      return DropdownMenuItem<Device>(
-                                        value: selectedDevice,
-                                        child: Text(
-                                            selectedDevice.dId),
-                                      );
-                                    }).toList(),
-                                    onChanged: (Device selectedDevice) {
-                                      setState(() {
-                                        // rm2 = selectedRoom;
-                                        selecteddeviceId=selectedDevice.dId;
-
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                        ],
-                      );
-                    } else {
-                      return Center(
-                          child: Text(
-                              "Please select a place to proceed further"));
-                    }
-                  }),
-              completeTask?Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton(
-                      value: chooseValueMinute,
-                      onChanged: (index) async {
-                        setState(() {
-                          chooseValueMinute = index;
-                        });
-
-                        await getEnergyTenMinutes(selecteddeviceId);
-
-                      },
-                      items: minute.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList()),
-                  Text(_valueMinute == null
-                      ? pleaseSelect
-                      : _valueMinute.toString()),
-                ],
-              ):Text('Wait'),
-              SizedBox(
-                height: 15,
-              ),
-              completeTask?Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton(
-                      value: chooseValueHour,
-                      onChanged: (index) async {
-                        setState(() {
-                          chooseValueHour = index;
-                        });
-
-                        await getEnergyHour(selecteddeviceId);
-                      },
-                      items: hour.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList()),
-                  Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
-                ],
-              ):Text("Wait"),
-              SizedBox(
-                height: 15,
-              ),
-              completeTask? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () async{
-                      await showDatePicker1();
-
-                    },
-                    child: Text(cutDate == null ? 'Select Date' : cutDate),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
                   ),
-                  InkWell(
-                    onTap: () {
-                      showDatePicker2();
-                      // print12();
-                      },
-                    child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                  FutureBuilder<List<FloorType>>(
+                      future: floorValWeb,
+                      builder: (context,
+                          AsyncSnapshot<List<FloorType>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<
+                                          FloorType>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Floor'),
+                                        isExpanded: true,
+                                        value: fl,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedFloor) {
+                                          return DropdownMenuItem<
+                                              FloorType>(
+                                            value: selectedFloor,
+                                            child: Text(
+                                                selectedFloor.fName),
+                                          );
+                                        }).toList(),
+                                        onChanged:
+                                            (FloorType selectedFloor) {
+                                          setState(() {
+                                            fl = selectedFloor;
+                                            flatValWeb = getflatWeb(
+                                                selectedFloor.fId);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
                   ),
-                ],
-              ):Text("Wait"),
-              completeTask?Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () async{
+                  FutureBuilder<List<Flat>>(
+                      future: flatValWeb,
+                      builder: (context,
+                          AsyncSnapshot<List<Flat>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<Flat>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Floor'),
+                                        isExpanded: true,
+                                        value: flt,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedFlat) {
+                                          return DropdownMenuItem<Flat>(
+                                            value: selectedFlat,
+                                            child: Text(
+                                                selectedFlat.fltName),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Flat selectedFlat) {
+                                          setState(() {
+                                            flt = selectedFlat;
+                                            selectedflat=selectedFlat.fltId;
+                                            roomValWeb=getroomsWeb(selectedflat);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
 
-                    },
-                    child: Text(finalEnergyValue.toString()),
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
                   ),
-                  ElevatedButton(
-                      onPressed: ()async{
-                      await differenceCurrentDateToSelectedDate();
-                     await findDifferenceBetweenDates();
-                     await getEnergyDay(selecteddeviceId);
-                    }, child: Text('Click'))
+                  FutureBuilder<List<RoomType>>(
+                      future: roomValWeb,
+                      builder: (context,
+                          AsyncSnapshot<List<RoomType>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<RoomType>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Room'),
+                                        isExpanded: true,
+                                        value: rm2,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedRoom) {
+                                          return DropdownMenuItem<RoomType>(
+                                            value: selectedRoom,
+                                            child: Text(
+                                                selectedRoom.rName),
+                                          );
+                                        }).toList(),
+                                        onChanged: (RoomType selectedRoom) {
+                                          setState(() {
+                                            rm2 = selectedRoom;
+                                            selectedroom=selectedRoom.rId;
+                                            deviceValWeb=getDeviceWeb(selectedroom);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<Device>>(
+                      future: deviceValWeb,
+                      builder: (context,
+                          AsyncSnapshot<List<Device>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<Device>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Device'),
+                                        isExpanded: true,
+                                        value: dv2,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedDevice) {
+                                          return DropdownMenuItem<Device>(
+                                            value: selectedDevice,
+                                            child: Text(
+                                                selectedDevice.dId),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Device selectedDevice) {
+                                          setState(() {
+                                            // rm2 = selectedRoom;
+                                            selecteddeviceId=selectedDevice.dId;
+
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      DropdownButton(
+                          value: chooseValueMinute,
+                          onChanged: (index) async {
+                            setState(() {
+                              chooseValueMinute = index;
+                            });
+
+                            await getEnergyTenMinutesWeb(selecteddeviceId);
+
+                          },
+                          items: minute.map((valueItem) {
+                            return DropdownMenuItem(
+                              value: valueItem,
+                              child: Text(valueItem),
+                            );
+                          }).toList()),
+                      Text(_valueMinute == null
+                          ? pleaseSelect
+                          : _valueMinute.toString()),
+                    ],
+                  ):Text('Wait'),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      DropdownButton(
+                          value: chooseValueHour,
+                          onChanged: (index) async {
+                            setState(() {
+                              chooseValueHour = index;
+                            });
+
+                            await getEnergyHourWeb(selecteddeviceId);
+                          },
+                          items: hour.map((valueItem) {
+                            return DropdownMenuItem(
+                              value: valueItem,
+                              child: Text(valueItem),
+                            );
+                          }).toList()),
+                      Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                    ],
+                  ):Text("Wait"),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  completeTask? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () async{
+                          await showDatePicker1();
+
+                        },
+                        child: Text(cutDate == null ? 'Select Date' : cutDate),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showDatePicker2();
+                          // print12();
+                        },
+                        child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                      ),
+                    ],
+                  ):Text("Wait"),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () async{
+
+                        },
+                        child: Text(finalEnergyValue.toString()),
+                      ),
+                      ElevatedButton(
+                          onPressed: ()async{
+                            await differenceCurrentDateToSelectedDate();
+                            await findDifferenceBetweenDates();
+                            await getEnergyDayWeb(selecteddeviceId);
+                          }, child: Text('Click'))
+                    ],
+
+                  ):Text("Wait"),
+
                 ],
-
-              ):Text("Wait"),
-
-            ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }else{
+        return Scaffold(
+
+          appBar: AppBar(
+            title: Text('App'),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<PlaceType>>(
+                      future: placeVal,
+                      builder: (context,
+                          AsyncSnapshot<List<PlaceType>> snapshot) {
+                        if (snapshot.hasData) {
+                          // print(snapshot.hasData);
+                          // setState(() {
+                          //   floorVal = getfloors(snapshot.data[0].p_id);
+                          // });
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 58),
+                              child: SizedBox(
+                                // width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                          // offset: Offset(20,20)
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child: DropdownButtonFormField<PlaceType>(
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                      const EdgeInsets.all(15),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.white),
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                      ),
+                                      enabledBorder:
+                                      UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.black),
+                                        borderRadius:
+                                        BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Place'),
+                                    isExpanded: true,
+                                    value: pt,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data
+                                        .map((selectedPlace) {
+                                      return DropdownMenuItem<
+                                          PlaceType>(
+                                        value: selectedPlace,
+                                        child:
+                                        Text(selectedPlace.pType),
+                                      );
+                                    }).toList(),
+                                    onChanged:
+                                        (PlaceType selectedPlace) {
+                                      setState(() {
+                                        fl = null;
+                                        pt = selectedPlace;
+                                        floorVal = getfloors(
+                                            selectedPlace.pId);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<FloorType>>(
+                      future: floorVal,
+                      builder: (context,
+                          AsyncSnapshot<List<FloorType>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<
+                                          FloorType>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Floor'),
+                                        isExpanded: true,
+                                        value: fl,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedFloor) {
+                                          return DropdownMenuItem<
+                                              FloorType>(
+                                            value: selectedFloor,
+                                            child: Text(
+                                                selectedFloor.fName),
+                                          );
+                                        }).toList(),
+                                        onChanged:
+                                            (FloorType selectedFloor) {
+                                          setState(() {
+                                            fl = selectedFloor;
+                                            flatVal = getflat(
+                                                selectedFloor.fId);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<Flat>>(
+                      future: flatVal,
+                      builder: (context,
+                          AsyncSnapshot<List<Flat>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<Flat>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Floor'),
+                                        isExpanded: true,
+                                        value: flt,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedFlat) {
+                                          return DropdownMenuItem<Flat>(
+                                            value: selectedFlat,
+                                            child: Text(
+                                                selectedFlat.fltName),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Flat selectedFlat) {
+                                          setState(() {
+                                            flt = selectedFlat;
+                                            selectedflat=selectedFlat.fltId;
+                                            roomVal=getrooms(selectedflat);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<RoomType>>(
+                      future: roomVal,
+                      builder: (context,
+                          AsyncSnapshot<List<RoomType>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<RoomType>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Room'),
+                                        isExpanded: true,
+                                        value: rm2,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedRoom) {
+                                          return DropdownMenuItem<RoomType>(
+                                            value: selectedRoom,
+                                            child: Text(
+                                                selectedRoom.rName),
+                                          );
+                                        }).toList(),
+                                        onChanged: (RoomType selectedRoom) {
+                                          setState(() {
+                                            rm2 = selectedRoom;
+                                            selectedroom=selectedRoom.rId;
+                                            deviceVal=getDevice(selectedroom);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  FutureBuilder<List<Device>>(
+                      future: deviceVal,
+                      builder: (context,
+                          AsyncSnapshot<List<Device>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child:
+                                Text("No Devices on this place"));
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // blurRadius: 30,
+                                              // // offset for Upward Effect
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child:
+                                      DropdownButtonFormField<Device>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                          const EdgeInsets.all(15),
+                                          focusedBorder:
+                                          OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                          ),
+                                          enabledBorder:
+                                          UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon:
+                                        Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Device'),
+                                        isExpanded: true,
+                                        value: dv2,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data
+                                            .map((selectedDevice) {
+                                          return DropdownMenuItem<Device>(
+                                            value: selectedDevice,
+                                            child: Text(
+                                                selectedDevice.dId),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Device selectedDevice) {
+                                          setState(() {
+                                            // rm2 = selectedRoom;
+                                            selecteddeviceId=selectedDevice.dId;
+
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
+                            ],
+                          );
+                        } else {
+                          return Center(
+                              child: Text(
+                                  "Please select a place to proceed further"));
+                        }
+                      }),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      DropdownButton(
+                          value: chooseValueMinute,
+                          onChanged: (index) async {
+                            setState(() {
+                              chooseValueMinute = index;
+                            });
+
+                            await getEnergyTenMinutes(selecteddeviceId);
+
+                          },
+                          items: minute.map((valueItem) {
+                            return DropdownMenuItem(
+                              value: valueItem,
+                              child: Text(valueItem),
+                            );
+                          }).toList()),
+                      Text(_valueMinute == null
+                          ? pleaseSelect
+                          : _valueMinute.toString()),
+                    ],
+                  ):Text('Wait'),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      DropdownButton(
+                          value: chooseValueHour,
+                          onChanged: (index) async {
+                            setState(() {
+                              chooseValueHour = index;
+                            });
+
+                            await getEnergyHour(selecteddeviceId);
+                          },
+                          items: hour.map((valueItem) {
+                            return DropdownMenuItem(
+                              value: valueItem,
+                              child: Text(valueItem),
+                            );
+                          }).toList()),
+                      Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                    ],
+                  ):Text("Wait"),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  completeTask? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () async{
+                          await showDatePicker1();
+
+                        },
+                        child: Text(cutDate == null ? 'Select Date' : cutDate),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showDatePicker2();
+                          // print12();
+                        },
+                        child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                      ),
+                    ],
+                  ):Text("Wait"),
+                  completeTask?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () async{
+
+                        },
+                        child: Text(finalEnergyValue.toString()),
+                      ),
+                      ElevatedButton(
+                          onPressed: ()async{
+                            await differenceCurrentDateToSelectedDate();
+                            await findDifferenceBetweenDates();
+                            await getEnergyDay(selecteddeviceId);
+                          }, child: Text('Click'))
+                    ],
+
+                  ):Text("Wait"),
+
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+        }
     );
   }
   DateRangePickerController _datePickerController = DateRangePickerController();
