@@ -28,55 +28,6 @@ class _MenuWidgetState extends State<MenuWidget> {
     _selectedItem = widget.selectedIndex;
   }
 
-  _billPredictionNavigation(BuildContext context){
-    return showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text('Please Select'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
-                  },
-                  child: Text("Place Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
-                  },
-                  child: Text("Floor Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
-                  },
-                  child: Text("Flat Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
-                  },
-                  child: Text("Room Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
-                  },
-                  child: Text("Device Bill Prediction"),
-                ),
-              ],
-            ),
-          );
-        }
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +140,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               onTap: () {
                 setState(() {
                   _selectedItem = 6;
-                  widget.onTapped(_selectedItem);
+                  // widget.onTapped(_selectedItem);
                   _billPredictionNavigation(context);
                 });
               },
@@ -292,6 +243,56 @@ class _MenuWidgetState extends State<MenuWidget> {
       ),
     );
   }
+  _billPredictionNavigation(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Please Select'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                  },
+                  child: Text("Place Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+                  },
+                  child: Text("Floor Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                  },
+                  child: Text("Flat Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                  },
+                  child: Text("Room Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                  },
+                  child: Text("Device Bill Prediction"),
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
 }
 
 class Item extends StatefulWidget {

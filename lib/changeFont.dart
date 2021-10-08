@@ -43,24 +43,24 @@ class ChangeFont extends StatefulWidget {
 class _ChangeFontState extends State<ChangeFont> {
   int _counter = 0;
 
-  // void _fontfunction() {
-  //   setState(() {
-  //     if (fonttest == font1) {
-  //       fonttest = font2;
-  //       print(fonttest);
-  //       runApp(MaterialApp(home: HomeTest(),));
-  //     } else if (fonttest == font2) {
-  //       fonttest = font3;
-  //       print(fonttest);
-  //       runApp(MaterialApp(home: HomeTest(),));
-  //     }else if(fonttest == font3){
-  //       fonttest = font1;
-  //       print(fonttest);
-  //       runApp(MaterialApp(home: HomeTest(),));
-  //
-  //     }
-  //   });
-  // }
+  void _fontfunction() {
+    setState(() {
+      if (fonttest == font1) {
+        fonttest = font2;
+        print(fonttest);
+        runApp(MaterialApp(home: HomeTest(),));
+      } else if (fonttest == font2) {
+        fonttest = font3;
+        print(fonttest);
+        runApp(MaterialApp(home: HomeTest(),));
+      }else if(fonttest == font3){
+        fonttest = font1;
+        print(fonttest);
+        runApp(MaterialApp(home: HomeTest(),));
+
+      }
+    });
+  }
 
 
   Future _setFont( font)async{
@@ -116,7 +116,7 @@ class _ChangeFontState extends State<ChangeFont> {
                            ),
                            ElevatedButton(
                                onPressed: (){
-
+                                 _fontfunction();
                                },
                                child: Text('Button'))
                          ],
@@ -139,7 +139,7 @@ class _ChangeFontState extends State<ChangeFont> {
                            ),
                            ElevatedButton(
                                onPressed: (){
-
+                                 _fontfunction();
                                },
                                child: Text('Button'))
                          ],
@@ -162,7 +162,7 @@ class _ChangeFontState extends State<ChangeFont> {
                            ),
                            ElevatedButton(
                                onPressed: (){
-
+                                 _fontfunction();
                                },
                                child: Text('Button'))
                          ],

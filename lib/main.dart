@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loginsignspaceorion/BillUsage/bill_estimation.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
-import 'package:loginsignspaceorion/SQLITE_database/testingHome.dart';
 import 'package:loginsignspaceorion/SQLITE_database/testinghome2.dart';
 import 'package:loginsignspaceorion/TemporaryUser/EnterPhoneNumber.dart';
 import 'package:loginsignspaceorion/dropDown.dart';
@@ -34,8 +33,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-var API = 'http://127.0.0.1:8000/';
-// var API = 'https://genorion1.herokuapp.com/';
+// var API = 'http://127.0.0.1:8000/';
+var API = 'https://genorion1.herokuapp.com/';
 List roomData;
 List floorData;
 List placeData;
@@ -376,7 +375,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         });
         roomData = jsonDecode(response.body);
         // roomData.sort();
-       List roomQueryRows= await NewDbProvider.instance.queryRoom();
+
         // if(roomData.length==roomQueryRows.length){
         //   for(int i=0;i<roomData.length;i++){
         //     roomQuery=RoomType(
@@ -777,7 +776,7 @@ List resultFloor;
   Future<List<RoomType>> roomQueryFunc()async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     print('qqqq ${roomQueryRows}');
-    List roomTypeSingle=roomQueryRows;
+
     var id=resultFlat[0]['flt_id'].toString();
 
     roomQueryRows2=roomQueryRows;
@@ -805,7 +804,7 @@ List deviceResult;
         rId: deviceResult[index]['r_id'].toString(),
         user: deviceResult[index]['user']
     ));
-    // return dvdata;
+    return dvdata;
 
   }
   Future devicePinNamesQueryFunc()async{
@@ -939,7 +938,6 @@ List deviceResult;
                     Column(
                       // crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        // ignore: deprecated_member_use
                         Container(
                           width: 300,
                           child: FlatButton(
@@ -966,7 +964,6 @@ List deviceResult;
                               'Have an account',
                               style: TextStyle(fontSize: 18),
                             ),
-                            // ignore: deprecated_member_use
                             FlatButton(
                               child: Text(
                                 'Login',
@@ -986,7 +983,7 @@ List deviceResult;
                               'Temporary User',
                               style: TextStyle(fontSize: 14),
                             ),
-                            // ignore: deprecated_member_use
+
                             FlatButton(
                               child: Text(
                                 'Click Here !',
@@ -1057,7 +1054,6 @@ List deviceResult;
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
-                            // ignore: deprecated_member_use
                             FlatButton(
                               child: Text(
                                 'Getting Started',
@@ -1081,7 +1077,6 @@ List deviceResult;
                                   'Have an account',
                                   style: TextStyle(fontSize: 18),
                                 ),
-                                // ignore: deprecated_member_use
                                 FlatButton(
                                   child: Text(
                                     'Login',
@@ -1101,7 +1096,6 @@ List deviceResult;
                                   'Temporary User',
                                   style: TextStyle(fontSize: 14),
                                 ),
-                                // ignore: deprecated_member_use
                                 FlatButton(
                                   child: Text(
                                     'Click Here !',
@@ -1140,7 +1134,6 @@ List deviceResult;
           child: Text('Yes'),
           onPressed: () => exit(0),
         ),
-        // ignore: deprecated_member_use
         FlatButton(
           child: Text('No'),
           onPressed: () => Navigator.pop(context, false),

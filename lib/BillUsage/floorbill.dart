@@ -279,6 +279,7 @@ class _FloorBillState extends State<FloorBill> {
     });
     await getDevice();
   }
+
   Future getroomsWeb() async {
     List data= List.empty(growable: true);
     String flt_id;
@@ -629,7 +630,7 @@ class _FloorBillState extends State<FloorBill> {
           tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4);
         });
-        print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
+        // print('totalans ${tenMinuteEnergy[i][0]['enrgy20']}');
       }
       print('totalans $totalValue');
     }

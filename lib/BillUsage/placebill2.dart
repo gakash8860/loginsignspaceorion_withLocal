@@ -4,47 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+
 import '../main.dart';
 
-class PlaceBill extends StatefulWidget {
-  const PlaceBill({Key key}) : super(key: key);
+
+
+
+class PlaceBill2 extends StatefulWidget {
 
   @override
-  _PlaceBillState createState() => _PlaceBillState();
+  _PlaceBill2State createState() => _PlaceBill2State();
 }
 
-class _PlaceBillState extends State<PlaceBill> {
+class _PlaceBill2State extends State<PlaceBill2> {
   Future placeVal;
-  Future placeValWeb;
-  DateTime pickedDate;
-  DateTime pickedDate2;
-  PlaceType pt;
-  FloorType fl;
-  bool fetchingData;
-  String fetchingDataShow="Please Wait We are fetching your data";
-  Flat flt;
-  List<RoomType> rm;
   double _valueMinute=0.0;
   var pleaseSelect = 'Please Select';
-  RoomType rm2;
-  int length = 0;
-  Device dv2;
-  String chooseValueMinute;
-
-  // List tenMinuteEnergy;
-  List<Device> dv;
-  var selectedflat;
-  var selectedroom;
-  var selecteddeviceId;
-  Future floorVal;
-  List<dynamic> allFlatId;
-  var allDeviceId = List.empty(growable: true);
-  Future flatVal;
-  Future roomVal;
-  List allRoomId;
+  bool fetchingData;
+  String fetchingDataShow="Please Wait We are fetching your data";
+  PlaceType pt;
+  FloorType fl;
+  DateTime pickedDate;
+  DateTime pickedDate2;
+  bool completeTask = false;
   List allFloorId;
-  var tenMinuteTotalUsage;
+  List allFlatId;
+  List totalValueOfEnergy;
+  List datawe;
+  String chooseValueMinute;
+  double total14=0.0;
   Map<String, double> dataMap = {};
   List minute = [
     '10 minute',
@@ -89,59 +77,27 @@ class _PlaceBillState extends State<PlaceBill> {
   List tenMinuteEnergy;
   double total = 0.0;
   double totalValue = 0.0;
-  bool completeTask = false;
-  DateTime date2;
-  DateTime date1;
-  String dateFinal;
-  var currentDifference;
-  var currentDate;
-  var difference;
-  String cutDate;
-  String cutDate2;
-  var finalEnergyValue;
-  List onlyDayEnergyList;
-  List totalValueOfEnergy=[];
-  double total14 =0.0;
+
+
+
 
   void initState() {
     super.initState();
     placeVal = getplaces();
-    placeValWeb = getplacesWeb();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
   }
-  var tokenWeb;
-  Future getTokenWeb()async{
-    final pref= await SharedPreferences.getInstance();
-    tokenWeb=pref.getString('tokenWeb');
-    return tokenWeb;
-  }
+
+
+
+
+
+
+
+
+
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
-    // final url = 'https://genorion.herokuapp.com/place/';
-    final url = API + 'addyourplace/';
-
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 200) {
-      print('place');
-      List<dynamic> data = jsonDecode(response.body);
-      List<PlaceType> places =
-      data.map((data) => PlaceType.fromJson(data)).toList();
-
-      // print(places);
-      // floorVal = getfloors(places[0].p_id);
-
-      return places;
-    } else {
-      return null;
-    }
-  }
-  Future<List<PlaceType>> getplacesWeb() async {
-    String token = await getTokenWeb();
     // final url = 'https://genorion.herokuapp.com/place/';
     final url = API + 'addyourplace/';
 
@@ -178,34 +134,15 @@ class _PlaceBillState extends State<PlaceBill> {
       print(data);
       allFloorId = List.from(data);
       print('allFloorId $allFloorId');
-      await getFlat();
-    }
-  }
-  Future getfloorsWeb(String pId) async {
-    final url = API + 'addyourfloor/?p_id=' + pId;
-    String token = await getTokenWeb();
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Token $token',
-    });
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      print(data);
-      allFloorId = List.from(data);
       totalValueOfEnergy=List(allFloorId.length);
-      print('allFloorId $allFloorId');
-      print('allFloorIdtotalValueOfEnergy $totalValueOfEnergy');
-
       await getFlat();
     }
   }
-
   List <dynamic> flatIdIteration;
 
   Future getFlat() async {
     String fId;
-    allFlatId = List.empty(growable: true);
+     allFlatId = List.empty(growable: true);
     String token = await getToken();
     for (int i = 0; i < allFloorId.length; i++) {
       fId = allFloorId[i]['f_id'];
@@ -217,7 +154,7 @@ class _PlaceBillState extends State<PlaceBill> {
       });
       if (response.statusCode == 200) {
         flatIdIteration=jsonDecode(response.body);
-        // List  data.addAll(jsonDecode(response.body));
+      // List  data.addAll(jsonDecode(response.body));
         allFlatId.addAll(jsonDecode(response.body));
         print('allFlatId ${i},$flatIdIteration');
 
@@ -225,34 +162,12 @@ class _PlaceBillState extends State<PlaceBill> {
         await getrooms();
 
         totalValueOfEnergy[i]=total14;
+        dataMap.putIfAbsent(allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
+        tenMinuteTotalUsage=total14;
         total14=0.0;
 
         print('totalValueOfEnergy $totalValueOfEnergy');
-      } else {
-        return null;
-      }
-    }
-  }
-
-  Future getFlatWeb() async {
-    String fId;
-    List data = List.empty(growable: true);
-    String token = await getTokenWeb();
-    for (int i = 0; i < allFloorId.length; i++) {
-      fId = allFloorId[i]['f_id'];
-      final url = API + 'addyourflat/?f_id=' + fId;
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      if (response.statusCode == 200) {
-        data.addAll(jsonDecode(response.body));
-        allFlatId = List.from(data);
-        print('allFlatId $allFlatId');
-        print('allFlatId ${allFlatId.length}');
-
-        await getrooms();
+        print('dataMapTotalValueOfEnergy $dataMap');
       } else {
         return null;
       }
@@ -260,9 +175,10 @@ class _PlaceBillState extends State<PlaceBill> {
   }
 
   List dataRoom = [];
-
+  List allRoomId;
+  List data = List.empty(growable: true);
   Future getrooms() async {
-    List data = List.empty(growable: true);
+
     String flt_id;
     String token = await getToken();
 
@@ -278,6 +194,7 @@ class _PlaceBillState extends State<PlaceBill> {
       });
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
+        print('allRoomData45859 ${data}');
         dataRoom = jsonDecode(response.body);
         print('allRoomData ,${i} $dataRoom');
 
@@ -287,50 +204,12 @@ class _PlaceBillState extends State<PlaceBill> {
     }
     setState(() {
       allRoomId = List.from(data);
-      print('allRoomData45859 ${allRoomId.length}');
+      print('allRoomData45859 ${allRoomId}');
     });
   }
-  Future getroomsWeb() async {
-    List data = List.empty(growable: true);
-    String flt_id;
-    String token = await getTokenWeb();
-
-    for (int i = 0; i < allFlatId.length; i++) {
-      flt_id = allFlatId[i]['flt_id'];
-
-      final url = API + 'addroom/?flt_id=' + flt_id;
-
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      if (response.statusCode == 200) {
-        data.addAll(jsonDecode(response.body));
-        dataRoom = jsonDecode(response.body);
-        print('allRoomData $dataRoom');
-
-        await getDeviceAccordingRoom();
-
-        // if(datawe.isEmpty){
-        //   total14=0.0;
-        //   print('dataisEmpty');
-        //   print('dataisEmpty $dataMap');
-        // }
-        // await getDeviceAccordingRoom();
-        // dataMap.putIfAbsent(allFlatId[i]['flt_name'], () => total14);
-        // print('ererere $dataMap');
-      }
-    }
-    setState(() {
-      allRoomId = List.from(data);
-      print('allRoomData45859 ${allRoomId.length}');
-    });
-  }
-
-  List datawe = [];
 
   Future getDeviceAccordingRoom() async {
+    var r_id;
     String token = await getToken();
     for (int i = 0; i < dataRoom.length; i++) {
       r_id = dataRoom[i]['r_id'];
@@ -342,17 +221,25 @@ class _PlaceBillState extends State<PlaceBill> {
         'Authorization': 'Token $token',
       });
       datawe = jsonDecode(response.body);
-      if(datawe.isEmpty){
-        return;
-      }
       print('dataIsNotEmpty$datawe');
+        if(datawe.isEmpty){
+         return;
+        }
       await totalEnergyAccordingRoom();
 
+      // for (int i = 0; i < allFloorId.length; i++) {
+      //   if (datawe.isEmpty) {
+      //     total14 = 0.0;
+      //     print('dataisEmpty');
+      //     print('dataisEmpty $dataMap');
+      //   }
+      //
+      //   dataMap.putIfAbsent(allFloorId[i]['f_name'], () => total14);
+      //   print('ererere $dataMap');
+      // }
     }
   }
-
   Future totalEnergyAccordingRoom() async {
-    total14=0.0;
     String token = await getToken();
     print(
         'totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
@@ -388,20 +275,26 @@ class _PlaceBillState extends State<PlaceBill> {
 
         // total14=0.0;
 
-        print('dataMapKroomaccrodinfsol $dataMap ');
+        // print('dataMapKroomaccrodinfsol $dataMap ');
       }
     }
   }
 
+
+  var allDeviceId = List.empty(growable: true);
+
+
+
   Future getDeviceForBill() async {
     String token = await getToken();
     String r_id;
-    int length = allRoomId.length;
+
     int i = 0;
-    while (i < length) {
-      // for(int i=0;i<length;i++){
-      print('aagye $i');
+    // while (i < length) {
+      for(int i=0;i<allRoomId.length;i++){
       r_id = allRoomId[i]['r_id'];
+      print('aagye $i  ${r_id}');
+
 
       final url = API + 'addyourdevice/?r_id=' + r_id;
 
@@ -415,11 +308,11 @@ class _PlaceBillState extends State<PlaceBill> {
         dataResponse.addAll(jsonDecode(response.body));
         print('allDeviceIdDeviceIddata-->  ${dataResponse}');
         allDeviceId = List.from(dataResponse);
+
         print('allDeviceIdDeviceIddataallDeviceId-->  ${allDeviceId.length}');
-        i++;
       }
     }
-
+    await getEnergyTenMinutes();
     // print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
 
     //
@@ -427,9 +320,10 @@ class _PlaceBillState extends State<PlaceBill> {
     // print('allDeviceIdDeviceId14785-->  ${allDeviceId.length}');
 
     // await getEnergyTenMinutes();
-    await getEnergyTenMinutes();
-  }
 
+  }
+  var tenMinuteTotalUsage;
+  int length=0;
   Future getEnergyTenMinutes() async {
     List dataResponse = List.empty(growable: true);
     tenMinuteEnergy = List.empty(growable: true);
@@ -454,7 +348,6 @@ class _PlaceBillState extends State<PlaceBill> {
 
     print('FinalTenMinuteEnergy  ${tenMinuteEnergy.length}');
   }
-
   sumOfEnergyTenMinutes() async {
     totalValue = 0.0;
     setState(() {
@@ -1405,7 +1298,16 @@ class _PlaceBillState extends State<PlaceBill> {
       }
     }
   }
-
+  DateTime date2;
+  DateTime date1;
+  String dateFinal;
+  var currentDifference;
+  var currentDate;
+  var difference;
+  String cutDate;
+  String cutDate2;
+  List onlyDayEnergyList= List.empty(growable: true);
+  var finalEnergyValue;
   showDatePicker1() {
     showDatePicker(
         context: context,
@@ -1454,7 +1356,7 @@ class _PlaceBillState extends State<PlaceBill> {
   Future getEnergyDay() async {
     var dId;
     List data = List.empty(growable: true);
-    onlyDayEnergyList = List.empty(growable: true);
+
     String token = await getToken();
 
     for (int i = 0; i < allDeviceId.length; i++) {
@@ -1498,483 +1400,244 @@ class _PlaceBillState extends State<PlaceBill> {
     print('sumDataTotal_final ${total}');
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          if (viewportConstraints.maxWidth > 600) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text('Place Bill'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Place Bill'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 15,
               ),
-              body: SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 15,
-                      ),
-                      FutureBuilder<List<PlaceType>>(
-                          future: placeValWeb,
-                          builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
-                            if (snapshot.hasData) {
-                              // print(snapshot.hasData);
-                              // setState(() {
-                              //   floorVal = getfloors(snapshot.data[0].p_id);
-                              // });
-                              if (snapshot.data.length == 0) {
-                                return Center(child: Text("No Devices on this place"));
-                              }
-                              return Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 58),
-                                  child: SizedBox(
-                                    // width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                offset: Offset(7, 7)
-                                              // offset: Offset(20,20)
-                                            )
-                                          ],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )),
-                                      child: DropdownButtonFormField<PlaceType>(
-                                        decoration: InputDecoration(
-                                          contentPadding: const EdgeInsets.all(15),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black),
-                                            borderRadius: BorderRadius.circular(50),
-                                          ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Place'),
-                                        isExpanded: true,
-                                        value: pt,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data.map((selectedPlace) {
-                                          return DropdownMenuItem<PlaceType>(
-                                            value: selectedPlace,
-                                            child: Text(selectedPlace.pType),
-                                          );
-                                        }).toList(),
-                                        onChanged: (PlaceType selectedPlace) async {
-                                          setState(() {
-                                            fl = null;
-                                            pt = selectedPlace;
-                                          });
-                                          await getfloors(selectedPlace.pId);
-                                          setState(() {
-                                            completeTask = true;
-                                          });
-                                        },
-                                      ),
-                                    ),
+              FutureBuilder<List<PlaceType>>(
+                  future: placeVal,
+                  builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
+                    if (snapshot.hasData) {
+                      // print(snapshot.hasData);
+                      // setState(() {
+                      //   floorVal = getfloors(snapshot.data[0].p_id);
+                      // });
+                      if (snapshot.data.length == 0) {
+                        return Center(child: Text("No Devices on this place"));
+                      }
+                      return Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 58),
+                          child: SizedBox(
+                            // width: double.infinity,
+                            height: 50.0,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 10,
+                                        offset: Offset(7, 7)
+                                      // offset: Offset(20,20)
+                                    )
+                                  ],
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 0.5,
+                                  )),
+                              child: DropdownButtonFormField<PlaceType>(
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
                                 ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              );
-                            } else {
-                              return CircularProgressIndicator();
-                            }
-                          }),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DropdownButton(
-                              value: chooseValueMinute,
-                              onChanged: (index) async {
-                                setState(() {
-                                  chooseValueMinute = index;
-                                });
-                                totalValue = 0.0;
-                                await getDeviceForBill();
-                                await sumOfEnergyTenMinutes();
-                              },
-                              items: minute.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList()),
-                          Text(_valueMinute == null
-                              ? pleaseSelect
-                              : _valueMinute.toStringAsFixed(2)),
-                        ],
-                      )
-                          : Text('Wait'),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DropdownButton(
-                              value: chooseValueHour,
-                              onChanged: (index) async {
-                                setState(() {
-                                  chooseValueHour = index;
-                                });
-                                totalValue = 0.0;
-                                _valueHour = 0.0;
-                                await getEnergyHour();
-                                await sumOfEnergyHour();
-                              },
-                              items: hour.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList()),
-                          Text(_valueHour == null
-                              ? pleaseSelect
-                              : _valueHour.toStringAsFixed(2)),
-                        ],
-                      )
-                          : Text("Wait"),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () async {
-                              await showDatePicker1();
-                            },
-                            child:
-                            Text(cutDate == null ? 'Select Date' : cutDate),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              showDatePicker2();
-                              // print12();
-                            },
-                            child:
-                            Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                          ),
-                        ],
-                      )
-                          : Text("Please Wait"),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () async {},
-                            child: Text(finalEnergyValue.toString()),
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                await differenceCurrentDateToSelectedDate();
-                                await findDifferenceBetweenDates();
-                                await getEnergyDay();
-                                await sumYearData();
-                              },
-                              child: Text('Click'))
-                        ],
-                      )
-                          : Text("Please Wait"),
-                      Container(
-                        child: Center(
-                          child: RaisedButton(
-                            color: Colors.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 60),
-                              child: Text(
-                                'Total Usage',
+                                dropdownColor: Colors.white70,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: Text('Select Place'),
+                                isExpanded: true,
+                                value: pt,
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            onPressed: () async {
-                              print('navigation $dataMap');
-                              // await totalUsageFuncRoom();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TotalUsage(
-                                        totalEnergy: tenMinuteTotalUsage.toString(),
-                                        chooseValueMinute:
-                                        chooseValueMinute.toString(),
-                                        deviceId: dataMap,
-                                      )));
-                              // Navigator.of(context)
-                              //     .pushReplacementNamed(TotalUsage.routeName);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }else{
-            return Scaffold(
-              appBar: AppBar(
-                title: Text('Place Bill'),
-              ),
-              body: SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 15,
-                      ),
-                      FutureBuilder<List<PlaceType>>(
-                          future: placeVal,
-                          builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
-                            if (snapshot.hasData) {
-                              // print(snapshot.hasData);
-                              // setState(() {
-                              //   floorVal = getfloors(snapshot.data[0].p_id);
-                              // });
-                              if (snapshot.data.length == 0) {
-                                return Center(child: Text("No Devices on this place"));
-                              }
-                              return Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 58),
-                                  child: SizedBox(
-                                    // width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                offset: Offset(7, 7)
-                                              // offset: Offset(20,20)
-                                            )
-                                          ],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )),
-                                      child: DropdownButtonFormField<PlaceType>(
-                                        decoration: InputDecoration(
-                                          contentPadding: const EdgeInsets.all(15),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black),
-                                            borderRadius: BorderRadius.circular(50),
-                                          ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Place'),
-                                        isExpanded: true,
-                                        value: pt,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data.map((selectedPlace) {
-                                          return DropdownMenuItem<PlaceType>(
-                                            value: selectedPlace,
-                                            child: Text(selectedPlace.pType),
-                                          );
-                                        }).toList(),
-                                        onChanged: (PlaceType selectedPlace) async {
-                                          setState(() {
-                                            fl = null;
-                                            pt = selectedPlace;
-                                          });
-                                          await getfloors(selectedPlace.pId);
-                                          setState(() {
-                                            completeTask = true;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              );
-                            } else {
-                              return CircularProgressIndicator();
-                            }
-                          }),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DropdownButton(
-                              value: chooseValueMinute,
-                              onChanged: (index) async {
-                                setState(() {
-                                  chooseValueMinute = index;
-                                });
-                                totalValue = 0.0;
+                                items: snapshot.data.map((selectedPlace) {
+                                  return DropdownMenuItem<PlaceType>(
+                                    value: selectedPlace,
+                                    child: Text(selectedPlace.pType),
+                                  );
+                                }).toList(),
+                                onChanged: (PlaceType selectedPlace) async {
                                   setState(() {
-                                    fetchingData=false;
+                                    fl = null;
+                                    pt = selectedPlace;
                                   });
-                                await getDeviceForBill();
-                                await sumOfEnergyTenMinutes();
-                              },
-                              items: minute.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList()),
-                           Text(fetchingData == false
-                              ? fetchingDataShow.toString()
-                              : _valueMinute.toStringAsFixed(2)),
-                        ],
-                      )
-                          : Text('Wait'),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DropdownButton(
-                              value: chooseValueHour,
-                              onChanged: (index) async {
-                                setState(() {
-                                  chooseValueHour = index;
-                                });
-                                totalValue = 0.0;
-                                _valueHour = 0.0;
-                                await getEnergyHour();
-                                await sumOfEnergyHour();
-                              },
-                              items: hour.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList()),
-                          Text(_valueHour == null
-                              ? pleaseSelect
-                              : _valueHour.toStringAsFixed(2)),
-                        ],
-                      )
-                          : Text("Wait"),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () async {
-                              await showDatePicker1();
-                            },
-                            child:
-                            Text(cutDate == null ? 'Select Date' : cutDate),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              showDatePicker2();
-                              // print12();
-                            },
-                            child:
-                            Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                          ),
-                        ],
-                      )
-                          : Text("Please Wait"),
-                      completeTask
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () async {},
-                            child: Text(finalEnergyValue.toString()),
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                await differenceCurrentDateToSelectedDate();
-                                await findDifferenceBetweenDates();
-                                await getEnergyDay();
-                                await sumYearData();
-                              },
-                              child: Text('Click'))
-                        ],
-                      )
-                          : Text("Please Wait"),
-                      Container(
-                        child: Center(
-                          child: RaisedButton(
-                            color: Colors.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 60),
-                              child: Text(
-                                'Total Usage',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
+                                  await getfloors(selectedPlace.pId);
+                                  setState(() {
+                                    completeTask = true;
+                                  });
+                                },
                               ),
                             ),
-                            onPressed: () async {
-                              print('navigation $dataMap');
-                              // await totalUsageFuncRoom();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TotalUsage(
-                                        totalEnergy: tenMinuteTotalUsage.toString(),
-                                        chooseValueMinute:
-                                        chooseValueMinute.toString(),
-                                        deviceId: dataMap,
-                                      )));
-                              // Navigator.of(context)
-                              //     .pushReplacementNamed(TotalUsage.routeName);
-                            },
                           ),
                         ),
+                        margin: new EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+              SizedBox(
+                height: 15,
+              ),
+              completeTask
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                      value: chooseValueMinute,
+                      onChanged: (index) async {
+                        setState(() {
+                          chooseValueMinute = index;
+                        });
+                        totalValue = 0.0;
+                        setState(() {
+                          fetchingData=false;
+                        });
+                        await getDeviceForBill();
+                        await sumOfEnergyTenMinutes();
+                      },
+                      items: minute.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                  Text(fetchingData == false
+                      ? fetchingDataShow.toString()
+                      : _valueMinute.toStringAsFixed(2)),
+                ],
+              )
+                  : Text('Wait'),
+              SizedBox(
+                height: 15,
+              ),
+              completeTask
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                      value: chooseValueHour,
+                      onChanged: (index) async {
+                        setState(() {
+                          chooseValueHour = index;
+                        });
+                        totalValue = 0.0;
+                        _valueHour = 0.0;
+                        await getEnergyHour();
+                        await sumOfEnergyHour();
+                      },
+                      items: hour.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      }).toList()),
+                  Text(_valueHour == null
+                      ? pleaseSelect
+                      : _valueHour.toStringAsFixed(2)),
+                ],
+              )
+                  : Text("Wait"),
+              completeTask
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async {
+                      await showDatePicker1();
+                    },
+                    child:
+                    Text(cutDate == null ? 'Select Date' : cutDate),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDatePicker2();
+                      // print12();
+                    },
+                    child:
+                    Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                  ),
+                ],
+              )
+                  : Text("Please Wait"),
+              completeTask
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async {},
+                    child: Text(finalEnergyValue.toString()),
+                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        await differenceCurrentDateToSelectedDate();
+                        await findDifferenceBetweenDates();
+                        await getEnergyDay();
+                        await sumYearData();
+                      },
+                      child: Text('Click'))
+                ],
+              )
+                  : Text("Please Wait"),
+              Container(
+                child: Center(
+                  child: RaisedButton(
+                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 60),
+                      child: Text(
+                        'Total Usage',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ],
+                    ),
+                    onPressed: () async {
+                      print('navigation $dataMap');
+                      // await totalUsageFuncRoom();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TotalUsage(
+                                totalEnergy: tenMinuteTotalUsage.toString(),
+                                chooseValueMinute:
+                                chooseValueMinute.toString(),
+                                deviceId: dataMap,
+                              )));
+                      // Navigator.of(context)
+                      //     .pushReplacementNamed(TotalUsage.routeName);
+                    },
                   ),
                 ),
               ),
-            );
-          }
-        }
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

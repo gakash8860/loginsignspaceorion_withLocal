@@ -15,6 +15,7 @@ import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
 import 'package:loginsignspaceorion/BillUsage/placebill.dart';
+import 'package:loginsignspaceorion/BillUsage/placebill2.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
 import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
@@ -1180,7 +1181,6 @@ var tokenWeb;
   _createAlertDialogDropDownFloor(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Change Place'),
@@ -1662,7 +1662,6 @@ var tokenWeb;
   _createAlertDialog(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Device Id'),
@@ -1723,7 +1722,6 @@ var tokenWeb;
   _createAlertDialogForAddRoom(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Name of Room'),
@@ -1912,7 +1910,7 @@ var tokenWeb;
     return showDialog(
 
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
 title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
@@ -2376,7 +2374,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?chang
   _createAlertDialogForPin17(BuildContext context, String dId) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Cell Number of your Device'),
@@ -2438,7 +2436,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?chang
   _createAlertDialogForFloor(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Name of Floor'),
@@ -2557,7 +2555,7 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?chang
   _createAlertDialogForFlat(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Name of Flat'),
@@ -2667,7 +2665,7 @@ String piname;
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -2789,7 +2787,7 @@ String piname;
   _createAlertDialogForSSIDAndEmergencyNumber(BuildContext context,String dId) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
+
         builder: (context) {
           return AlertDialog(
             content: Container(
@@ -2882,7 +2880,6 @@ String piname;
   _createAlertDialogForAddMembers(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             content: Container(
@@ -2985,7 +2982,6 @@ String piname;
   alertDialogExistingFloor(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Oops',),
@@ -3005,7 +3001,6 @@ String piname;
   deleteFloorOption(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text('Select Floor'),
@@ -3109,7 +3104,6 @@ String piname;
   _createAlertDialogForDeleteFloorAndAddFloor(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text(
@@ -3194,7 +3188,6 @@ String piname;
   _createAlertDialogForlocalUpdateAndMessage(BuildContext context,String dId) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -3287,7 +3280,6 @@ String piname;
   _createAlertDialogForDeleteFlatAndAddFlat(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text(
@@ -5215,7 +5207,7 @@ String piname;
                                                 print('RoomId  $rIdForName');
                                                 print('RoomId  ${rm.rName}');
                                                 return Tab(
-                                                  text: rm.rId,
+                                                  text: rm.rName,
                                                 );
                                               }).toList(),
                                               onTap: (index) async {
@@ -5375,7 +5367,7 @@ String piname;
               children: <Widget>[
                 TextButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
                   },
                   child: Text("Place Bill Prediction"),
                 ),

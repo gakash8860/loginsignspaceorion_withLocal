@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
+import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
+import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
+import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
+import 'package:loginsignspaceorion/BillUsage/placebill.dart';
+import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/InformationPageWeb/aboutWeb.dart';
 import 'package:loginsignspaceorion/ProfilePage.dart';
 import 'package:loginsignspaceorion/Setting_Page.dart';
@@ -33,6 +38,7 @@ var tabbarState;
 }
 
 class _DestinationViewState extends State<DestinationView> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,4 +51,57 @@ class _DestinationViewState extends State<DestinationView> {
       ),
     );
   }
+
+
+
+  _billPredictionNavigation(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Please Select'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                  },
+                  child: Text("Place Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+                  },
+                  child: Text("Floor Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                  },
+                  child: Text("Flat Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                  },
+                  child: Text("Room Bill Prediction"),
+                ),
+
+                TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                  },
+                  child: Text("Device Bill Prediction"),
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
 }
