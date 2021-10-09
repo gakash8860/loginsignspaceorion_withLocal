@@ -54,54 +54,6 @@ class _DestinationViewState extends State<DestinationView> {
 
 
 
-  _billPredictionNavigation(BuildContext context){
-    return showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text('Please Select'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
-                  },
-                  child: Text("Place Bill Prediction"),
-                ),
 
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
-                  },
-                  child: Text("Floor Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
-                  },
-                  child: Text("Flat Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
-                  },
-                  child: Text("Room Bill Prediction"),
-                ),
-
-                TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
-                  },
-                  child: Text("Device Bill Prediction"),
-                ),
-              ],
-            ),
-          );
-        }
-    );
-  }
 
 }

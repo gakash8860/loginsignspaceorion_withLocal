@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
@@ -18,6 +19,7 @@ class PlaceBill2 extends StatefulWidget {
 
 class _PlaceBill2State extends State<PlaceBill2> {
   Future placeVal;
+  Future placeValWeb;
   double _valueMinute=0.0;
   var pleaseSelect = 'Please Select';
   bool fetchingData;
@@ -84,14 +86,43 @@ class _PlaceBill2State extends State<PlaceBill2> {
   void initState() {
     super.initState();
     placeVal = getplaces();
+    placeValWeb = getplacesWeb();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
   }
 
+  var tokenWeb;
+  Future getTokenWeb()async{
+    final pref= await SharedPreferences.getInstance();
+    tokenWeb=pref.getString('tokenWeb');
+    return tokenWeb;
+  }
 
 
+  Future<List<PlaceType>> getplacesWeb() async {
+    String token = await getTokenWeb();
+    // final url = 'https://genorion.herokuapp.com/place/';
+    final url = API + 'addyourplace/';
 
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      print('place');
+      List<dynamic> data = jsonDecode(response.body);
+      List<PlaceType> places =
+      data.map((data) => PlaceType.fromJson(data)).toList();
 
+      // print(places);
+      // floorVal = getfloors(places[0].p_id);
+
+      return places;
+    } else {
+      return null;
+    }
+  }
 
 
 
@@ -138,6 +169,24 @@ class _PlaceBill2State extends State<PlaceBill2> {
       await getFlat();
     }
   }
+  Future getfloorsWeb(String pId) async {
+    print('entry');
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      print(data);
+      allFloorId = List.from(data);
+      print('allFloorId $allFloorId');
+      totalValueOfEnergy=List(allFloorId.length);
+      await getFlatWeb();
+    }
+  }
   List <dynamic> flatIdIteration;
 
   Future getFlat() async {
@@ -160,6 +209,39 @@ class _PlaceBill2State extends State<PlaceBill2> {
 
 
         await getrooms();
+
+        totalValueOfEnergy[i]=total14;
+        dataMap.putIfAbsent(allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
+        tenMinuteTotalUsage=total14;
+        total14=0.0;
+
+        print('totalValueOfEnergy $totalValueOfEnergy');
+        print('dataMapTotalValueOfEnergy $dataMap');
+      } else {
+        return null;
+      }
+    }
+  }
+  Future getFlatWeb() async {
+    String fId;
+     allFlatId = List.empty(growable: true);
+    String token = await getTokenWeb();
+    for (int i = 0; i < allFloorId.length; i++) {
+      fId = allFloorId[i]['f_id'];
+      final url = API + 'addyourflat/?f_id=' + fId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode == 200) {
+        flatIdIteration=jsonDecode(response.body);
+      // List  data.addAll(jsonDecode(response.body));
+        allFlatId.addAll(jsonDecode(response.body));
+        print('allFlatId ${i},$flatIdIteration');
+
+
+        await getroomsWeb();
 
         totalValueOfEnergy[i]=total14;
         dataMap.putIfAbsent(allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
@@ -207,6 +289,36 @@ class _PlaceBill2State extends State<PlaceBill2> {
       print('allRoomData45859 ${allRoomId}');
     });
   }
+  Future getroomsWeb() async {
+
+    String flt_id;
+    String token = await getTokenWeb();
+
+    for (int i = 0; i < flatIdIteration.length; i++) {
+      flt_id = flatIdIteration[i]['flt_id'];
+
+      final url = API + 'addroom/?flt_id=' + flt_id;
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode == 200) {
+        data.addAll(jsonDecode(response.body));
+        print('allRoomData45859 ${data}');
+        dataRoom = jsonDecode(response.body);
+        print('allRoomData ,${i} $dataRoom');
+
+        await getDeviceAccordingRoomWeb();
+
+      }
+    }
+    setState(() {
+      allRoomId = List.from(data);
+      print('allRoomData45859 ${allRoomId}');
+    });
+  }
 
   Future getDeviceAccordingRoom() async {
     var r_id;
@@ -239,8 +351,79 @@ class _PlaceBill2State extends State<PlaceBill2> {
       // }
     }
   }
+  Future getDeviceAccordingRoomWeb() async {
+    var r_id;
+    String token = await getTokenWeb();
+    for (int i = 0; i < dataRoom.length; i++) {
+      r_id = dataRoom[i]['r_id'];
+      final url = API + 'addyourdevice/?r_id=' + r_id;
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      datawe = jsonDecode(response.body);
+      print('dataIsNotEmpty$datawe');
+        if(datawe.isEmpty){
+         return;
+        }
+      await totalEnergyAccordingRoomWeb();
+
+      // for (int i = 0; i < allFloorId.length; i++) {
+      //   if (datawe.isEmpty) {
+      //     total14 = 0.0;
+      //     print('dataisEmpty');
+      //     print('dataisEmpty $dataMap');
+      //   }
+      //
+      //   dataMap.putIfAbsent(allFloorId[i]['f_name'], () => total14);
+      //   print('ererere $dataMap');
+      // }
+    }
+  }
   Future totalEnergyAccordingRoom() async {
     String token = await getToken();
+    print(
+        'totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
+
+    for (int j = 0; j < datawe.length; j++) {
+      print('forLoopdataweallDeviceIdDeviceIddata-->  ${datawe}');
+      final url1 = API + 'pertenminuteenergy?d_id=' + datawe[j]['d_id'];
+      final response1 = await http.get(url1, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response1.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response1.body);
+        print('energyData ${data.length}');
+        print('energyData ${data}');
+        for (int k = 0; k < data.length; k++) {
+          total14 = total14 +
+              double.parse(data[k]['enrgy10']) +
+              double.parse(data[k]['enrgy20']) +
+              double.parse(data[k]['enrgy30']) +
+              double.parse(data[k]['enrgy40']) +
+              double.parse(data[k]['enrgy50']) +
+              double.parse(data[k]['enrgy60']);
+          print('pororro $total14');
+          // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+        }
+        // int ko=0;
+        // while(ko<j){
+        //   dataMap.putIfAbsent(allRoomId[ko]['r_name'], () => total14);
+        //   ko+1;
+        // }
+
+        // total14=0.0;
+
+        // print('dataMapKroomaccrodinfsol $dataMap ');
+      }
+    }
+  }
+  Future totalEnergyAccordingRoomWeb() async {
+    String token = await getTokenWeb();
     print(
         'totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
 
@@ -322,6 +505,43 @@ class _PlaceBill2State extends State<PlaceBill2> {
     // await getEnergyTenMinutes();
 
   }
+  Future getDeviceForBillWeb() async {
+    String token = await getTokenWeb();
+    String r_id;
+
+    int i = 0;
+    // while (i < length) {
+      for(int i=0;i<allRoomId.length;i++){
+      r_id = allRoomId[i]['r_id'];
+      print('aagye $i  ${r_id}');
+
+
+      final url = API + 'addyourdevice/?r_id=' + r_id;
+
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode == 200) {
+        print('rrrrr ${response.body}');
+        dataResponse.addAll(jsonDecode(response.body));
+        print('allDeviceIdDeviceIddata-->  ${dataResponse}');
+        allDeviceId = List.from(dataResponse);
+
+        print('allDeviceIdDeviceIddataallDeviceId-->  ${allDeviceId.length}');
+      }
+    }
+    await getEnergyTenMinutesWeb();
+    // print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
+
+    //
+    // print('allDeviceIdDeviceId14785-->  ${allDeviceId}');
+    // print('allDeviceIdDeviceId14785-->  ${allDeviceId.length}');
+
+    // await getEnergyTenMinutes();
+
+  }
   var tenMinuteTotalUsage;
   int length=0;
   Future getEnergyTenMinutes() async {
@@ -329,6 +549,30 @@ class _PlaceBill2State extends State<PlaceBill2> {
     tenMinuteEnergy = List.empty(growable: true);
     var dId;
     String token = await getToken();
+    for (int i = 0; i < allDeviceId.length; i++) {
+      dId = allDeviceId[i]['d_id'];
+      print('deviceIdEnergyRoom $dId');
+      final url = API + 'pertenminuteenergy?d_id=' + dId;
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      print('tenMinuteEnergy ${response.statusCode}');
+      if (response.statusCode == 200) {
+        dataResponse.addAll(jsonDecode(response.body));
+        tenMinuteEnergy = List.from(dataResponse);
+        print('tenMinuteRoomData2 $dataResponse');
+      }
+    }
+
+    print('FinalTenMinuteEnergy  ${tenMinuteEnergy.length}');
+  }
+  Future getEnergyTenMinutesWeb() async {
+    List dataResponse = List.empty(growable: true);
+    tenMinuteEnergy = List.empty(growable: true);
+    var dId;
+    String token = await getTokenWeb();
     for (int i = 0; i < allDeviceId.length; i++) {
       dId = allDeviceId[i]['d_id'];
       print('deviceIdEnergyRoom $dId');
@@ -1403,241 +1647,481 @@ class _PlaceBill2State extends State<PlaceBill2> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Place Bill'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 15,
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          if (viewportConstraints.maxWidth > 600) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('Place Bill Web'),
               ),
-              FutureBuilder<List<PlaceType>>(
-                  future: placeVal,
-                  builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
-                    if (snapshot.hasData) {
-                      // print(snapshot.hasData);
-                      // setState(() {
-                      //   floorVal = getfloors(snapshot.data[0].p_id);
-                      // });
-                      if (snapshot.data.length == 0) {
-                        return Center(child: Text("No Devices on this place"));
-                      }
-                      return Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 58),
-                          child: SizedBox(
-                            // width: double.infinity,
-                            height: 50.0,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 10,
-                                        offset: Offset(7, 7)
-                                      // offset: Offset(20,20)
-                                    )
-                                  ],
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 0.5,
-                                  )),
-                              child: DropdownButtonFormField<PlaceType>(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(50),
+              body: SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
+                      FutureBuilder<List<PlaceType>>(
+                          future: placeValWeb,
+                          builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
+                            if (snapshot.hasData) {
+                              // print(snapshot.hasData);
+                              // setState(() {
+                              //   floorVal = getfloors(snapshot.data[0].p_id);
+                              // });
+                              if (snapshot.data.length == 0) {
+                                return Center(child: Text("No Devices on this place"));
+                              }
+                              return Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<PlaceType>(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Place'),
+                                        isExpanded: true,
+                                        value: pt,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data.map((selectedPlace) {
+                                          return DropdownMenuItem<PlaceType>(
+                                            value: selectedPlace,
+                                            child: Text(selectedPlace.pType),
+                                          );
+                                        }).toList(),
+                                        onChanged: (PlaceType selectedPlace) async {
+                                          setState(() {
+                                            fl = null;
+                                            pt = selectedPlace;
+                                          });
+                                          await getfloorsWeb(selectedPlace.pId);
+                                          setState(() {
+                                            completeTask = true;
+                                          });
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 28,
-                                hint: Text('Select Place'),
-                                isExpanded: true,
-                                value: pt,
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueMinute,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueMinute = index;
+                                });
+                                totalValue = 0.0;
+                                await getDeviceForBillWeb();
+                                await sumOfEnergyTenMinutes();
+                              },
+                              items: minute.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(_valueMinute == null
+                              ? pleaseSelect
+                              : _valueMinute.toStringAsFixed(2)),
+                        ],
+                      )
+                          : Text('Wait'),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueHour,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueHour = index;
+                                });
+                                totalValue = 0.0;
+                                _valueHour = 0.0;
+                                await getEnergyHour();
+                                await sumOfEnergyHour();
+                              },
+                              items: hour.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(_valueHour == null
+                              ? pleaseSelect
+                              : _valueHour.toStringAsFixed(2)),
+                        ],
+                      )
+                          : Text("Wait"),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {
+                              await showDatePicker1();
+                            },
+                            child:
+                            Text(cutDate == null ? 'Select Date' : cutDate),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDatePicker2();
+                              // print12();
+                            },
+                            child:
+                            Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                          ),
+                        ],
+                      )
+                          : Text("Please Wait"),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {},
+                            child: Text(finalEnergyValue.toString()),
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                await differenceCurrentDateToSelectedDate();
+                                await findDifferenceBetweenDates();
+                                await getEnergyDay();
+                                await sumYearData();
+                              },
+                              child: Text('Click'))
+                        ],
+                      )
+                          : Text("Please Wait"),
+                      Container(
+                        child: Center(
+                          child: RaisedButton(
+                            color: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 60),
+                              child: Text(
+                                'Total Usage',
                                 style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                items: snapshot.data.map((selectedPlace) {
-                                  return DropdownMenuItem<PlaceType>(
-                                    value: selectedPlace,
-                                    child: Text(selectedPlace.pType),
-                                  );
-                                }).toList(),
-                                onChanged: (PlaceType selectedPlace) async {
-                                  setState(() {
-                                    fl = null;
-                                    pt = selectedPlace;
-                                  });
-                                  await getfloors(selectedPlace.pId);
-                                  setState(() {
-                                    completeTask = true;
-                                  });
-                                },
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
+                            onPressed: () async {
+                              print('navigation $dataMap');
+                              // await totalUsageFuncRoom();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TotalUsage(
+                                        totalEnergy: tenMinuteTotalUsage.toString(),
+                                        chooseValueMinute:
+                                        chooseValueMinute.toString(),
+                                        deviceId: dataMap,
+                                      )));
+                              // Navigator.of(context)
+                              //     .pushReplacementNamed(TotalUsage.routeName);
+                            },
                           ),
                         ),
-                        margin: new EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
-              SizedBox(
-                height: 15,
-              ),
-              completeTask
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton(
-                      value: chooseValueMinute,
-                      onChanged: (index) async {
-                        setState(() {
-                          chooseValueMinute = index;
-                        });
-                        totalValue = 0.0;
-                        setState(() {
-                          fetchingData=false;
-                        });
-                        await getDeviceForBill();
-                        await sumOfEnergyTenMinutes();
-                      },
-                      items: minute.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList()),
-                  Text(fetchingData == false
-                      ? fetchingDataShow.toString()
-                      : _valueMinute.toStringAsFixed(2)),
-                ],
-              )
-                  : Text('Wait'),
-              SizedBox(
-                height: 15,
-              ),
-              completeTask
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DropdownButton(
-                      value: chooseValueHour,
-                      onChanged: (index) async {
-                        setState(() {
-                          chooseValueHour = index;
-                        });
-                        totalValue = 0.0;
-                        _valueHour = 0.0;
-                        await getEnergyHour();
-                        await sumOfEnergyHour();
-                      },
-                      items: hour.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList()),
-                  Text(_valueHour == null
-                      ? pleaseSelect
-                      : _valueHour.toStringAsFixed(2)),
-                ],
-              )
-                  : Text("Wait"),
-              completeTask
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () async {
-                      await showDatePicker1();
-                    },
-                    child:
-                    Text(cutDate == null ? 'Select Date' : cutDate),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showDatePicker2();
-                      // print12();
-                    },
-                    child:
-                    Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                  ),
-                ],
-              )
-                  : Text("Please Wait"),
-              completeTask
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () async {},
-                    child: Text(finalEnergyValue.toString()),
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        await differenceCurrentDateToSelectedDate();
-                        await findDifferenceBetweenDates();
-                        await getEnergyDay();
-                        await sumYearData();
-                      },
-                      child: Text('Click'))
-                ],
-              )
-                  : Text("Please Wait"),
-              Container(
-                child: Center(
-                  child: RaisedButton(
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 60),
-                      child: Text(
-                        'Total Usage',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    onPressed: () async {
-                      print('navigation $dataMap');
-                      // await totalUsageFuncRoom();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TotalUsage(
-                                totalEnergy: tenMinuteTotalUsage.toString(),
-                                chooseValueMinute:
-                                chooseValueMinute.toString(),
-                                deviceId: dataMap,
-                              )));
-                      // Navigator.of(context)
-                      //     .pushReplacementNamed(TotalUsage.routeName);
-                    },
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }else{
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('Place Bill'),
+              ),
+              body: SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
+                      FutureBuilder<List<PlaceType>>(
+                          future: placeVal,
+                          builder: (context, AsyncSnapshot<List<PlaceType>> snapshot) {
+                            if (snapshot.hasData) {
+                              // print(snapshot.hasData);
+                              // setState(() {
+                              //   floorVal = getfloors(snapshot.data[0].p_id);
+                              // });
+                              if (snapshot.data.length == 0) {
+                                return Center(child: Text("No Devices on this place"));
+                              }
+                              return Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 58),
+                                  child: SizedBox(
+                                    // width: double.infinity,
+                                    height: 50.0,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: Offset(7, 7)
+                                              // offset: Offset(20,20)
+                                            )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<PlaceType>(
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: Text('Select Place'),
+                                        isExpanded: true,
+                                        value: pt,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items: snapshot.data.map((selectedPlace) {
+                                          return DropdownMenuItem<PlaceType>(
+                                            value: selectedPlace,
+                                            child: Text(selectedPlace.pType),
+                                          );
+                                        }).toList(),
+                                        onChanged: (PlaceType selectedPlace) async {
+                                          setState(() {
+                                            fl = null;
+                                            pt = selectedPlace;
+                                          });
+                                          await getfloors(selectedPlace.pId);
+                                          setState(() {
+                                            completeTask = true;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                margin: new EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueMinute,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueMinute = index;
+                                });
+                                totalValue = 0.0;
+                                setState(() {
+                                  fetchingData=false;
+                                });
+                                await getDeviceForBill();
+                                await sumOfEnergyTenMinutes();
+                              },
+                              items: minute.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(fetchingData == false
+                              ? fetchingDataShow.toString()
+                              : _valueMinute.toStringAsFixed(2)),
+                        ],
+                      )
+                          : Text('Wait'),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueHour,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueHour = index;
+                                });
+                                totalValue = 0.0;
+                                _valueHour = 0.0;
+                                await getEnergyHour();
+                                await sumOfEnergyHour();
+                              },
+                              items: hour.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(_valueHour == null
+                              ? pleaseSelect
+                              : _valueHour.toStringAsFixed(2)),
+                        ],
+                      )
+                          : Text("Wait"),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {
+                              await showDatePicker1();
+                            },
+                            child:
+                            Text(cutDate == null ? 'Select Date' : cutDate),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDatePicker2();
+                              // print12();
+                            },
+                            child:
+                            Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                          ),
+                        ],
+                      )
+                          : Text("Please Wait"),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {},
+                            child: Text(finalEnergyValue.toString()),
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                await differenceCurrentDateToSelectedDate();
+                                await findDifferenceBetweenDates();
+                                await getEnergyDay();
+                                await sumYearData();
+                              },
+                              child: Text('Click'))
+                        ],
+                      )
+                          : Text("Please Wait"),
+                      Container(
+                        child: Center(
+                          child: RaisedButton(
+                            color: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 60),
+                              child: Text(
+                                'Total Usage',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            onPressed: () async {
+                              print('navigation $dataMap');
+                              // await totalUsageFuncRoom();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TotalUsage(
+                                        totalEnergy: tenMinuteTotalUsage.toString(),
+                                        chooseValueMinute:
+                                        chooseValueMinute.toString(),
+                                        deviceId: dataMap,
+                                      )));
+                              // Navigator.of(context)
+                              //     .pushReplacementNamed(TotalUsage.routeName);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
     );
   }
 }

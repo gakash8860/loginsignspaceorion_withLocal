@@ -4,6 +4,7 @@ import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
 import 'package:loginsignspaceorion/BillUsage/placebill.dart';
+import 'package:loginsignspaceorion/BillUsage/placebill2.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/customcolor/customcolors.dart';
 import 'package:loginsignspaceorion/icons/my_flutter_app_icons.dart';
@@ -254,7 +255,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               children: <Widget>[
                 TextButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
                   },
                   child: Text("Place Bill Prediction"),
                 ),

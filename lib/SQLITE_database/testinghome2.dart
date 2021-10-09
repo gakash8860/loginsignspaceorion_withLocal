@@ -5565,7 +5565,7 @@ String piname;
           children: <Widget>[
             TextButton(
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
                 },
                 child: const Text('Place Bill Prediction',style:TextStyle(fontSize: 14))),
             SimpleDialogOption(
