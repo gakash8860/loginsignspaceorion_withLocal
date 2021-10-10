@@ -62,7 +62,7 @@ class _RoomBillState extends State<RoomBill> {
   Device dv2;
   String chooseValueMinute;
   List tenMinuteEnergy;
-  Map<String,double> dataMap;
+  Map<String,double> dataMap={};
   List<String> onlyDeviceId=List.empty(growable: true);
   var data;
   double total=0.0;
@@ -99,6 +99,8 @@ class _RoomBillState extends State<RoomBill> {
   String cutDate2;
   var finalEnergyValue;
   List onlyDayEnergyList ;
+
+  double total14=0.0;
 
   void initState() {
     super.initState();
@@ -310,8 +312,11 @@ class _RoomBillState extends State<RoomBill> {
       }
   }
 
-
+  double finalTotalValue=0.0;
+  var varFinalTotalValue;
+  List totalEnergyList;
   Future getEnergyTenMinutes() async {
+    totalEnergyList=List(allDeviceId.length);
     tenMinuteEnergy= List.empty(growable: true);
     var dId;
     String token = await getToken();
@@ -344,6 +349,32 @@ class _RoomBillState extends State<RoomBill> {
 
 
     }
+    for(int i=0;i<tenMinuteEnergy.length;i++){
+      total14 = total14 +
+          double.parse(tenMinuteEnergy[i]['enrgy10']) +
+          double.parse(tenMinuteEnergy[i]['enrgy20']) +
+          double.parse(tenMinuteEnergy[i]['enrgy30']) +
+          double.parse(tenMinuteEnergy[i]['enrgy40']) +
+          double.parse(tenMinuteEnergy[i]['enrgy50']) +
+          double.parse(tenMinuteEnergy[i]['enrgy60']);
+      print('pororro $total14');
+      totalEnergyList[i]=total14;
+      // finalTotalValue =total14;
+      total14=0.0;
+      print('145pororro $total14');
+      finalTotalValue= finalTotalValue+ double.parse(tenMinuteEnergy[i]['enrgy10']) +
+          double.parse(tenMinuteEnergy[i]['enrgy20']) +
+          double.parse(tenMinuteEnergy[i]['enrgy30']) +
+          double.parse(tenMinuteEnergy[i]['enrgy40']) +
+          double.parse(tenMinuteEnergy[i]['enrgy50']) +
+          double.parse(tenMinuteEnergy[i]['enrgy60']);
+      setState(() {
+        varFinalTotalValue=  finalTotalValue.toStringAsFixed(2);
+      });
+      dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => totalEnergyList[i]);
+    }
+    print('varFinalTotalValue $varFinalTotalValue');
+    print('varFinalTotalValue $dataMap');
 await getEnergyHour();
 
 
@@ -2505,8 +2536,8 @@ var tenMinuteTotalUsage;
                         ),
                         onPressed:() async{
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                            totalEnergy: tenMinuteTotalUsage.toString(),
-                            chooseValueMinute:chooseValueMinute.toString(),
+                            totalEnergy: tenMinuteTotalUsage==null?varFinalTotalValue:tenMinuteTotalUsage,
+                            chooseValueMinute:chooseValueMinute==null?"60 Minute":chooseValueMinute,
                             deviceId: dataMap,
                           )));
                           // Navigator.of(context)

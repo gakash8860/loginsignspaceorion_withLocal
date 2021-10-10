@@ -43,9 +43,10 @@ class _FlatBillState extends State<FlatBill> {
   int length=0;
   Device dv2;
   String chooseValueMinute;
+  String defaultTime;
   List<Device> dv;
   var selectedflat;
-
+  List totalValueOfEnergy;
   Future floorVal;
   Future floorValWeb;
   List<dynamic> allFlatId;
@@ -54,6 +55,9 @@ class _FlatBillState extends State<FlatBill> {
   Future flatVal;
   Future flatValWeb;
   Future roomVal;
+  var tenMinuteTotalUsage;
+  double finalTotalValue=0.0;
+  var varFinalTotalValue;
   List allRoomId;
   List minute = [
     '10 minute',
@@ -276,6 +280,7 @@ class _FlatBillState extends State<FlatBill> {
             print('allRoomData ${allRoomId.length}');
 
           });
+          totalValueOfEnergy=List(allRoomId.length);
           await getDevice();
 
       }
@@ -298,11 +303,12 @@ class _FlatBillState extends State<FlatBill> {
             print('allRoomData ${allRoomId.length}');
 
           });
+
           await getDeviceWeb();
 
       }
   }
-  List datawe=[];
+  List deviceIdData=[];
 
   Future getDevice() async {
     String token = await getToken();
@@ -318,19 +324,26 @@ class _FlatBillState extends State<FlatBill> {
         'Authorization': 'Token $token',
       });
       if (response.statusCode == 200) {
-        datawe=jsonDecode(response.body);
+        deviceIdData=jsonDecode(response.body);
         dataResponse.addAll(jsonDecode(response.body))  ;
-        print('dataweallDeviceIdDeviceIddata-->  ${datawe}');
+        print('dataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
         print('allDeviceIdDeviceIddata-->  ${dataResponse.length}');
        await totalEnergyAccordingRoom();
-        if(datawe.isEmpty){
+        if(deviceIdData.isEmpty){
           print('dataisEmpty');
           total14=0.0;
           dataMap.putIfAbsent(allRoomId[i]['r_name'], () => total14);
           print('dataisEmpty $dataMap');
         }
-
+        totalValueOfEnergy[i]=total14;
+        finalTotalValue=total14+finalTotalValue;
+        varFinalTotalValue=finalTotalValue.toStringAsFixed(2);
+          setState(() {
+            defaultTime="60 Minutes";
+            // chooseValueMinute
+          });
         dataMap.putIfAbsent(allRoomId[i]['r_name'], () => total14);
+
         print('741dataisEmpty $dataMap');
       }else{
         return null;
@@ -358,12 +371,12 @@ class _FlatBillState extends State<FlatBill> {
         'Authorization': 'Token $token',
       });
       if (response.statusCode == 200) {
-        datawe=jsonDecode(response.body);
+        deviceIdData=jsonDecode(response.body);
         dataResponse.addAll(jsonDecode(response.body))  ;
-        print('dataweallDeviceIdDeviceIddata-->  ${datawe}');
+        print('dataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
         print('allDeviceIdDeviceIddata-->  ${dataResponse.length}');
        await totalEnergyAccordingRoomWeb();
-        if(datawe.isEmpty){
+        if(deviceIdData.isEmpty){
           print('dataisEmpty');
           total14=0.0;
           dataMap.putIfAbsent(allRoomId[i]['r_name'], () => total14);
@@ -390,11 +403,11 @@ class _FlatBillState extends State<FlatBill> {
   Future totalEnergyAccordingRoom()async{
     total14=0.0;
     String token = await getToken();
-    print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
+    print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
 
-    for(int j=0;j<datawe.length;j++){
-      print('forLoopdataweallDeviceIdDeviceIddata-->  ${datawe}');
-      final url1 = API + 'pertenminuteenergy?d_id='+datawe[j]['d_id'];
+    for(int j=0;j<deviceIdData.length;j++){
+      print('forLoopdataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
+      final url1 = API + 'pertenminuteenergy?d_id='+deviceIdData[j]['d_id'];
       final response1= await http.get(url1,headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -407,6 +420,7 @@ class _FlatBillState extends State<FlatBill> {
         for(int k=0;k<data.length;k++){
           total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
           print('pororro $total14');
+
           // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
         }
         // int ko=0;
@@ -427,11 +441,11 @@ class _FlatBillState extends State<FlatBill> {
   Future totalEnergyAccordingRoomWeb()async{
     total14=0.0;
     String token = await getTokenWeb();
-    print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${datawe}');
+    print('totalEnergyAccordingRoomdataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
 
-    for(int j=0;j<datawe.length;j++){
-      print('forLoopdataweallDeviceIdDeviceIddata-->  ${datawe}');
-      final url1 = API + 'pertenminuteenergy?d_id='+datawe[j]['d_id'];
+    for(int j=0;j<deviceIdData.length;j++){
+      print('forLoopdataweallDeviceIdDeviceIddata-->  ${deviceIdData}');
+      final url1 = API + 'pertenminuteenergy?d_id='+deviceIdData[j]['d_id'];
       final response1= await http.get(url1,headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -462,157 +476,6 @@ class _FlatBillState extends State<FlatBill> {
     }
   }
 
-
-  // Future getDeviceSingleRoom(String r_id)async{
-  //   String token = await getToken();
-  //   final url = API + 'addyourdevice/?r_id=' + r_id;
-  //   final response = await http.get(url, headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json',
-  //     'Authorization': 'Token $token',
-  //   });
-  //   if(response.statusCode==200){
-  //     singleRoomDeviceId.addAll(jsonDecode(response.body));
-  //     print('SingleRoomDevice  ${singleRoomDeviceId}');
-  //     await getEnergyTenMinute1();
-  //   }
-  // }
-  //
-  // Future getDeviceEnergyForSameRoom()async{
-  //   double totalValue=0.0;
-  //   String token = await getToken();
-  //   tenMinuteEnergyForSameRoomDevice=List.empty(growable: true);
-  //   var dId;
-  //   for(int i=0;i<allDeviceId.length;i++){
-  //     if(allDeviceId[i]['r_id']==allDeviceId[i+1]['r_id']){
-  //       dId=allDeviceId[i]['d_id'];
-  //       final url = API + 'pertenminuteenergy?d_id=' + dId;
-  //       final response = await http.get(url, headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Token $token',
-  //       });
-  //       print('ppppeeer ${response.statusCode}');
-  //       if(response.statusCode==200){
-  //         tenMinuteEnergyForSameRoomDevice.addAll(jsonDecode(response.body));
-  //         print('ppppeeer ${tenMinuteEnergyForSameRoomDevice}');
-  //         setState(() {
-  //           length=tenMinuteEnergyForSameRoomDevice.length;
-  //         });
-  //
-  //       }
-  //     }else if(allDeviceId[i]['r_id']==allDeviceId[i-1]['r_id']){
-  //       dId=allDeviceId[i]['d_id'];
-  //       final url = API + 'pertenminuteenergy?d_id=' + dId;
-  //       final response = await http.get(url, headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Token $token',
-  //       });
-  //       print('ppppeeer ${response.statusCode}');
-  //       if(response.statusCode==200){
-  //         tenMinuteEnergyForSameRoomDevice.addAll(jsonDecode(response.body));
-  //         print('ppppeeerelse ${tenMinuteEnergyForSameRoomDevice}');
-  //         if(chooseValueMinute == '10 minute'){
-  //           for(int i=0;i<tenMinuteEnergyForSameRoomDevice.length;i++){
-  //             setState(() {
-  //
-  //               double  changeValue=double.parse(tenMinuteEnergyForSameRoomDevice[i]['enrgy10']);
-  //               totalValue=totalValue+changeValue;
-  //               tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
-  //
-  //               dataMap.putIfAbsent(allDeviceId[i]['r_id'], () => totalValue);
-  //             });
-  //           }
-  //           print('totalansdataMap $dataMap');
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  // }
-  //
-  // Future getDataMap()async{
-  //   List roomCheck=List.empty(growable: true);
-  //   List tenMinuteEnergy=List.empty(growable: true);
-  //   var rId;
-  //   var dId;
-  //   String token = await getToken();
-  //   for(int i=0;i<allRoomId.length;i++){
-  //     rId=allRoomId[i]['r_id'];
-  //     final url = API + 'addyourdevice/?r_id=' + rId;
-  //     String token = await getToken();
-  //     final response = await http.get(url, headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //       'Authorization': 'Token $token',
-  //     });
-  //     print('allDeviceIdDeviceIddata-->  ${dataResponse}');
-  //     if(response.statusCode==200){
-  //       roomCheck.addAll(jsonDecode(response.body));
-  //       print('roomCheckallDeviceIdDeviceId14785-->  ${roomCheck}');
-  //
-  //
-  //       for(int j=0;j<roomCheck.length;j++){
-  //         dId=roomCheck[i]['d_id'];
-  //         print('deviceIdEnergyRoom $dId');
-  //         final url = API + 'pertenminuteenergy?d_id=' + dId;
-  //         final response = await http.get(url, headers: {
-  //           'Content-Type': 'application/json',
-  //           'Accept': 'application/json',
-  //           'Authorization': 'Token $token',
-  //         });
-  //         print('tenMinuteEnergy ${response.statusCode}');
-  //         if (response.statusCode == 200){
-  //           tenMinuteEnergy.addAll(jsonDecode(response.body));
-  //           tenMinuteEnergy= tenMinuteEnergy.toSet().toList();
-  //
-  //           print('tenMinuteRoomdata2tenMinuteEnergy $tenMinuteEnergy');
-  //
-  //
-  //
-  //         }
-  //
-  //
-  //       }
-  //
-  //
-  //     }
-  //
-  //   }
-  // }
-  //
-
-
-
-// Future getEnergyTenMinute1()async{
-//   tenMinuteEnergyForSameRoomDevice= List.empty(growable: true);
-//   var dId;
-//
-//   String token = await getToken();
-//   for(int i=0;i<singleRoomDeviceId.length;i++){
-//
-//     dId=singleRoomDeviceId[i]['d_id'];
-//     print('deviceIdEnergyRoom $dId');
-//     final url = API + 'pertenminuteenergy?d_id=' + dId;
-//     final response = await http.get(url, headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/json',
-//       'Authorization': 'Token $token',
-//     });
-//     print('tenMinuteEnergy ${response.statusCode}');
-//     if (response.statusCode == 200){
-//       tenMinuteEnergyForSameRoomDevice.addAll(jsonDecode(response.body));
-//       print('tenMinuteEnergyForSameRoomDevice $tenMinuteEnergyForSameRoomDevice');
-//
-//
-//       // dataMap.putIfAbsent(allRoomId[i]['r_name'], () => changeValue);
-//
-//     }
-//
-//
-//   }
-// }
 
 
 
@@ -682,19 +545,40 @@ class _FlatBillState extends State<FlatBill> {
 
 
 
-  var tenMinuteTotalUsage;
+
+  sumEnergyTenMinutesRoom()async{
+    dataMap={};
+    setState(() {
+      length=tenMinuteEnergy.length;
+    });
+    for(int i=0;i<allRoomId.length;i++){
+      if(chooseValueMinute == '10 minute'){
+        for(int i=0;i<tenMinuteEnergy.length;i++){
+          setState(() {
+
+
+            changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
+            totalValue=totalValue+changeValue;
+            _valueMinute = totalValue;
+            tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
+
+
+          });
+
+        }
+        print('totalans $totalValue');
+      }
+      dataMap.putIfAbsent(allRoomId[i]['r_name'], () => totalValueOfEnergy[i]);
+      print('totalansPUTdataMap $dataMap');
+      dataMap.update(allRoomId[i]['r_name'], (value) => totalValueOfEnergy[i]);
+      print('totalansUPDATEdataMap $dataMap');
+    }
+  }
+
 
   sumOfEnergyTenMinutes()async{
     dataMap={};
-
-
-    // while(i<allDeviceId.length){
-    //   if(allDeviceId[0]['r_id']==allDeviceId[1]['r_id']){
-    //     print('yeah');
-    //     i++;
-    //   }
-    //   i++;
-    // }
     setState(() {
       length=tenMinuteEnergy.length;
     });
@@ -708,7 +592,8 @@ class _FlatBillState extends State<FlatBill> {
           _valueMinute = totalValue;
           tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
 
-          // dataMap.putIfAbsent(allRoomId[i]['r_name'], () => changeValue);
+          // dataMap.putIfAbsent(allRoomId[i]['r_name'], (value) => totalValueOfEnergy[i]);
+          dataMap.putIfAbsent(allRoomId[0]['r_name'], () => totalValue);
 
         });
 
@@ -723,6 +608,7 @@ class _FlatBillState extends State<FlatBill> {
           totalValue=totalValue+op1+op2;
           _valueMinute = totalValue;
           tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
@@ -2102,7 +1988,7 @@ class _FlatBillState extends State<FlatBill> {
                           // await totalUsageFuncRoom();
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
                             totalEnergy: tenMinuteTotalUsage.toString(),
-                            chooseValueMinute:chooseValueMinute.toString(),
+                            chooseValueMinute:chooseValueMinute==null?"60 Minute":chooseValueMinute,
                             deviceId: dataMap,
                           )));
                           // Navigator.of(context)
@@ -2471,7 +2357,7 @@ class _FlatBillState extends State<FlatBill> {
                           }).toList()),
                       Text(_valueMinute == null
                           ? pleaseSelect
-                          : _valueMinute.toString()),
+                          : _valueMinute.toStringAsFixed(2)),
                     ],
                   ):AnimatedTextKit(
                     animatedTexts: [
@@ -2565,8 +2451,8 @@ class _FlatBillState extends State<FlatBill> {
                           print('navigation $dataMap');
                           // await totalUsageFuncRoom();
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                            totalEnergy: tenMinuteTotalUsage.toString(),
-                            chooseValueMinute:chooseValueMinute.toString(),
+                            totalEnergy: tenMinuteTotalUsage==null?varFinalTotalValue:tenMinuteTotalUsage,
+                            chooseValueMinute:chooseValueMinute==null?"60 Minute":chooseValueMinute,
                             deviceId: dataMap,
                           )));
                           // Navigator.of(context)
@@ -2586,11 +2472,5 @@ class _FlatBillState extends State<FlatBill> {
         });
   }
 
-  totalUsageFuncRoom(){
-    dataMap={};
-    for(int i=0;i<listOfEnergy10Minutes.length;i++){
-      dataMap.putIfAbsent(allRoomId[i]['r_name'], () => listOfEnergy10Minutes[i]);
-    }
-  }
 
 }

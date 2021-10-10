@@ -231,8 +231,9 @@ class _ProfilePageState extends State<ProfilePage> {
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
       await deleteImageFromLocal();
+      Utility.saveImage(imageData['file']);
       setState(() {
-        Utility.saveImage(imageData['file']);
+
       });
 
 

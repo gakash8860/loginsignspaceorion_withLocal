@@ -50,6 +50,8 @@ class _FloorBillState extends State<FloorBill> {
     '50 minute',
     '60 minute'
   ];
+  double finalTotalValue=0.0;
+  var varFinalTotalValue;
   String r_id;
   List dataResponse=List.empty(growable: true);
   List tenMinuteEnergy;
@@ -261,6 +263,9 @@ class _FloorBillState extends State<FloorBill> {
           data.addAll(jsonDecode(response.body)) ;
           dataRoom=jsonDecode(response.body);
           print('allRoomData $dataRoom');
+          finalTotalValue=finalTotalValue+total14;
+          varFinalTotalValue=finalTotalValue.toStringAsFixed(2);
+          print('varFinalTotalValue $varFinalTotalValue');
           if(datawe.isEmpty){
             total14=0.0;
             print('dataisEmpty');
@@ -277,6 +282,7 @@ class _FloorBillState extends State<FloorBill> {
       print('allRoomData45859 ${allRoomId.length}');
 
     });
+
     await getDevice();
   }
 
@@ -304,6 +310,7 @@ class _FloorBillState extends State<FloorBill> {
             print('dataisEmpty');
             print('dataisEmpty $dataMap');
           }
+
           await getDeviceAccordingRoomWeb();
           dataMap.putIfAbsent(allFlatId[i]['flt_name'], () => total14);
           print('ererere $dataMap');
@@ -457,6 +464,7 @@ class _FloorBillState extends State<FloorBill> {
         for(int k=0;k<data.length;k++){
           total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
           print('pororro $total14');
+
           // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
         }
         // int ko=0;
@@ -474,6 +482,7 @@ class _FloorBillState extends State<FloorBill> {
 
     }
   }
+
   Future totalEnergyAccordingRoomWeb()async{
 
     String token = await getTokenWeb();
@@ -493,9 +502,11 @@ class _FloorBillState extends State<FloorBill> {
         print('energyData ${data}');
         for(int k=0;k<data.length;k++){
           total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
-          print('pororro $total14');
+          print('142pororro $total14');
+
           // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
         }
+
         // int ko=0;
         // while(ko<j){
         //   dataMap.putIfAbsent(allRoomId[ko]['r_name'], () => total14);
@@ -2119,7 +2130,7 @@ class _FloorBillState extends State<FloorBill> {
                           }).toList()),
                       Text(_valueMinute == null
                           ? pleaseSelect
-                          : _valueMinute.toString()),
+                          : _valueMinute.toStringAsFixed(2)),
                     ],
                   ):Text('Wait'),
                   SizedBox(
@@ -2143,7 +2154,7 @@ class _FloorBillState extends State<FloorBill> {
                               child: Text(valueItem),
                             );
                           }).toList()),
-                      Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
+                      Text(_valueHour == null ? pleaseSelect : _valueHour.toStringAsFixed(2)),
                     ],
                   ):Text("Wait"),
                   completeTask?Row(
@@ -2202,8 +2213,8 @@ class _FloorBillState extends State<FloorBill> {
                           print('navigation $dataMap');
                           // await totalUsageFuncRoom();
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                            totalEnergy: tenMinuteTotalUsage.toString(),
-                            chooseValueMinute:chooseValueMinute.toString(),
+                            totalEnergy: tenMinuteTotalUsage==null?varFinalTotalValue:tenMinuteTotalUsage,
+                            chooseValueMinute:chooseValueMinute==null?"60 Minute":chooseValueMinute,
                             deviceId: dataMap,
                           )));
                           // Navigator.of(context)
