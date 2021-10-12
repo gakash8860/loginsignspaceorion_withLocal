@@ -33,6 +33,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
   List allFlatId;
   List totalValueOfEnergy;
   List datawe;
+  TextEditingController billTotalController = TextEditingController();
   String chooseValueMinute;
   double total14=0.0;
   Map<String, double> dataMap = {};
@@ -2082,6 +2083,35 @@ class _PlaceBill2State extends State<PlaceBill2> {
                           ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
+                          Text(tenMinuteTotalUsage == null
+                              ? varFinalTotalValue
+                              : tenMinuteTotalUsage),
+
+                          // Text('X'),
+                          SizedBox(
+                            height: 28,
+                            width: 75,
+                            child: Center(
+                              child: TextField(
+                                controller: billTotalController,
+                                textAlign: TextAlign.center,
+                                textDirection:TextDirection.rtl,
+                                decoration:  InputDecoration(
+                                  // border: OutlineInputBorder(),
+                                    hintText: 'Enter a rs per unit'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                          : Container(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      completeTask
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
                           Text(finalEnergyValue==null?"":finalEnergyValue.toString()),
                           ElevatedButton(
                               onPressed: () async {
@@ -2134,5 +2164,11 @@ class _PlaceBill2State extends State<PlaceBill2> {
           }
         }
     );
+  }
+  double totalAmountInRs=0.0;
+  totalAmount(String rsValue){
+    int rsConversion=int.parse(rsValue);
+    double conversion=double.parse(varFinalTotalValue);
+    totalAmountInRs=(conversion/1000)*rsConversion;
   }
 }

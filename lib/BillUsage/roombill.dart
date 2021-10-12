@@ -20,7 +20,7 @@ class _RoomBillState extends State<RoomBill> {
   Future placeValWeb;
   DateTime pickedDate;
   DateTime pickedDate2;
-  double _valueHour=0.0;
+  double _valueHour = 0.0;
   List hourEnergy;
   List hour = [
     '1 hour',
@@ -48,7 +48,7 @@ class _RoomBillState extends State<RoomBill> {
     '23 hour',
     '24 hour'
   ];
-  bool completeTask=false;
+  bool completeTask = false;
   PlaceType pt;
   FloorType fl;
   Flat flt;
@@ -58,14 +58,14 @@ class _RoomBillState extends State<RoomBill> {
   double _valueMinute;
   var pleaseSelect = 'Please Select';
   RoomType rm2;
-  int length=0;
+  int length = 0;
   Device dv2;
   String chooseValueMinute;
   List tenMinuteEnergy;
-  Map<String,double> dataMap={};
-  List<String> onlyDeviceId=List.empty(growable: true);
+  Map<String, double> dataMap = {};
+  List<String> onlyDeviceId = List.empty(growable: true);
   var data;
-  double total=0.0;
+  double total = 0.0;
   List<Device> dv;
   var selectedflat;
   var selectedroom;
@@ -73,7 +73,7 @@ class _RoomBillState extends State<RoomBill> {
   Future floorVal;
   Future floorValWeb;
   List<dynamic> allRoomId;
-  var allDeviceId=List.empty(growable: true);
+  var allDeviceId = List.empty(growable: true);
   Future flatVal;
   Future flatValWeb;
   Future roomVal;
@@ -86,7 +86,7 @@ class _RoomBillState extends State<RoomBill> {
     '50 minute',
     '60 minute'
   ];
-  double changeValue=0.0;
+  double changeValue = 0.0;
   double totalValue;
   int lengthHour;
   DateTime date2;
@@ -98,9 +98,11 @@ class _RoomBillState extends State<RoomBill> {
   String cutDate;
   String cutDate2;
   var finalEnergyValue;
-  List onlyDayEnergyList ;
+  List onlyDayEnergyList;
 
-  double total14=0.0;
+  double total14 = 0.0;
+
+  TextEditingController billTotalController = TextEditingController();
 
   void initState() {
     super.initState();
@@ -108,15 +110,16 @@ class _RoomBillState extends State<RoomBill> {
     placeValWeb = getplacesWeb();
     pickedDate = DateTime.now();
     pickedDate2 = DateTime.now();
-
-
   }
+
   var tokenWeb;
-  Future getTokenWeb()async{
-    final pref= await SharedPreferences.getInstance();
-    tokenWeb=pref.getString('tokenWeb');
+
+  Future getTokenWeb() async {
+    final pref = await SharedPreferences.getInstance();
+    tokenWeb = pref.getString('tokenWeb');
     return tokenWeb;
   }
+
   Future<List<PlaceType>> getplaces() async {
     String token = await getToken();
     // final url = 'https://genorion.herokuapp.com/place/';
@@ -131,7 +134,7 @@ class _RoomBillState extends State<RoomBill> {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
-      data.map((data) => PlaceType.fromJson(data)).toList();
+          data.map((data) => PlaceType.fromJson(data)).toList();
 
       // print(places);
       // floorVal = getfloors(places[0].p_id);
@@ -139,6 +142,7 @@ class _RoomBillState extends State<RoomBill> {
       return places;
     }
   }
+
   Future<List<PlaceType>> getplacesWeb() async {
     String token = await getTokenWeb();
     // final url = 'https://genorion.herokuapp.com/place/';
@@ -153,7 +157,7 @@ class _RoomBillState extends State<RoomBill> {
       print('place');
       List<dynamic> data = jsonDecode(response.body);
       List<PlaceType> places =
-      data.map((data) => PlaceType.fromJson(data)).toList();
+          data.map((data) => PlaceType.fromJson(data)).toList();
 
       // print(places);
       // floorVal = getfloors(places[0].p_id);
@@ -173,11 +177,12 @@ class _RoomBillState extends State<RoomBill> {
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       List<FloorType> floors =
-      data.map((data) => FloorType.fromJson(data)).toList();
+          data.map((data) => FloorType.fromJson(data)).toList();
       print(floors);
       return floors;
     }
   }
+
   Future<List<FloorType>> getfloorsWeb(String pId) async {
     final url = API + 'addyourfloor/?p_id=' + pId;
     String token = await getTokenWeb();
@@ -189,7 +194,7 @@ class _RoomBillState extends State<RoomBill> {
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       List<FloorType> floors =
-      data.map((data) => FloorType.fromJson(data)).toList();
+          data.map((data) => FloorType.fromJson(data)).toList();
       print(floors);
       return floors;
     }
@@ -210,6 +215,7 @@ class _RoomBillState extends State<RoomBill> {
       return flatData;
     }
   }
+
   Future<List<Flat>> getflatWeb(String fId) async {
     final url = API + 'addyourflat/?f_id=' + fId;
     String token = await getTokenWeb();
@@ -237,14 +243,15 @@ class _RoomBillState extends State<RoomBill> {
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       List<RoomType> rooms =
-      data.map((data) => RoomType.fromJson(data)).toList();
+          data.map((data) => RoomType.fromJson(data)).toList();
       print(rooms);
-      allRoomId=List.from(data);
+      allRoomId = List.from(data);
       print('allRoomId $allRoomId');
 
       return rooms;
     }
   }
+
   Future<List<RoomType>> getroomsWeb(String flt_id) async {
     final url = API + 'addroom/?flt_id=' + flt_id;
     String token = await getTokenWeb();
@@ -256,9 +263,9 @@ class _RoomBillState extends State<RoomBill> {
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       List<RoomType> rooms =
-      data.map((data) => RoomType.fromJson(data)).toList();
+          data.map((data) => RoomType.fromJson(data)).toList();
       print(rooms);
-      allRoomId=List.from(data);
+      allRoomId = List.from(data);
       print('allRoomId $allRoomId');
 
       return rooms;
@@ -266,65 +273,59 @@ class _RoomBillState extends State<RoomBill> {
   }
 
   Future getDevice(String r_id) async {
-      final url = API + 'addyourdevice/?r_id=' + r_id;
-      String token = await getToken();
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        allDeviceId=List.from(data);
-        print('allDeviceIdDeviceId-->  ${allDeviceId}');
-        print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
+    final url = API + 'addyourdevice/?r_id=' + r_id;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      allDeviceId = List.from(data);
+      print('allDeviceIdDeviceId-->  ${allDeviceId}');
+      print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
 
-
-
-        print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
-        await getEnergyTenMinutes();
-
-      }else{
-        return null;
-      }
+      print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
+      await getEnergyTenMinutes();
+    } else {
+      return null;
+    }
   }
+
   Future getDeviceWeb(String r_id) async {
-      final url = API + 'addyourdevice/?r_id=' + r_id;
-      String token = await getTokenWeb();
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        allDeviceId=List.from(data);
-        print('allDeviceIdDeviceId-->  ${allDeviceId}');
-        print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
+    final url = API + 'addyourdevice/?r_id=' + r_id;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      allDeviceId = List.from(data);
+      print('allDeviceIdDeviceId-->  ${allDeviceId}');
+      print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
 
-
-
-        print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
-        await getEnergyTenMinutesWeb();
-
-      }else{
-        return null;
-      }
+      print('allDeviceIdDeviceIdtenMinuteEnergy-->  ${tenMinuteEnergy}');
+      await getEnergyTenMinutesWeb();
+    } else {
+      return null;
+    }
   }
 
-  double finalTotalValue=0.0;
+  double finalTotalValue = 0.0;
   var varFinalTotalValue;
   List totalEnergyList;
+
   Future getEnergyTenMinutes() async {
-    totalEnergyList=List(allDeviceId.length);
-    tenMinuteEnergy= List.empty(growable: true);
+    totalEnergyList = List(allDeviceId.length);
+    tenMinuteEnergy = List.empty(growable: true);
     var dId;
     String token = await getToken();
 
-
-    for(int i=0;i<allDeviceId.length;i++){
-
-      dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      dId = allDeviceId[i]['d_id'];
 
       print('deviceIdEnergyRoom $dId');
       final url = API + 'pertenminuteenergy?d_id=' + dId;
@@ -334,22 +335,16 @@ class _RoomBillState extends State<RoomBill> {
         'Authorization': 'Token $token',
       });
       print('tenMinuteEnergy ${response.statusCode}');
-      if (response.statusCode == 200){
-        List<dynamic> data=jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
         print('sssssaaassa ${data[0]['d_id']}');
         tenMinuteEnergy.addAll(jsonDecode(response.body));
 
-
         print('tenMinuteRoomdata2 $tenMinuteEnergy');
         print('onlyDeviceId $onlyDeviceId');
-
-
-
       }
-
-
     }
-    for(int i=0;i<tenMinuteEnergy.length;i++){
+    for (int i = 0; i < tenMinuteEnergy.length; i++) {
       total14 = total14 +
           double.parse(tenMinuteEnergy[i]['enrgy10']) +
           double.parse(tenMinuteEnergy[i]['enrgy20']) +
@@ -358,36 +353,34 @@ class _RoomBillState extends State<RoomBill> {
           double.parse(tenMinuteEnergy[i]['enrgy50']) +
           double.parse(tenMinuteEnergy[i]['enrgy60']);
       print('pororro $total14');
-      totalEnergyList[i]=total14;
+      totalEnergyList[i] = total14;
       // finalTotalValue =total14;
-      total14=0.0;
+      total14 = 0.0;
       print('145pororro $total14');
-      finalTotalValue= finalTotalValue+ double.parse(tenMinuteEnergy[i]['enrgy10']) +
+      finalTotalValue = finalTotalValue +
+          double.parse(tenMinuteEnergy[i]['enrgy10']) +
           double.parse(tenMinuteEnergy[i]['enrgy20']) +
           double.parse(tenMinuteEnergy[i]['enrgy30']) +
           double.parse(tenMinuteEnergy[i]['enrgy40']) +
           double.parse(tenMinuteEnergy[i]['enrgy50']) +
           double.parse(tenMinuteEnergy[i]['enrgy60']);
       setState(() {
-        varFinalTotalValue=  finalTotalValue.toStringAsFixed(2);
+        varFinalTotalValue = finalTotalValue.toStringAsFixed(2);
       });
       dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => totalEnergyList[i]);
     }
     print('varFinalTotalValue $varFinalTotalValue');
     print('varFinalTotalValue $dataMap');
-await getEnergyHour();
-
-
+    await getEnergyHour();
   }
+
   Future getEnergyTenMinutesWeb() async {
-    tenMinuteEnergy= List.empty(growable: true);
+    tenMinuteEnergy = List.empty(growable: true);
     var dId;
     String token = await getTokenWeb();
 
-
-    for(int i=0;i<allDeviceId.length;i++){
-
-      dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      dId = allDeviceId[i]['d_id'];
 
       print('deviceIdEnergyRoom $dId');
       final url = API + 'pertenminuteenergy?d_id=' + dId;
@@ -397,167 +390,152 @@ await getEnergyHour();
         'Authorization': 'Token $token',
       });
       print('tenMinuteEnergy ${response.statusCode}');
-      if (response.statusCode == 200){
-        List<dynamic> data=jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
         print('sssssaaassa ${data[0]['d_id']}');
         tenMinuteEnergy.addAll(jsonDecode(response.body));
 
-
         print('tenMinuteRoomdata2 $tenMinuteEnergy');
         print('onlyDeviceId $onlyDeviceId');
-
-
-
       }
-
-
     }
-await getEnergyHourWeb();
-
-
+    await getEnergyHourWeb();
   }
 
+  var tenMinuteTotalUsage;
 
-
-var tenMinuteTotalUsage;
-
-  sumOfEnergyTenMinutes()async{
-    dataMap={
-
-
-    };
+  sumOfEnergyTenMinutes() async {
+    dataMap = {};
     setState(() {
-      length=tenMinuteEnergy.length;
+      length = tenMinuteEnergy.length;
     });
-    if(chooseValueMinute == '10 minute'){
-      int j=0;
+    if (chooseValueMinute == '10 minute') {
+      int j = 0;
 
-      for(int i=0;i<tenMinuteEnergy.length;i++){
+      for (int i = 0; i < tenMinuteEnergy.length; i++) {
         print('tenMinuteRoomdata214 ${tenMinuteEnergy[i]}');
         setState(() {
           //
 
+          changeValue = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          totalValue = totalValue + changeValue;
 
-
-
-          changeValue=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          totalValue=totalValue+changeValue;
-
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
 
           _valueMinute = totalValue;
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => double.parse(tenMinuteEnergy[i]['enrgy10']));
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => double.parse(tenMinuteEnergy[i]['enrgy10']));
         });
         j++;
       }
       print('totalans ${dataMap}');
     }
-    if(chooseValueMinute == '20 minute'){
-      for(int i=0;i<length;i++){
+    if (chooseValueMinute == '20 minute') {
+      for (int i = 0; i < length; i++) {
         setState(() {
+          double op1 = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[i]['enrgy20']);
+          totalValue = totalValue + op1 + op2;
 
-          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
-          totalValue=totalValue+op1+op2;
-
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
           _valueMinute = totalValue;
 
-
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $dataMap');
     }
 
-    if(chooseValueMinute == '30 minute'){
-      for(int i=0;i<length;i++){
+    if (chooseValueMinute == '30 minute') {
+      for (int i = 0; i < length; i++) {
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
-          totalValue=totalValue+op1+op2+op3;
+          double op1 = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[i]['enrgy30']);
+          totalValue = totalValue + op1 + op2 + op3;
 
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
 
           _valueMinute = totalValue;
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
-    if(chooseValueMinute == '40 minute'){
-      for(int i=0;i<length;i++){
+    if (chooseValueMinute == '40 minute') {
+      for (int i = 0; i < length; i++) {
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
-          totalValue=totalValue+op1+op2+op3+op4;
+          double op1 = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[i]['enrgy40']);
+          totalValue = totalValue + op1 + op2 + op3 + op4;
 
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
 
           _valueMinute = totalValue;
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4);
-        });
-        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
-      }
-      print('totalans $totalValue');
-    }
-
-    if(chooseValueMinute == '50 minute'){
-      for(int i=0;i<length;i++){
-        setState(() {
-          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
-          totalValue=totalValue+op1+op2+op3+op4+op5;
-
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
-
-          _valueMinute = totalValue;
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3 + op4);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
 
-    if(chooseValueMinute == '60 minute'){
-      for(int i=0;i<length;i++){
+    if (chooseValueMinute == '50 minute') {
+      for (int i = 0; i < length; i++) {
         setState(() {
-          double op1=double.parse(tenMinuteEnergy[i]['enrgy10']);
-          double op2=double.parse(tenMinuteEnergy[i]['enrgy20']);
-          double op3=double.parse(tenMinuteEnergy[i]['enrgy30']);
-          double op4=double.parse(tenMinuteEnergy[i]['enrgy40']);
-          double op5=double.parse(tenMinuteEnergy[i]['enrgy50']);
-          double op6=double.parse(tenMinuteEnergy[i]['enrgy60']);
+          double op1 = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[i]['enrgy50']);
+          totalValue = totalValue + op1 + op2 + op3 + op4 + op5;
 
-          totalValue=totalValue+op1+op2+op3+op4+op5+op6;
-
-          tenMinuteTotalUsage=totalValue.toStringAsFixed(2);
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
 
           _valueMinute = totalValue;
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2+op3+op4+op5+op6);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3 + op4 + op5);
         });
         print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
       }
       print('totalans $totalValue');
     }
 
+    if (chooseValueMinute == '60 minute') {
+      for (int i = 0; i < length; i++) {
+        setState(() {
+          double op1 = double.parse(tenMinuteEnergy[i]['enrgy10']);
+          double op2 = double.parse(tenMinuteEnergy[i]['enrgy20']);
+          double op3 = double.parse(tenMinuteEnergy[i]['enrgy30']);
+          double op4 = double.parse(tenMinuteEnergy[i]['enrgy40']);
+          double op5 = double.parse(tenMinuteEnergy[i]['enrgy50']);
+          double op6 = double.parse(tenMinuteEnergy[i]['enrgy60']);
 
+          totalValue = totalValue + op1 + op2 + op3 + op4 + op5 + op6;
+
+          tenMinuteTotalUsage = totalValue.toStringAsFixed(2);
+
+          _valueMinute = totalValue;
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6);
+        });
+        print('totalans ${tenMinuteEnergy[i]['enrgy20']}');
+      }
+      print('totalans $totalValue');
+    }
   }
 
   Future getEnergyHour() async {
-    hourEnergy=List.empty(growable: true);
+    hourEnergy = List.empty(growable: true);
     var dId;
     String token = await getToken();
-    for(int i=0;i<allDeviceId.length;i++) {
-      var dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      var dId = allDeviceId[i]['d_id'];
       final url = API + 'perhourenergy?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -566,19 +544,18 @@ var tenMinuteTotalUsage;
       });
       print('tenMinuteEnergyResponse ${response.statusCode}');
       if (response.statusCode == 200) {
-
         hourEnergy.addAll(jsonDecode(response.body));
         print('hour $hourEnergy');
-
       }
     }
   }
+
   Future getEnergyHourWeb() async {
-    hourEnergy=List.empty(growable: true);
+    hourEnergy = List.empty(growable: true);
     var dId;
     String token = await getTokenWeb();
-    for(int i=0;i<allDeviceId.length;i++) {
-      var dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      var dId = allDeviceId[i]['d_id'];
       final url = API + 'perhourenergy?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -587,56 +564,50 @@ var tenMinuteTotalUsage;
       });
       print('tenMinuteEnergyResponse ${response.statusCode}');
       if (response.statusCode == 200) {
-
         hourEnergy.addAll(jsonDecode(response.body));
         print('hour $hourEnergy');
-
       }
     }
   }
 
-  sumOfEnergyHour()async{
-    dataMap={
-
-    };
-    double totalValue=0.0;
+  sumOfEnergyHour() async {
+    dataMap = {};
+    double totalValue = 0.0;
     setState(() {
-      lengthHour=hourEnergy.length;
+      lengthHour = hourEnergy.length;
     });
-    if(chooseValueHour == '1 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '1 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           var last1Hour = hourEnergy[i]['hour1'];
           changeValue = double.parse(last1Hour);
-          totalValue=totalValue+changeValue;
+          totalValue = totalValue + changeValue;
 
           _valueHour = totalValue;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(hourEnergy[i]['d_id'], () => double.parse(hourEnergy[i]['hour1']));
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(hourEnergy[i]['d_id'],
+              () => double.parse(hourEnergy[i]['hour1']));
           print('sasa $dataMap');
         });
       }
-
     }
-    if(chooseValueHour == '2 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '2 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2;
+          _valueHour = _valueHour + op1 + op2;
           print('_valueHour ${_valueHour}');
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1+op2);
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2);
         });
-
       }
-
     }
-    if(chooseValueHour == '3 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '3 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -644,16 +615,15 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3);
+          _valueHour = _valueHour + op1 + op2 + op3;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3);
         });
-
       }
-
     }
-    if(chooseValueHour == '4 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '4 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -662,17 +632,16 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4);
+          _valueHour = _valueHour + op1 + op2 + op3 + op4;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3 + op4);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '5 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '5 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -682,17 +651,16 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5);
+          _valueHour = _valueHour + op1 + op2 + op3 + op4 + op5;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'], () => op1 + op2 + op3 + op4 + op5);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '6 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '6 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -703,17 +671,16 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6);
+          _valueHour = _valueHour + op1 + op2 + op3 + op4 + op5 + op6;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '7 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '7 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -725,17 +692,16 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7);
+          _valueHour = _valueHour + op1 + op2 + op3 + op4 + op5 + op6 + op7;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6 + op7);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '8 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '8 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -748,17 +714,17 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8);
+          _valueHour =
+              _valueHour + op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '9 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '9 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -772,17 +738,17 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9);
+          _valueHour =
+              _valueHour + op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '10 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '10 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -797,17 +763,26 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
+              () => op1 + op2 + op3 + op4 + op5 + op6 + op7 + op8 + op9 + op10);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '11 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '11 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -823,17 +798,39 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '12 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '12 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -850,17 +847,41 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '13 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '13 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -878,17 +899,43 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '14 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '14 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -907,17 +954,45 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '15 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '15 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -937,17 +1012,47 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '16 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '16 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -968,17 +1073,49 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '17 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '17 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1000,17 +1137,51 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '18 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '18 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1033,17 +1204,53 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '19 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '19 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1067,17 +1274,55 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '20 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '20 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1102,17 +1347,57 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19 +
+                  op20);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '21 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '21 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1138,17 +1423,59 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20 +
+              op21;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19 +
+                  op20 +
+                  op21);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '22 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '22 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1175,17 +1502,61 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20 +
+              op21 +
+              op22;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19 +
+                  op20 +
+                  op21 +
+                  op22);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '23 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '23 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1213,17 +1584,63 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20 +
+              op21 +
+              op22 +
+              op23;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19 +
+                  op20 +
+                  op21 +
+                  op22 +
+                  op23);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
-    if(chooseValueHour == '24 hour') {
-      for(int i=0;i<lengthHour;i++){
+    if (chooseValueHour == '24 hour') {
+      for (int i = 0; i < lengthHour; i++) {
         setState(() {
           double op1 = double.parse(hourEnergy[i]['hour1']);
           double op2 = double.parse(hourEnergy[i]['hour2']);
@@ -1252,58 +1669,101 @@ var tenMinuteTotalUsage;
           print('sasa ${hourEnergy[i]['hour1']}');
           print('2sasa ${hourEnergy[i]['hour2']}');
 
-          _valueHour =_valueHour+ op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24;
-          tenMinuteTotalUsage=_valueHour.toStringAsFixed(2);
-          dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'], () => op1 + op2+op3+op4+op5+op6+op7+op8+op9+op10+op11+op12+op13+op14+op15+op16+op17+op18+op19+op20+op21+op22+op23+op24);
+          _valueHour = _valueHour +
+              op1 +
+              op2 +
+              op3 +
+              op4 +
+              op5 +
+              op6 +
+              op7 +
+              op8 +
+              op9 +
+              op10 +
+              op11 +
+              op12 +
+              op13 +
+              op14 +
+              op15 +
+              op16 +
+              op17 +
+              op18 +
+              op19 +
+              op20 +
+              op21 +
+              op22 +
+              op23 +
+              op24;
+          tenMinuteTotalUsage = _valueHour.toStringAsFixed(2);
+          dataMap.putIfAbsent(
+              tenMinuteEnergy[i]['d_id'],
+              () =>
+                  op1 +
+                  op2 +
+                  op3 +
+                  op4 +
+                  op5 +
+                  op6 +
+                  op7 +
+                  op8 +
+                  op9 +
+                  op10 +
+                  op11 +
+                  op12 +
+                  op13 +
+                  op14 +
+                  op15 +
+                  op16 +
+                  op17 +
+                  op18 +
+                  op19 +
+                  op20 +
+                  op21 +
+                  op22 +
+                  op23 +
+                  op24);
           print('_valueHour ${_valueHour}');
         });
-
       }
-
     }
   }
 
-  showDatePicker1(){
+  showDatePicker1() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2080)
-    ).then((date) => {
-      setState(() {
-        date1=date;
-        datefinal = date.toString();
-        cutDate = datefinal.substring(0, 10);
-
-      })
-    });
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2080))
+        .then((date) => {
+              setState(() {
+                date1 = date;
+                datefinal = date.toString();
+                cutDate = datefinal.substring(0, 10);
+              })
+            });
   }
 
-  showDatePicker2(){
+  showDatePicker2() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2080)
-    ).then((date) => {
-      setState(() {
-        date2=date;
-        datefinal = date.toString();
-        cutDate2 = datefinal.substring(0, 10);
-
-      })
-    });
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2080))
+        .then((date) => {
+              setState(() {
+                date2 = date;
+                datefinal = date.toString();
+                cutDate2 = datefinal.substring(0, 10);
+              })
+            });
   }
 
-
-
-
-  differenceCurrentDateToSelectedDate(){
-    currentDifference=DateTime.now().difference(date1).inDays;
+  differenceCurrentDateToSelectedDate() {
+    currentDifference = DateTime.now().difference(date1).inDays;
     print('currentDifference ${currentDifference}');
   }
 
-  void findDifferenceBetweenDates(){
+  void findDifferenceBetweenDates() {
     print(date1);
     print(date2);
     setState(() {
@@ -1313,16 +1773,14 @@ var tenMinuteTotalUsage;
     print('difference $difference');
   }
 
-
   Future getEnergyDay() async {
     var dId;
-    List data= List.empty(growable: true);
-    onlyDayEnergyList=List.empty(growable: true);
+    List data = List.empty(growable: true);
+    onlyDayEnergyList = List.empty(growable: true);
     String token = await getToken();
 
-
-    for(int i=0;i<allDeviceId.length;i++){
-      dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      dId = allDeviceId[i]['d_id'];
       final url = API + 'perdaysenergy?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -1334,15 +1792,13 @@ var tenMinuteTotalUsage;
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
         print('dayEnergy ${data[0]['d_id']}');
-
-
       }
     }
-    onlyDayEnergyList=List.from(data);
+    onlyDayEnergyList = List.from(data);
 
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
-    int i=0;
+    int i = 0;
 
     // while(i<onlyDayEnergyList.length){
     //
@@ -1355,17 +1811,16 @@ var tenMinuteTotalUsage;
     //
     // }
     print('sumData ${onlyDayEnergyList}');
-
   }
+
   Future getEnergyDayWeb() async {
     var dId;
-    List data= List.empty(growable: true);
-    onlyDayEnergyList=List.empty(growable: true);
+    List data = List.empty(growable: true);
+    onlyDayEnergyList = List.empty(growable: true);
     String token = await getTokenWeb();
 
-
-    for(int i=0;i<allDeviceId.length;i++){
-      dId=allDeviceId[i]['d_id'];
+    for (int i = 0; i < allDeviceId.length; i++) {
+      dId = allDeviceId[i]['d_id'];
       final url = API + 'perdaysenergy?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -1377,15 +1832,13 @@ var tenMinuteTotalUsage;
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
         print('dayEnergy ${data[0]['d_id']}');
-
-
       }
     }
-    onlyDayEnergyList=List.from(data);
+    onlyDayEnergyList = List.from(data);
 
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
-    int i=0;
+    int i = 0;
 
     // while(i<onlyDayEnergyList.length){
     //
@@ -1398,40 +1851,26 @@ var tenMinuteTotalUsage;
     //
     // }
     print('sumData ${onlyDayEnergyList}');
-
   }
 
-  sumYearData(){
-    int i=0;
+  sumYearData() {
+    int i = 0;
 
-    while(i<onlyDayEnergyList.length){
-      for(int j=1;j<=difference;j++){
+    while (i < onlyDayEnergyList.length) {
+      for (int j = 1; j <= difference; j++) {
         print(' asasadaya ${onlyDayEnergyList[i]['day${j}']}');
         setState(() {
-          total=total+onlyDayEnergyList[i]['day${j+currentDifference}'];
-          finalEnergyValue=total.toString();
+          total = total + onlyDayEnergyList[i]['day${j + currentDifference}'];
+          finalEnergyValue = total.toString();
         });
       }
-
 
       i++;
       print('sumDatatotal ${total}');
     }
-    total=0.0;
+    total = 0.0;
     print('sumDatatotal_final ${total}');
-
   }
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1451,8 +1890,8 @@ var tenMinuteTotalUsage;
                   ),
                   FutureBuilder<List<PlaceType>>(
                       future: placeValWeb,
-                      builder: (context,
-                          AsyncSnapshot<List<PlaceType>> snapshot) {
+                      builder:
+                          (context, AsyncSnapshot<List<PlaceType>> snapshot) {
                         if (snapshot.hasData) {
                           // print(snapshot.hasData);
                           // setState(() {
@@ -1460,8 +1899,7 @@ var tenMinuteTotalUsage;
                           // });
                           if (snapshot.data.length == 0) {
                             return Center(
-                                child:
-                                Text("No Devices on this place"));
+                                child: Text("No Devices on this place"));
                           }
                           return Container(
                             child: Padding(
@@ -1470,10 +1908,7 @@ var tenMinuteTotalUsage;
                                 // width: double.infinity,
                                 height: 50.0,
                                 child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
+                                  width: MediaQuery.of(context).size.width / 2,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       boxShadow: [
@@ -1481,8 +1916,8 @@ var tenMinuteTotalUsage;
                                             color: Colors.black,
                                             blurRadius: 10,
                                             offset: Offset(7, 7)
-                                          // offset: Offset(20,20)
-                                        )
+                                            // offset: Offset(20,20)
+                                            )
                                       ],
                                       border: Border.all(
                                         color: Colors.black,
@@ -1490,20 +1925,16 @@ var tenMinuteTotalUsage;
                                       )),
                                   child: DropdownButtonFormField<PlaceType>(
                                     decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
+                                      contentPadding: const EdgeInsets.all(15),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(10),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.black),
-                                        borderRadius:
-                                        BorderRadius.circular(50),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black),
+                                        borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
                                     dropdownColor: Colors.white70,
@@ -1516,22 +1947,18 @@ var tenMinuteTotalUsage;
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    items: snapshot.data
-                                        .map((selectedPlace) {
-                                      return DropdownMenuItem<
-                                          PlaceType>(
+                                    items: snapshot.data.map((selectedPlace) {
+                                      return DropdownMenuItem<PlaceType>(
                                         value: selectedPlace,
-                                        child:
-                                        Text(selectedPlace.pType),
+                                        child: Text(selectedPlace.pType),
                                       );
                                     }).toList(),
-                                    onChanged:
-                                        (PlaceType selectedPlace) {
+                                    onChanged: (PlaceType selectedPlace) {
                                       setState(() {
                                         fl = null;
                                         pt = selectedPlace;
-                                        floorValWeb = getfloorsWeb(
-                                            selectedPlace.pId);
+                                        floorValWeb =
+                                            getfloorsWeb(selectedPlace.pId);
                                       });
                                     },
                                   ),
@@ -1550,28 +1977,24 @@ var tenMinuteTotalUsage;
                   ),
                   FutureBuilder<List<FloorType>>(
                       future: floorValWeb,
-                      builder: (context,
-                          AsyncSnapshot<List<FloorType>> snapshot) {
+                      builder:
+                          (context, AsyncSnapshot<List<FloorType>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
                             return Center(
-                                child:
-                                Text("No Devices on this place"));
+                                child: Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
                               Container(
                                 child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
+                                  padding: const EdgeInsets.only(right: 58),
                                   child: SizedBox(
                                     // width: double.infinity,
                                     height: 50.0,
                                     child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
@@ -1579,40 +2002,34 @@ var tenMinuteTotalUsage;
                                                 color: Colors.black,
                                                 blurRadius: 10,
                                                 offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
+                                                // blurRadius: 30,
+                                                // // offset for Upward Effect
+                                                // offset: Offset(20,20)
+                                                )
                                           ],
                                           border: Border.all(
                                             color: Colors.black,
                                             width: 0.5,
                                           )),
-                                      child: DropdownButtonFormField<
-                                          FloorType>(
+                                      child: DropdownButtonFormField<FloorType>(
                                         decoration: InputDecoration(
                                           contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                              const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                10),
+                                                BorderRadius.circular(10),
                                           ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                50),
+                                                BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
+                                        icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
                                         hint: Text('Select Floor'),
                                         isExpanded: true,
@@ -1621,21 +2038,18 @@ var tenMinuteTotalUsage;
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        items: snapshot.data
-                                            .map((selectedFloor) {
-                                          return DropdownMenuItem<
-                                              FloorType>(
+                                        items:
+                                            snapshot.data.map((selectedFloor) {
+                                          return DropdownMenuItem<FloorType>(
                                             value: selectedFloor,
-                                            child: Text(
-                                                selectedFloor.fName),
+                                            child: Text(selectedFloor.fName),
                                           );
                                         }).toList(),
-                                        onChanged:
-                                            (FloorType selectedFloor) {
+                                        onChanged: (FloorType selectedFloor) {
                                           setState(() {
                                             fl = selectedFloor;
-                                            flatValWeb = getflatWeb(
-                                                selectedFloor.fId);
+                                            flatValWeb =
+                                                getflatWeb(selectedFloor.fId);
                                           });
                                         },
                                       ),
@@ -1661,28 +2075,23 @@ var tenMinuteTotalUsage;
                   ),
                   FutureBuilder<List<Flat>>(
                       future: flatValWeb,
-                      builder: (context,
-                          AsyncSnapshot<List<Flat>> snapshot) {
+                      builder: (context, AsyncSnapshot<List<Flat>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
                             return Center(
-                                child:
-                                Text("No Devices on this place"));
+                                child: Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
                               Container(
                                 child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
+                                  padding: const EdgeInsets.only(right: 58),
                                   child: SizedBox(
                                     // width: double.infinity,
                                     height: 50.0,
                                     child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
@@ -1690,40 +2099,34 @@ var tenMinuteTotalUsage;
                                                 color: Colors.black,
                                                 blurRadius: 10,
                                                 offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
+                                                // blurRadius: 30,
+                                                // // offset for Upward Effect
+                                                // offset: Offset(20,20)
+                                                )
                                           ],
                                           border: Border.all(
                                             color: Colors.black,
                                             width: 0.5,
                                           )),
-                                      child:
-                                      DropdownButtonFormField<Flat>(
+                                      child: DropdownButtonFormField<Flat>(
                                         decoration: InputDecoration(
                                           contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                              const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                10),
+                                                BorderRadius.circular(10),
                                           ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                50),
+                                                BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
+                                        icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
                                         hint: Text('Select Floor'),
                                         isExpanded: true,
@@ -1732,19 +2135,19 @@ var tenMinuteTotalUsage;
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        items: snapshot.data
-                                            .map((selectedFlat) {
+                                        items:
+                                            snapshot.data.map((selectedFlat) {
                                           return DropdownMenuItem<Flat>(
                                             value: selectedFlat,
-                                            child: Text(
-                                                selectedFlat.fltName),
+                                            child: Text(selectedFlat.fltName),
                                           );
                                         }).toList(),
                                         onChanged: (Flat selectedFlat) {
                                           setState(() {
                                             flt = selectedFlat;
-                                            selectedflat=selectedFlat.fltId;
-                                            roomValWeb=getroomsWeb(selectedflat);
+                                            selectedflat = selectedFlat.fltId;
+                                            roomValWeb =
+                                                getroomsWeb(selectedflat);
                                           });
                                         },
                                       ),
@@ -1754,7 +2157,6 @@ var tenMinuteTotalUsage;
                                 margin: new EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                               ),
-
                             ],
                           );
                         } else {
@@ -1768,28 +2170,24 @@ var tenMinuteTotalUsage;
                   ),
                   FutureBuilder<List<RoomType>>(
                       future: roomValWeb,
-                      builder: (context,
-                          AsyncSnapshot<List<RoomType>> snapshot) {
+                      builder:
+                          (context, AsyncSnapshot<List<RoomType>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
                             return Center(
-                                child:
-                                Text("No Devices on this place"));
+                                child: Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
                               Container(
                                 child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
+                                  padding: const EdgeInsets.only(right: 58),
                                   child: SizedBox(
                                     // width: double.infinity,
                                     height: 50.0,
                                     child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
@@ -1797,40 +2195,34 @@ var tenMinuteTotalUsage;
                                                 color: Colors.black,
                                                 blurRadius: 10,
                                                 offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
+                                                // blurRadius: 30,
+                                                // // offset for Upward Effect
+                                                // offset: Offset(20,20)
+                                                )
                                           ],
                                           border: Border.all(
                                             color: Colors.black,
                                             width: 0.5,
                                           )),
-                                      child:
-                                      DropdownButtonFormField<RoomType>(
+                                      child: DropdownButtonFormField<RoomType>(
                                         decoration: InputDecoration(
                                           contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                              const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                10),
+                                                BorderRadius.circular(10),
                                           ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                50),
+                                                BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
+                                        icon: Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
                                         hint: Text('Select Room'),
                                         isExpanded: true,
@@ -1839,23 +2231,22 @@ var tenMinuteTotalUsage;
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        items: snapshot.data
-                                            .map((selectedRoom) {
+                                        items:
+                                            snapshot.data.map((selectedRoom) {
                                           return DropdownMenuItem<RoomType>(
                                             value: selectedRoom,
-                                            child: Text(
-                                                selectedRoom.rName),
+                                            child: Text(selectedRoom.rName),
                                           );
                                         }).toList(),
-                                        onChanged: (RoomType selectedRoom)async{
+                                        onChanged:
+                                            (RoomType selectedRoom) async {
                                           setState(() {
                                             rm2 = selectedRoom;
-                                            selectedroom=selectedRoom.rId;
-
+                                            selectedroom = selectedRoom.rId;
                                           });
                                           await getDeviceWeb(selectedroom);
                                           setState(() {
-                                            completeTask=true;
+                                            completeTask = true;
                                           });
                                         },
                                       ),
@@ -1868,7 +2259,6 @@ var tenMinuteTotalUsage;
                               SizedBox(
                                 height: 10,
                               ),
-
                             ],
                           );
                         } else {
@@ -1877,682 +2267,621 @@ var tenMinuteTotalUsage;
                                   "Please select a place to proceed further"));
                         }
                       }),
-                  completeTask? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      DropdownButton(
-                          value: chooseValueMinute,
-                          onChanged: (index) async {
-                            setState(() {
-                              chooseValueMinute = index;
-                            });
-                            totalValue=0.0;
+                  completeTask
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            DropdownButton(
+                                value: chooseValueMinute,
+                                onChanged: (index) async {
+                                  setState(() {
+                                    chooseValueMinute = index;
+                                  });
+                                  totalValue = 0.0;
 
-                            await sumOfEnergyTenMinutes();
-                          },
-                          items: minute.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList()),
-                      Text(_valueMinute == null
-                          ? pleaseSelect
-                          : _valueMinute.toString()),
-                    ],
-                  ):Text("Wait"),
+                                  await sumOfEnergyTenMinutes();
+                                },
+                                items: minute.map((valueItem) {
+                                  return DropdownMenuItem(
+                                    value: valueItem,
+                                    child: Text(valueItem),
+                                  );
+                                }).toList()),
+                            Text(_valueMinute == null
+                                ? pleaseSelect
+                                : _valueMinute.toString()),
+                          ],
+                        )
+                      : Text("Wait"),
                   SizedBox(
                     height: 15,
                   ),
-                  completeTask? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      DropdownButton(
-                          value: chooseValueHour,
-                          onChanged: (index) async {
-                            setState(() {
-                              chooseValueHour = index;
-                            });
+                  completeTask
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            DropdownButton(
+                                value: chooseValueHour,
+                                onChanged: (index) async {
+                                  setState(() {
+                                    chooseValueHour = index;
+                                  });
 
-                            await sumOfEnergyHour();
-                          },
-                          items: hour.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList()),
-                      Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
-                    ],
-                  ):Text("Wait"),
-                  completeTask?Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async{
-                          await showDatePicker1();
-
-                        },
-                        child: Text(cutDate == null ? 'Select Date' : cutDate),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          showDatePicker2();
-                          // print12();
-                        },
-                        child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                      ),
-                    ],
-                  ):Text("Please Wait"),
-                  completeTask?Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async{
-
-                        },
-                        child: Text(finalEnergyValue.toString()),
-                      ),
-                      ElevatedButton(
-                          onPressed: ()async{
-                            await differenceCurrentDateToSelectedDate();
-                            await findDifferenceBetweenDates();
-                            await getEnergyDayWeb();
-                            await sumYearData();
-                          }, child: Text('Click'))
-                    ],
-
-                  ):Text("Please Wait"),
-                  completeTask?Container(
-                    child: Center(
-                      child: RaisedButton(
-                        color: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
-                          child: Text('Total Usage',style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
+                                  await sumOfEnergyHour();
+                                },
+                                items: hour.map((valueItem) {
+                                  return DropdownMenuItem(
+                                    value: valueItem,
+                                    child: Text(valueItem),
+                                  );
+                                }).toList()),
+                            Text(_valueHour == null
+                                ? pleaseSelect
+                                : _valueHour.toString()),
+                          ],
+                        )
+                      : Text("Wait"),
+                  completeTask
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () async {
+                                await showDatePicker1();
+                              },
+                              child: Text(
+                                  cutDate == null ? 'Select Date' : cutDate),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showDatePicker2();
+                                // print12();
+                              },
+                              child: Text(
+                                  cutDate2 == null ? 'Select Date' : cutDate2),
+                            ),
+                          ],
+                        )
+                      : Text("Please Wait"),
+                  completeTask
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () async {},
+                              child: Text(finalEnergyValue.toString()),
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  await differenceCurrentDateToSelectedDate();
+                                  await findDifferenceBetweenDates();
+                                  await getEnergyDayWeb();
+                                  await sumYearData();
+                                },
+                                child: Text('Click'))
+                          ],
+                        )
+                      : Text("Please Wait"),
+                  completeTask
+                      ? Container(
+                          child: Center(
+                            child: RaisedButton(
+                              color: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6.0)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 60),
+                                child: Text(
+                                  'Total Usage',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TotalUsage(
+                                              totalEnergy: tenMinuteTotalUsage
+                                                  .toString(),
+                                              chooseValueMinute:
+                                                  chooseValueMinute.toString(),
+                                              deviceId: dataMap,
+                                            )));
+                                // Navigator.of(context)
+                                //     .pushReplacementNamed(TotalUsage.routeName);
+                              },
+                            ),
                           ),
-                        ),
-                        onPressed:() async{
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                            totalEnergy: tenMinuteTotalUsage.toString(),
-                            chooseValueMinute:chooseValueMinute.toString(),
-                            deviceId: dataMap,
-                          )));
-                          // Navigator.of(context)
-                          //     .pushReplacementNamed(TotalUsage.routeName);
-                        },
-                      ),
-                    ),
-                  ):Container(),
+                        )
+                      : Container(),
                 ],
               ),
             ),
           ),
         );
-      }else{
+      } else {
         return Scaffold(
           appBar: AppBar(
             title: Text('Room Bill'),
           ),
           body: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<PlaceType>>(
-                      future: placeVal,
-                      builder: (context,
-                          AsyncSnapshot<List<PlaceType>> snapshot) {
-                        if (snapshot.hasData) {
-                          // print(snapshot.hasData);
-                          // setState(() {
-                          //   floorVal = getfloors(snapshot.data[0].p_id);
-                          // });
-                          if (snapshot.data.length == 0) {
-                            return Center(
-                                child:
-                                Text("No Devices on this place"));
-                          }
-                          return Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 58),
-                              child: SizedBox(
-                                // width: double.infinity,
-                                height: 50.0,
-                                child: Container(
-                                  width: MediaQuery.of(context)
-                                      .size
-                                      .width /
-                                      2,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 10,
-                                            offset: Offset(7, 7)
-                                          // offset: Offset(20,20)
-                                        )
-                                      ],
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      )),
-                                  child: DropdownButtonFormField<PlaceType>(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                      const EdgeInsets.all(15),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
-                                        borderRadius:
-                                        BorderRadius.circular(10),
-                                      ),
-                                      enabledBorder:
-                                      UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.black),
-                                        borderRadius:
-                                        BorderRadius.circular(50),
-                                      ),
-                                    ),
-                                    dropdownColor: Colors.white70,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 28,
-                                    hint: Text('Select Place'),
-                                    isExpanded: true,
-                                    value: pt,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    items: snapshot.data
-                                        .map((selectedPlace) {
-                                      return DropdownMenuItem<
-                                          PlaceType>(
-                                        value: selectedPlace,
-                                        child:
-                                        Text(selectedPlace.pType),
-                                      );
-                                    }).toList(),
-                                    onChanged:
-                                        (PlaceType selectedPlace) {
-                                      setState(() {
-                                        fl = null;
-                                        pt = selectedPlace;
-                                        floorVal = getfloors(
-                                            selectedPlace.pId);
-                                      });
-                                    },
-                                  ),
-                                ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 25,
+                ),
+                FutureBuilder<List<PlaceType>>(
+                    future: placeVal,
+                    builder:
+                        (context, AsyncSnapshot<List<PlaceType>> snapshot) {
+                      if (snapshot.hasData) {
+                        // print(snapshot.hasData);
+                        // setState(() {
+                        //   floorVal = getfloors(snapshot.data[0].p_id);
+                        // });
+                        if (snapshot.data.length == 0) {
+                          return Center(
+                              child: Text("No Devices on this place"));
+                        }
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 10,
+                                    offset: Offset(7, 7)
+                                    // offset: Offset(20,20)
+                                    )
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<PlaceType>(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(50),
                               ),
                             ),
-                            margin: new EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                          );
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<FloorType>>(
-                      future: floorVal,
-                      builder: (context,
-                          AsyncSnapshot<List<FloorType>> snapshot) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data.length == 0) {
-                            return Center(
-                                child:
-                                Text("No Devices on this place"));
-                          }
-                          return Column(
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
-                                  child: SizedBox(
-                                    // width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
-                                          ],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )),
-                                      child: DropdownButtonFormField<
-                                          FloorType>(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10),
-                                          ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                50),
-                                          ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Floor'),
-                                        isExpanded: true,
-                                        value: fl,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data
-                                            .map((selectedFloor) {
-                                          return DropdownMenuItem<
-                                              FloorType>(
-                                            value: selectedFloor,
-                                            child: Text(
-                                                selectedFloor.fName),
-                                          );
-                                        }).toList(),
-                                        onChanged:
-                                            (FloorType selectedFloor) {
-                                          setState(() {
-                                            fl = selectedFloor;
-                                            flatVal = getflat(
-                                                selectedFloor.fId);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          );
-                        } else {
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Place'),
+                            isExpanded: true,
+                            value: pt,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data.map((selectedPlace) {
+                              return DropdownMenuItem<PlaceType>(
+                                value: selectedPlace,
+                                child: Text(selectedPlace.pType),
+                              );
+                            }).toList(),
+                            onChanged: (PlaceType selectedPlace) {
+                              setState(() {
+                                fl = null;
+                                pt = selectedPlace;
+                                floorVal = getfloors(selectedPlace.pId);
+                              });
+                            },
+                          ),
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+                SizedBox(
+                  height: 10,
+                ),
+                FutureBuilder<List<FloorType>>(
+                    future: floorVal,
+                    builder:
+                        (context, AsyncSnapshot<List<FloorType>> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.length == 0) {
                           return Center(
-                              child: Text(
-                                  "Please select a place to proceed further"));
+                              child: Text("No Devices on this place"));
                         }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<Flat>>(
-                      future: flatVal,
-                      builder: (context,
-                          AsyncSnapshot<List<Flat>> snapshot) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data.length == 0) {
-                            return Center(
-                                child:
-                                Text("No Devices on this place"));
-                          }
-                          return Column(
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
-                                  child: SizedBox(
-                                    // width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
-                                          ],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )),
-                                      child:
-                                      DropdownButtonFormField<Flat>(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10),
-                                          ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                50),
-                                          ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Floor'),
-                                        isExpanded: true,
-                                        value: flt,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data
-                                            .map((selectedFlat) {
-                                          return DropdownMenuItem<Flat>(
-                                            value: selectedFlat,
-                                            child: Text(
-                                                selectedFlat.fltName),
-                                          );
-                                        }).toList(),
-                                        onChanged: (Flat selectedFlat) {
-                                          setState(() {
-                                            flt = selectedFlat;
-                                            selectedflat=selectedFlat.fltId;
-                                            roomVal=getrooms(selectedflat);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              ),
-
-                            ],
-                          );
-                        } else {
-                          return Center(
-                              child: Text(
-                                  "Please select a place to proceed further"));
-                        }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<RoomType>>(
-                      future: roomVal,
-                      builder: (context,
-                          AsyncSnapshot<List<RoomType>> snapshot) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data.length == 0) {
-                            return Center(
-                                child:
-                                Text("No Devices on this place"));
-                          }
-                          return Column(
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 58),
-                                  child: SizedBox(
-                                    // width: double.infinity,
-                                    height: 50.0,
-                                    child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          2,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 10,
-                                                offset: Offset(7, 7)
-                                              // blurRadius: 30,
-                                              // // offset for Upward Effect
-                                              // offset: Offset(20,20)
-                                            )
-                                          ],
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )),
-                                      child:
-                                      DropdownButtonFormField<RoomType>(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                          const EdgeInsets.all(15),
-                                          focusedBorder:
-                                          OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10),
-                                          ),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white),
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                50),
-                                          ),
-                                        ),
-                                        dropdownColor: Colors.white70,
-                                        icon:
-                                        Icon(Icons.arrow_drop_down),
-                                        iconSize: 28,
-                                        hint: Text('Select Room'),
-                                        isExpanded: true,
-                                        value: rm2,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        items: snapshot.data
-                                            .map((selectedRoom) {
-                                          return DropdownMenuItem<RoomType>(
-                                            value: selectedRoom,
-                                            child: Text(
-                                                selectedRoom.rName),
-                                          );
-                                        }).toList(),
-                                        onChanged: (RoomType selectedRoom)async{
-                                          setState(() {
-                                            rm2 = selectedRoom;
-                                            selectedroom=selectedRoom.rId;
-
-                                          });
-                                          await getDevice(selectedroom);
-                                          setState(() {
-                                            completeTask=true;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                margin: new EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-
-                            ],
-                          );
-                        } else {
-                          return Center(
-                              child: Text(
-                                  "Please select a place to proceed further"));
-                        }
-                      }),
-                  completeTask? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      DropdownButton(
-                          value: chooseValueMinute,
-                          onChanged: (index) async {
-                            setState(() {
-                              chooseValueMinute = index;
-                            });
-                            totalValue=0.0;
-
-                            await sumOfEnergyTenMinutes();
-                          },
-                          items: minute.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList()),
-                      Text(_valueMinute == null
-                          ? pleaseSelect
-                          : _valueMinute.toString()),
-                    ],
-                  ):Text("Wait"),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  completeTask? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      DropdownButton(
-                          value: chooseValueHour,
-                          onChanged: (index) async {
-                            setState(() {
-                              chooseValueHour = index;
-                            });
-
-                            await sumOfEnergyHour();
-                          },
-                          items: hour.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList()),
-                      Text(_valueHour == null ? pleaseSelect : _valueHour.toString()),
-                    ],
-                  ):Text("Wait"),
-                  completeTask?Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async{
-                          await showDatePicker1();
-
-                        },
-                        child: Text(cutDate == null ? 'Select Date' : cutDate),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          showDatePicker2();
-                          // print12();
-                        },
-                        child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
-                      ),
-                    ],
-                  ):Text("Please Wait"),
-                  completeTask?Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async{
-
-                        },
-                        child: Text(finalEnergyValue.toString()),
-                      ),
-                      ElevatedButton(
-                          onPressed: ()async{
-                            await differenceCurrentDateToSelectedDate();
-                            await findDifferenceBetweenDates();
-                            await getEnergyDay();
-                            await sumYearData();
-                          }, child: Text('Click'))
-                    ],
-
-                  ):Text("Please Wait"),
-                  completeTask?Container(
-                    child: Center(
-                      child: RaisedButton(
-                        color: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 60),
-                          child: Text('Total Usage',style: TextStyle(
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
                               color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 10,
+                                    offset: Offset(7, 7)
+                                    // blurRadius: 30,
+                                    // // offset for Upward Effect
+                                    // offset: Offset(20,20)
+                                    )
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<FloorType>(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Floor'),
+                            isExpanded: true,
+                            value: fl,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data.map((selectedFloor) {
+                              return DropdownMenuItem<FloorType>(
+                                value: selectedFloor,
+                                child: Text(selectedFloor.fName),
+                              );
+                            }).toList(),
+                            onChanged: (FloorType selectedFloor) {
+                              setState(() {
+                                fl = selectedFloor;
+                                flatVal = getflat(selectedFloor.fId);
+                              });
+                            },
+                          ),
+                        );
+                      } else {
+                        return Center(
+                            child: Text(
+                                "Please select a place to proceed further"));
+                      }
+                    }),
+                SizedBox(
+                  height: 10,
+                ),
+                FutureBuilder<List<Flat>>(
+                    future: flatVal,
+                    builder: (context, AsyncSnapshot<List<Flat>> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.length == 0) {
+                          return Center(
+                              child: Text("No Devices on this place"));
+                        }
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 10,
+                                    offset: Offset(7, 7)
+                                    // blurRadius: 30,
+                                    // // offset for Upward Effect
+                                    // offset: Offset(20,20)
+                                    )
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<Flat>(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Floor'),
+                            isExpanded: true,
+                            value: flt,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data.map((selectedFlat) {
+                              return DropdownMenuItem<Flat>(
+                                value: selectedFlat,
+                                child: Text(selectedFlat.fltName),
+                              );
+                            }).toList(),
+                            onChanged: (Flat selectedFlat) {
+                              setState(() {
+                                flt = selectedFlat;
+                                selectedflat = selectedFlat.fltId;
+                                roomVal = getrooms(selectedflat);
+                              });
+                            },
+                          ),
+                        );
+                      } else {
+                        return Center(
+                            child: Text(
+                                "Please select a place to proceed further"));
+                      }
+                    }),
+                SizedBox(
+                  height: 10,
+                ),
+                FutureBuilder<List<RoomType>>(
+                    future: roomVal,
+                    builder: (context, AsyncSnapshot<List<RoomType>> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.length == 0) {
+                          return Center(
+                              child: Text("No Devices on this place"));
+                        }
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 10,
+                                    offset: Offset(7, 7)
+                                    // blurRadius: 30,
+                                    // // offset for Upward Effect
+                                    // offset: Offset(20,20)
+                                    )
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<RoomType>(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Room'),
+                            isExpanded: true,
+                            value: rm2,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data.map((selectedRoom) {
+                              return DropdownMenuItem<RoomType>(
+                                value: selectedRoom,
+                                child: Text(selectedRoom.rName),
+                              );
+                            }).toList(),
+                            onChanged: (RoomType selectedRoom) async {
+                              setState(() {
+                                rm2 = selectedRoom;
+                                selectedroom = selectedRoom.rId;
+                              });
+                              await getDevice(selectedroom);
+                              setState(() {
+                                completeTask = true;
+                              });
+                            },
+                          ),
+                        );
+                      } else {
+                        return Center(
+                            child: Text(
+                                "Please select a place to proceed further"));
+                      }
+                    }),
+                completeTask
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueMinute,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueMinute = index;
+                                });
+                                totalValue = 0.0;
+
+                                await sumOfEnergyTenMinutes();
+                              },
+                              items: minute.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(_valueMinute == null
+                              ? pleaseSelect
+                              : _valueMinute.toString()),
+                        ],
+                      )
+                    : Text("Wait"),
+                SizedBox(
+                  height: 10,
+                ),
+                completeTask
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton(
+                              value: chooseValueHour,
+                              onChanged: (index) async {
+                                setState(() {
+                                  chooseValueHour = index;
+                                });
+
+                                await sumOfEnergyHour();
+                              },
+                              items: hour.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList()),
+                          Text(_valueHour == null
+                              ? pleaseSelect
+                              : _valueHour.toString()),
+                        ],
+                      )
+                    : Text("Wait"),
+                completeTask
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {
+                              await showDatePicker1();
+                            },
+                            child:
+                                Text(cutDate == null ? 'Select Date' : cutDate),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDatePicker2();
+                              // print12();
+                            },
+                            child: Text(
+                                cutDate2 == null ? 'Select Date' : cutDate2),
+                          ),
+                        ],
+                      )
+                    : Text("Please Wait"),
+                completeTask
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () async {},
+                            child: Text(finalEnergyValue.toString()),
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                await differenceCurrentDateToSelectedDate();
+                                await findDifferenceBetweenDates();
+                                await getEnergyDay();
+                                await sumYearData();
+                              },
+                              child: Text('Click'))
+                        ],
+                      )
+                    : Text("Please Wait"),
+                SizedBox(
+                  height: 10,
+                ),
+                completeTask
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text(tenMinuteTotalUsage == null
+                              ? varFinalTotalValue
+                              : tenMinuteTotalUsage),
+
+                          // Text('X'),
+                          SizedBox(
+                            height: 28,
+                            width: 75,
+                            child: Center(
+                              child: TextField(
+                                controller: billTotalController,
+                                textAlign: TextAlign.center,
+                                textDirection:TextDirection.rtl,
+                                decoration:  InputDecoration(
+                                    // border: OutlineInputBorder(),
+                                    hintText: 'Enter a rs per unit'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 10,
+                ),
+                completeTask
+                    ? Container(
+                        child: Center(
+                          child: RaisedButton(
+                            color: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 60),
+                              child: Text(
+                                'Total Usage',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            onPressed: () async {
+                              await totalAmount(billTotalController.text);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TotalUsage(
+                                            totalEnergy:
+                                                tenMinuteTotalUsage == null
+                                                    ? varFinalTotalValue
+                                                    : tenMinuteTotalUsage,
+                                            chooseValueMinute:
+                                                chooseValueMinute == null
+                                                    ? "60 Minute"
+                                                    : chooseValueMinute,
+                                            deviceId: dataMap,
+                                        totalAmountInRs: totalAmountInRs,
+                                          )));
+                            },
                           ),
                         ),
-                        onPressed:() async{
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>TotalUsage(
-                            totalEnergy: tenMinuteTotalUsage==null?varFinalTotalValue:tenMinuteTotalUsage,
-                            chooseValueMinute:chooseValueMinute==null?"60 Minute":chooseValueMinute,
-                            deviceId: dataMap,
-                          )));
-                          // Navigator.of(context)
-                          //     .pushReplacementNamed(TotalUsage.routeName);
-                        },
-                      ),
-                    ),
-                  ):Container(),
-                ],
-              ),
+                      )
+                    : Container(),
+              ],
             ),
           ),
         );
       }
-        }
-        );
+    });
+  }
+  double totalAmountInRs=0.0;
+  totalAmount(String rsValue){
+    int rsConversion=int.parse(rsValue);
+    double conversion=double.parse(varFinalTotalValue);
+    totalAmountInRs=(conversion/1000)*rsConversion;
   }
 }

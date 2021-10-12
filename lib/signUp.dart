@@ -80,7 +80,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   checkDetails(SignupData data) async {
     final url = API+'regflu';
     var map = new Map<String, dynamic>();
-    map['username'] = data.email;
+    map['username'] = data.username;
     map['password1'] = data.password;
     map['password2'] = data.password;
     map['first_name'] = data.fname;
@@ -374,6 +374,42 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                             SizedBox(
                               height: 15,
                             ),
+
+                            Container(
+                              width: 300,
+                              child: TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                onEditingComplete: () => node.nextFocus(),
+                                // autovalidateMode: AutovalidateMode.values[2],
+                                // validator: validateEmail,
+                                onSaved: (String value) {
+                                  // ignore: unnecessary_statements
+                                  this.data.username = value;
+                                },
+                                // controller: emailController,
+                                style:
+                                TextStyle(fontSize: 18, color: Colors.black54),
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Enter your Username',
+                                  contentPadding: const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
                             Container(
                               width: 300,
                               child: TextFormField(
@@ -645,6 +681,38 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                           filled: true,
                           fillColor: Colors.white,
                           hintText: 'Enter your Email',
+                          contentPadding: const EdgeInsets.all(15),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => node.nextFocus(),
+                        // autovalidateMode: AutovalidateMode.values[2],
+                        // validator: validateEmail,
+                        onSaved: (String value) {
+                          // ignore: unnecessary_statements
+                          this.data.username = value;
+                        },
+                        style:
+                        TextStyle(fontSize: 18, color: Colors.black54),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Enter your Username',
                           contentPadding: const EdgeInsets.all(15),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),

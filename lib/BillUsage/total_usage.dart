@@ -12,11 +12,13 @@ import 'bill_estimation.dart';
 class TotalUsage extends StatefulWidget {
   var totalEnergy;
   var chooseValueMinute;
+  double totalAmountInRs;
   Map<String ,double> deviceId;
   static const routeName = '/total-usage';
   TotalUsage({
     this.deviceId,
     this.totalEnergy,
+    this.totalAmountInRs,
     this.chooseValueMinute,
 });
   @override
@@ -502,7 +504,7 @@ class _TotalUsageState extends State<TotalUsage> {
                                     '${widget.totalEnergy} Kwh'),
                                 createCard('⏰  Total Time : ', widget.chooseValueMinute),
                                 createCard('💰 Total Amount : ',
-                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                                    '${widget.totalAmountInRs.toStringAsFixed(3)} ₹'),
                                 // createCard('⏰  Based On : ', widget.chooseValueMinute),
                                 // createCard('⏰  Based On : ', widget.totalEnergy),
                               ],

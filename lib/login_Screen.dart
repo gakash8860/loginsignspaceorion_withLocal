@@ -27,7 +27,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginData {
-  String email = '';
+  String username = '';
   String password = '';
 }
 
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     formKey.currentState.save();
     print('clear');
-    print(data.email);
+    print(data.username);
     checkDetailsWeb().then((value) {
       print(data.password);
 
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final url = API+'api-token-auth/';
     print(getToken());
     var map = new Map<String, dynamic>();
-    map['username'] = data.email;
+    map['username'] = data.username;
     map['password'] = data.password;
 
     http.Response response = await  http.post(url, body: map);
@@ -526,9 +526,9 @@ List userPlace;
                                     onEditingComplete: () => node.nextFocus(),
                                     autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                    validator: validateEmail,
+                                    // validator: validateEmail,
                                     onSaved: (String value) {
-                                      this.data.email = value;
+                                      this.data.username = value;
                                     },
                                     style: TextStyle(
                                         fontSize: 18, color: Colors.black54),

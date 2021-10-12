@@ -5246,54 +5246,54 @@ String piname;
                               ),
                             ),
 
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate((context,
-                                  index) {
-                                if (index < widget.dv.length) {
-                                          if(widget.dv.length==null){
-                                        return CircularProgressIndicator();
-                                          }
-                                  return Container(
-                                    child: Column(
-                                      children: [
-                                        deviceContainer2(
-                                            widget.dv[index].dId, index),
-                                        Container(
-                                          //
-                                          // color: Colors.green,
-                                            height: 35,
-                                            child: GestureDetector(
-                                              child: RichText(
-                                                text: TextSpan(children: [
-                                                  TextSpan(
-                                                      text: widget.dv[index].dId,
-                                                      style: TextStyle(
-                                                          fontFamily: fonttest==null?changeFont:fonttest,
-                                                          fontSize: 15,
-                                                        color: change_toDark ? Colors.white : Colors.black,)),
-                                                  TextSpan(text: "   "),
-                                                  WidgetSpan(
-                                                      child: Icon(
-                                                      Icons.settings,
-                                                      color: change_toDark ? Colors.white : Colors.black,
-                                                        size: 18,
-                                                      ))
-                                                ]),
-                                              ),
-                                              onTap: () {
-                                                _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
-                                                print('on tap');
-                                              },
-                                            )),
-                                      ],
-                                    ),
-                                    // child: Text(dv[index].dId),
-                                  );
-                                } else {
-                                  return null;
-                                }
-                              }),
-                            )
+                            // SliverList(
+                            //   delegate: SliverChildBuilderDelegate((context,
+                            //       index) {
+                            //     if (index < widget.dv.length) {
+                            //               if(widget.dv.length==null){
+                            //             return CircularProgressIndicator();
+                            //               }
+                            //       return Container(
+                            //         child: Column(
+                            //           children: [
+                            //             deviceContainer2(
+                            //                 widget.dv[index].dId, index),
+                            //             Container(
+                            //               //
+                            //               // color: Colors.green,
+                            //                 height: 35,
+                            //                 child: GestureDetector(
+                            //                   child: RichText(
+                            //                     text: TextSpan(children: [
+                            //                       TextSpan(
+                            //                           text: widget.dv[index].dId,
+                            //                           style: TextStyle(
+                            //                               fontFamily: fonttest==null?changeFont:fonttest,
+                            //                               fontSize: 15,
+                            //                             color: change_toDark ? Colors.white : Colors.black,)),
+                            //                       TextSpan(text: "   "),
+                            //                       WidgetSpan(
+                            //                           child: Icon(
+                            //                           Icons.settings,
+                            //                           color: change_toDark ? Colors.white : Colors.black,
+                            //                             size: 18,
+                            //                           ))
+                            //                     ]),
+                            //                   ),
+                            //                   onTap: () {
+                            //                     _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
+                            //                     print('on tap');
+                            //                   },
+                            //                 )),
+                            //           ],
+                            //         ),
+                            //         // child: Text(dv[index].dId),
+                            //       );
+                            //     } else {
+                            //       return null;
+                            //     }
+                            //   }),
+                            // )
                           ]),
                     ),
                   ),

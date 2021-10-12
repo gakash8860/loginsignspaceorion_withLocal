@@ -95,7 +95,7 @@ class _LoginSmallScreenState extends State<LoginSmallScreen> {
                                       AutovalidateMode.onUserInteraction,
                                       // validator: validateEmail,
                                       onSaved: (String value) {
-                                        this.data.email = value;
+                                        this.data.username = value;
                                       },
                                       style: TextStyle(
                                           fontSize: 18, color: Colors.black54),
@@ -291,7 +291,7 @@ class _LoginSmallScreenState extends State<LoginSmallScreen> {
                                   AutovalidateMode.onUserInteraction,
                                   // validator: validateEmail,
                                   onSaved: (String value) {
-                                    this.data.email = value;
+                                    this.data.username = value;
                                   },
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.black54),
