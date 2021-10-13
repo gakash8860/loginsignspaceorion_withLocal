@@ -410,8 +410,6 @@ class _RoomBillState extends State<RoomBill> {
       length = tenMinuteEnergy.length;
     });
     if (chooseValueMinute == '10 minute') {
-      int j = 0;
-
       for (int i = 0; i < tenMinuteEnergy.length; i++) {
         print('tenMinuteRoomdata214 ${tenMinuteEnergy[i]}');
         setState(() {
@@ -426,7 +424,7 @@ class _RoomBillState extends State<RoomBill> {
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
               () => double.parse(tenMinuteEnergy[i]['enrgy10']));
         });
-        j++;
+
       }
       print('totalans ${dataMap}');
     }
@@ -2817,6 +2815,7 @@ class _RoomBillState extends State<RoomBill> {
                             child: Center(
                               child: TextField(
                                 controller: billTotalController,
+                                keyboardType:TextInputType.numberWithOptions(decimal: true) ,
                                 textAlign: TextAlign.center,
                                 textDirection:TextDirection.rtl,
                                 decoration:  InputDecoration(
@@ -2880,7 +2879,7 @@ class _RoomBillState extends State<RoomBill> {
   }
   double totalAmountInRs=0.0;
   totalAmount(String rsValue){
-    int rsConversion=int.parse(rsValue);
+    double rsConversion=double.parse(rsValue);
     double conversion=double.parse(varFinalTotalValue);
     totalAmountInRs=(conversion/1000)*rsConversion;
   }

@@ -79,7 +79,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
 
   checkDetails(SignupData data) async {
     final url = API+'regflu';
-    var map = new Map<String, dynamic>();
+    var map =  Map<String, dynamic>();
     map['username'] = data.username;
     map['password1'] = data.password;
     map['password2'] = data.password;

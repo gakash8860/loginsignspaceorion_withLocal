@@ -358,7 +358,7 @@ class _HomeTestState extends State<HomeTest>
     loadImageFromPreferences();
     timer = Timer.periodic(Duration(seconds: 10), (timer) {
       print('10seconds');
-      fetchPlace();
+      // fetchPlace();
       // getAllFloor();
     });
 
