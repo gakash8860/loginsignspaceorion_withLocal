@@ -16,6 +16,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'SQLITE_database/testinghome2.dart';
+
 void main()=>runApp(
     MaterialApp(
       home: LoginScreen(),));
@@ -53,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
     print(data);
     checkDetails(data).then((value) {
       print(data);
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>DropDown1()));
+
+      // Navigator.push(context, MaterialPageRoute(builder: (context)=>DropDown1()));
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => DropDown1()));
       // Navigator.push(
@@ -125,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final all = await storage.readAll();
 
       print(all);
-
+      await checkUserPlace();
 
     }
 
@@ -172,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('token $tokenAuth');
       print('token $tokenAuth');
       setToken(token12);
-      await checkUserPlace(token12);
+      await checkUserPlaceWeb(token12);
       // Navigator.of(context).pushNamed('/dropDown1');
       // Navigator.of(context).pushNamed(DropDown1.routeName);
 
@@ -181,7 +184,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 List userPlace;
-  Future checkUserPlace(String token)async{
+  PlaceType pt;
+  FloorType fl;
+  Flat flat;
+  List<RoomType> rm=[];
+
+  Future checkUserPlaceWeb(String token)async{
     final url = API+'addyourplace/';
 
     final response = await http.get(url, headers: {
@@ -195,9 +203,239 @@ List userPlace;
         if(userPlace.isEmpty || userPlace.length==null){
           Navigator.of(context).pushNamed(DropDown1.routeName);
         }else{
-          Navigator.of(context).pushNamed(DropDown.routeName);
+          List<dynamic> data = jsonDecode(response.body);
+          var places = PlaceType(
+              pId: data[0]['p_id'],
+              pType: data[0]['p_type'],
+              user: data[0]['user']
+          );
+          setState(() {
+            pt = places;
+
+          });
+          await getFloorsWeb(pt.pId);
+          // Navigator.of(context).pushNamed(DropDown.routeName);
         }
 
+    }
+  }
+
+  Future checkUserPlace()async{
+    String token = await getToken();
+    final url = API+'addyourplace/';
+
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if(response.statusCode==200){
+      userPlace=jsonDecode(response.body);
+      print('userplace $userPlace');
+      if(userPlace.isEmpty || userPlace.length==null){
+        Navigator.of(context).pushNamed(DropDown1.routeName);
+      }else{
+        List<dynamic> data = jsonDecode(response.body);
+          var places = PlaceType(
+              pId: data[0]['p_id'],
+              pType: data[0]['p_type'],
+              user: data[0]['user']
+          );
+          setState(() {
+            pt = places;
+
+          });
+          await getFloors(pt.pId);
+
+        // Navigator.of(context).pushNamed(DropDown.routeName);
+      }
+
+    }
+  }
+  var tokenWeb;
+  Future getTokenWeb() async {
+    final pref = await SharedPreferences.getInstance();
+    tokenWeb = pref.getString('tokenWeb');
+    return tokenWeb;
+  }
+  Future getFloors(String pId) async {
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      var floor = FloorType(
+        fName: data[0]['f_name'],
+        fId: data[0]['f_id'],
+        pId: data[0]['f_id'],
+        user: data[0]['user']
+      );
+      setState(() {
+        fl = floor;
+      });
+      await  getFlat(fl.fId);
+
+    }
+  }
+
+  Future getFloorsWeb(String pId) async {
+    final url = API + 'addyourfloor/?p_id=' + pId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      var floor = FloorType(
+        fName: data[0]['f_name'],
+        fId: data[0]['f_id'],
+        pId: data[0]['f_id'],
+        user: data[0]['user']
+      );
+      setState(() {
+        fl = floor;
+      });
+      await  getFlatWeb(fl.fId);
+
+    }
+  }
+
+  Future getFlat(String fId) async {
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+        var flatData = Flat(
+          fId: data[0]['f_id'],
+          fltName: data[0]['flt_name'],
+          fltId: data[0]['flt_id'],
+          user: data[0]['user']
+        );
+
+      setState(() {
+        flat=flatData;
+
+      });
+      await getRooms(flat.fltId) ;
+    }
+  }
+  Future getFlatWeb(String fId) async {
+    final url = API + 'addyourflat/?f_id=' + fId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+        var flatData = Flat(
+          fId: data[0]['f_id'],
+          fltName: data[0]['flt_name'],
+          fltId: data[0]['flt_id'],
+          user: data[0]['user']
+        );
+
+      setState(() {
+        flat=flatData;
+
+      });
+      await getRoomsWeb(flat.fltId) ;
+    }
+  }
+
+  Future getRooms(String flt_id) async {
+    final url = API + 'addroom/?flt_id=' + flt_id;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        rm = List.generate(data.length, (index) => RoomType(
+          rId: data[index]['r_id'].toString(),
+          fltId: data[index]['flt_id'].toString(),
+          rName:data[index]['r_name'].toString(),
+          user: data[index]['user'],
+        ));
+      });
+     await getDevices(rm[0].rId);
+    }
+  }
+  Future getRoomsWeb(String flt_id) async {
+    final url = API + 'addroom/?flt_id=' + flt_id;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        rm = List.generate(data.length, (index) => RoomType(
+          rId: data[index]['r_id'].toString(),
+          fltId: data[index]['flt_id'].toString(),
+          rName:data[index]['r_name'].toString(),
+          user: data[index]['user'],
+        ));
+      });
+     await getDevicesWeb(rm[0].rId);
+    }
+  }
+
+  Future getDevices(String rId) async {
+    final url = API+'addyourdevice/?r_id='+rId;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        dv = List.generate(data.length, (index) => Device(
+          rId: data[index]['r_id'],
+          dId: data[index]['d_id'],
+          user: data[index]['user'],
+        ));
+      });
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeTest(pt: pt,fl: fl,flat: flat,rm: rm,dv: dv,)));
+    }
+  }
+  Future getDevicesWeb(String rId) async {
+    final url = API+'addyourdevice/?r_id='+rId;
+    String token = await getTokenWeb();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        dv = List.generate(data.length, (index) => Device(
+          rId: data[index]['r_id'],
+          dId: data[index]['d_id'],
+          user: data[index]['user'],
+        ));
+      });
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeTest(pt: pt,fl: fl,flat: flat,rm: rm,dv: dv,)));
     }
   }
 

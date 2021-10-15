@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/login_Screen.dart';
 import 'package:loginsignspaceorion/main.dart';
-import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:string_validator/string_validator.dart';
 
 
@@ -17,10 +16,9 @@ class SignupData {
   String email = '';
   String password = '';
   String password2 = '';
-  String fname = '';
-  String lname = '';
+  String fName = '';
+  String lName = '';
   String pno = '';
-  String valuedata;
   String username='';
 
   checkPassword(){
@@ -83,8 +81,8 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
     map['username'] = data.username;
     map['password1'] = data.password;
     map['password2'] = data.password;
-    map['first_name'] = data.fname;
-    map['last_name'] = data.lname;
+    map['first_name'] = data.fName;
+    map['last_name'] = data.lName;
     map['email'] = data.email;
     map['phone_no'] = data.pno;
     response = await http.post(url, body: map,
@@ -279,7 +277,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                   AutovalidateMode.onUserInteraction,
                                   validator: nameValid,
                                   onSaved: (String value) {
-                                    this.data.fname = value;
+                                    this.data.fName = value;
                                   },
                                   // controller: firstNameController,
                                   style:
@@ -313,7 +311,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                                 AutovalidateMode.onUserInteraction,
                                 validator: nameValid,
                                 onSaved: (String value) {
-                                  this.data.lname = value;
+                                  this.data.lName = value;
                                 },
                                 // controller: lastNameController,
                                 style:
@@ -610,7 +608,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                             AutovalidateMode.onUserInteraction,
                         validator: nameValid,
                         onSaved: (String value) {
-                          this.data.fname = value;
+                          this.data.fName = value;
                         },
                         style:
                             TextStyle(fontSize: 18, color: Colors.black54),
@@ -640,7 +638,7 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
                             AutovalidateMode.onUserInteraction,
                         validator: nameValid,
                         onSaved: (String value) {
-                          this.data.lname = value;
+                          this.data.lName = value;
                         },
                         style:
                             TextStyle(fontSize: 18, color: Colors.black54),

@@ -341,7 +341,7 @@ class NewDbProvider {
     print('delete');
     await db.delete(_deviceTable);
   }
-  Future<void> deleteRoomModel()async{
+  Future deleteRoomModel()async{
     final db= await database;
     print('delete');
     await db.delete(_roomTableName);
@@ -555,6 +555,27 @@ class NewDbProvider {
     int result = await db.rawDelete('DELETE FROM $_devicePinStatus WHERE $pin1Status,$pin2Status,$pin3Status,$pin4Status,$pin5Status,$pin6Status,$pin7Status,$pin8Status,$pin9Status,$pin10Status,$pin11Status,$pin12Status,$pin13Status,$pin14Status,$pin15Status,$pin16Status,$pin17Status,$pin18Status,$pin19Status,$pin20Status');
     print('delete $result');
     return result;
+  }
+   Future<void> cleanDatabase() async {
+    try{
+      var db= await instance.database;
+      await db.transaction((txn) async {
+        var batch = txn.batch();
+        batch.delete(_userDetails);
+        batch.delete(_placeTableName);
+        batch.delete(_floorTableName);
+        batch.delete(_roomTableName);
+        batch.delete(_deviceTable);
+        batch.delete(_devicePinNames);
+        batch.delete(_sensorTable);
+        batch.delete(_subUserTable);
+        batch.delete(_devicePinStatus);
+       var deleteDataUser= await batch.commit();
+       print('deletedataUser $deleteDataUser');
+      });
+    } catch(error){
+      throw Exception('DbBase.cleanDatabase: ' + error.toString());
+    }
   }
 
 }

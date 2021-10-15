@@ -195,9 +195,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
   allAwaitFunction()async{
     getUid();
-    getImage();
+
     getUserDataOfflineSql();
-    loadImageFromPreferences();
+   await loadImageFromPreferences();
     fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
       .then((value) => floorQueryFunc()).then((value) => getAllFlat().then((value) => flatQueryFunc())).then((value) => getAllRoom())
       .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
@@ -208,7 +208,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     await floorQueryFunc();
     await flatQueryFunc();
     await roomQueryFunc();
-
+    getImage();
     await deviceQueryFunc();
     await devicePinSensorQueryFunc();
     await devicePinStatusQueryFunc();
@@ -569,6 +569,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
       }
       var arr = jsonDecode(response.body);
+      print('arrsensorData  ${arr}');
       List listOfPinSensor=[arr,];
       print('sensorData  ${listOfPinSensor}');
       for (int i = 0; i < listOfPinSensor.length; i++) {
@@ -688,9 +689,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-      Utility.saveImage(imageData['file']
-        // Utility.base64String(_image.readAsBytesSync()),
-      );
+      Utility.saveImage(imageData['file']).then((value) => loadImageFromPreferences());
       // setImage=Utility.imageFrom64BaseString(imageData['file']);
       // setImage=convertImage;
 

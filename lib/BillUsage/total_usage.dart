@@ -13,9 +13,11 @@ class TotalUsage extends StatefulWidget {
   var totalEnergy;
   var chooseValueMinute;
   double totalAmountInRs=0.0;
+  var totalDays=0;
   Map<String ,double> deviceId;
   static const routeName = '/total-usage';
   TotalUsage({
+    this.totalDays,
     this.deviceId,
     this.totalEnergy,
     this.totalAmountInRs,
@@ -224,12 +226,14 @@ class _TotalUsageState extends State<TotalUsage> {
                             Column(
                               // crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                createCard('📆 Total Days : ', '$_totalDays days'),
+                                createCard('📆 Total Days : ', '${widget.totalDays==null?"No Data":widget.totalDays} days'),
                                 createCard('📊 Total Power : ',
-                                    '${_totalPower.toStringAsFixed(2)} Kwh'),
-                                createCard('⏰  Total Time : ', _timeString),
-                                createCard('💰 Total Amount :  ',
-                                    '${_totalAmount.toStringAsFixed(3)} ₹'),
+                                    '${widget.totalEnergy} Kwh'),
+                                createCard('⏰  Total Time : ', widget.chooseValueMinute),
+                                createCard('💰 Total Amount : ',
+                                    '${widget.totalAmountInRs.toStringAsFixed(2)} ₹'),
+                                // createCard('⏰  Based On : ', widget.chooseValueMinute),
+                                // createCard('⏰  Based On : ', widget.totalEnergy),
                               ],
                             ),
                             // SizedBox(

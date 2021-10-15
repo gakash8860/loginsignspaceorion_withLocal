@@ -75,6 +75,7 @@ class _DesktopHomeState extends State<DesktopHome> {
   // var API='https://genorion1.herokuapp.com/';
   Future deviceSensorVal;
   int index=0;
+  int DeleteRoomIndex=0;
   TabController tabC;
   bool val1 = true;
   bool val2 = false;
@@ -1983,7 +1984,7 @@ var textSelected;
       'Accept': 'application/json',
       'Authorization': 'Token $tokenWeb',
     });
-    if (response.statusCode > 0) {
+    if (response.statusCode == 200) {
       print(response.statusCode);
       deviceData = jsonDecode(response.body);
      widget. dv = deviceData.map((data) => Device.fromJson(data)).toList();
@@ -2037,7 +2038,7 @@ var flatResponse;
     print('floorwidgetid ${widget.flt.fltId}');
     print('floorwidgetid ${getUidVariable2}');
     final url = API+'addroom/';
-    await getTokenWeb();
+    String tokenWeb =  await getTokenWeb();
     var postData = {
       "user": getUidVariable2,
       "r_name": data,
@@ -2063,7 +2064,7 @@ var flatResponse;
           content: Text('Room Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        await getrooms(widget.flt.fltId);
+      widget.rm =  await getrooms(widget.flt.fltId);
       }
       print(' RoomTabs--> $tabbarState');
 
@@ -2258,104 +2259,82 @@ Future flatValWeb;
         builder: (context) {
           return AlertDialog(
             title: Text('Change Flat'),
-            content: Container(
-              height: 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                       child: FutureBuilder<List<Flat>>(
-                            future: flatValWeb,
-                            builder:
-                                (context, AsyncSnapshot<List<Flat>> snapshot) {
-                              if (snapshot.hasData) {
-                                if (snapshot.data.length == 0) {
-                                  return Center(
-                                      child: Text("No Devices on this place"));
-                                }
-                                return Column(
-                                  children: [
-                                    Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(41.0),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          height: 50.0,
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width*2,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                boxShadow: [BoxShadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 30,
-                                                    // offset for Upward Effect
-                                                    offset: Offset(20,20)
-                                                )],
-                                                border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 0.5,
-                                                )
-                                            ),
-                                            child: DropdownButtonFormField<Flat>(
-                                              decoration:InputDecoration(
-                                                contentPadding: const EdgeInsets.all(15),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.white),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              ),
-                                              dropdownColor: Colors.white70,
-                                              icon: Icon(Icons.arrow_drop_down),
-                                              iconSize: 28,
-                                              hint: Text('Select Floor'),
-                                              isExpanded: true,
-                                              value: flt,
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              items: snapshot.data
-                                                  .map((selectedFlat) {
-                                                return DropdownMenuItem<Flat>(
-                                                  value: selectedFlat,
-                                                  child: Text(selectedFlat.fltName),
-                                                );
-                                              }).toList(),
-                                              onChanged: (Flat selectedFlat) {
-                                                setState(() {
-                                                  selectedflat=selectedFlat;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      margin: new EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-
-                                  ],
-                                );
-                              } else {
-                                return Center(
-                                    child: Text(
-                                        "Please select a place to proceed further"));
-                              }
-                            }),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            content: FutureBuilder<List<Flat>>(
+                 future: flatValWeb,
+                 builder:
+                     (context, AsyncSnapshot<List<Flat>> snapshot) {
+                   if (snapshot.hasData) {
+                     if (snapshot.data.length == 0) {
+                       return Center(
+                           child: Text("No Devices on this place"));
+                     }
+                     return Container(
+                       child: Padding(
+                         padding: const EdgeInsets.all(41.0),
+                         child: SizedBox(
+                           width: double.infinity,
+                           height: 50.0,
+                           child: Container(
+                             width: MediaQuery.of(context).size.width/4,
+                             decoration: BoxDecoration(
+                                 color: Colors.white,
+                                 boxShadow: [BoxShadow(
+                                     color: Colors.black,
+                                     blurRadius: 30,
+                                     // offset for Upward Effect
+                                     offset: Offset(20,20)
+                                 )],
+                                 border: Border.all(
+                                   color: Colors.black,
+                                   width: 0.5,
+                                 )
+                             ),
+                             child: DropdownButtonFormField<Flat>(
+                               decoration:InputDecoration(
+                                 contentPadding: const EdgeInsets.all(15),
+                                 focusedBorder: OutlineInputBorder(
+                                   borderSide: BorderSide(color: Colors.white),
+                                   borderRadius: BorderRadius.circular(10),
+                                 ),enabledBorder: UnderlineInputBorder(
+                                 borderSide: BorderSide(color: Colors.white),
+                                 borderRadius: BorderRadius.circular(50),
+                               ),
+                               ),
+                               dropdownColor: Colors.white70,
+                               icon: Icon(Icons.arrow_drop_down),
+                               iconSize: 28,
+                               hint: Text('Select Floor'),
+                               isExpanded: true,
+                               value: flt,
+                               style: TextStyle(
+                                 color: Colors.black,
+                                 fontWeight: FontWeight.bold,
+                               ),
+                               items: snapshot.data
+                                   .map((selectedFlat) {
+                                 return DropdownMenuItem<Flat>(
+                                   value: selectedFlat,
+                                   child: Text(selectedFlat.fltName),
+                                 );
+                               }).toList(),
+                               onChanged: (Flat selectedFlat) {
+                                 setState(() {
+                                   selectedflat=selectedFlat;
+                                 });
+                               },
+                             ),
+                           ),
+                         ),
+                       ),
+                       margin: new EdgeInsets.symmetric(
+                           vertical: 10, horizontal: 10),
+                     );
+                   } else {
+                     return Center(
+                         child: Text(
+                             "Please select a place to proceed further"));
+                   }
+                 }),
             actions: <Widget>[
               Container(
                 margin: EdgeInsets.all(8),
@@ -2376,7 +2355,7 @@ Future flatValWeb;
                       BorderRadius.circular(50)),
                   onPressed: () async {
 
-                    selectedRoom = await getrooms(widget.flt.fltId);
+                    selectedRoom = await getrooms(selectedflat.fltId);
 
 
                     //print(pt.p_type);
@@ -3338,7 +3317,7 @@ Future flatValWeb;
                   onPressed: () async {
                     print('rid ${rId}');
 
-                    // await deleteRoomWithAllDevice(rId);
+                    await deleteRoomWithAllDevice(rId);
                     Navigator.pop(context);
                   }
               ),
@@ -3355,6 +3334,7 @@ Future flatValWeb;
 
   Future<void> deleteRoomWithAllDevice(String rId) async {
     await getTokenWeb();
+    print('deleteRoomId $rId');
     final url = API+'addroom/?r_id=' + rId;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
@@ -3367,7 +3347,7 @@ Future flatValWeb;
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      await getrooms(widget.flt.fltId);
+     widget.rm = await getrooms(widget.flt.fltId);
     } else {
       final snackBar = SnackBar(
         content: Text('Something went wrong'),
@@ -3944,7 +3924,7 @@ Future flatValWeb;
                                   print('longPress');
                                   print(widget.rm[index].rId);
                                   print(widget.rm[index].rName);
-                                  _createAlertDialogForAddRoomDeleteDevices(context,widget.rm[index].rId,index);
+                                  _createAlertDialogForAddRoomDeleteDevices(context,widget.rm[DeleteRoomIndex].rId,index);
                                 },
                                 child: TabBar(
                                   indicatorColor: Colors.blueAccent,
@@ -3961,12 +3941,15 @@ Future flatValWeb;
                                     );
                                   }).toList(),
                                   onTap: (index) async {
+                                      setState(() {
+                                        DeleteRoomIndex=index;
+                                      });
                                     if(widget.rm[index].rId==null) {
                                       setState(() {
                                         tabbarStateWeb = widget.tabbarState;
                                       });
-                                      await getDevices(tabbarStateWeb);
-                                      await getrooms(widget.flt.fltId);
+                                      widget.rm = await getrooms(widget.flt.fltId);
+                                      widget.dv= await getDevices(tabbarStateWeb);
                                     }else{
 
 
@@ -3979,8 +3962,8 @@ Future flatValWeb;
                                       print('qwedsaxcfr ${widget.rm[index].fltId}');
                                       print('qwedsaxcfr ${widget.rm[index].user}');
                                       print('flat ${widget.flt.fltId}');
-                                      await getrooms(widget.flt.fltId);
-                                      await getDevices(tabbarStateWeb);
+                                     widget.rm = await getrooms(widget.flt.fltId);
+                                     widget.dv= await getDevices(tabbarStateWeb);
                                     }
 
                                   },
@@ -3997,53 +3980,53 @@ Future flatValWeb;
                   ),
                 ),
 
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    print('checkindex123 $index');
-                    print('checkdevice123 ${widget.dv.length}');
-                    if (index < widget.dv.length) {
-                      print('checkindex123underif $index');
-                      print('checkdevice123 ${widget.dv.length}');
-                      print('checkdevice123 ${widget.dv[index].dId}');
-
-                      return Container(
-                        child: Column(
-                          children: [
-                            deviceContainer2(widget.dv[index].dId,index),
-                            Container(
-                                //
-                                // color: Colors.green,
-                                height: 35,
-                                child: GestureDetector(
-                                  child: RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: widget.dv[index].dId,
-                                          style: TextStyle(
-                                              fontSize: 15, color: Colors.black)),
-                                      TextSpan(text: "   "),
-                                      WidgetSpan(
-                                          child: Icon(
-                                        Icons.settings,
-                                        size: 18,
-                                      ))
-                                    ]),
-                                  ),
-                                  onTap: () {
-                                    // _createAlertDialogForSSIDAndEmergencyNumber(
-                                    //     context);
-                                    print('on tap');
-                                  },
-                                )),
-                          ],
-                        ),
-                        // child: Text(dv[index].dId),
-                      );
-                    } else {
-                      return null;
-                    }
-                  }),
-                )
+                // SliverList(
+                //   delegate: SliverChildBuilderDelegate((context, index) {
+                //     print('checkindex123 $index');
+                //     print('checkdevice123 ${widget.dv.length}');
+                //     if (index < widget.dv.length) {
+                //       print('checkindex123underif $index');
+                //       print('checkdevice123 ${widget.dv.length}');
+                //       print('checkdevice123 ${widget.dv[index].dId}');
+                //
+                //       return Container(
+                //         child: Column(
+                //           children: [
+                //             deviceContainer2(widget.dv[index].dId,index),
+                //             Container(
+                //                 //
+                //                 // color: Colors.green,
+                //                 height: 35,
+                //                 child: GestureDetector(
+                //                   child: RichText(
+                //                     text: TextSpan(children: [
+                //                       TextSpan(
+                //                           text: widget.dv[index].dId,
+                //                           style: TextStyle(
+                //                               fontSize: 15, color: Colors.black)),
+                //                       TextSpan(text: "   "),
+                //                       WidgetSpan(
+                //                           child: Icon(
+                //                         Icons.settings,
+                //                         size: 18,
+                //                       ))
+                //                     ]),
+                //                   ),
+                //                   onTap: () {
+                //                     // _createAlertDialogForSSIDAndEmergencyNumber(
+                //                     //     context);
+                //                     print('on tap');
+                //                   },
+                //                 )),
+                //           ],
+                //         ),
+                //         // child: Text(dv[index].dId),
+                //       );
+                //     } else {
+                //       return null;
+                //     }
+                //   }),
+                // )
               ]),
         ),
       ),

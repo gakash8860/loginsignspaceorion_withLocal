@@ -217,7 +217,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   getImage() async {
     String token = await getToken();
-    // String token = 'b8bd2e8bc8f9541d031f03217cf9ac0153048a97';
     final url = API+'testimages123/?user=' + getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -231,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
       await deleteImageFromLocal();
-      Utility.saveImage(imageData['file']);
+      Utility.saveImage(imageData['file']).then((value) => loadImageFromPreferences());
       setState(() {
 
       });

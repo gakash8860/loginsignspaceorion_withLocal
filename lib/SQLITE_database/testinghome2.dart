@@ -189,7 +189,7 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController controller = TextEditingController();
   GlobalKey key;
   DateTime pickedDate;
-
+  int deleteRoomIndex=0;
   // List<RoomType> rm;
   // AudioCache _player;
   var postData;
@@ -358,7 +358,7 @@ class _HomeTestState extends State<HomeTest>
     loadImageFromPreferences();
     timer = Timer.periodic(Duration(seconds: 10), (timer) {
       print('10seconds');
-      // fetchPlace();
+      fetchPlace();
       // getAllFloor();
     });
 
@@ -389,7 +389,7 @@ class _HomeTestState extends State<HomeTest>
       print("GetPlaceNameResponseBody  ${response.body}");
     }
   }
-var tokenWeb;
+  var tokenWeb;
   getTokenWeb()async{
     final pref= await SharedPreferences.getInstance();
     tokenWeb=pref.getString('tokenWeb');
@@ -830,8 +830,8 @@ var tokenWeb;
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                   await addRoomName(roomNameEditing.text,index);
-                   await getAllRoom();
+                    await addRoomName(roomNameEditing.text,index);
+                    // await getAllRoom();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -1506,7 +1506,7 @@ var tokenWeb;
         });
   }
 
-    _createAlertDialogDropDownFlat(BuildContext context) {
+  _createAlertDialogDropDownFlat(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -1699,8 +1699,8 @@ var tokenWeb;
   Future<List<RoomType>> roomQueryFunc() async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     print('qqqq ${roomQueryRows}');
-    List roomTypeSingle = roomQueryRows;
-    var id = roomQueryRows[0]['flt_id'].toString();
+
+    var id = widget.flat.fltId;
 
     roomQueryRows2 = roomQueryRows;
     List result = await NewDbProvider.instance.getRoomById(id);
@@ -1766,7 +1766,8 @@ var tokenWeb;
                     child: Text('Submit'),
                     onPressed: () async {
                       await addRoom(roomEditing.text);
-                     await roomQueryFunc();
+
+                      await roomQueryFunc();
 
                       Navigator.of(context).pop();
                     },
@@ -1913,7 +1914,7 @@ var tokenWeb;
 
         builder: (context) {
           return AlertDialog(
-title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+            title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
             content: Container(
               color:Colors.red,
               width: MediaQuery.of(context).size.width,
@@ -2660,8 +2661,8 @@ title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?chang
   var icon12=FontAwesomeIcons.lightbulb;
   List changeIcon=[null,null,null,null,null,null,null,null,null];
 
-List<String> iconCode=['','002','003','','','','','','','','',''];
-String piname;
+  List<String> iconCode=['','002','003','','','','','','','','',''];
+  String piname;
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
@@ -2708,7 +2709,7 @@ String piname;
                         print('trueindex $index');
                       }else if(_chosenValue=='Bulb'){
                         changeIcon[index]=icon3;
-                      iconCode[index]='003';
+                        iconCode[index]='003';
                         print('true');
                       }else if(_chosenValue=='Fan'){
                         changeIcon[index]=icon4;
@@ -2766,7 +2767,7 @@ String piname;
                     var ss= aa.substring(aa.indexOf(","));
                     print('checkConditioncheck $aa');
 
-                   await addPinsName(aa, index);
+                    await addPinsName(aa, index);
                     Navigator.of(context).pop();
                     //
 
@@ -2950,7 +2951,7 @@ String piname;
               style: TextStyle(fontSize: 20),
             ),
             content: Container(
-              height: 90,
+              height: 5,
               child: Column(
                 children: [
                   TextButton(
@@ -3482,7 +3483,7 @@ String piname;
       print("CHECKDEVICE123CODE   ${response.statusCode}");
       print(response.body);
       deviceResponse = jsonDecode(response.body);
-       await getDeviceOffline();
+      await getDeviceOffline();
       print(postData);
     } else {
       throw Exception('Failed to create Device.');
@@ -3528,12 +3529,12 @@ String piname;
         'Accept': 'application/json',
         'Authorization': 'Token $token',
       });
-     List deviceData = jsonDecode(response.body);
+      List deviceData = jsonDecode(response.body);
       print('deviceData  ${deviceData}');
-     List deviceQueryRows=await NewDbProvider.instance.queryDevice();
-     print('checkLength ${deviceData.length==deviceQueryRows.length}');
-     print('checkLength ${deviceData.length}');
-     print('checkLength ${deviceQueryRows.length}');
+      List deviceQueryRows=await NewDbProvider.instance.queryDevice();
+      print('checkLength ${deviceData.length==deviceQueryRows.length}');
+      print('checkLength ${deviceData.length}');
+      print('checkLength ${deviceQueryRows.length}');
       if(deviceData.length==deviceQueryRows.length){
         for (int i = 0; i < deviceData.length; i++) {
           var deviceQuery = Device(
@@ -3562,55 +3563,51 @@ String piname;
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
   }
-  Future<List<Device>> getDeviceOnlySingleRoom(String rId) async {
-    // List roomQueryRows=await NewDbProvider.instance.queryRoom();
-    // print('checkLength ${roomQueryRows}');
+  Future getDeviceOnlySingleRoom(String rId) async {
     String token = await getToken();
-    // for (int i = 0; i < roomQueryRows.length; i++) {
-    //   var rId=roomQueryRows[i]['r_id'].toString();
-      String url = API+"addyourdevice/?r_id=" + rId;
-      var response;
-      // try {
-      response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      });
-     List deviceData = jsonDecode(response.body);
-      print('deviceData  ${deviceData}');
-     List deviceQueryRows=await NewDbProvider.instance.queryDevice();
-     print('checkLength ${deviceData.length==deviceQueryRows.length}');
-     print('checkLength ${deviceData.length}');
-     print('checkLength ${deviceQueryRows.length}');
-      if(deviceData.length==deviceQueryRows.length){
-        for (int i = 0; i < deviceData.length; i++) {
-          var deviceQuery = Device(
-              user: deviceData[i]['user'],
-              rId: deviceData[i]['r_id'],
-              dId: deviceData[i]['d_id']);
-          print('deviceQueryFunc   $deviceData}');
+    String url = API+"addyourdevice/?r_id=" + rId;
+    var response;
+    // try {
+    response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    List deviceData = jsonDecode(response.body);
+    print('deviceData  ${deviceData}');
+    List deviceQueryRows=await NewDbProvider.instance.queryDevice();
+    print('checkLength ${deviceData.length==deviceQueryRows.length}');
+    print('checkLength ${deviceData.length}');
+    print('checkLength ${deviceQueryRows.length}');
+    if(deviceData.length==deviceQueryRows.length){
+      for (int i = 0; i < deviceData.length; i++) {
+        var deviceQuery = Device(
+            user: deviceData[i]['user'],
+            rId: deviceData[i]['r_id'],
+            dId: deviceData[i]['d_id']);
+        print('deviceQueryFunc   $deviceData}');
 
-          // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
-          await NewDbProvider.instance.updateDevice(deviceQuery);
-        }
-      }else {
-        await NewDbProvider.instance.deleteDeviceModel();
-        for (int i = 0; i < deviceData.length; i++) {
-          var deviceQuery = Device(
-              user: deviceData[i]['user'],
-              rId: deviceData[i]['r_id'],
-              dId: deviceData[i]['d_id']);
-          print('deviceQueryFuncInsert   $deviceData}');
-          print('deviceQueryFunc   $deviceData}');
+        // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+        await NewDbProvider.instance.updateDevice(deviceQuery);
+      }
+    }else {
+      await NewDbProvider.instance.deleteDeviceModel();
+      for (int i = 0; i < deviceData.length; i++) {
+        var deviceQuery = Device(
+            user: deviceData[i]['user'],
+            rId: deviceData[i]['r_id'],
+            dId: deviceData[i]['d_id']);
+        print('deviceQueryFuncInsert   $deviceData}');
+        print('deviceQueryFunc   $deviceData}');
 
 
-          await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
-          // await NewDbProvider.instance.updateDevice(deviceQuery);
+        await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
+        // await NewDbProvider.instance.updateDevice(deviceQuery);
 
       }
     }
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
-    return widget.dv;
+
   }
 
   Future <void> deleteDevice(String rId, String dId) async {
@@ -3634,6 +3631,26 @@ String piname;
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+  Future<List<RoomType>> getrooms(String flt_id) async {
+    final url = API + 'addroom/?flt_id=' + flt_id;
+    String token = await getToken();
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<RoomType> rooms =
+      data.map((data) => RoomType.fromJson(data)).toList();
+      print(rooms);
+      return rooms;
+    }else{
+      return null;
+    }
+  }
+
+
 
   Future<void> deleteRoomWithAllDevice(String rId) async {
     String token = await getToken();
@@ -3649,6 +3666,7 @@ String piname;
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // widget.rm = await getrooms(widget.flat.fltId);
     } else {
       final snackBar = SnackBar(
         content: Text('Something went wrong'),
@@ -3831,7 +3849,7 @@ String piname;
       print('Switch 2 --> $switch_2');
       print('Switch 3 --> $switch_3');
       print('Switch 4 --> $switch_4');
-       getData(dId);
+      getData(dId);
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -4022,7 +4040,9 @@ String piname;
           content: Text('Room Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-       await getAllRoom();
+
+        widget.rm = await getrooms(widget.flat.fltId);
+        await getAllRoom();
       }
 
       // setState(() {
@@ -4125,7 +4145,6 @@ String piname;
 
 
   Future<void> fetchPlace() async {
-    // await openPlaceBox();
     String token = await getToken();
     final url = API+'addyourplace/';
     final response = await http.get(url, headers: {
@@ -4133,9 +4152,8 @@ String piname;
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-
     try {
-      if (response.statusCode > 0) {
+      if (response.statusCode == 200) {
         List placeData = jsonDecode(response.body);
         placeRows = await NewDbProvider.instance.queryPlace();
         if (placeData.length == placeRows.length) {
@@ -4159,22 +4177,15 @@ String piname;
           }
         }
         getAllFloor();
-
-
-        // places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-
-
       }
     } catch (e) {}
-    return places;
-// return PlaceType.fromJson(true);
 
   }
 
 
   Future<void> getAllFloor() async {
     String token = await getToken();
-  List  placeRows = await NewDbProvider.instance.queryPlace();
+    List  placeRows = await NewDbProvider.instance.queryPlace();
     print('pId  $placeRows');
     var pId;
     var floorQuery;
@@ -4190,9 +4201,9 @@ String piname;
         'Authorization': 'Token $token',
 
       });
-      if (response.statusCode > 0) {
+      if (response.statusCode == 200) {
         List floorData = jsonDecode(response.body);
-       List floorQueryRows = await NewDbProvider.instance.queryFloor();
+        List floorQueryRows = await NewDbProvider.instance.queryFloor();
         if (floorData.length == floorQueryRows.length) {
           print('updateFloor');
           for (int i = 0; i < floorData.length; i++) {
@@ -4230,7 +4241,7 @@ String piname;
 
   Future<void> getAllFlat() async {
     var fId;
-   List floorQueryRows = await NewDbProvider.instance.queryFloor();
+    List floorQueryRows = await NewDbProvider.instance.queryFloor();
     String token = await getToken();
     for (int i = 0; i < floorQueryRows.length; i++) {
       fId = floorQueryRows[i]['f_id'].toString();
@@ -4288,12 +4299,10 @@ String piname;
   }
 
 
-  Future<bool> getAllRoom() async {
-    // String url="http://10.0.2.2:8000/api/data";
-    // String token= await getToken();
+  Future getAllRoom() async {
     List roomData;
     var flatId;
-   List flatQueryRows2 = await NewDbProvider.instance.queryFlat();
+    List flatQueryRows2 = await NewDbProvider.instance.queryFlat();
     String token = await getToken();
     for (int i = 0; i < flatQueryRows2.length; i++) {
       flatId = flatQueryRows2[i]['flt_id'].toString();
@@ -4310,7 +4319,7 @@ String piname;
       });
       roomData = jsonDecode(response.body);
       print('checkRoomData $roomData');
-      widget.rm = roomData.map((data) => RoomType.fromJson(data)).toList();
+      // widget.rm = roomData.map((data) => RoomType.fromJson(data)).toList();
       roomQueryRows = await NewDbProvider.instance.queryRoom();
       print('checkRoomData ${roomData.length == roomQueryRows.length}');
       if (roomData.length == roomQueryRows.length) {
@@ -4337,18 +4346,7 @@ String piname;
       }
     }
     getDeviceOffline();
-    // for (int i = 0; i < roomData.length; i++) {
-    //    roomQuery = RoomType(
-    //       rId: roomData[i]['r_id'],
-    //       rName: roomData[i]['r_name'].toString(),
-    //       fltId: roomData[i]['flt_id'],
-    //       user: roomData[i]['user']);
-    //   print('roomQuery147 ${roomQuery.rName} ${roomQuery.fltId}');
-    //   await NewDbProvider.instance.insertRoomModelData(roomQuery);
-    //   // await roomQueryFunc();
-    //
-    // }
-    return Future.value(true);
+
   }
 
 
@@ -4412,7 +4410,7 @@ String piname;
       _createAlertDialogForFloor(context);
       print('Floor ');
     } else if (choice == Constants.AddRoom) {
-       _createAlertDialogForAddRoom(context);
+      _createAlertDialogForAddRoom(context);
       print('Add Room');
     } else {
       print('aa');
@@ -4475,7 +4473,7 @@ String piname;
                           Flexible(
                             child: Text('Place - ', style: TextStyle(
                               fontWeight: FontWeight.bold,
-                                fontFamily: fonttest==null?changeFont:fonttest,
+                              fontFamily: fonttest==null?changeFont:fonttest,
                             ),),
                           ),
                           Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
@@ -4484,7 +4482,7 @@ String piname;
                       ),
                       onTap: () async {
                         // placeVal=await NewDbProvider.instance.queryPlace();
-                      await  _createAlertDialogDropDown(context);
+                        await  _createAlertDialogDropDown(context);
                       },
                     ),
                     backgroundColor: Colors.blueAccent,
@@ -4582,7 +4580,7 @@ String piname;
                                     ),
                                     Text('Hello $firstName', style: TextStyle(
                                         fontFamily: fonttest==null?changeFont:fonttest,
-                                      // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                        // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white
@@ -4597,7 +4595,7 @@ String piname;
                                 'Add Place',
                                 style: TextStyle(
                                   color: change_toDark ? Colors.white : Colors.black,
-                                    fontFamily: fonttest==null?changeFont:fonttest,
+                                  fontFamily: fonttest==null?changeFont:fonttest,
                                 ),
                               ),
                               onTap: () {
@@ -4609,8 +4607,8 @@ String piname;
                               title: Text(
                                 'Sub Access',
                                 style: TextStyle(
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
+                                    color: change_toDark ? Colors.white : Colors
+                                        .black,
                                     fontFamily: fonttest==null?changeFont:fonttest
                                 ),
                               ),
@@ -4877,7 +4875,7 @@ String piname;
                                                                 // 'Hello ',
                                                                 // + widget.fl.user.first_name,
                                                                 style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
+                                                                    fontFamily: fonttest==null?changeFont:fonttest,
                                                                     color: Colors.white,
                                                                     fontSize: 22,
 
@@ -4993,7 +4991,7 @@ String piname;
                                                             Text('Sensors- ',
                                                               style: TextStyle(
                                                                   fontFamily: fonttest==null?changeFont:fonttest,
-                                                                // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                  // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                                                   fontSize: 14,
                                                                   fontWeight: FontWeight
                                                                       .bold,
@@ -5174,7 +5172,7 @@ String piname;
                                                               Text('Rooms-',
                                                                 style: TextStyle(
                                                                     fontFamily: fonttest==null?changeFont:fonttest,
-                                                                  // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight
                                                                         .bold,
@@ -5194,7 +5192,7 @@ String piname;
                                               print('longPress');
                                               print('longpress ${tabbarState}');
                                               _createAlertDialogForAddRoomDeleteDevices(
-                                                  context, tabbarState,index);
+                                                  context, tabbarState,deleteRoomIndex);
                                             },
                                             child: TabBar(
                                               indicatorColor: Colors.blueAccent,
@@ -5213,13 +5211,13 @@ String piname;
                                               onTap: (index) async {
                                                 print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
                                                 print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
-                                                // tabbarState =
-                                                //     widget.rm[index].rId;
+
+                                                deleteRoomIndex=index;
                                                 if(widget.rm[index].rId==null) {
                                                   setState(() {
+
                                                     tabbarState = widget.tabbarState;
                                                   });
-;
                                                 }
                                                 setState(() {
                                                   tabbarState =
@@ -5236,7 +5234,7 @@ String piname;
 
                                                 print('getDevices123 }');
                                               },
-                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -5356,8 +5354,8 @@ String piname;
   }
 
 
-     _billPredictionNavigation(BuildContext context){
-      return showDialog(
+  _billPredictionNavigation(BuildContext context){
+    return showDialog(
         context: context,
         builder: (context){
           return AlertDialog(
@@ -5403,202 +5401,202 @@ String piname;
             ),
           );
         }
-      );
-    }
+    );
+  }
 
 
   remoteUiWidget(BuildContext context){
     return showDialog(
-      context: context,
-      builder: (context){
-      return AlertDialog(
-        title: Text('Remote'),
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Remote'),
+            content: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  child: ClipOval(
-                    child: Material(
-                      child: InkWell(
-                        splashColor: Colors.white24,
-                        child:SizedBox(
-                          height: 56,
-                          width: 56,
-                          child: Icon(Icons.dialpad),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      child: ClipOval(
+                        child: Material(
+                          child: InkWell(
+                            splashColor: Colors.white24,
+                            child:SizedBox(
+                              height: 56,
+                              width: 56,
+                              child: Icon(Icons.dialpad),
+                            ),
+                            onTap: (){},
+                          ),
                         ),
-                        onTap: (){},
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  child: ClipOval(
-                    child: Material(
-                      color: Colors.red,
-                      child: InkWell(
-                        splashColor: Colors.white24,
-                        child:SizedBox(
-                          height: 56,
-                          width: 56,
-                          child: Icon(Icons.power_settings_new),
+                    Container(
+                      child: ClipOval(
+                        child: Material(
+                          color: Colors.red,
+                          child: InkWell(
+                            splashColor: Colors.white24,
+                            child:SizedBox(
+                              height: 56,
+                              width: 56,
+                              child: Icon(Icons.power_settings_new),
+                            ),
+                            onTap: (){},
+                          ),
                         ),
-                        onTap: (){},
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  child: ClipOval(
-                    child: Material(
-                      child: InkWell(
-                        splashColor: Colors.white24,
-                        child:SizedBox(
-                          height: 56,
-                          width: 56,
-                          child: Icon(Icons.bubble_chart),
+                    Container(
+                      child: ClipOval(
+                        child: Material(
+                          child: InkWell(
+                            splashColor: Colors.white24,
+                            child:SizedBox(
+                              height: 56,
+                              width: 56,
+                              child: Icon(Icons.bubble_chart),
+                            ),
+                            onTap: (){},
+                          ),
                         ),
-                        onTap: (){},
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: 156,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(Icons.arrow_drop_up),
-                        Text('VOL',style: TextStyle(fontWeight: FontWeight.bold),),
-                        Icon(Icons.arrow_drop_down),
-                      ],
-                    ),
-                  ),
-                  JoystickView(
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 156,
+                        width: 56,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(Icons.arrow_drop_up),
+                            Text('VOL',style: TextStyle(fontWeight: FontWeight.bold),),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                      JoystickView(
 
-                    innerCircleColor: Colors.grey,
-                    backgroundColor: Colors.grey.shade400,
-                    iconsColor: Colors.white,
-                    showArrows: true,
-                    size: 200.0,
-                  ),
-                  Container(
-                    height: 156,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(Icons.arrow_drop_up),
-                        Text('CH',style: TextStyle(fontWeight: FontWeight.bold),),
-                        Icon(Icons.arrow_drop_down),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 40,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(18.0),
-                    color: Colors.white,
-                  ),
-                  child: Padding(padding: EdgeInsets.all(2.0),
-                    child: Image.asset('assets/netflix.png'),
+                        innerCircleColor: Colors.grey,
+                        backgroundColor: Colors.grey.shade400,
+                        iconsColor: Colors.white,
+                        showArrows: true,
+                        size: 200.0,
+                      ),
+                      Container(
+                        height: 156,
+                        width: 56,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(Icons.arrow_drop_up),
+                            Text('CH',style: TextStyle(fontWeight: FontWeight.bold),),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  height: 40,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(18.0),
-                    color: Colors.white,
-                  ),
-                  child: Padding(padding: EdgeInsets.all(8.0),
-                    child: Image.asset('assets/prime.png'),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(18.0),
+                        color: Colors.white,
+                      ),
+                      child: Padding(padding: EdgeInsets.all(2.0),
+                        child: Image.asset('assets/netflix.png'),
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(18.0),
+                        color: Colors.white,
+                      ),
+                      child: Padding(padding: EdgeInsets.all(8.0),
+                        child: Image.asset('assets/prime.png'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      );
-      }
+          );
+        }
     );
   }
 
 
 
 
- _asyncSimpleDialog(BuildContext context) async {
-  return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Please Select '),
-          children: <Widget>[
-            TextButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
+  _asyncSimpleDialog(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Please Select '),
+            children: <Widget>[
+              TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
+                  },
+                  child: const Text('Place Bill Prediction',style:TextStyle(fontSize: 14))),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
                 },
-                child: const Text('Place Bill Prediction',style:TextStyle(fontSize: 14))),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
-              },
-              child: const Text('Floor Bill Prediction'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
-              },
-              child: const Text('Flat Bill Prediction'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
-              },
-              child: const Text('Room Bill Prediction'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
-              },
-              child: const Text('Device Bill Prediction'),
-            ),
-          ],
-        );
-      });
-}
+                child: const Text('Floor Bill Prediction'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                },
+                child: const Text('Flat Bill Prediction'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                },
+                child: const Text('Room Bill Prediction'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                },
+                child: const Text('Device Bill Prediction'),
+              ),
+            ],
+          );
+        });
+  }
 
 
-_openGoggleAssistant() async {
+  _openGoggleAssistant() async {
     try {
       bool isInstalled = await DeviceApps.isAppInstalled(
           'com.google.android.apps.googleassistant');
@@ -5635,28 +5633,28 @@ _openGoggleAssistant() async {
     number= pref.getString('mobileNumber');
     print('number147859 ${number}');
   }
-bool switchOn;
+  bool switchOn;
   var deviceId;
 
 
-    seprate(int index,dId)async{
-      List namesDataList12 =
-          await NewDbProvider.instance.getPinNamesByDeviceId(dId);
-      var a=  namesDataList12.toString();
-      print('plmkju ${a.indexOf(",")}');
-      while (index!=namesDataList12.length){
-        var nameIndex=a[index].indexOf(",");
-        print('plmkju2 ${a[index].substring(0,nameIndex)}');
-        index++;
-      }
-
+  seprate(int index,dId)async{
+    List namesDataList12 =
+    await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+    var a=  namesDataList12.toString();
+    print('plmkju ${a.indexOf(",")}');
+    while (index!=namesDataList12.length){
+      var nameIndex=a[index].indexOf(",");
+      print('plmkju2 ${a[index].substring(0,nameIndex)}');
+      index++;
     }
 
+  }
+
   deviceContainer(String dId, int index) async {
-     deviceId=dId;
-     getData(dId);
-     getPinsName(dId);
-     // await seprate(index,dId);
+    deviceId=dId;
+    getData(dId);
+    getPinsName(dId);
+    // await seprate(index,dId);
     devicePinSensorLocalUsingDeviceId(dId);
     await devicePinNameLocalUsingDeviceId(dId);
 
@@ -5696,79 +5694,79 @@ bool switchOn;
 
     List namesDataList12 =
     await NewDbProvider.instance.getPinNamesByDeviceId(dId);
-      // var a=  namesDataList12.toString();
-      //  print('plmkju ${a.indexOf(",")}');
-      // // while (index!=namesDataList12.length){
-      // //   var nameIndex=a[index].indexOf(",");
-      // //   print('plmkju ${a[index].substring(0,nameIndex)}');
-      // // }
+    // var a=  namesDataList12.toString();
+    //  print('plmkju ${a.indexOf(",")}');
+    // // while (index!=namesDataList12.length){
+    // //   var nameIndex=a[index].indexOf(",");
+    // //   print('plmkju ${a[index].substring(0,nameIndex)}');
+    // // }
 
 
 
-     String pin1=namesDataList12[index]['pin1Name'];
-     var indexOfPin1Name=pin1.indexOf(',');
-     var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+    String pin1=namesDataList12[index]['pin1Name'];
+    var indexOfPin1Name=pin1.indexOf(',');
+    var pin1FinalName=pin1.substring(0,indexOfPin1Name);
 
-     print('indexofpppp ${namesDataList12}');
-
-
-     String pin2=namesDataList12[index]['pin2Name'];
-     var indexOfPin2Name=pin2.indexOf(',');
-     var pin2FinalName=pin2.substring(0,indexOfPin2Name);
-     print('indexofpppppin2 $pin2');
-
-     String pin3=namesDataList12[index]['pin3Name'];
-     var indexOfPin3Name=pin3.indexOf(',');
-     var pin3FinalName=pin3.substring(0,indexOfPin3Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin4=namesDataList12[index]['pin4Name'];
-     var indexOfPin4Name=pin4.indexOf(',');
-     var pin4FinalName=pin4.substring(0,indexOfPin4Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin5=namesDataList12[index]['pin5Name'];
-     var indexOfPin5Name=pin5.indexOf(',');
-     var pin5FinalName=pin5.substring(0,indexOfPin5Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin6=namesDataList12[index]['pin6Name'];
-     var indexOfPin6Name=pin6.indexOf(',');
-     var pin6FinalName=pin6.substring(0,indexOfPin6Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin7=namesDataList12[index]['pin7Name'];
-     var indexOfPin7Name=pin7.indexOf(',');
-     var pin7FinalName=pin7.substring(0,indexOfPin7Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin8=namesDataList12[index]['pin8Name'];
-     var indexOfPin8Name=pin8.indexOf(',');
-     var pin8FinalName=pin8.substring(0,indexOfPin8Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin9=namesDataList12[index]['pin9Name'];
-     var indexOfPin9Name=pin9.indexOf(',');
-     var pin9FinalName=pin9.substring(0,indexOfPin9Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin10=namesDataList12[index]['pin10Name'];
-     var indexOfPin10Name=pin10.indexOf(',');
-     var pin10FinalName=pin9.substring(0,indexOfPin10Name);
-     print('indexofpppppin2 $pin3');
-
-     String pin11=namesDataList12[index]['pin11Name'];
-     var indexOfPin11Name=pin11.indexOf(',');
-     var pin11FinalName=pin11.substring(0,indexOfPin11Name);
-     print('indexofpppppin2 $pin3');
+    print('indexofpppp ${namesDataList12}');
 
 
-     String pin12=namesDataList12[index]['pin12Name'];
-     var indexOfPin12Name=pin12.indexOf(',');
-     var pin12FinalName=pin12.substring(0,indexOfPin12Name);
-     print('indexofpppppin2 $pin3');
+    String pin2=namesDataList12[index]['pin2Name'];
+    var indexOfPin2Name=pin2.indexOf(',');
+    var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+    print('indexofpppppin2 $pin2');
 
-     namesDataList = [
+    String pin3=namesDataList12[index]['pin3Name'];
+    var indexOfPin3Name=pin3.indexOf(',');
+    var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin4=namesDataList12[index]['pin4Name'];
+    var indexOfPin4Name=pin4.indexOf(',');
+    var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin5=namesDataList12[index]['pin5Name'];
+    var indexOfPin5Name=pin5.indexOf(',');
+    var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin6=namesDataList12[index]['pin6Name'];
+    var indexOfPin6Name=pin6.indexOf(',');
+    var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin7=namesDataList12[index]['pin7Name'];
+    var indexOfPin7Name=pin7.indexOf(',');
+    var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin8=namesDataList12[index]['pin8Name'];
+    var indexOfPin8Name=pin8.indexOf(',');
+    var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin9=namesDataList12[index]['pin9Name'];
+    var indexOfPin9Name=pin9.indexOf(',');
+    var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin10=namesDataList12[index]['pin10Name'];
+    var indexOfPin10Name=pin10.indexOf(',');
+    var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+    print('indexofpppppin2 $pin3');
+
+    String pin11=namesDataList12[index]['pin11Name'];
+    var indexOfPin11Name=pin11.indexOf(',');
+    var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+    print('indexofpppppin2 $pin3');
+
+
+    String pin12=namesDataList12[index]['pin12Name'];
+    var indexOfPin12Name=pin12.indexOf(',');
+    var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+    print('indexofpppppin2 $pin3');
+
+    namesDataList = [
       widget.switch1Name = pin1FinalName,
       widget.switch2Name = pin2FinalName,
       widget.switch3Name = pin3FinalName,
@@ -6363,6 +6361,7 @@ bool switchOn;
                   child: Text("Yes"),
                   onPressed: () async {
                     await deleteRoomWithAllDevice(rId);
+                   // widget.rm = await roomQueryFunc();
                     Navigator.pop(context);
                   }
               ),
@@ -6689,7 +6688,7 @@ bool switchOn;
                       value: switchOn,
                       //boolean value
                       onChanged: (val) async {
-                       await _showDialog(dId);
+                        await _showDialog(dId);
                       },
                     ),
                     Padding(
@@ -6703,7 +6702,7 @@ bool switchOn;
                                 builder: (
                                     context,
                                     ) =>
-                                RemoteUIPage()),
+                                    RemoteUIPage()),
                           );
                           // remoteUiWidget(context);
                           // _createAlertDialogForPin19(context, dId);
@@ -6891,7 +6890,7 @@ bool switchOn;
                                                 ),
                                                 onPressed: ()async {
                                                   print('indexpinNames->  $index');
-                                                 await _createAlertDialogForNameDeviceBox(context, index);
+                                                  await _createAlertDialogForNameDeviceBox(context, index);
                                                 },
                                               ),
                                             ),

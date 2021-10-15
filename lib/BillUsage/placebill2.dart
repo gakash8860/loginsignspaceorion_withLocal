@@ -264,15 +264,41 @@ class _PlaceBill2State extends State<PlaceBill2> {
 
         await getroomsWeb();
 
+        if(chooseValueMinute=='10 minute' || chooseValueMinute=='20 minute' || chooseValueMinute=='30 minute' || chooseValueMinute=='40 minute' || chooseValueMinute=='50 minute' || chooseValueMinute=='60 minute'){
+          print('goingtoifmonute');
+          _valueMinute =_valueMinute+total14;
+          finalTotalValue = total14 + finalTotalValue;
+          varFinalTotalValue = finalTotalValue.toStringAsFixed(2);
+          print('varFinalTotalValue $varFinalTotalValue');
+          totalValueOfEnergy[i] = total14;
+          fetchingData=true;
+          dataMap.putIfAbsent(
+              allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
+          setState(() {
+            // tenMinuteTotalUsage=total14;
+          });
 
-        totalValueOfEnergy[i] = total14;
-        dataMap.putIfAbsent(
-            allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
-        tenMinuteTotalUsage = total14;
-        total14 = 0.0;
+          total14 = 0.0;
 
-        print('totalValueOfEnergy $totalValueOfEnergy');
-        print('dataMapTotalValueOfEnergy $dataMap');
+          print('totalValueOfEnergy $totalValueOfEnergy');
+          print('dataMapTotalValueOfEnergy $dataMap');
+        }else{
+          finalTotalValue = total14 + finalTotalValue;
+          varFinalTotalValue = finalTotalValue.toStringAsFixed(2);
+          print('varFinalTotalValue $varFinalTotalValue');
+          totalValueOfEnergy[i] = total14;
+
+          dataMap.putIfAbsent(
+              allFloorId[i]['f_name'], () => totalValueOfEnergy[i]);
+          setState(() {
+            // tenMinuteTotalUsage=total14;
+          });
+
+          total14 = 0.0;
+
+          print('totalValueOfEnergy $totalValueOfEnergy');
+          print('dataMapTotalValueOfEnergy $dataMap');
+        }
       } else {
         return null;
       }
@@ -356,14 +382,15 @@ class _PlaceBill2State extends State<PlaceBill2> {
         'Accept': 'application/json',
         'Authorization': 'Token $token',
       });
-      datawe = jsonDecode(response.body);
-      print('dataIsNotEmpty$datawe');
+      if(response.statusCode==200) {
+        datawe = jsonDecode(response.body);
+        print('dataIsNotEmpty$datawe');
 
-      if (datawe.isEmpty) {
-        return;
+        if (datawe.isEmpty) {
+          return;
+        }
+        await totalEnergyAccordingRoom();
       }
-      await totalEnergyAccordingRoom();
-
       // for (int i = 0; i < allFloorId.length; i++) {
       //   if (datawe.isEmpty) {
       //     total14 = 0.0;
@@ -389,12 +416,15 @@ class _PlaceBill2State extends State<PlaceBill2> {
         'Accept': 'application/json',
         'Authorization': 'Token $token',
       });
-      datawe = jsonDecode(response.body);
-      print('dataIsNotEmpty$datawe');
-      if (datawe.isEmpty) {
-        return;
+      if(response.statusCode==200) {
+        datawe = jsonDecode(response.body);
+        print('dataIsNotEmpty$datawe');
+
+        if (datawe.isEmpty) {
+          return;
+        }
+        await totalEnergyAccordingRoomWeb();
       }
-      await totalEnergyAccordingRoomWeb();
     }
   }
 
@@ -525,16 +555,88 @@ class _PlaceBill2State extends State<PlaceBill2> {
         List<dynamic> data = jsonDecode(response1.body);
         print('energyData ${data.length}');
         print('energyData ${data}');
-        for (int k = 0; k < data.length; k++) {
-          total14 = total14 +
-              double.parse(data[k]['enrgy10']) +
-              double.parse(data[k]['enrgy20']) +
-              double.parse(data[k]['enrgy30']) +
-              double.parse(data[k]['enrgy40']) +
-              double.parse(data[k]['enrgy50']) +
-              double.parse(data[k]['enrgy60']);
-          print('pororro $total14');
-          // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+        if(chooseValueMinute=='10 minute'){
+          print('goingtotenmintes');
+          print('goingtotenmintes $_valueMinute');
+          for(int k=0;k<data.length;k++){
+            setState(() {
+              total14=total14+double.parse(data[k]['enrgy10']);
+              // _valueMinute =_valueMinute+total14;
+
+            });
+
+            print('resultgoingtotenmintes $total14');
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+        else if(chooseValueMinute=='20 minute'){
+          print('20goingtotenmintes');
+          for(int k=0;k<data.length;k++){
+            setState(() {
+              total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20']);
+              print('20goingtotenmintes $total14');
+              // _valueMinute =_valueMinute+total14;
+              print('20goingtotenmintes $_valueMinute');
+            });
+
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+
+        else if(chooseValueMinute=='30 minute'){
+          for(int k=0;k<data.length;k++){
+            setState(() {
+              total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30']);
+              print('30goingtotenmintes $total14');
+              // _valueMinute =_valueMinute+total14;
+            });
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+        else if(chooseValueMinute=='40 minute'){
+          for(int k=0;k<data.length;k++){
+            total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40']);
+            print('40goingtotenmintes $total14');
+            // _valueMinute =_valueMinute+total14;
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+        else if(chooseValueMinute=='50 minute'){
+          for(int k=0;k<data.length;k++){
+            total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50']);
+            print('50goingtotenmintes $total14');
+            // _valueMinute =_valueMinute+total14;
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+        else if(chooseValueMinute=='60 minute'){
+          for(int k=0;k<data.length;k++){
+            total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
+            print('60goingtotenmintes $total14');
+            // _valueMinute =_valueMinute+total14;
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+        }
+        else{
+
+
+          for(int k=0;k<data.length;k++){
+            total14=total14+double.parse(data[k]['enrgy10'])+double.parse(data[k]['enrgy20'])+double.parse(data[k]['enrgy30'])+double.parse(data[k]['enrgy40'])+double.parse(data[k]['enrgy50'])+double.parse(data[k]['enrgy60']);
+            print('going to elese pororro $total14');
+
+            // dataMap.putIfAbsent(allRoomId[j]['r_name'], () => total14);
+          }
+          // int ko=0;
+          // while(ko<j){
+          //   dataMap.putIfAbsent(allRoomId[ko]['r_name'], () => total14);
+          //   ko+1;
+          // }
+
+
+          // total14=0.0;
+
+          print('dataMapKroomaccrodinfsol $dataMap ');
+
         }
         // int ko=0;
         // while(ko<j){
@@ -1822,6 +1924,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                                       setState(() {
                                         fl = null;
                                         pt = selectedPlace;
+                                        selectedPlaceId=selectedPlace.pId;
                                       });
                                       await getfloorsWeb(selectedPlace.pId);
                                       setState(() {
@@ -1857,10 +1960,10 @@ class _PlaceBill2State extends State<PlaceBill2> {
                                     finalTotalValue=0.0;
                                     dataMap={};
                                     _valueMinute=0.0;
-
+                                    fetchingData = false;
                                   });
-                                  await getDeviceForBillWeb();
-                                  await sumOfEnergyTenMinutes();
+
+                                  await getfloorsWeb(selectedPlaceId);
                                 },
                                 items: minute.map((valueItem) {
                                   return DropdownMenuItem(
@@ -1873,7 +1976,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                                 : _valueMinute.toStringAsFixed(2)),
                           ],
                         )
-                      : Text('Wait'),
+                      : Text(''),
                   SizedBox(
                     height: 15,
                   ),
@@ -1925,7 +2028,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                             ),
                           ],
                         )
-                      : Text("Please Wait"),
+                      : Text(""),
                   completeTask
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1945,7 +2048,35 @@ class _PlaceBill2State extends State<PlaceBill2> {
                           ],
                         )
                       : Text("Please Wait"),
-                  Container(
+                  completeTask
+                      ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(tenMinuteTotalUsage == null
+                          ? varFinalTotalValue
+                          : tenMinuteTotalUsage),
+
+                      // Text('X'),
+                      SizedBox(
+                        height: 28,
+                        width: 75,
+                        child: Center(
+                          child: TextField(
+                            keyboardType:TextInputType.numberWithOptions(decimal: true) ,
+                            controller: billTotalController,
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.rtl,
+                            decoration: InputDecoration(
+                              // border: OutlineInputBorder(),
+                                hintText: 'Enter a rs per unit'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                      : Container(),
+                  completeTask
+                      ? Container(
                     child: Center(
                       child: RaisedButton(
                         color: Colors.lightBlue,
@@ -1964,23 +2095,29 @@ class _PlaceBill2State extends State<PlaceBill2> {
                         ),
                         onPressed: () async {
                           print('navigation $dataMap');
-                          // await totalUsageFuncRoom();
+                          await totalAmount(billTotalController.text);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TotalUsage(
-                                        totalEnergy:
-                                            tenMinuteTotalUsage.toString(),
-                                        chooseValueMinute:
-                                            chooseValueMinute.toString(),
-                                        deviceId: dataMap,
-                                      )));
+                                    totalEnergy:
+                                    tenMinuteTotalUsage == null
+                                        ? varFinalTotalValue
+                                        : tenMinuteTotalUsage,
+                                    chooseValueMinute:
+                                    chooseValueMinute == null
+                                        ? "60 Minute"
+                                        : chooseValueMinute,
+                                    deviceId: dataMap,
+                                    totalAmountInRs: totalAmountInRs,
+                                  )));
                           // Navigator.of(context)
                           //     .pushReplacementNamed(TotalUsage.routeName);
                         },
                       ),
                     ),
-                  ),
+                  )
+                      : Text('')
                 ],
               ),
             ),
@@ -2181,33 +2318,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                           ],
                         )
                       : Text(""),
-                  completeTask
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(tenMinuteTotalUsage == null
-                                ? varFinalTotalValue
-                                : tenMinuteTotalUsage),
 
-                            // Text('X'),
-                            SizedBox(
-                              height: 28,
-                              width: 75,
-                              child: Center(
-                                child: TextField(
-                                  keyboardType:TextInputType.numberWithOptions(decimal: true) ,
-                                  controller: billTotalController,
-                                  textAlign: TextAlign.center,
-                                  textDirection: TextDirection.rtl,
-                                  decoration: InputDecoration(
-                                      // border: OutlineInputBorder(),
-                                      hintText: 'Enter a rs per unit'),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
                   SizedBox(
                     height: 10,
                   ),
@@ -2230,6 +2341,33 @@ class _PlaceBill2State extends State<PlaceBill2> {
                         )
                       : Text("Please Wait"),
                   completeTask
+                      ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(tenMinuteTotalUsage == null
+                          ? varFinalTotalValue
+                          : tenMinuteTotalUsage),
+
+                      // Text('X'),
+                      SizedBox(
+                        height: 28,
+                        width: 75,
+                        child: Center(
+                          child: TextField(
+                            keyboardType:TextInputType.numberWithOptions(decimal: true) ,
+                            controller: billTotalController,
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.rtl,
+                            decoration: InputDecoration(
+                              // border: OutlineInputBorder(),
+                                hintText: 'Enter a rs per unit'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                      : Container(),
+                  completeTask
                       ? Container(
                           child: Center(
                             child: RaisedButton(
@@ -2249,7 +2387,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                               ),
                               onPressed: () async {
                                 print('navigation $dataMap');
-                                // await totalAmount(billTotalController.text);
+                                await totalAmount(billTotalController.text);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -2284,7 +2422,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
   double totalAmountInRs = 0.0;
 
   totalAmount(String rsValue) {
-    int rsConversion = int.parse(rsValue);
+    double rsConversion = double.parse(rsValue);
     double conversion = double.parse(varFinalTotalValue);
     totalAmountInRs = (conversion / 1000) * rsConversion;
   }
