@@ -5694,12 +5694,6 @@ class _HomeTestState extends State<HomeTest>
 
     List namesDataList12 =
     await NewDbProvider.instance.getPinNamesByDeviceId(dId);
-    // var a=  namesDataList12.toString();
-    //  print('plmkju ${a.indexOf(",")}');
-    // // while (index!=namesDataList12.length){
-    // //   var nameIndex=a[index].indexOf(",");
-    // //   print('plmkju ${a[index].substring(0,nameIndex)}');
-    // // }
 
 
 

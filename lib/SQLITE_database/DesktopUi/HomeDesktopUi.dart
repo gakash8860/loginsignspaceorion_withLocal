@@ -763,7 +763,6 @@ Flat selectedflat;
 
 
   _createAlertDialogDropDown(BuildContext context) {
-
     return showDialog(
         context: context,
         builder: (context) {
@@ -771,311 +770,305 @@ Flat selectedflat;
             title: Text('Change Place'),
             content: Container(
               height: 390,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    FutureBuilder<List<PlaceType>>(
-                        future: placeVal,
-                        builder: (context,
-                            AsyncSnapshot<List<PlaceType>> snapshot) {
+              child: Column(
+                children: [
+                  FutureBuilder<List<PlaceType>>(
+                      future: placeVal,
+                      builder: (context,
+                          AsyncSnapshot<List<PlaceType>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length == 0) {
+                            return Center(
+                                child: Text("No Devices on this place"));
+                          }
+                          return Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(41.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 50.0,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width*2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20,20)
+                                      )],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )
+                                  ),
+                                  child: DropdownButtonFormField<PlaceType>(
+                                    decoration:InputDecoration(
+                                      contentPadding: const EdgeInsets.all(15),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: Text('Select Place'),
+                                    isExpanded: true,
+                                    value: pt,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data.map((selectedPlace) {
+                                      return DropdownMenuItem<PlaceType>(
+                                        value: selectedPlace,
+                                        child: Text(selectedPlace.pType),
+                                      );
+                                    }).toList(),
+                                    onChanged: (PlaceType selectedPlace) {
+                                      setState(() {
+                                        fl = null;
+                                        selectedPt = selectedPlace;
+                                        floorVal =
+                                            getfloors(selectedPlace.pId);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            margin: new EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child:FutureBuilder<List<FloorType>>(
+                        future: floorVal,
+                        builder:
+                            (context, AsyncSnapshot<List<FloorType>> snapshot) {
                           if (snapshot.hasData) {
-                            // print(snapshot.hasData);
-                            // setState(() {
-                            //   floorVal = getfloors(snapshot.data[0].p_id);
-                            // });
                             if (snapshot.data.length == 0) {
                               return Center(
                                   child: Text("No Devices on this place"));
                             }
-                            return Container(
-                              child: Padding(
-                                padding: const EdgeInsets.all(41.0),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height: 50.0,
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width*2,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        boxShadow: [BoxShadow(
+                            return Column(
+                              children: [
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(41.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 50.0,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width*2,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 30,
+                                                // offset for Upward Effect
+                                                offset: Offset(20,20)
+                                            )],
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 0.5,
+                                            )
+                                        ),
+                                        child: DropdownButtonFormField<FloorType>(
+                                          decoration:InputDecoration(
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                          ),
+                                          dropdownColor: Colors.white70,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 28,
+                                          hint: Text('Select Floor'),
+                                          isExpanded: true,
+                                          value: fl,
+                                          style: TextStyle(
                                             color: Colors.black,
-                                            blurRadius: 30,
-                                            offset: Offset(20,20)
-                                        )],
-                                        border: Border.all(
-                                          color: Colors.black,
-                                          width: 0.5,
-                                        )
-                                    ),
-                                    child: DropdownButtonFormField<PlaceType>(
-                                      decoration:InputDecoration(
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black),
-                                        borderRadius: BorderRadius.circular(50),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          items: snapshot.data
+                                              .map((selectedFloor) {
+                                            return DropdownMenuItem<FloorType>(
+                                              value: selectedFloor,
+                                              child: Text(selectedFloor.fName),
+                                            );
+                                          }).toList(),
+                                          onChanged: (FloorType selectedFloor) {
+                                            setState(() {
+                                              selectedfl = selectedFloor;
+                                              flatVal=getflat(selectedFloor.fId);
+                                            });
+                                          },
+                                        ),
                                       ),
-                                      ),
-                                      dropdownColor: Colors.white70,
-                                      icon: Icon(Icons.arrow_drop_down),
-                                      iconSize: 28,
-                                      hint: Text('Select Place'),
-                                      isExpanded: true,
-                                      value: pt,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      items: snapshot.data.map((selectedPlace) {
-                                        return DropdownMenuItem<PlaceType>(
-                                          value: selectedPlace,
-                                          child: Text(selectedPlace.pType),
-                                        );
-                                      }).toList(),
-                                      onChanged: (PlaceType selectedPlace) {
-                                        setState(() {
-                                          fl = null;
-                                          selectedPt = selectedPlace;
-                                          floorVal =
-                                              getfloors(selectedPlace.pId);
-                                        });
-                                      },
                                     ),
                                   ),
+                                  margin: new EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
                                 ),
-                              ),
-                              margin: new EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                              ],
                             );
                           } else {
-                            return CircularProgressIndicator();
+                            return Center(
+                                child: Text(
+                                    "Please select a place to proceed further"));
                           }
-                        }
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child:FutureBuilder<List<FloorType>>(
-                          future: floorVal,
-                          builder:
-                              (context, AsyncSnapshot<List<FloorType>> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data.length == 0) {
-                                return Center(
-                                    child: Text("No Devices on this place"));
-                              }
-                              return Column(
-                                children: [
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(41.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  // offset for Upward Effect
-                                                  offset: Offset(20,20)
-                                              )],
-                                              border: Border.all(
+                        }),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child:FutureBuilder<List<Flat>>(
+                        future: flatVal,
+                        builder:
+                            (context, AsyncSnapshot<List<Flat>> snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data.length == 0) {
+                              return Center(
+                                  child: Text("No Devices on this place"));
+                            }
+                            return Column(
+                              children: [
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(41.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 50.0,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width*2,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [BoxShadow(
                                                 color: Colors.black,
-                                                width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<FloorType>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            ),
-                                            dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
-                                            iconSize: 28,
-                                            hint: Text('Select Floor'),
-                                            isExpanded: true,
-                                            value: fl,
-                                            style: TextStyle(
+                                                blurRadius: 30,
+                                                // offset for Upward Effect
+                                                offset: Offset(20,20)
+                                            )],
+                                            border: Border.all(
                                               color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: snapshot.data
-                                                .map((selectedFloor) {
-                                              return DropdownMenuItem<FloorType>(
-                                                value: selectedFloor,
-                                                child: Text(selectedFloor.fName),
-                                              );
-                                            }).toList(),
-                                            onChanged: (FloorType selectedFloor) {
-                                              setState(() {
-                                                selectedfl = selectedFloor;
-                                                flatVal=getflat(selectedFloor.fId);
-                                              });
-                                            },
+                                              width: 0.5,
+                                            )
+                                        ),
+                                        child: DropdownButtonFormField<Flat>(
+                                          decoration:InputDecoration(
+                                            contentPadding: const EdgeInsets.all(15),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.white),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                            borderRadius: BorderRadius.circular(50),
                                           ),
+                                          ),
+                                          dropdownColor: Colors.white70,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 28,
+                                          hint: Text('Select Flat'),
+                                          isExpanded: true,
+                                          value: flt,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          items: snapshot.data
+                                              .map((selectedFlat) {
+                                            return DropdownMenuItem<Flat>(
+                                              value: selectedFlat,
+                                              child: Text(selectedFlat.fltName),
+                                            );
+                                          }).toList(),
+                                          onChanged: (Flat selectedFlat) {
+                                            setState(() {
+                                              selectedflat=selectedFlat;
+                                            });
+                                          },
                                         ),
                                       ),
                                     ),
-                                    margin: new EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-
-                                ],
-                              );
-                            } else {
-                              return Center(
-                                  child: Text(
-                                      "Please select a place to proceed further"));
-                            }
-                          }),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child:FutureBuilder<List<Flat>>(
-                          future: flatVal,
-                          builder:
-                              (context, AsyncSnapshot<List<Flat>> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data.length == 0) {
-                                return Center(
-                                    child: Text("No Devices on this place"));
-                              }
-                              return Column(
-                                children: [
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(41.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              boxShadow: [BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 30,
-                                                  // offset for Upward Effect
-                                                  offset: Offset(20,20)
-                                              )],
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 0.5,
-                                              )
-                                          ),
-                                          child: DropdownButtonFormField<Flat>(
-                                            decoration:InputDecoration(
-                                              contentPadding: const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.white),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.white),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            ),
-                                            dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
-                                            iconSize: 28,
-                                            hint: Text('Select Flat'),
-                                            isExpanded: true,
-                                            value: flt,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: snapshot.data
-                                                .map((selectedFlat) {
-                                              return DropdownMenuItem<Flat>(
-                                                value: selectedFlat,
-                                                child: Text(selectedFlat.fltName),
-                                              );
-                                            }).toList(),
-                                            onChanged: (Flat selectedFlat) {
-                                              setState(() {
-                                                selectedflat=selectedFlat;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    margin: new EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  // Container(
-                                  //   margin: EdgeInsets.all(8),
-                                  //   // ignore: deprecated_member_use
-                                  //   child: FlatButton(
-                                  //     child: Text(
-                                  //       'Next',
-                                  //       style: TextStyle(
-                                  //         color: Colors.white,
-                                  //         fontSize: 20,
-                                  //         fontWeight: FontWeight.bold,
-                                  //       ),
-                                  //     ),
-                                  //     padding: EdgeInsets.all(12),
-                                  //     shape: OutlineInputBorder(
-                                  //         borderSide: BorderSide(
-                                  //             color: Colors.white, width: 1),
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(50)),
-                                  //     onPressed: () async {
-                                  //       // selectedRoom = await getrooms(widget.flt.fltId);
-                                  //       //
-                                  //       //
-                                  //       // //print(pt.p_type);
-                                  //       // // print(rm[1]);
-                                  //       // //  print(rm[0].r_name);
-                                  //       // Navigator.push(
-                                  //       //   context,
-                                  //       //   MaterialPageRoute(
-                                  //       //       builder: (
-                                  //       //           context,
-                                  //       //           ) =>
-                                  //       //           Container(
-                                  //       //             child: HomeTest(
-                                  //       //                 pt: selectedPt,
-                                  //       //                 fl: selectedfl,
-                                  //       //                 flat: selectedflat,
-                                  //       //                 rm: selectedRoom,
-                                  //       //                 dv: dv),
-                                  //       //           )),
-                                  //       // );
-                                  //     },
-                                  //   ),
-                                  // ),
-                                ],
-                              );
-                            } else {
-                              return Center(
-                                  child: Text(
-                                      "Please select a place to proceed further"));
-                            }
-                          }),
-                    ),
-                  ],
-                ),
+                                  margin: new EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                // Container(
+                                //   margin: EdgeInsets.all(8),
+                                //   // ignore: deprecated_member_use
+                                //   child: FlatButton(
+                                //     child: Text(
+                                //       'Next',
+                                //       style: TextStyle(
+                                //         color: Colors.white,
+                                //         fontSize: 20,
+                                //         fontWeight: FontWeight.bold,
+                                //       ),
+                                //     ),
+                                //     padding: EdgeInsets.all(12),
+                                //     shape: OutlineInputBorder(
+                                //         borderSide: BorderSide(
+                                //             color: Colors.white, width: 1),
+                                //         borderRadius:
+                                //         BorderRadius.circular(50)),
+                                //     onPressed: () async {
+                                //       // selectedRoom = await getrooms(widget.flt.fltId);
+                                //       //
+                                //       //
+                                //       // //print(pt.p_type);
+                                //       // // print(rm[1]);
+                                //       // //  print(rm[0].r_name);
+                                //       // Navigator.push(
+                                //       //   context,
+                                //       //   MaterialPageRoute(
+                                //       //       builder: (
+                                //       //           context,
+                                //       //           ) =>
+                                //       //           Container(
+                                //       //             child: HomeTest(
+                                //       //                 pt: selectedPt,
+                                //       //                 fl: selectedfl,
+                                //       //                 flat: selectedflat,
+                                //       //                 rm: selectedRoom,
+                                //       //                 dv: dv),
+                                //       //           )),
+                                //       // );
+                                //     },
+                                //   ),
+                                // ),
+                              ],
+                            );
+                          } else {
+                            return Center(
+                                child: Text(
+                                    "Please select a place to proceed further"));
+                          }
+                        }),
+                  ),
+                ],
               ),
             ),
             actions: <Widget>[
@@ -1342,6 +1335,11 @@ bool switchOn;
   TimeOfDay pickedTime;
   var cutTime;
 
+  var icon10=FontAwesomeIcons.lightbulb;
+  var icon11=FontAwesomeIcons.lightbulb;
+  var icon12=FontAwesomeIcons.lightbulb;
+
+  List<String> iconCode=['','002','003','','','','','','','','',''];
 
   deviceContainer(String dId,int index) async {
     getData(dId);
@@ -1367,6 +1365,7 @@ bool switchOn;
         widget.Slider_get2 = catchReturn["pin11Status"],
         widget.Slider_get3 = catchReturn["pin12Status"],
       ];
+
       namesDataList = [
         widget.switch1Name = namesDataList12['pin1Name'].toString(),
         widget.switch2Name = namesDataList12['pin2Name'].toString(),
@@ -1381,6 +1380,456 @@ bool switchOn;
         widget.switch11Name = namesDataList12['pin11Name'].toString(),
         widget.switch12Name = namesDataList12['pin12Name'].toString(),
       ];
+
+
+
+      String pin1=namesDataList12['pin1Name'];
+      var indexOfPin1Name=pin1.indexOf(',');
+      var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+
+      print('indexofpppp ${namesDataList12}');
+
+
+      String pin2=namesDataList12['pin2Name'];
+      var indexOfPin2Name=pin2.indexOf(',');
+      var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+      print('indexofpppppin2 $pin2');
+
+      String pin3=namesDataList12['pin3Name'];
+      var indexOfPin3Name=pin3.indexOf(',');
+      var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin4=namesDataList12['pin4Name'];
+      var indexOfPin4Name=pin4.indexOf(',');
+      var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin5=namesDataList12['pin5Name'];
+      var indexOfPin5Name=pin5.indexOf(',');
+      var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin6=namesDataList12['pin6Name'];
+      var indexOfPin6Name=pin6.indexOf(',');
+      var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin7=namesDataList12['pin7Name'];
+      var indexOfPin7Name=pin7.indexOf(',');
+      var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin8=namesDataList12['pin8Name'];
+      var indexOfPin8Name=pin8.indexOf(',');
+      var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin9=namesDataList12['pin9Name'];
+      var indexOfPin9Name=pin9.indexOf(',');
+      var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin10=namesDataList12['pin10Name'];
+      var indexOfPin10Name=pin10.indexOf(',');
+      var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+      print('indexofpppppin2 $pin3');
+
+      String pin11=namesDataList12['pin11Name'];
+      var indexOfPin11Name=pin11.indexOf(',');
+      var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+      print('indexofpppppin2 $pin3');
+
+
+      String pin12=namesDataList12['pin12Name'];
+      var indexOfPin12Name=pin12.indexOf(',');
+      var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+      print('indexofpppppin2 $pin3');
+
+
+
+      for(int i=0;i<namesDataList.length;i++){
+        if(pin1.contains('001') || pin1.contains('002')||pin1.contains('003') ||pin1.contains('004' )||pin1.contains('005') ||pin1.contains('006')||pin1.contains('007')||pin1.contains('008')||pin1.contains('009')|| pin1.contains('0010')||pin1.contains('0011')){
+          print('qwertyhgf $index');
+          // icon1=Icons.ac_unit;
+          if(pin1.contains('001')){
+            print('indexofpppp2 $pin1');
+            setState(() {
+              changeIcon[index]=icon1;
+            });
+          }
+          if(pin1.contains('002')){
+            changeIcon[index]=icon2;
+          }
+          if(pin1.contains('003')){
+            // changeIcon[index]=icon3;
+            setState(() {
+              changeIcon[index]=icon3;
+            });
+            print('imcomming ${changeIcon[index]}');
+          }
+          if(pin1.contains('004')){
+            changeIcon[index]=icon5;
+            print('imcomming4 ${changeIcon[index]}');
+          }
+          if(pin1.contains('005')){
+            changeIcon[index]=icon6;
+          }
+          if(pin1.contains('007')){
+            changeIcon[index]=icon6;
+          }
+          if(pin1.contains('008')){
+            changeIcon[index]=icon7;
+          }
+          if(pin1.contains('009')){
+            changeIcon[index]=icon8;
+          }
+          if(pin1.contains('0010')){
+            changeIcon[index]=icon9;
+          }
+          if(pin1.contains('0011')){
+            changeIcon[index]=icon10;
+          }
+          if(pin1.contains('0012')){
+            changeIcon[index]=icon12;
+          }
+        }
+
+        if(pin2.contains('001') || pin2.contains('002')||pin2.contains('003') ||pin2.contains('004' )||pin2.contains('005') ||pin2.contains('006')||pin2.contains('007')||pin2.contains('008')||pin2.contains('009')|| pin2.contains('0010')||pin2.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin2.contains('001')){
+            changeIcon[index+1]=icon1;
+          }
+          if(pin2.contains('002')){
+            changeIcon[index+1]=icon2;
+          }
+          if(pin2.contains('003')){
+
+            changeIcon[index+1]=icon3;
+            print('commnng inde  3');
+          }
+          if(pin2.contains('004')){
+            changeIcon[index+1]=icon5;
+          }
+          if(pin2.contains('005')){
+            changeIcon[index+1]=icon6;
+          }
+          if(pin2.contains('007')){
+            changeIcon[index+1]=icon6;
+          }
+          if(pin2.contains('008')){
+            changeIcon[index+1]=icon7;
+          }
+          if(pin2.contains('009')){
+            changeIcon[index]=icon8;
+          }
+          if(pin2.contains('0010')){
+            changeIcon[index+1]=icon9;
+          }
+          if(pin2.contains('0011')){
+            changeIcon[index+1]=icon10;
+          }
+          if(pin2.contains('0012')){
+            changeIcon[index+1]=icon12;
+          }
+        }
+
+        if(pin3.contains('001') || pin3.contains('002')||pin3.contains('003') ||pin3.contains('004' )||pin3.contains('005') ||pin3.contains('006')||pin3.contains('007')||pin3.contains('008')||pin3.contains('009')|| pin3.contains('0010')||pin3.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin3.contains('001')){
+            changeIcon[index+2]=icon1;
+          }
+          if(pin3.contains('002')){
+            changeIcon[index+2]=icon2;
+          }
+          if(pin3.contains('003')){
+            changeIcon[index+2]=icon3;
+          }
+          if(pin3.contains('004')){
+            changeIcon[index+2]=icon5;
+          }
+          if(pin3.contains('005')){
+            changeIcon[index+2]=icon6;
+          }
+          if(pin3.contains('007')){
+            changeIcon[index+2]=icon6;
+          }
+          if(pin3.contains('008')){
+            changeIcon[index+2]=icon7;
+          }
+          if(pin3.contains('009')){
+            changeIcon[index+2]=icon8;
+          }
+          if(pin3.contains('0010')){
+            changeIcon[index+2]=icon9;
+          }
+          if(pin3.contains('0011')){
+            changeIcon[index+2]=icon10;
+          }
+          if(pin3.contains('0012')){
+            changeIcon[index+2]=icon12;
+          }
+        }
+
+        if(pin4.contains('001') || pin4.contains('002')||pin4.contains('003') ||pin4.contains('004' )||pin4.contains('005') ||pin4.contains('006')||pin4.contains('007')||pin4.contains('008')||pin4.contains('009')|| pin4.contains('0010')||pin4.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin4.contains('001')){
+            changeIcon[index+3]=icon1;
+          }
+          if(pin4.contains('002')){
+            changeIcon[index+3]=icon2;
+          }
+          if(pin4.contains('003')){
+            changeIcon[index+3]=icon3;
+          }
+          if(pin4.contains('004')){
+            changeIcon[index+3]=icon5;
+          }
+          if(pin4.contains('005')){
+            changeIcon[index+3]=icon6;
+          }
+          if(pin4.contains('007')){
+            changeIcon[index+3]=icon6;
+          }
+          if(pin4.contains('008')){
+            changeIcon[index+3]=icon7;
+          }
+          if(pin4.contains('009')){
+            changeIcon[index+3]=icon8;
+          }
+          if(pin4.contains('0010')){
+            changeIcon[index+3]=icon9;
+          }
+          if(pin4.contains('0011')){
+            changeIcon[index+3]=icon10;
+          }
+          if(pin4.contains('0012')){
+            changeIcon[index+3]=icon12;
+          }
+        }
+        if(pin5.contains('001') || pin5.contains('002')||pin5.contains('003') ||pin5.contains('004' )||pin5.contains('005') ||pin5.contains('006')||pin5.contains('007')||pin5.contains('008')||pin5.contains('009')|| pin5.contains('0010')||pin5.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin5.contains('001')){
+            changeIcon[index+4]=icon1;
+          }
+          if(pin5.contains('002')){
+            changeIcon[index+4]=icon2;
+          }
+          if(pin5.contains('003')){
+            changeIcon[index+4]=icon3;
+          }
+          if(pin5.contains('004')){
+            changeIcon[index+4]=icon5;
+          }
+          if(pin5.contains('005')){
+            changeIcon[index+4]=icon6;
+          }
+          if(pin5.contains('007')){
+            changeIcon[index+4]=icon6;
+          }
+          if(pin5.contains('008')){
+            changeIcon[index+4]=icon7;
+          }
+          if(pin5.contains('009')){
+            changeIcon[index+4]=icon8;
+          }
+          if(pin5.contains('0010')){
+            changeIcon[index+4]=icon9;
+          }
+          if(pin5.contains('0011')){
+            changeIcon[index+4]=icon10;
+          }
+          if(pin5.contains('0012')){
+            changeIcon[index+4]=icon12;
+          }
+        }
+        if(pin6.contains('001') || pin6.contains('002')||pin6.contains('003') ||pin6.contains('004' )||pin6.contains('005') ||pin6.contains('006')||pin6.contains('007')||pin6.contains('008')||pin6.contains('009')|| pin6.contains('0010')||pin6.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin6.contains('001')){
+            changeIcon[index+5]=icon1;
+          }
+          if(pin6.contains('002')){
+            changeIcon[index+5]=icon2;
+          }
+          if(pin6.contains('003')){
+            changeIcon[index+5]=icon3;
+          }
+          if(pin6.contains('004')){
+            changeIcon[index+5]=icon5;
+          }
+          if(pin6.contains('005')){
+            changeIcon[index+5]=icon6;
+          }
+          if(pin6.contains('007')){
+            changeIcon[index+5]=icon6;
+          }
+          if(pin6.contains('008')){
+            changeIcon[index+5]=icon7;
+          }
+          if(pin6.contains('009')){
+            changeIcon[index+5]=icon8;
+          }
+          if(pin6.contains('0010')){
+            changeIcon[index+5]=icon9;
+          }
+          if(pin6.contains('0011')){
+            changeIcon[index+5]=icon10;
+          }
+          if(pin6.contains('0012')){
+            changeIcon[index+5]=icon12;
+          }
+        }
+        if(pin7.contains('001') || pin7.contains('002')||pin7.contains('003') ||pin7.contains('004' )||pin7.contains('005') ||pin7.contains('006')||pin7.contains('007')||pin7.contains('008')||pin7.contains('009')|| pin7.contains('0010')||pin7.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin7.contains('001')){
+            changeIcon[index+6]=icon1;
+          }
+          if(pin7.contains('002')){
+            changeIcon[index+6]=icon2;
+          }
+          if(pin7.contains('003')){
+            changeIcon[index+6]=icon3;
+          }
+          if(pin7.contains('004')){
+            changeIcon[index+6]=icon5;
+          }
+          if(pin7.contains('005')){
+            changeIcon[index+6]=icon6;
+          }
+          if(pin7.contains('007')){
+            changeIcon[index+6]=icon6;
+          }
+          if(pin7.contains('008')){
+            changeIcon[index+6]=icon7;
+          }
+          if(pin7.contains('009')){
+            changeIcon[index+6]=icon8;
+          }
+          if(pin7.contains('0010')){
+            changeIcon[index+6]=icon9;
+          }
+          if(pin7.contains('0011')){
+            changeIcon[index+6]=icon10;
+          }
+          if(pin7.contains('0012')){
+            changeIcon[index+6]=icon12;
+          }
+        }
+        if(pin8.contains('001') || pin8.contains('002')||pin8.contains('003') ||pin8.contains('004' )||pin8.contains('005') ||pin8.contains('006')||pin8.contains('007')||pin8.contains('008')||pin8.contains('009')|| pin8.contains('0010')||pin8.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin8.contains('001')){
+            changeIcon[index+7]=icon1;
+          }
+          if(pin8.contains('002')){
+            changeIcon[index+7]=icon2;
+          }
+          if(pin8.contains('003')){
+            changeIcon[index+7]=icon3;
+          }
+          if(pin8.contains('004')){
+            changeIcon[index+7]=icon5;
+          }
+          if(pin8.contains('005')){
+            changeIcon[index+7]=icon6;
+          }
+          if(pin8.contains('007')){
+            changeIcon[index+7]=icon6;
+          }
+          if(pin8.contains('008')){
+            changeIcon[index+7]=icon7;
+          }
+          if(pin8.contains('009')){
+            changeIcon[index+7]=icon8;
+          }
+          if(pin8.contains('0010')){
+            changeIcon[index+7]=icon9;
+          }
+          if(pin8.contains('0011')){
+            changeIcon[index+7]=icon10;
+          }
+          if(pin8.contains('0012')){
+            changeIcon[index+7]=icon12;
+          }
+        }
+        if(pin9.contains('001') || pin9.contains('002')||pin9.contains('003') ||pin9.contains('004' )||pin9.contains('005') ||pin9.contains('006')||pin9.contains('007')||pin9.contains('008')||pin9.contains('009')|| pin9.contains('0010')||pin9.contains('0011')){
+          print('qwertyhgfnamesDataList $index');
+          // icon2=Icons.ac_unit;
+          // changeIcon[index+1]=icon2;
+          if(pin9.contains('001')){
+            changeIcon[index+8]=icon1;
+          }
+          if(pin9.contains('002')){
+            changeIcon[index+8]=icon2;
+          }
+          if(pin9.contains('003')){
+            changeIcon[index+8]=icon3;
+          }
+          if(pin9.contains('004')){
+            changeIcon[index+8]=icon5;
+          }
+          if(pin9.contains('005')){
+            changeIcon[index+8]=icon6;
+          }
+          if(pin9.contains('007')){
+            changeIcon[index+8]=icon6;
+          }
+          if(pin9.contains('008')){
+            changeIcon[index+8]=icon7;
+          }
+          if(pin9.contains('009')){
+            changeIcon[index+8]=icon8;
+          }
+          if(pin9.contains('0010')){
+            changeIcon[index+8]=icon9;
+          }
+          if(pin9.contains('0011')){
+            changeIcon[index+8]=icon10;
+          }
+          if(pin9.contains('0012')){
+            changeIcon[index+8]=icon12;
+          }
+        }
+
+        // if(namesDataList[index+2].contains('003')){
+        //   // icon2=Icons.ac_unit;
+        //   changeIcon[index+2]=icon3;
+        // }
+        // if(namesDataList[index+3].contains('004')){
+        //   print('qwertyhgf $index');
+        //   // icon2=Icons.ac_unit;
+        //   changeIcon[index+3]=icon4;
+        // }
+      }
+      namesDataList = [
+        widget.switch1Name = pin1FinalName,
+        widget.switch2Name = pin2FinalName,
+        widget.switch3Name = pin3FinalName,
+        widget.switch4Name = pin4FinalName,
+        widget.switch5Name = pin5FinalName,
+        widget.switch6Name = pin6FinalName,
+        widget.switch7Name = pin7FinalName,
+        widget.switch8Name = pin8FinalName,
+        widget.switch9Name = pin9FinalName,
+        widget.switch10Name = pin10FinalName,
+        widget.switch11Name = pin11FinalName,
+        widget.switch12Name = pin12FinalName,
+      ];
+
+
     });
     if(responseGetData.contains(1)){
       setState(() {
@@ -1997,7 +2446,7 @@ var textSelected;
   }
 
   getUid() async{
-    final url=await API+'getuid/';
+    final url= API+'getuid/';
     await getTokenWeb();
     final response =
     await http.get(url,
@@ -3400,7 +3849,15 @@ Future flatValWeb;
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: GestureDetector(
-            child: Center(child: Text(widget.pt.pType ==null?"asds":widget.pt.pType)),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: Text(widget.pt.pType ==null?" ":widget.pt.pType)),
+                SizedBox(width: 12,),
+                Icon(Icons.arrow_drop_down_circle_outlined)
+              ],
+            ),
             onTap: ()async{
               placeVal=  getplaces();
           _createAlertDialogDropDown(context);
@@ -3409,9 +3866,9 @@ Future flatValWeb;
 
       ),
       body: Container(
-        width: double.maxFinite,
-
-        // color: change_toDark ? Colors.black : Colors.white,
+        // width: double.maxFinite,
+        //
+        // // color: change_toDark ? Colors.black : Colors.white,
         child: DefaultTabController(
           // length: rm.length,
           length: widget.rm.length,
@@ -3523,90 +3980,80 @@ Future flatValWeb;
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        GestureDetector(
-                                          onLongPress: () {
-                                            // _editFloorNameAlertDialog(context);
-                                          },
-                                          child: GestureDetector(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(right: 290.0),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(right: 18.0),
-                                                    child: Text('Flat - ',
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .white,
-                                                          fontFamily: fonttest==null?changeFont:fonttest,
-                                                          fontSize: 22,
-                                                          fontWeight: FontWeight
-                                                              .bold,
-                                                          // fontStyle: FontStyle.italic
-                                                      ),),
-                                                  ),
-                                                  Text(
-                                                    widget.flt.fltName.toString(),
+                                        InkWell(
+                                          child: Container(
+                                            margin: EdgeInsets.only(right: 358),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  child: Text('Flat - ',
                                                     style: TextStyle(
                                                         color: Colors
                                                             .white,
-                                                        fontSize: 22,
                                                         fontFamily: fonttest==null?changeFont:fonttest,
-                                                        // fontWeight: FontWeight.bold,
-                                                        // fontStyle: FontStyle
-                                                        //     .italic
-                                                    ),
+                                                        fontSize: 22,
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        // fontStyle: FontStyle.italic
+                                                    ),),
+                                                ),
+                                                Text(
+                                                  widget.flt.fltName.toString(),
+                                                  style: TextStyle(
+                                                      color: Colors
+                                                          .white,
+                                                      fontSize: 22,
+                                                      fontFamily: fonttest==null?changeFont:fonttest,
+                                                      // fontWeight: FontWeight.bold,
+                                                      // fontStyle: FontStyle
+                                                      //     .italic
                                                   ),
-                                                  InkWell(
-                                                      onTap: ()async{
-                                                        flatValWeb=getflatWebForDropDown(widget.fl.fId);
-                                                        _createAlertDialogDropDownFlat(context);
-                                                      },
-                                                      child: Icon(Icons.arrow_drop_down)),
-                                                  SizedBox(width: 10,),
-                                                  InkWell(
-                                                    child: Icon(SettingIcon.params,size: 18,),
-                                                    onTap: () async {
-                                                      _createAlertDialogForDeleteFlatAndAddFlat(
-                                                          context);
+                                                ),
+                                                InkWell(
+                                                    onTap: ()async{
+                                                      flatValWeb=getflatWebForDropDown(widget.fl.fId);
+                                                      _createAlertDialogDropDownFlat(context);
                                                     },
-                                                  ),
-                                                  // Row(
-                                                  //   children: [
-                                                  //     SizedBox(width: 28,),
-                                                  //     Container(
-                                                  //       // color:Colors.red,
-                                                  //       child: CircularProfileAvatar(
-                                                  //         '',
-                                                  //         child: setImage == null
-                                                  //             ? Image.asset('assets/images/genLogo.png')
-                                                  //             : setImage,
-                                                  //         radius: 47.5,
-                                                  //         // elevation: 5,
-                                                  //         onTap: () {
-                                                  //           Navigator.push(
-                                                  //               context,
-                                                  //               MaterialPageRoute(
-                                                  //                   builder: (context) =>
-                                                  //                       ProfilePage()));
-                                                  //           //     .then((value) =>
-                                                  //           // loadImageFromPreferences()
-                                                  //           //     ? _deleteImage()
-                                                  //           //     : loadImageFromPreferences());
-                                                  //         },
-                                                  //         cacheImage: true,
-                                                  //       ),
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
-                                                ],
-                                              ),
+                                                    child: Icon(Icons.arrow_drop_down)),
+                                                SizedBox(width: 10,),
+                                                InkWell(
+                                                  child: Icon(SettingIcon.params,size: 18,),
+                                                  onTap: () async {
+                                                    _createAlertDialogForDeleteFlatAndAddFlat(
+                                                        context);
+                                                  },
+                                                ),
+                                                // Row(
+                                                //   children: [
+                                                //     SizedBox(width: 28,),
+                                                //     Container(
+                                                //       // color:Colors.red,
+                                                //       child: CircularProfileAvatar(
+                                                //         '',
+                                                //         child: setImage == null
+                                                //             ? Image.asset('assets/images/genLogo.png')
+                                                //             : setImage,
+                                                //         radius: 47.5,
+                                                //         // elevation: 5,
+                                                //         onTap: () {
+                                                //           Navigator.push(
+                                                //               context,
+                                                //               MaterialPageRoute(
+                                                //                   builder: (context) =>
+                                                //                       ProfilePage()));
+                                                //           //     .then((value) =>
+                                                //           // loadImageFromPreferences()
+                                                //           //     ? _deleteImage()
+                                                //           //     : loadImageFromPreferences());
+                                                //         },
+                                                //         cacheImage: true,
+                                                //       ),
+                                                //     ),
+                                                //   ],
+                                                // ),
+                                              ],
                                             ),
                                           ),
-                                          onTap: () {
-                                            // _createAlertDialogDropDown(
-                                            //     context);
-                                          },
                                         ),
                                         Divider(
                                          thickness: 45.3,
@@ -3727,7 +4174,7 @@ Future flatValWeb;
                               ],
                             ),
                             SizedBox(
-                              height: 8,
+                              height: 25,
                             ),
                             FutureBuilder(
                               future: deviceSensorVal,
@@ -3980,53 +4427,53 @@ Future flatValWeb;
                   ),
                 ),
 
-                // SliverList(
-                //   delegate: SliverChildBuilderDelegate((context, index) {
-                //     print('checkindex123 $index');
-                //     print('checkdevice123 ${widget.dv.length}');
-                //     if (index < widget.dv.length) {
-                //       print('checkindex123underif $index');
-                //       print('checkdevice123 ${widget.dv.length}');
-                //       print('checkdevice123 ${widget.dv[index].dId}');
-                //
-                //       return Container(
-                //         child: Column(
-                //           children: [
-                //             deviceContainer2(widget.dv[index].dId,index),
-                //             Container(
-                //                 //
-                //                 // color: Colors.green,
-                //                 height: 35,
-                //                 child: GestureDetector(
-                //                   child: RichText(
-                //                     text: TextSpan(children: [
-                //                       TextSpan(
-                //                           text: widget.dv[index].dId,
-                //                           style: TextStyle(
-                //                               fontSize: 15, color: Colors.black)),
-                //                       TextSpan(text: "   "),
-                //                       WidgetSpan(
-                //                           child: Icon(
-                //                         Icons.settings,
-                //                         size: 18,
-                //                       ))
-                //                     ]),
-                //                   ),
-                //                   onTap: () {
-                //                     // _createAlertDialogForSSIDAndEmergencyNumber(
-                //                     //     context);
-                //                     print('on tap');
-                //                   },
-                //                 )),
-                //           ],
-                //         ),
-                //         // child: Text(dv[index].dId),
-                //       );
-                //     } else {
-                //       return null;
-                //     }
-                //   }),
-                // )
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    print('checkindex123 $index');
+                    print('checkdevice123 ${widget.dv.length}');
+                    if (index < widget.dv.length) {
+                      print('checkindex123underif $index');
+                      print('checkdevice123 ${widget.dv.length}');
+                      print('checkdevice123 ${widget.dv[index].dId}');
+
+                      return Container(
+                        child: Column(
+                          children: [
+                            deviceContainer2(widget.dv[index].dId,index),
+                            Container(
+                                //
+                                // color: Colors.green,
+                                height: 35,
+                                child: GestureDetector(
+                                  child: RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: widget.dv[index].dId,
+                                          style: TextStyle(
+                                              fontSize: 15, color: Colors.black)),
+                                      TextSpan(text: "   "),
+                                      WidgetSpan(
+                                          child: Icon(
+                                        Icons.settings,
+                                        size: 18,
+                                      ))
+                                    ]),
+                                  ),
+                                  onTap: () {
+                                    // _createAlertDialogForSSIDAndEmergencyNumber(
+                                    //     context);
+                                    print('on tap');
+                                  },
+                                )),
+                          ],
+                        ),
+                        // child: Text(dv[index].dId),
+                      );
+                    } else {
+                      return null;
+                    }
+                  }),
+                )
               ]),
         ),
       ),
