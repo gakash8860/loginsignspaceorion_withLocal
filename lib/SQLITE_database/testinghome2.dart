@@ -5244,54 +5244,54 @@ class _HomeTestState extends State<HomeTest>
                               ),
                             ),
 
-                            // SliverList(
-                            //   delegate: SliverChildBuilderDelegate((context,
-                            //       index) {
-                            //     if (index < widget.dv.length) {
-                            //               if(widget.dv.length==null){
-                            //             return CircularProgressIndicator();
-                            //               }
-                            //       return Container(
-                            //         child: Column(
-                            //           children: [
-                            //             deviceContainer2(
-                            //                 widget.dv[index].dId, index),
-                            //             Container(
-                            //               //
-                            //               // color: Colors.green,
-                            //                 height: 35,
-                            //                 child: GestureDetector(
-                            //                   child: RichText(
-                            //                     text: TextSpan(children: [
-                            //                       TextSpan(
-                            //                           text: widget.dv[index].dId,
-                            //                           style: TextStyle(
-                            //                               fontFamily: fonttest==null?changeFont:fonttest,
-                            //                               fontSize: 15,
-                            //                             color: change_toDark ? Colors.white : Colors.black,)),
-                            //                       TextSpan(text: "   "),
-                            //                       WidgetSpan(
-                            //                           child: Icon(
-                            //                           Icons.settings,
-                            //                           color: change_toDark ? Colors.white : Colors.black,
-                            //                             size: 18,
-                            //                           ))
-                            //                     ]),
-                            //                   ),
-                            //                   onTap: () {
-                            //                     _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
-                            //                     print('on tap');
-                            //                   },
-                            //                 )),
-                            //           ],
-                            //         ),
-                            //         // child: Text(dv[index].dId),
-                            //       );
-                            //     } else {
-                            //       return null;
-                            //     }
-                            //   }),
-                            // )
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate((context,
+                                  index) {
+                                if (index < widget.dv.length) {
+                                          if(widget.dv.length==null){
+                                        return CircularProgressIndicator();
+                                          }
+                                  return Container(
+                                    child: Column(
+                                      children: [
+                                        deviceContainer2(
+                                            widget.dv[index].dId, index),
+                                        Container(
+                                          //
+                                          // color: Colors.green,
+                                            height: 35,
+                                            child: GestureDetector(
+                                              child: RichText(
+                                                text: TextSpan(children: [
+                                                  TextSpan(
+                                                      text: widget.dv[index].dId,
+                                                      style: TextStyle(
+                                                          fontFamily: fonttest==null?changeFont:fonttest,
+                                                          fontSize: 15,
+                                                        color: change_toDark ? Colors.white : Colors.black,)),
+                                                  TextSpan(text: "   "),
+                                                  WidgetSpan(
+                                                      child: Icon(
+                                                      Icons.settings,
+                                                      color: change_toDark ? Colors.white : Colors.black,
+                                                        size: 18,
+                                                      ))
+                                                ]),
+                                              ),
+                                              onTap: () {
+                                                _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
+                                                print('on tap');
+                                              },
+                                            )),
+                                      ],
+                                    ),
+                                    // child: Text(dv[index].dId),
+                                  );
+                                } else {
+                                  return null;
+                                }
+                              }),
+                            )
                           ]),
                     ),
                   ),
@@ -7301,10 +7301,10 @@ class _HomeTestState extends State<HomeTest>
         );
         await NewDbProvider.instance.updatePinStatusData(pinStatus);
         print('devicePinJson    ${pinStatus.toJson()}');
-        String a = listOfPinStatus[i]['pin20Status'].toString();
-        print('ForLoop123 ${a}');
-        int aa = int.parse(a);
-        print('double $aa');
+        // String a = listOfPinStatus[i]['pin20Status'].toString();
+        // print('ForLoop123 ${a}');
+        // int aa = int.parse(a);
+        // print('double $aa');
         // int aa=int.parse(a);
 
         int ms =
@@ -7314,14 +7314,14 @@ class _HomeTestState extends State<HomeTest>
             .millisecondsSinceEpoch) / 1000).round() -
             100; // -100 for checking a difference for 100 seconds in current time
         print('CheckMs ${ms}');
-        print('Checkaa ${aa}');
-        if (aa >= ms) {
-          print('ifelse');
-          statusOfDevice = 1;
-        } else {
-          print('ifelse2');
-          statusOfDevice = 0;
-        }
+        // print('Checkaa ${aa}');
+        // if (aa >= ms) {
+        //   print('ifelse');
+        //   statusOfDevice = 1;
+        // } else {
+        //   print('ifelse2');
+        //   statusOfDevice = 0;
+        // }
       }
       print("DATA-->  $data");
       print('\n');

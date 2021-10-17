@@ -30,7 +30,10 @@ class _DeviceBillState extends State<DeviceBill> {
   RoomType rm2;
   Device dv2;
   List<Device> dv;
-
+  bool placeBool = false;
+  bool floorBool = false;
+  bool flatBool = false;
+  bool roomBool = false;
   var onlyDayEnergyList = List(366);
   var finalEnergyValue;
   List minute = [
@@ -2489,7 +2492,7 @@ class _DeviceBillState extends State<DeviceBill> {
                   SizedBox(
                     height: 15,
                   ),
-                  FutureBuilder<List<PlaceType>>(
+                  placeBool==false?   FutureBuilder<List<PlaceType>>(
                       future: placeVal,
                       builder: (context,
                           AsyncSnapshot<List<PlaceType>> snapshot) {
@@ -2570,6 +2573,7 @@ class _DeviceBillState extends State<DeviceBill> {
                                       setState(() {
                                         fl = null;
                                         pt = selectedPlace;
+                                        placeBool=true;
                                         floorVal = getfloors(
                                             selectedPlace.pId);
                                       });
@@ -2584,11 +2588,9 @@ class _DeviceBillState extends State<DeviceBill> {
                         } else {
                           return CircularProgressIndicator();
                         }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<FloorType>>(
+                      }):
+
+                  floorBool == false? FutureBuilder<List<FloorType>>(
                       future: floorVal,
                       builder: (context,
                           AsyncSnapshot<List<FloorType>> snapshot) {
@@ -2674,6 +2676,7 @@ class _DeviceBillState extends State<DeviceBill> {
                                             (FloorType selectedFloor) {
                                           setState(() {
                                             fl = selectedFloor;
+                                            floorBool = true;
                                             flatVal = getflat(
                                                 selectedFloor.fId);
                                           });
@@ -2695,11 +2698,8 @@ class _DeviceBillState extends State<DeviceBill> {
                               child: Text(
                                   "Please select a place to proceed further"));
                         }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<Flat>>(
+                      }):
+                flatBool==false?  FutureBuilder<List<Flat>>(
                       future: flatVal,
                       builder: (context,
                           AsyncSnapshot<List<Flat>> snapshot) {
@@ -2784,6 +2784,7 @@ class _DeviceBillState extends State<DeviceBill> {
                                           setState(() {
                                             flt = selectedFlat;
                                             selectedflat=selectedFlat.fltId;
+                                            flatBool = true;
                                             roomVal=getrooms(selectedflat);
                                           });
                                         },
@@ -2802,11 +2803,8 @@ class _DeviceBillState extends State<DeviceBill> {
                               child: Text(
                                   "Please select a place to proceed further"));
                         }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<RoomType>>(
+                      }):
+                 roomBool == false? FutureBuilder<List<RoomType>>(
                       future: roomVal,
                       builder: (context,
                           AsyncSnapshot<List<RoomType>> snapshot) {
@@ -2891,6 +2889,7 @@ class _DeviceBillState extends State<DeviceBill> {
                                           setState(() {
                                             rm2 = selectedRoom;
                                             selectedroom=selectedRoom.rId;
+                                            roomBool = true;
                                             deviceVal=getDevice(selectedroom);
                                           });
                                         },
@@ -2901,9 +2900,7 @@ class _DeviceBillState extends State<DeviceBill> {
                                 margin: new EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+
 
                             ],
                           );
@@ -2912,10 +2909,7 @@ class _DeviceBillState extends State<DeviceBill> {
                               child: Text(
                                   "Please select a place to proceed further"));
                         }
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
+                      }):
                   FutureBuilder<List<Device>>(
                       future: deviceVal,
                       builder: (context,

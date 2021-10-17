@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,10 +8,8 @@ import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import '../../ProfilePage.dart';
 import '../../Setting_Page.dart';
 import '../../changeFont.dart';
-import '../../dropdown1.dart';
 import '../../main.dart';
 import '../../setting_icons.dart';
 import '../testinghome2.dart';
@@ -469,21 +466,27 @@ class _DesktopHomeState extends State<DesktopHome> {
                       _chosenValue = value;
                       if(_chosenValue=='Air Conditioner'){
                         changeIcon[index]=icon1;
-                        print('true');
+                        iconCode[index]='001';
+                        print('true AirCon  ${changeIcon[index]}' );
                       }else if(_chosenValue=='Refrigerator'){
                         changeIcon[index]=icon2;
+                        iconCode[index]='002';
                         print('true');
                       }else if(_chosenValue=='Bulb'){
                         changeIcon[index]=icon3;
+                        iconCode[index]='003';
                         print('true');
                       }else if(_chosenValue=='Fan'){
                         changeIcon[index]=icon4;
+                        iconCode[index]='004';
                         print('true');
                       }else if(_chosenValue=='Washing Machine'){
                         changeIcon[index]=icon5;
+                        iconCode[index]='005';
                         print('true');
                       }else if(_chosenValue=='Washing Machine'){
                         changeIcon[index]=icon6;
+                        iconCode[index]='006';
                         print('true');
                       }
                       // changeIcon=value;
@@ -503,7 +506,10 @@ class _DesktopHomeState extends State<DesktopHome> {
                   elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async{
-                    await addPinsName(pinNameController.text, index);
+                   String piname=pinNameController.text;
+                    print('checkConditioncheck ${iconCode[index]}');
+                    String aa=piname+","+iconCode[index];
+                    await addPinsName(aa, index);
                     Navigator.of(context).pop();
                     //
 
@@ -2100,7 +2106,7 @@ var textSelected;
                                           namesDataList[index],
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
-                                          style: TextStyle(fontSize: 10),
+                                          style: TextStyle(fontSize: 10,color: Colors.blue),
                                         ),
                                         onTap: () async{
                                           print('index->  ${names[index]}');
@@ -2112,7 +2118,7 @@ var textSelected;
                                           });
                                           _createAlertDialogForNameDeviceBox(context,index);
 
-                                            addDeviceName(index);
+
                                         },
                                       ),
                                     ),
