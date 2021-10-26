@@ -6,7 +6,7 @@ import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
 import 'package:loginsignspaceorion/BillUsage/placebill.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/InformationPageWeb/aboutWeb.dart';
-import 'package:loginsignspaceorion/ProfilePage.dart';
+import 'package:loginsignspaceorion/profilepage.dart';
 import 'package:loginsignspaceorion/Setting_Page.dart';
 import 'package:loginsignspaceorion/SubAccessPage/singlePageForSubAccess.dart';
 import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';

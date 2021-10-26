@@ -28,6 +28,11 @@ class _FlatBillState extends State<FlatBill> {
   FloorType fl;
   DateTime date2;
   DateTime date1;
+  bool placeBool = false;
+  bool floorBool = false;
+  bool flatBool = false;
+  bool roomBool = false;
+
   String dateFinal;
   var currentDifference;
   var currentDate;
@@ -890,6 +895,13 @@ class _FlatBillState extends State<FlatBill> {
 
     };
     double totalValue=0.0;
+    if(hourEnergy.isEmpty ){
+      setState(() {
+        pleaseSelect='There is not Data';
+      });
+      return thereIsNoData(context);
+
+    }
     setState(() {
       lengthHour=hourEnergy.length;
     });
@@ -1567,7 +1579,7 @@ class _FlatBillState extends State<FlatBill> {
     print('currentDifference ${currentDifference}');
   }
 
-  void findDifferenceBetweenDates(){
+   findDifferenceBetweenDates(){
     print(date1);
     print(date2);
     setState(() {
@@ -1597,6 +1609,7 @@ class _FlatBillState extends State<FlatBill> {
       print('tenMinuteEnergy ${response.statusCode}');
       print('tenMinuteEnergy ${response.body}');
       if (response.statusCode == 200) {
+
         data.addAll(jsonDecode(response.body));
             print('dayEnergy ${data[0]['d_id']}');
 
@@ -1604,7 +1617,13 @@ class _FlatBillState extends State<FlatBill> {
       }
     }
     onlyDayEnergyList=List.from(data);
+    if(onlyDayEnergyList.isEmpty ){
+      setState(() {
+        pleaseSelect='There is not Data';
+      });
+      return thereIsNoData(context);
 
+    }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
 
@@ -2215,15 +2234,15 @@ class _FlatBillState extends State<FlatBill> {
       }else{
         return Scaffold(
           appBar: AppBar(
-            title: Text('Flat Bill'),
+            title: const Text('Flat Bill'),
           ),
           body:SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                FutureBuilder<List<PlaceType>>(
+                placeBool == false ?FutureBuilder<List<PlaceType>>(
                     future: placeVal,
                     builder: (context,
                         AsyncSnapshot<List<PlaceType>> snapshot) {
@@ -2244,7 +2263,7 @@ class _FlatBillState extends State<FlatBill> {
                               2,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black,
                                     blurRadius: 10,
@@ -2261,14 +2280,14 @@ class _FlatBillState extends State<FlatBill> {
                               contentPadding:
                               const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.white),
                                 borderRadius:
                                 BorderRadius.circular(10),
                               ),
                               enabledBorder:
                               UnderlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black),
                                 borderRadius:
                                 BorderRadius.circular(50),
@@ -2280,7 +2299,7 @@ class _FlatBillState extends State<FlatBill> {
                             hint: Text('Select Place'),
                             isExpanded: true,
                             value: pt,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
@@ -2298,6 +2317,7 @@ class _FlatBillState extends State<FlatBill> {
                               setState(() {
                                 fl = null;
                                 pt = selectedPlace;
+                                placeBool = true;
                                 floorVal = getfloors(
                                     selectedPlace.pId);
                               });
@@ -2305,19 +2325,17 @@ class _FlatBillState extends State<FlatBill> {
                           ),
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
-                    }),
-                SizedBox(
-                  height: 15,
-                ),
-                FutureBuilder<List<FloorType>>(
+                    }):
+
+              floorBool == false?  FutureBuilder<List<FloorType>>(
                     future: floorVal,
                     builder: (context,
                         AsyncSnapshot<List<FloorType>> snapshot) {
                       if (snapshot.hasData) {
                         if (snapshot.data.length == 0) {
-                          return Center(
+                          return const Center(
                               child:
                               Text("No Devices on this place"));
                         }
@@ -2328,7 +2346,7 @@ class _FlatBillState extends State<FlatBill> {
                               2,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black,
                                     blurRadius: 10,
@@ -2349,7 +2367,7 @@ class _FlatBillState extends State<FlatBill> {
                               const EdgeInsets.all(15),
                               focusedBorder:
                               OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.white),
                                 borderRadius:
                                 BorderRadius.circular(
@@ -2357,7 +2375,7 @@ class _FlatBillState extends State<FlatBill> {
                               ),
                               enabledBorder:
                               UnderlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.white),
                                 borderRadius:
                                 BorderRadius.circular(
@@ -2366,12 +2384,12 @@ class _FlatBillState extends State<FlatBill> {
                             ),
                             dropdownColor: Colors.white70,
                             icon:
-                            Icon(Icons.arrow_drop_down),
+                            const Icon(Icons.arrow_drop_down),
                             iconSize: 28,
                             hint: Text('Select Floor'),
                             isExpanded: true,
                             value: fl,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
@@ -2388,6 +2406,7 @@ class _FlatBillState extends State<FlatBill> {
                                 (FloorType selectedFloor) {
                               setState(() {
                                 fl = selectedFloor;
+                                floorBool = true;
                                 flatVal = getflat(
                                     selectedFloor.fId);
                               });
@@ -2395,21 +2414,18 @@ class _FlatBillState extends State<FlatBill> {
                           ),
                         );
                       } else {
-                        return Center(
-                            child: Text(
-                                "Please select a place to proceed further"));
+                        return const Center(
+                            child: Text("Please select a place to proceed further"));
                       }
-                    }),
-                SizedBox(
-                  height: 15,
-                ),
-                FutureBuilder<List<Flat>>(
+                    }):
+
+              flatBool == false?  FutureBuilder<List<Flat>>(
                     future: flatVal,
                     builder: (context,
                         AsyncSnapshot<List<Flat>> snapshot) {
                       if (snapshot.hasData) {
-                        if (snapshot.data.length == 0) {
-                          return Center(
+                        if (snapshot.data.isEmpty) {
+                          return const Center(
                               child:
                               Text("No Devices on this place"));
                         }
@@ -2420,7 +2436,7 @@ class _FlatBillState extends State<FlatBill> {
                               2,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black,
                                     blurRadius: 10,
@@ -2441,7 +2457,7 @@ class _FlatBillState extends State<FlatBill> {
                               const EdgeInsets.all(15),
                               focusedBorder:
                               OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.white),
                                 borderRadius:
                                 BorderRadius.circular(
@@ -2449,7 +2465,7 @@ class _FlatBillState extends State<FlatBill> {
                               ),
                               enabledBorder:
                               UnderlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.white),
                                 borderRadius:
                                 BorderRadius.circular(
@@ -2458,12 +2474,12 @@ class _FlatBillState extends State<FlatBill> {
                             ),
                             dropdownColor: Colors.white70,
                             icon:
-                            Icon(Icons.arrow_drop_down),
+                            const Icon(Icons.arrow_drop_down),
                             iconSize: 28,
-                            hint: Text('Select Flat'),
+                            hint: const Text('Select Flat'),
                             isExpanded: true,
                             value: flt,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
@@ -2479,7 +2495,7 @@ class _FlatBillState extends State<FlatBill> {
                               setState(() {
                                 flt = selectedFlat;
                                 selectedflat=selectedFlat.fltId;
-
+                                flatBool = true;
                               });
                               await getrooms(selectedflat);
                               setState(() {
@@ -2489,11 +2505,11 @@ class _FlatBillState extends State<FlatBill> {
                           ),
                         );
                       } else {
-                        return Center(
+                        return const Center(
                             child: Text(
                                 "Please select a place to proceed further"));
                       }
-                    }),
+                    }):
                 completeTask? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -2536,7 +2552,7 @@ class _FlatBillState extends State<FlatBill> {
                     TyperAnimatedText('Please wait ',  )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 completeTask? Row(
@@ -2564,7 +2580,7 @@ class _FlatBillState extends State<FlatBill> {
                     TyperAnimatedText('Please wait ',  )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 completeTask?Row(
@@ -2575,17 +2591,17 @@ class _FlatBillState extends State<FlatBill> {
                         await showDatePicker1();
 
                       },
-                      child: Text(cutDate == null ? 'Select Date' : cutDate),
+                      child: Text(cutDate ?? 'Select Date'),
                     ),
                     InkWell(
                       onTap: () {
                         showDatePicker2();
                         // print12();
                       },
-                      child: Text(cutDate2 == null ? 'Select Date' : cutDate2),
+                      child: Text(cutDate2 ?? 'Select Date'),
                     ),
                   ],
-                ):Text("Please Wait"),
+                ):const Text("Please Wait"),
                 completeTask?Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -2593,7 +2609,7 @@ class _FlatBillState extends State<FlatBill> {
                       onTap: () async{
 
                       },
-                      child: Text(finalEnergyValue==null?"":finalEnergyValue),
+                      child: Text(finalEnergyValue ?? ""),
                     ),
                     ElevatedButton(
                         onPressed: ()async{
@@ -2601,17 +2617,15 @@ class _FlatBillState extends State<FlatBill> {
                           await findDifferenceBetweenDates();
                           await getEnergyDay();
                           await sumYearData();
-                        }, child: Text('Click'))
+                        }, child: const Text('Click'))
                   ],
 
-                ):Text("Please Wait"),
+                ):const Text("Please Wait"),
                 completeTask
                     ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(tenMinuteTotalUsage == null
-                        ? varFinalTotalValue
-                        : tenMinuteTotalUsage),
+                    Text(tenMinuteTotalUsage ?? varFinalTotalValue),
 
                     // Text('X'),
                     SizedBox(
@@ -2619,11 +2633,11 @@ class _FlatBillState extends State<FlatBill> {
                       width: 75,
                       child: Center(
                         child: TextField(
-                          keyboardType:TextInputType.numberWithOptions(decimal: true) ,
+                          keyboardType:const TextInputType.numberWithOptions(decimal: true) ,
                           controller: billTotalController,
                           textAlign: TextAlign.center,
                           textDirection:TextDirection.rtl,
-                          decoration:  InputDecoration(
+                          decoration:  const InputDecoration(
                             // border: OutlineInputBorder(),
                               hintText: 'Enter a rs per unit'),
                         ),
@@ -2632,49 +2646,43 @@ class _FlatBillState extends State<FlatBill> {
                   ],
                 )
                     : Container(),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 completeTask
-                    ? Container(
-                  child: Center(
-                    child: RaisedButton(
-                      color: Colors.lightBlue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6.0)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 60),
-                        child: Text(
-                          'Total Usage',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
+                    ? Center(
+                      child: RaisedButton(
+                        color: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6.0)),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 60),
+                          child: Text(
+                            'Total Usage',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
+                        onPressed: () async {
+                          await totalAmount(billTotalController.text);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TotalUsage(
+                                    totalEnergy:
+                                    tenMinuteTotalUsage ?? varFinalTotalValue,
+                                    chooseValueMinute:
+                                    chooseValueMinute ?? defaultTime,
+                                    deviceId: dataMap,
+                                    totalAmountInRs: totalAmountInRs,
+                                    totalDays: difference,
+                                  )));
+                        },
                       ),
-                      onPressed: () async {
-                        await totalAmount(billTotalController.text);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TotalUsage(
-                                  totalEnergy:
-                                  tenMinuteTotalUsage == null
-                                      ? varFinalTotalValue
-                                      : tenMinuteTotalUsage,
-                                  chooseValueMinute:
-                                  chooseValueMinute == null
-                                      ? defaultTime
-                                      : chooseValueMinute,
-                                  deviceId: dataMap,
-                                  totalAmountInRs: totalAmountInRs,
-                                  totalDays: difference,
-                                )));
-                      },
-                    ),
-                  ),
-                )
+                    )
                     : Container(),
               ],
             ),
@@ -2689,6 +2697,19 @@ class _FlatBillState extends State<FlatBill> {
     int rsConversion=int.parse(rsValue);
     double conversion=double.parse(varFinalTotalValue);
     totalAmountInRs=(conversion/1000)*rsConversion;
+  }
+  thereIsNoData(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return const AlertDialog(
+            title: Text('Oops !'),
+            content: Card(
+              child: Text('No Data'),
+            ),
+          );
+        }
+    );
   }
 
 }

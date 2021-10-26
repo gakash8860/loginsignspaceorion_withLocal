@@ -14,7 +14,6 @@ import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
 import 'package:loginsignspaceorion/BillUsage/floorbill.dart';
-import 'package:loginsignspaceorion/BillUsage/placebill.dart';
 import 'package:loginsignspaceorion/BillUsage/placebill2.dart';
 import 'package:loginsignspaceorion/BillUsage/roombill.dart';
 import 'package:loginsignspaceorion/ContactUs/contactus.dart';
@@ -52,7 +51,7 @@ import 'package:loginsignspaceorion/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/whatNew.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:loginsignspaceorion/ProfilePage.dart';
+import 'package:loginsignspaceorion/profilepage.dart';
 import '../Setting_Page.dart';
 import '../setting_icons.dart';
 import 'DesktopUi/gotoDesktopUi.dart';
@@ -61,21 +60,20 @@ var tabbarState = "";
 var value = 1;
 List placeData = [];
 List<PlaceType> places;
-var changeFont='RobotoMono';
+var changeFont = 'RobotoMono';
 List<FloorType> floors;
 List<RoomType> rooms;
 
 List floorData;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
-
-void main()=>runApp(MaterialApp(
-  home: MyApp(),
-));
+void main() => runApp(MaterialApp(
+      home: MyApp(),
+    ));
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,8 +82,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeTest(
-        // rm: [rm[0]],
-      ),
+          // rm: [rm[0]],
+          ),
     );
   }
 }
@@ -104,16 +102,17 @@ class HomeTest extends StatefulWidget {
   final int currentIndex;
   final Function(int selectedIndex) onTapped;
 
-  HomeTest({Key key,
-    this.pt,
-    this.fl,
-    this.currentIndex,
-    this.flat,
-    this.onTapped,
-    this.tabbarState,
-    @required this.rm,
-    @required this.dv,
-    this.sensorData})
+  HomeTest(
+      {Key key,
+      this.pt,
+      this.fl,
+      this.currentIndex,
+      this.flat,
+      this.onTapped,
+      this.tabbarState,
+      @required this.rm,
+      @required this.dv,
+      this.sensorData})
       : super(key: key);
 
   // ignore: non_constant_identifier_names
@@ -157,19 +156,19 @@ class HomeTest extends StatefulWidget {
 
   // ignore: non_constant_identifier_names
   var switch2_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch3_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch4_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch5_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch6_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch7_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch8_get,
-  // ignore: non_constant_identifier_names
+      // ignore: non_constant_identifier_names
       switch9_get;
 
   @override
@@ -178,7 +177,6 @@ class HomeTest extends StatefulWidget {
 
 class _HomeTestState extends State<HomeTest>
     with TickerProviderStateMixin<HomeTest> {
-
   TextEditingController textEditingController = TextEditingController();
   TextEditingController deviceNameEditing = TextEditingController();
   TextEditingController roomEditing = TextEditingController();
@@ -189,7 +187,7 @@ class _HomeTestState extends State<HomeTest>
   TextEditingController controller = TextEditingController();
   GlobalKey key;
   DateTime pickedDate;
-  int deleteRoomIndex=0;
+  int deleteRoomIndex = 0;
   // List<RoomType> rm;
   // AudioCache _player;
   var postData;
@@ -244,19 +242,11 @@ class _HomeTestState extends State<HomeTest>
       switch_7 = 0,
       switch_8 = 0,
       switch_9 = 0;
-  int slider1,
-      slider2 = 0;
+  int slider1, slider2 = 0;
   int slider3 = 1;
   var dvlenght;
 
-  int m = 0,
-      n = 0,
-      o = 0,
-      p = 0,
-      q = 0,
-      r = 0,
-      s = 0,
-      t = 0;
+  int m = 0, n = 0, o = 0, p = 0, q = 0, r = 0, s = 0, t = 0;
   int c = 0;
   List<dynamic> deviceData;
 
@@ -292,7 +282,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future flatVal;
 
-  TextEditingController phoneController=new TextEditingController();
+  TextEditingController phoneController = new TextEditingController();
 
   var phone;
 
@@ -344,11 +334,8 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-
-
   var deviceofI;
 
-  int _index = 0;
 
   @override
   void initState() {
@@ -361,22 +348,19 @@ class _HomeTestState extends State<HomeTest>
       fetchPlace();
       // getAllFloor();
     });
-
   }
-
 
   TextEditingController placeEditing = new TextEditingController();
   TextEditingController floorNameEditing = new TextEditingController();
   TextEditingController flatNameEditing = new TextEditingController();
   TextEditingController roomNameEditing = new TextEditingController();
 
-
   var postDataPlaceName;
 
   Future<PlaceType> getPlaceName() async {
     String token = await getToken();
     print('currentPlaceId ${widget.pt.pId}');
-    final url = API+'addyourplace/?p_id=' + widget.pt.pId;
+    final url = API + 'addyourplace/?p_id=' + widget.pt.pId;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -389,27 +373,25 @@ class _HomeTestState extends State<HomeTest>
       print("GetPlaceNameResponseBody  ${response.body}");
     }
   }
+
   var tokenWeb;
-  getTokenWeb()async{
-    final pref= await SharedPreferences.getInstance();
-    tokenWeb=pref.getString('tokenWeb');
+  getTokenWeb() async {
+    final pref = await SharedPreferences.getInstance();
+    tokenWeb = pref.getString('tokenWeb');
   }
 
-  Future<void> checkWebOrNot()async{
+  Future<void> checkWebOrNot() async {
     await getTokenWeb();
-    if(tokenWeb!=null){
+    if (tokenWeb != null) {
       print('goingtoif');
-    }else{
+    } else {
       print('goingtoelse');
     }
-
   }
-
-
 
   Future<PlaceType> addPlaceName(String data) async {
     String token = await getToken();
-    final url = API+'addyourplace/';
+    final url = API + 'addyourplace/';
     var postDataPlaceName = {
       "p_id": widget.pt.pId,
       "p_type": data,
@@ -440,7 +422,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<FloorType> addFloorName(String data) async {
     String token = await getToken();
-    final url = API+'addyourfloor/';
+    final url = API + 'addyourfloor/';
     var postDataFloorName = {
       "f_id": widget.fl.fId,
       "f_name": data,
@@ -460,8 +442,7 @@ class _HomeTestState extends State<HomeTest>
       print(response.body);
 
       var floorResponse = jsonDecode(response.body);
-      if(response.statusCode==200||response.statusCode==201){
-
+      if (response.statusCode == 200 || response.statusCode == 201) {
         setState(() {
           widget.fl.fName = postDataFloorName['f_name'];
         });
@@ -469,7 +450,6 @@ class _HomeTestState extends State<HomeTest>
           content: Text('Name Updated'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
       }
 
       getAllFloor();
@@ -488,7 +468,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<FloorType> addFlatName(String data) async {
     String token = await getToken();
-    final url = API+'addyourflat/';
+    final url = API + 'addyourflat/';
     var postDataFlatName = {
       "flt_id": widget.flat.fltId,
       "flt_name": data,
@@ -546,7 +526,7 @@ class _HomeTestState extends State<HomeTest>
   List namesDataList = [];
 
   Future getPinsName(String dId) async {
-    String url = API+"editpinnames/?d_id=" + dId;
+    String url = API + "editpinnames/?d_id=" + dId;
     String token = await getToken();
     // try {
     final response = await http.get(Uri.parse(url), headers: {
@@ -589,20 +569,15 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-
   List pinNames = [];
   var postDataPinName;
   Future addPinsName(String data, int index) async {
     print('editpinnames ${index}');
     String token = await getToken();
-    final url = API+'editpinnames/';
-
+    final url = API + 'editpinnames/';
 
     if (index == 0) {
-      postDataPinName = {
-        "d_id": deviceId,
-        "pin1Name": data
-      };
+      postDataPinName = {"d_id": deviceId, "pin1Name": data};
     } else if (index == 1) {
       postDataPinName = {
         "d_id": deviceId,
@@ -695,9 +670,9 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future<RoomType> addRoomName(String data,int index) async {
+  Future<RoomType> addRoomName(String data, int index) async {
     String token = await getToken();
-    final url = API+'addroom/';
+    final url = API + 'addroom/';
     print(rIdForName);
     var postDataRoomName = {
       "r_id": rIdForName,
@@ -786,7 +761,6 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-
   _editFlatNameAlertDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -813,8 +787,7 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-
-  _editRoomNameAlertDialog(BuildContext context,index) {
+  _editRoomNameAlertDialog(BuildContext context, index) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -830,7 +803,7 @@ class _HomeTestState extends State<HomeTest>
                   // elevation: 5.0,
                   child: Text('Submit'),
                   onPressed: () async {
-                    await addRoomName(roomNameEditing.text,index);
+                    await addRoomName(roomNameEditing.text, index);
                     // await getAllRoom();
                     Navigator.of(context).pop();
                   },
@@ -841,13 +814,190 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  Future returnFlatQuery(String fId) async{
-    flatQueryRowsFlat=await NewDbProvider.instance.getFlatByFId(fId);
+  Future returnFlatQuery(String fId) async {
+    flatQueryRowsFlat = await NewDbProvider.instance.getFlatByFId(fId);
     return NewDbProvider.instance.queryFlat();
   }
+
   PlaceType selectedPlace;
   FloorType selectedFloor;
   Flat selectedFlat;
+  PlaceType pt;
+  FloorType fl;
+
+  _dialogWithModel(BuildContext context){
+    return showDialog(
+      context:context,
+      builder:(context){
+        return AlertDialog(
+          title : Text("Change Place"),
+          content:Container(
+            height: 390,
+            child:SingleChildScrollView(
+              child: Column(
+                children: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: FutureBuilder<List<PlaceType>>(
+                    future:placeVal,
+                    builder: (context,snapshot){
+                      if(snapshot.hasData){
+                        print("daasnapshot ${snapshot.data.first.pType}");
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 2,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 30,
+                                    offset: Offset(20, 20))
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<PlaceType>(
+                            decoration: InputDecoration(
+                              contentPadding:
+                              const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.white),
+                                borderRadius:
+                                BorderRadius.circular(10),
+                              ),
+                              enabledBorder:
+                              UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.black),
+                                borderRadius:
+                                BorderRadius.circular(50),
+                              ),
+                            ),
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Place'),
+                            isExpanded: true,
+                            value: pt,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data
+                                .map((selectedPlace) {
+                              return DropdownMenuItem<PlaceType>(
+                                value: selectedPlace,
+                                child:
+                                Text(selectedPlace.pType),
+                              );
+                            }).toList(),
+                            onChanged: (PlaceType selectedPlace) {
+                              setState(() {
+                                fl = null;
+                                pt = selectedPlace;
+                                floorVal = floorQueryModelFunc(selectedPlace.pId.toString());
+                                print("floorvl ${floorVal.toString()}");
+                                // floorValWeb = getfloorsWeb(
+                                //     selectedPlace.pId);
+                              });
+                            },
+                          ),
+                        );
+                      }else{
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: FutureBuilder<List<FloorType>>(
+                    future:floorVal,
+                    builder: (context,snapshot){
+                      print("floorValdaasnapshot ${snapshot.data}");
+                      if(snapshot.hasData){
+                        print("floorValdaasnapshotdaasnapshot ${snapshot.data.first.fName}");
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 2,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 30,
+                                    offset: Offset(20, 20))
+                              ],
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 0.5,
+                              )),
+                          child: DropdownButtonFormField<FloorType>(
+                            decoration: InputDecoration(
+                              contentPadding:
+                              const EdgeInsets.all(15),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.white),
+                                borderRadius:
+                                BorderRadius.circular(10),
+                              ),
+                              enabledBorder:
+                              UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.black),
+                                borderRadius:
+                                BorderRadius.circular(50),
+                              ),
+                            ),
+                            dropdownColor: Colors.white70,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 28,
+                            hint: Text('Select Place'),
+                            isExpanded: true,
+                            value: fl,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            items: snapshot.data
+                                .map((selectedPlace) {
+                              return DropdownMenuItem<FloorType>(
+                                value: selectedPlace,
+                                child:
+                                Text(selectedPlace.fName),
+                              );
+                            }).toList(),
+                            onChanged:
+                                ( selectedFloor) {
+                              setState(() {
+                                // fl = null;
+                                fl = selectedFloor;
+                                floorVal = floorQueryModelFunc(selectedFloor.pId);
+                                // floorValWeb = getfloorsWeb(
+                                //     selectedPlace.pId);
+                              });
+                            },
+                          ),
+                        );
+                      }else{
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+
+
+                    ]
+              ),
+            )
+          )
+        );
+      }
+    );
+  }
+
 
   _createAlertDialogDropDown(BuildContext context) {
     return showDialog(
@@ -867,10 +1017,7 @@ class _HomeTestState extends State<HomeTest>
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
                               return Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 2,
+                                width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -887,13 +1034,13 @@ class _HomeTestState extends State<HomeTest>
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.black),
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
@@ -914,32 +1061,28 @@ class _HomeTestState extends State<HomeTest>
                                     );
                                   }).toList(),
                                   onChanged: (selectedPlace) async {
-
-                                    floorval=null;
-                                    var placeId = selectedPlace.substring(7, 14);
+                                    floorval = null;
+                                    var placeId =
+                                        selectedPlace.substring(7, 14);
                                     var placeName = selectedPlace.substring(24, 31);
                                     print('checkPlaceName ${placeName.toString()}');
 
-
-                                    var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
+                                    var aa = await NewDbProvider.instance
+                                        .getFloorById(placeId.toString());
                                     print('AA  ${aa}');
 
-                                    returnFloorQuery(placeId);
+                                    floorval =  returnFloorQuery(placeId.toString());
                                     setState(() {
                                       floorQueryRows2 = aa;
                                       floorval = returnFloorQuery(placeId.toString());
                                       returnFloorQuery(placeId);
-
                                     });
                                     var place = PlaceType(
                                         pId: placeId,
                                         pType: placeName,
-                                        user: getUidVariable2
-                                    );
+                                        user: getUidVariable2);
                                     selectedPlace = place;
                                     print('Floorqwe  ${floorQueryRows2}');
-
-                                    // qwe= ;
                                   },
                                   // items:snapshot.data
                                 ),
@@ -956,13 +1099,10 @@ class _HomeTestState extends State<HomeTest>
                       padding: const EdgeInsets.all(18.0),
                       child: FutureBuilder(
                           future: floorval,
-                          builder: (context, AsyncSnapshot snapshot) {
+                          builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 2,
+                                width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -979,17 +1119,16 @@ class _HomeTestState extends State<HomeTest>
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.black),
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
-
                                   dropdownColor: Colors.white70,
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 28,
@@ -1008,17 +1147,20 @@ class _HomeTestState extends State<HomeTest>
                                   onChanged: (selectedFloor) async {
                                     print('Floor selected $selectedFloor');
 
-                                    var floorId = selectedFloor.substring(7, 14);
-                                    var floorName = selectedFloor.substring(24, 32);
-                                    var placeId = selectedFloor.substring(39, 46);
+                                    var floorId =
+                                        selectedFloor.substring(7, 14);
+                                    var floorName =
+                                        selectedFloor.substring(24, 32);
+                                    var placeId =
+                                        selectedFloor.substring(39, 46);
                                     var floor = FloorType(
                                         fId: floorId,
                                         fName: floorName,
                                         pId: placeId,
-                                        user: getUidVariable2
-                                    );
+                                        user: getUidVariable2);
                                     selectedFloor = floor;
-                                    var getFlat = await NewDbProvider.instance.getFlatByFId(floorId.toString());
+                                    var getFlat = await NewDbProvider.instance
+                                        .getFlatByFId(floorId.toString());
                                     print(getFlat);
                                     flatVal = returnFlatQuery(floorId);
                                     flatQueryRows2 = getFlat;
@@ -1047,10 +1189,7 @@ class _HomeTestState extends State<HomeTest>
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
                               return Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 2,
+                                width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -1067,13 +1206,13 @@ class _HomeTestState extends State<HomeTest>
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.black),
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
@@ -1089,15 +1228,17 @@ class _HomeTestState extends State<HomeTest>
                                   items: flatQueryRows2.map((selectedFlat) {
                                     return DropdownMenuItem(
                                       value: selectedFlat.toString(),
-                                      child: Text(
-                                          "${selectedFlat['flt_name']}"),
+                                      child:
+                                          Text("${selectedFlat['flt_name']}"),
                                     );
                                   }).toList(),
                                   onChanged: (selectedFlat) async {
                                     flatId = selectedFlat.substring(9, 16);
                                     // var flatId = selectedFlat.substring(7, 14);
-                                    var flatName = selectedFlat.substring(28, 35);
-                                    var floorId = selectedFlat.substring(39, 46);
+                                    var flatName =
+                                        selectedFlat.substring(28, 35);
+                                    var floorId =
+                                        selectedFlat.substring(39, 46);
                                     print('flatName $selectedFlat');
                                     // print('flatName $user');
                                     // int user2 =int.parse(user);
@@ -1106,8 +1247,7 @@ class _HomeTestState extends State<HomeTest>
                                         fId: floorId,
                                         fltId: flatId,
                                         fltName: flatName,
-                                        user: getUidVariable2
-                                    );
+                                        user: getUidVariable2);
                                     selectedFlat = flt;
                                     print(flatId);
 
@@ -1145,21 +1285,21 @@ class _HomeTestState extends State<HomeTest>
                     print("SubmitAllDetails  ${result}");
                     List<RoomType> room = List.generate(
                         result.length,
-                            (index) =>
-                            RoomType(
+                        (index) => RoomType(
                               rId: result[index]['r_id'].toString(),
                               fltId: result[index]['flt_id'].toString(),
                               rName: result[index]['r_name'].toString(),
                               user: result[index]['user'],
-                            )
-                    );
+                            ));
                     setState(() {
                       rm = room;
                     });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context,) =>
+                          builder: (
+                        context,
+                      ) =>
                               Container(
                                 child: HomeTest(
                                   pt: selectedPlace,
@@ -1287,10 +1427,7 @@ class _HomeTestState extends State<HomeTest>
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
                               return Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 2,
+                                width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -1307,17 +1444,16 @@ class _HomeTestState extends State<HomeTest>
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.black),
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
-
                                   dropdownColor: Colors.white70,
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 28,
@@ -1327,7 +1463,8 @@ class _HomeTestState extends State<HomeTest>
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  items: floorQueryRowsFloor.map((selectedFloor) {
+                                  items:
+                                      floorQueryRowsFloor.map((selectedFloor) {
                                     return DropdownMenuItem(
                                       value: selectedFloor.toString(),
                                       child: Text("${selectedFloor['f_name']}"),
@@ -1336,17 +1473,20 @@ class _HomeTestState extends State<HomeTest>
                                   onChanged: (selectedFloor) async {
                                     print('Floor selected $selectedFloor');
 
-                                    var floorId = selectedFloor.substring(7, 14);
-                                    var floorName = selectedFloor.substring(24, 32);
-                                    var placeId = selectedFloor.substring(39, 46);
+                                    var floorId =
+                                        selectedFloor.substring(7, 14);
+                                    var floorName =
+                                        selectedFloor.substring(24, 32);
+                                    var placeId =
+                                        selectedFloor.substring(39, 46);
                                     var floor = FloorType(
                                         fId: floorId,
                                         fName: floorName,
                                         pId: placeId,
-                                        user: getUidVariable2
-                                    );
+                                        user: getUidVariable2);
                                     fl = floor;
-                                    var getFlat = await NewDbProvider.instance.getFlatByFId(floorId.toString());
+                                    var getFlat = await NewDbProvider.instance
+                                        .getFlatByFId(floorId.toString());
                                     print(getFlat);
                                     flatVal = returnFlatQuery(floorId);
                                     flatQueryRows2 = getFlat;
@@ -1375,10 +1515,7 @@ class _HomeTestState extends State<HomeTest>
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
                               return Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 2,
+                                width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
@@ -1395,13 +1532,13 @@ class _HomeTestState extends State<HomeTest>
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.black),
+                                      borderSide:
+                                          BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
@@ -1417,15 +1554,17 @@ class _HomeTestState extends State<HomeTest>
                                   items: flatQueryRows2.map((selectedFlat) {
                                     return DropdownMenuItem(
                                       value: selectedFlat.toString(),
-                                      child: Text(
-                                          "${selectedFlat['flt_name']}"),
+                                      child:
+                                          Text("${selectedFlat['flt_name']}"),
                                     );
                                   }).toList(),
                                   onChanged: (selectedFlat) async {
                                     flatId = selectedFlat.substring(9, 16);
                                     // var flatId = selectedFlat.substring(7, 14);
-                                    var flatName = selectedFlat.substring(28, 35);
-                                    var floorId = selectedFlat.substring(39, 46);
+                                    var flatName =
+                                        selectedFlat.substring(28, 35);
+                                    var floorId =
+                                        selectedFlat.substring(39, 46);
                                     print('flatName $selectedFlat');
                                     // print('flatName $user');
                                     // int user2 =int.parse(user);
@@ -1434,8 +1573,7 @@ class _HomeTestState extends State<HomeTest>
                                         fId: floorId,
                                         fltId: flatId,
                                         fltName: flatName,
-                                        user: getUidVariable2
-                                    );
+                                        user: getUidVariable2);
                                     flat = flt;
                                     print(flatId);
 
@@ -1473,21 +1611,21 @@ class _HomeTestState extends State<HomeTest>
                     print("SubmitAllDetails  ${result}");
                     List<RoomType> room = List.generate(
                         result.length,
-                            (index) =>
-                            RoomType(
+                        (index) => RoomType(
                               rId: result[index]['r_id'].toString(),
                               fltId: result[index]['flt_id'].toString(),
                               rName: result[index]['r_name'].toString(),
                               user: result[index]['user'],
-                            )
-                    );
+                            ));
                     setState(() {
                       rm = room;
                     });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context,) =>
+                          builder: (
+                        context,
+                      ) =>
                               Container(
                                 child: HomeTest(
                                   pt: pt,
@@ -1525,10 +1663,7 @@ class _HomeTestState extends State<HomeTest>
                             builder: (context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
                                 return Container(
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 2,
+                                  width: MediaQuery.of(context).size.width * 2,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       boxShadow: [
@@ -1545,13 +1680,13 @@ class _HomeTestState extends State<HomeTest>
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.all(15),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.white),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.black),
+                                        borderSide:
+                                            BorderSide(color: Colors.black),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
@@ -1564,18 +1699,21 @@ class _HomeTestState extends State<HomeTest>
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    items: flatQueryRowsFlat.map((selectedFlat) {
+                                    items:
+                                        flatQueryRowsFlat.map((selectedFlat) {
                                       return DropdownMenuItem(
                                         value: selectedFlat.toString(),
-                                        child: Text(
-                                            "${selectedFlat['flt_name']}"),
+                                        child:
+                                            Text("${selectedFlat['flt_name']}"),
                                       );
                                     }).toList(),
                                     onChanged: (selectedFlat) async {
                                       flatId = selectedFlat.substring(9, 16);
                                       // var flatId = selectedFlat.substring(7, 14);
-                                      var flatName = selectedFlat.substring(28, 35);
-                                      var floorId = selectedFlat.substring(39, 46);
+                                      var flatName =
+                                          selectedFlat.substring(28, 35);
+                                      var floorId =
+                                          selectedFlat.substring(39, 46);
                                       print('flatName $selectedFlat');
                                       // print('flatName $user');
                                       // int user2 =int.parse(user);
@@ -1584,8 +1722,7 @@ class _HomeTestState extends State<HomeTest>
                                           fId: floorId,
                                           fltId: flatId,
                                           fltName: flatName,
-                                          user: getUidVariable2
-                                      );
+                                          user: getUidVariable2);
                                       flat = flt;
                                       print(flatId);
 
@@ -1624,21 +1761,21 @@ class _HomeTestState extends State<HomeTest>
                     print("SubmitAllDetails  ${result}");
                     List<RoomType> room = List.generate(
                         result.length,
-                            (index) =>
-                            RoomType(
+                        (index) => RoomType(
                               rId: result[index]['r_id'].toString(),
                               fltId: result[index]['flt_id'].toString(),
                               rName: result[index]['r_name'].toString(),
                               user: result[index]['user'],
-                            )
-                    );
+                            ));
                     setState(() {
                       rm = room;
                     });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context,) =>
+                          builder: (
+                        context,
+                      ) =>
                               Container(
                                 child: HomeTest(
                                   pt: pt,
@@ -1656,8 +1793,6 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
-
-
 
   _createAlertDialog(BuildContext context) {
     return showDialog(
@@ -1707,8 +1842,7 @@ class _HomeTestState extends State<HomeTest>
     print('roomResult $result');
     room = List.generate(
         result.length,
-            (index) =>
-            RoomType(
+        (index) => RoomType(
               rId: result[index]['r_id'].toString(),
               fltId: result[index]['flt_id'].toString(),
               rName: result[index]['r_name'].toString(),
@@ -1779,34 +1913,34 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
-  Box scheduledPinBox2;
-  Future openSchedulePinBox()async{
 
-    var dir= await getApplicationDocumentsDirectory();
+  Box scheduledPinBox2;
+  Future openSchedulePinBox() async {
+    var dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
-    scheduledPinBox2=await Hive.openBox('scheduledPinStatusByDeviceId');
+    scheduledPinBox2 = await Hive.openBox('scheduledPinStatusByDeviceId');
     print('tempUserBox  ${scheduledPinBox2.values.toString()}');
     return;
   }
 
   var pinDecode;
-  List listOfScheduledPins=[];
-  Future getScheduledPins(String dId)async{
+  List listOfScheduledPins = [];
+  Future getScheduledPins(String dId) async {
     await openSchedulePinBox();
     String token = await getToken();
     // String token = "be43f6166fce6faef0525c610402b332debdb232";
-    final url=API+'scheduledatagetbyid/?d_id='+dId;
-    try{
-      final response= await http.get(Uri.parse(url),headers: {
+    final url = API + 'scheduledatagetbyid/?d_id=' + dId;
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token'
       });
       await scheduledPinBox2.clear();
-      if(response.statusCode>0){
+      if (response.statusCode > 0) {
         print('ScheduledPins  ${response.statusCode}');
         print('ScheduledPins  ${response.body}');
-        if(response.statusCode==200){
+        if (response.statusCode == 200) {
           pinDecode = jsonDecode(response.body);
           setState(() {
             listOfScheduledPins = pinDecode;
@@ -1815,35 +1949,33 @@ class _HomeTestState extends State<HomeTest>
           });
         }
       }
-    }catch(e){
-
-    }
-    var myMap=scheduledPinBox2.toMap().values.toList();
-    if(myMap.isEmpty){
+    } catch (e) {}
+    var myMap = scheduledPinBox2.toMap().values.toList();
+    if (myMap.isEmpty) {
       scheduledPinBox2.add('empty');
-
-    }else{
-      listOfScheduledPins=myMap ;
-
+    } else {
+      listOfScheduledPins = myMap;
     }
-
-
   }
 
-  Future putScheduledPins(data)async{
+  Future putScheduledPins(data) async {
     await scheduledPinBox2.clear();
-    for(var d in data){
-
+    for (var d in data) {
       scheduledPinBox2.add(d);
     }
-
   }
+
   _createAlertDialogForPin19(BuildContext context, String dId) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Any Text For Pin 19',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+            title: Text(
+              'Enter the Any Text For Pin 19',
+              style: TextStyle(
+                fontFamily: fonttest == null ? changeFont : fonttest,
+              ),
+            ),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -1860,7 +1992,11 @@ class _HomeTestState extends State<HomeTest>
                   controller: pin19Controller,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?changeFont:fonttest,),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                    fontFamily: fonttest == null ? changeFont : fonttest,
+                  ),
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.place),
                     filled: true,
@@ -1899,346 +2035,1019 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  String on="On";
-  String off="Off";
+  String on = "On";
+  String off = "Off";
   List namesDataList2;
-  allPinNames(String dId)async{
-    namesDataList2 =await  NewDbProvider.instance.getPinNamesByDeviceId(dId);
+  allPinNames(String dId) async {
+    namesDataList2 = await NewDbProvider.instance.getPinNamesByDeviceId(dId);
     print('names123654 ${namesDataList}');
   }
 
   _createAlertDialogForPinSchedule(BuildContext context, String dId) {
     return showDialog(
-
         context: context,
-
         builder: (context) {
           return AlertDialog(
-            title: Text('Device Id ${dId}',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
+            title: Text(
+              'Device Id ${dId}',
+              style: TextStyle(
+                fontFamily: fonttest == null ? changeFont : fonttest,
+              ),
+            ),
             content: Container(
-              color:Colors.red,
+              color: Colors.red,
               width: MediaQuery.of(context).size.width,
-              child:FutureBuilder(
+              child: FutureBuilder(
                   future: getScheduledPins(dId),
-                  builder: ( context,  snapshot){
+                  builder: (context, snapshot) {
                     print('snapShot ${snapshot.connectionState}');
-                    if(snapshot.connectionState ==ConnectionState.done){
-                      if(listOfScheduledPins==null){
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (listOfScheduledPins == null) {
                         return Column(
                           children: [
-                            SizedBox(height: 250,),
-                            Center(child: Text('Sorry we cannot find any Temp User please add',style: TextStyle(fontSize: 18,fontFamily: fonttest==null?changeFont:fonttest,),)),
+                            SizedBox(
+                              height: 250,
+                            ),
+                            Center(
+                                child: Text(
+                              'Sorry we cannot find any Temp User please add',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily:
+                                    fonttest == null ? changeFont : fonttest,
+                              ),
+                            )),
                           ],
                         );
-                      }else{
+                      } else {
                         return Container(
                           color: Colors.red,
                           child: Column(
                             children: [
-                              SizedBox(height: 25,),
+                              SizedBox(
+                                height: 25,
+                              ),
                               Expanded(
                                   child: ListView.builder(
                                       itemCount: listOfScheduledPins.length,
-                                      itemBuilder: (context,index){
-                                        allPinNames(listOfScheduledPins[index]['d_id']);
-                                        print('length ${listOfScheduledPins.length}');
+                                      itemBuilder: (context, index) {
+                                        allPinNames(
+                                            listOfScheduledPins[index]['d_id']);
+                                        print(
+                                            'length ${listOfScheduledPins.length}');
                                         return Padding(
                                           padding: const EdgeInsets.all(4.0),
                                           child: Card(
-                                            semanticContainer:true,
+                                            semanticContainer: true,
                                             shadowColor: Colors.grey,
                                             child: Column(
                                               children: [
                                                 ListTile(
-                                                  title: Text(listOfScheduledPins[index]['d_id'].toString()==null?"Loading":listOfScheduledPins[index]['d_id'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                  trailing: Text(listOfScheduledPins[index]['date1'].toString()==null?"Loading":listOfScheduledPins[index]['date1'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,)),
-                                                  subtitle: Text(listOfScheduledPins[index]['timing1'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,)),
-
-                                                  onTap: (){
-                                                    print('printSubUser ${listOfScheduledPins[index]['name']}');
+                                                  title: Text(
+                                                    listOfScheduledPins[index]
+                                                                    ['d_id']
+                                                                .toString() ==
+                                                            null
+                                                        ? "Loading"
+                                                        : listOfScheduledPins[
+                                                                index]['d_id']
+                                                            .toString(),
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          fonttest == null
+                                                              ? changeFont
+                                                              : fonttest,
+                                                    ),
+                                                  ),
+                                                  trailing: Text(
+                                                      listOfScheduledPins[index]
+                                                                      ['date1']
+                                                                  .toString() ==
+                                                              null
+                                                          ? "Loading"
+                                                          : listOfScheduledPins[
+                                                                      index]
+                                                                  ['date1']
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            fonttest == null
+                                                                ? changeFont
+                                                                : fonttest,
+                                                      )),
+                                                  subtitle: Text(
+                                                      listOfScheduledPins[index]
+                                                              ['timing1']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            fonttest == null
+                                                                ? changeFont
+                                                                : fonttest,
+                                                      )),
+                                                  onTap: () {
+                                                    print(
+                                                        'printSubUser ${listOfScheduledPins[index]['name']}');
 
                                                     // Navigator.push(context, MaterialPageRoute(builder: (context)=>TempUserDetails(tempUserPlaceName: tempUserDecodeList[index]['p_id'],
                                                     //   tempUserFloorName: tempUserDecodeList[index]['f_id'] ,)));
-
                                                   },
                                                 ),
                                                 Column(
                                                   children: [
                                                     Container(
                                                       height: 54,
-                                                      color:Colors.red,
+                                                      color: Colors.red,
                                                       child: ListView.builder(
                                                           itemCount: 1,
-                                                          itemBuilder: (context,index){
-                                                            if(listOfScheduledPins[index]['pin1Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin1Name'].toString()==null?"Wait":namesDataList[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin1Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin1Name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,fontFamily:  fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin2Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin2Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin2Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin3Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin3Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin3Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            } else if(listOfScheduledPins[index]['pin4Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin4Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin4Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin5Status']==1){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(on,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin5Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin5Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin6Status']==0){
-                                                              return Row(
-                                                                children: [
-                                                                  Text(namesDataList2[index]['pin6Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                  SizedBox(width: 14,),
-                                                                  Text(off,style: TextStyle(fontSize: 22,
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                                ],
-                                                              );
-                                                            }else if(listOfScheduledPins[index]['pin6Status']==1) {
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin1Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin6Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]['pin1Name'].toString() ==
+                                                                            null
+                                                                        ? "Wait"
+                                                                        : namesDataList[index]['pin1Name']
+                                                                            .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin7Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin1Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin7Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin1Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin7Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin2Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin7Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin2Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin8Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin2Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin8Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin2Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin8Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin3Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin8Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin3Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin9Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin3Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin9Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin3Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin9Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin4Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin8Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin4Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin10Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin4Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin10Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin4Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin10Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin5Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
                                                                   Text(
-                                                                    namesDataList2[index]['pin10Name']
-                                                                        .toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin5Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin11Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin5Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin5Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin11Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin6Status'] ==
+                                                                0) {
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin11Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin6Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin12Status']==0) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin6Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin6Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(off,
-                                                                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else if(listOfScheduledPins[index]['pin12Status']==1) {
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin7Status'] ==
+                                                                1) {
                                                               return Row(
                                                                 children: [
-                                                                  Text(namesDataList2[index]['pin12Name'].toString(),style: TextStyle(fontSize: 22,fontFamily: fonttest==null?changeFont:fonttest,),),
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin7Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
                                                                   SizedBox(
-                                                                    width: 14,),
-                                                                  Text(on,
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                                                        fontSize: 22),),
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
                                                                 ],
                                                               );
-                                                            }else{return null;}
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin7Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin7Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin8Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin8Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin8Status'] ==
+                                                                1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin8Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin9Status'] ==
+                                                                1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin9Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin9Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin8Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin10Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin10Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin10Status'] ==
+                                                                1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin10Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin11Status'] ==
+                                                                1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin11Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin11Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin11Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin12Status'] ==
+                                                                0) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin12Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    off,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else if (listOfScheduledPins[
+                                                                        index][
+                                                                    'pin12Status'] ==
+                                                                1) {
+                                                              return Row(
+                                                                children: [
+                                                                  Text(
+                                                                    namesDataList2[index]
+                                                                            [
+                                                                            'pin12Name']
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          22,
+                                                                      fontFamily: fonttest ==
+                                                                              null
+                                                                          ? changeFont
+                                                                          : fonttest,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 14,
+                                                                  ),
+                                                                  Text(
+                                                                    on,
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ==
+                                                                                null
+                                                                            ? changeFont
+                                                                            : fonttest,
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            } else {
+                                                              return null;
+                                                            }
                                                           }),
                                                     )
                                                     // Row(
@@ -2308,7 +3117,6 @@ class _HomeTestState extends State<HomeTest>
                                           ),
                                         );
 
-
                                         //   Column(
                                         //   children: <Widget>[
                                         //     SizedBox(height: 100,),
@@ -2345,15 +3153,12 @@ class _HomeTestState extends State<HomeTest>
                                         //   // subtitle: Text("${statusData[index]['id']}"),
                                         //
                                         // );
-                                      }
-                                  )),
-
-
+                                      })),
                             ],
                           ),
                         );
                       }
-                    }else{
+                    } else {
                       return Center(
                         child: CircularProgressIndicator(
                           color: Colors.red,
@@ -2361,21 +3166,16 @@ class _HomeTestState extends State<HomeTest>
                         ),
                       );
                     }
-
-                  }
-
-              ),
+                  }),
             ),
             actions: <Widget>[],
           );
         });
   }
 
-
   _createAlertDialogForPin17(BuildContext context, String dId) {
     return showDialog(
         context: context,
-
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Cell Number of your Device'),
@@ -2437,7 +3237,6 @@ class _HomeTestState extends State<HomeTest>
   _createAlertDialogForFloor(BuildContext context) {
     return showDialog(
         context: context,
-
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Name of Floor'),
@@ -2556,7 +3355,6 @@ class _HomeTestState extends State<HomeTest>
   _createAlertDialogForFlat(BuildContext context) {
     return showDialog(
         context: context,
-
         builder: (context) {
           return AlertDialog(
             title: Text('Enter the Name of Flat'),
@@ -2647,26 +3445,38 @@ class _HomeTestState extends State<HomeTest>
 
   TextEditingController pinNameController = new TextEditingController();
   String _chosenValue;
-  var icon1=Icons.ac_unit;
-  var icon2=FontAwesomeIcons.iceCream;
-  var icon3=FontAwesomeIcons.lightbulb;
-  var icon4=FontAwesomeIcons.fan;
-  var icon5=FontAwesomeIcons.handsWash;
-  var icon6=FontAwesomeIcons.lightbulb;
-  var icon7=FontAwesomeIcons.lightbulb;
-  var icon8=FontAwesomeIcons.lightbulb;
-  var icon9=FontAwesomeIcons.lightbulb;
-  var icon10=FontAwesomeIcons.lightbulb;
-  var icon11=FontAwesomeIcons.lightbulb;
-  var icon12=FontAwesomeIcons.lightbulb;
-  List changeIcon=[null,null,null,null,null,null,null,null,null];
+  var icon1 = Icons.ac_unit;
+  var icon2 = FontAwesomeIcons.iceCream;
+  var icon3 = FontAwesomeIcons.lightbulb;
+  var icon4 = FontAwesomeIcons.fan;
+  var icon5 = FontAwesomeIcons.handsWash;
+  var icon6 = FontAwesomeIcons.lightbulb;
+  var icon7 = FontAwesomeIcons.lightbulb;
+  var icon8 = FontAwesomeIcons.lightbulb;
+  var icon9 = FontAwesomeIcons.lightbulb;
+  var icon10 = FontAwesomeIcons.lightbulb;
+  var icon11 = FontAwesomeIcons.lightbulb;
+  var icon12 = FontAwesomeIcons.lightbulb;
+  List changeIcon = [null, null, null, null, null, null, null, null, null];
 
-  List<String> iconCode=['','002','003','','','','','','','','',''];
+  List<String> iconCode = [
+    '',
+    '002',
+    '003',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    ''
+  ];
   String piname;
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
-
         builder: (context) {
           return AlertDialog(
             title: Column(
@@ -2699,49 +3509,49 @@ class _HomeTestState extends State<HomeTest>
                   onChanged: (String value) {
                     setState(() {
                       _chosenValue = value;
-                      if(_chosenValue=='Air Conditioner'){
-                        changeIcon[index]=icon1;
-                        iconCode[index]='001';
+                      if (_chosenValue == 'Air Conditioner') {
+                        changeIcon[index] = icon1;
+                        iconCode[index] = '001';
                         print('true');
-                      }else if(_chosenValue=='Refrigerator'){
-                        changeIcon[index]=icon2;
-                        iconCode[index]='002';
+                      } else if (_chosenValue == 'Refrigerator') {
+                        changeIcon[index] = icon2;
+                        iconCode[index] = '002';
                         print('trueindex $index');
-                      }else if(_chosenValue=='Bulb'){
-                        changeIcon[index]=icon3;
-                        iconCode[index]='003';
+                      } else if (_chosenValue == 'Bulb') {
+                        changeIcon[index] = icon3;
+                        iconCode[index] = '003';
                         print('true');
-                      }else if(_chosenValue=='Fan'){
-                        changeIcon[index]=icon4;
-                        iconCode[index]='004';
+                      } else if (_chosenValue == 'Fan') {
+                        changeIcon[index] = icon4;
+                        iconCode[index] = '004';
                         print('true');
-                      }else if(_chosenValue=='Washing Machine'){
-                        changeIcon[index]=icon5;
-                        iconCode[index]='005';
+                      } else if (_chosenValue == 'Washing Machine') {
+                        changeIcon[index] = icon5;
+                        iconCode[index] = '005';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon6;
-                        iconCode[index]='006';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon6;
+                        iconCode[index] = '006';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon7;
-                        iconCode[index]='007';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon7;
+                        iconCode[index] = '007';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon8;
-                        iconCode[index]='008';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon8;
+                        iconCode[index] = '008';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon9;
-                        iconCode[index]='009';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon9;
+                        iconCode[index] = '009';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon10;
-                        iconCode[index]='0010';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon10;
+                        iconCode[index] = '0010';
                         print('true');
-                      }else if(_chosenValue=='Heater'){
-                        changeIcon[index]=icon11;
-                        iconCode[index]='0011';
+                      } else if (_chosenValue == 'Heater') {
+                        changeIcon[index] = icon11;
+                        iconCode[index] = '0011';
                         print('true');
                       }
                       // changeIcon=value;
@@ -2760,19 +3570,15 @@ class _HomeTestState extends State<HomeTest>
                 child: MaterialButton(
                   elevation: 5.0,
                   child: Text('Submit'),
-                  onPressed: ()async {
-                    piname=pinNameController.text;
+                  onPressed: () async {
+                    piname = pinNameController.text;
                     print('checkConditioncheck ${iconCode[index]}');
-                    String aa=piname+","+iconCode[index];
-                    var ss= aa.substring(aa.indexOf(","));
+                    String aa = piname + "," + iconCode[index];
+                    var ss = aa.substring(aa.indexOf(","));
                     print('checkConditioncheck $aa');
 
                     await addPinsName(aa, index);
                     Navigator.of(context).pop();
-                    //
-
-                    // print('Device Name ----->>>> ${names.map((e) =>
-                    //         addPinsName(pinNameController.text, index))}');
                     final snackBar = SnackBar(
                       content: Text('Name Added'),
                     );
@@ -2785,14 +3591,14 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  _createAlertDialogForSSIDAndEmergencyNumber(BuildContext context,String dId) {
+  _createAlertDialogForSSIDAndEmergencyNumber(
+      BuildContext context, String dId) {
     return showDialog(
         context: context,
-
         builder: (context) {
           return AlertDialog(
             content: Container(
-              height: MediaQuery.of(context).size.height-20,
+              height: MediaQuery.of(context).size.height - 20,
               child: Column(
                 children: [
                   TextButton(
@@ -2800,8 +3606,7 @@ class _HomeTestState extends State<HomeTest>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ShowSsid(
+                                builder: (context) => ShowSsid(
                                       deviceId: dId,
                                     )));
                       },
@@ -2814,8 +3619,7 @@ class _HomeTestState extends State<HomeTest>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ShowEmergencyNumber(
+                                builder: (context) => ShowEmergencyNumber(
                                       deviceId: dId,
                                     )));
                       },
@@ -2840,8 +3644,7 @@ class _HomeTestState extends State<HomeTest>
                       )),
                   TextButton(
                       onPressed: () {
-
-                        _showDialogForDeleteSingleDevices(tabbarState,dId);
+                        _showDialogForDeleteSingleDevices(tabbarState, dId);
                         // Navigator.push(
                         //     context,
                         //     MaterialPageRoute(
@@ -2856,7 +3659,6 @@ class _HomeTestState extends State<HomeTest>
                       )),
                   TextButton(
                       onPressed: () {
-
                         // deleteDevice(tabbarState, dId);
                         // Navigator.push(
                         //     context,
@@ -2889,7 +3691,10 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.supervised_user_circle_rounded,color: Colors.deepOrange,),
+                      Icon(
+                        Icons.supervised_user_circle_rounded,
+                        color: Colors.deepOrange,
+                      ),
                       TextButton(
                         child: Text(
                           'Sub User',
@@ -2906,7 +3711,10 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   Row(
                     children: [
-                      Icon(Icons.supervised_user_circle_rounded,color: Colors.deepOrange,),
+                      Icon(
+                        Icons.supervised_user_circle_rounded,
+                        color: Colors.deepOrange,
+                      ),
                       TextButton(
                         child: Text(
                           'Temporary User',
@@ -2936,12 +3744,12 @@ class _HomeTestState extends State<HomeTest>
     listOfAllFloor = await NewDbProvider.instance.queryFloor();
   }
 
-
   allFlat() async {
     listOfAllFlat = await NewDbProvider.instance.queryFlat();
   }
 
-  _createAlertDialogForAddRoomDeleteDevices(BuildContext context, String rId,int index) {
+  _createAlertDialogForAddRoomDeleteDevices(
+      BuildContext context, String rId, int index) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -2960,7 +3768,7 @@ class _HomeTestState extends State<HomeTest>
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      _editRoomNameAlertDialog(context,index);
+                      _editRoomNameAlertDialog(context, index);
                     },
                   ),
                   TextButton(
@@ -2985,7 +3793,9 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Oops',),
+            title: Text(
+              'Oops',
+            ),
             content: Container(
               color: Colors.blueGrey,
               child: MaterialButton(
@@ -2995,8 +3805,7 @@ class _HomeTestState extends State<HomeTest>
                   }),
             ),
           );
-        }
-    );
+        });
   }
 
   deleteFloorOption(BuildContext context) {
@@ -3027,8 +3836,8 @@ class _HomeTestState extends State<HomeTest>
                                 child: Text('Delete Floor'),
                                 onPressed: () async {
                                   var floorId = widget.fl.fId.toString();
-                                  var selectDelete = listOfAllFloor[index]['f_id']
-                                      .toString();
+                                  var selectDelete =
+                                      listOfAllFloor[index]['f_id'].toString();
                                   if (floorId.contains(selectDelete)) {
                                     print('true');
                                     alertDialogExistingFloor(context);
@@ -3046,8 +3855,7 @@ class _HomeTestState extends State<HomeTest>
                   }),
             ),
           );
-        }
-    );
+        });
   }
 
   deleteFlatOption(BuildContext context) {
@@ -3078,8 +3886,8 @@ class _HomeTestState extends State<HomeTest>
                                 child: Text('Delete Floor'),
                                 onPressed: () {
                                   print(listOfAllFlat[index]['flt_id']);
-                                  var selectedFlat = listOfAllFlat[index]['flt_id']
-                                      .toString();
+                                  var selectedFlat =
+                                      listOfAllFlat[index]['flt_id'].toString();
                                   var flatId = widget.flat.fltId.toString();
                                   if (flatId.contains(selectedFlat)) {
                                     alertDialogExistingFloor(context);
@@ -3098,8 +3906,7 @@ class _HomeTestState extends State<HomeTest>
                   }),
             ),
           );
-        }
-    );
+        });
   }
 
   _createAlertDialogForDeleteFloorAndAddFloor(BuildContext context) {
@@ -3122,7 +3929,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.add),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Add Floor',
                           style: TextStyle(fontSize: 20),
@@ -3141,7 +3950,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Delete Floor',
                           style: TextStyle(fontSize: 20),
@@ -3161,7 +3972,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.edit),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Edit Floor Name',
                           style: TextStyle(fontSize: 20),
@@ -3186,7 +3999,7 @@ class _HomeTestState extends State<HomeTest>
         });
   }
 
-  _createAlertDialogForlocalUpdateAndMessage(BuildContext context,String dId) {
+  _createAlertDialogForlocalUpdateAndMessage(BuildContext context, String dId) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -3214,7 +4027,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.add),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Local Update',
                           style: TextStyle(fontSize: 20),
@@ -3233,7 +4048,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Message',
                           style: TextStyle(fontSize: 20),
@@ -3253,7 +4070,9 @@ class _HomeTestState extends State<HomeTest>
                     child: Row(
                       children: [
                         Icon(Icons.edit),
-                        SizedBox(width: 54,),
+                        SizedBox(
+                          width: 54,
+                        ),
                         Text(
                           'Edit Floor Name',
                           style: TextStyle(fontSize: 20),
@@ -3288,10 +4107,7 @@ class _HomeTestState extends State<HomeTest>
               style: TextStyle(fontSize: 20),
             ),
             content: Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height - 120,
+              height: MediaQuery.of(context).size.height - 120,
               child: Column(
                 children: [
                   TextButton(
@@ -3433,8 +4249,6 @@ class _HomeTestState extends State<HomeTest>
     // getPinNames(deviceIdForSensor);
   }
 
-
-
   @override
   void dispose() {
     super.dispose();
@@ -3496,7 +4310,7 @@ class _HomeTestState extends State<HomeTest>
   Future<List<Device>> getDevices(String rId) async {
     print('tabbas ${tabbarState}');
     var query = {'r_id': tabbarState};
-    final url = API+'addyourdevice/?r_id='+tabbarState;
+    final url = API + 'addyourdevice/?r_id=' + tabbarState;
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -3516,12 +4330,12 @@ class _HomeTestState extends State<HomeTest>
   }
 
   Future<List<Device>> getDeviceOffline() async {
-    List roomQueryRows=await NewDbProvider.instance.queryRoom();
+    List roomQueryRows = await NewDbProvider.instance.queryRoom();
     print('checkLength ${roomQueryRows}');
     String token = await getToken();
     for (int i = 0; i < roomQueryRows.length; i++) {
-      var rId=roomQueryRows[i]['r_id'].toString();
-      String url = API+"addyourdevice/?r_id=" + rId;
+      var rId = roomQueryRows[i]['r_id'].toString();
+      String url = API + "addyourdevice/?r_id=" + rId;
       var response;
       // try {
       response = await http.get(Uri.parse(url), headers: {
@@ -3531,11 +4345,11 @@ class _HomeTestState extends State<HomeTest>
       });
       List deviceData = jsonDecode(response.body);
       print('deviceData  ${deviceData}');
-      List deviceQueryRows=await NewDbProvider.instance.queryDevice();
-      print('checkLength ${deviceData.length==deviceQueryRows.length}');
+      List deviceQueryRows = await NewDbProvider.instance.queryDevice();
+      print('checkLength ${deviceData.length == deviceQueryRows.length}');
       print('checkLength ${deviceData.length}');
       print('checkLength ${deviceQueryRows.length}');
-      if(deviceData.length==deviceQueryRows.length){
+      if (deviceData.length == deviceQueryRows.length) {
         for (int i = 0; i < deviceData.length; i++) {
           var deviceQuery = Device(
               user: deviceData[i]['user'],
@@ -3546,7 +4360,7 @@ class _HomeTestState extends State<HomeTest>
           // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
           await NewDbProvider.instance.updateDevice(deviceQuery);
         }
-      }else {
+      } else {
         await NewDbProvider.instance.deleteDeviceModel();
         for (int i = 0; i < deviceData.length; i++) {
           var deviceQuery = Device(
@@ -3563,9 +4377,10 @@ class _HomeTestState extends State<HomeTest>
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
     return dv;
   }
+
   Future getDeviceOnlySingleRoom(String rId) async {
     String token = await getToken();
-    String url = API+"addyourdevice/?r_id=" + rId;
+    String url = API + "addyourdevice/?r_id=" + rId;
     var response;
     // try {
     response = await http.get(Uri.parse(url), headers: {
@@ -3575,11 +4390,11 @@ class _HomeTestState extends State<HomeTest>
     });
     List deviceData = jsonDecode(response.body);
     print('deviceData  ${deviceData}');
-    List deviceQueryRows=await NewDbProvider.instance.queryDevice();
-    print('checkLength ${deviceData.length==deviceQueryRows.length}');
+    List deviceQueryRows = await NewDbProvider.instance.queryDevice();
+    print('checkLength ${deviceData.length == deviceQueryRows.length}');
     print('checkLength ${deviceData.length}');
     print('checkLength ${deviceQueryRows.length}');
-    if(deviceData.length==deviceQueryRows.length){
+    if (deviceData.length == deviceQueryRows.length) {
       for (int i = 0; i < deviceData.length; i++) {
         var deviceQuery = Device(
             user: deviceData[i]['user'],
@@ -3590,7 +4405,7 @@ class _HomeTestState extends State<HomeTest>
         // await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
         await NewDbProvider.instance.updateDevice(deviceQuery);
       }
-    }else {
+    } else {
       await NewDbProvider.instance.deleteDeviceModel();
       for (int i = 0; i < deviceData.length; i++) {
         var deviceQuery = Device(
@@ -3600,19 +4415,17 @@ class _HomeTestState extends State<HomeTest>
         print('deviceQueryFuncInsert   $deviceData}');
         print('deviceQueryFunc   $deviceData}');
 
-
         await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
         // await NewDbProvider.instance.updateDevice(deviceQuery);
 
       }
     }
     // dv = deviceData.map((data) => Device.fromJson(data)).toList();
-
   }
 
-  Future <void> deleteDevice(String rId, String dId) async {
+  Future<void> deleteDevice(String rId, String dId) async {
     String token = await getToken();
-    final url = API+'addyourdevice/?r_id=${rId}&d_id=${dId}';
+    final url = API + 'addyourdevice/?r_id=${rId}&d_id=${dId}';
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -3631,6 +4444,7 @@ class _HomeTestState extends State<HomeTest>
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+
   Future<List<RoomType>> getrooms(String flt_id) async {
     final url = API + 'addroom/?flt_id=' + flt_id;
     String token = await getToken();
@@ -3642,19 +4456,17 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       List<RoomType> rooms =
-      data.map((data) => RoomType.fromJson(data)).toList();
+          data.map((data) => RoomType.fromJson(data)).toList();
       print(rooms);
       return rooms;
-    }else{
+    } else {
       return null;
     }
   }
 
-
-
   Future<void> deleteRoomWithAllDevice(String rId) async {
     String token = await getToken();
-    final url = API+'addroom/?r_id=' + rId;
+    final url = API + 'addroom/?r_id=' + rId;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -3675,10 +4487,9 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-
   Future<void> deleteFloor(String fId) async {
     String token = await getToken();
-    final url = API+'addyourfloor/?f_id=' + fId;
+    final url = API + 'addyourfloor/?f_id=' + fId;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -3701,7 +4512,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> deleteFlat(String flt_Id) async {
     String token = await getToken();
-    final url = API+'addyourflat/?flt_id=' + flt_Id;
+    final url = API + 'addyourflat/?flt_id=' + flt_Id;
     final response = await http.delete(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -3731,8 +4542,7 @@ class _HomeTestState extends State<HomeTest>
     print('no');
     while (counter <= dv.length - 1) {
       print('yes');
-      final url = API+'addipaddress/?d_id=' +
-          dv[counter].dId.toString();
+      final url = API + 'addipaddress/?d_id=' + dv[counter].dId.toString();
       String token = await getToken();
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -3761,7 +4571,7 @@ class _HomeTestState extends State<HomeTest>
   Future<IpAddress> fetchIp(String dId) async {
     while (counter <= widget.dv.length) {
       String token = await getToken();
-      final url = API+'addipaddress/?d_id=' + dId;
+      final url = API + 'addipaddress/?d_id=' + dId;
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -3769,9 +4579,7 @@ class _HomeTestState extends State<HomeTest>
       });
 
       if (response.statusCode == 200) {
-        ip = IpAddress
-            .fromJson(jsonDecode(response.body))
-            .ipaddress;
+        ip = IpAddress.fromJson(jsonDecode(response.body)).ipaddress;
         print('IPCheck  ${ip.toString()}');
       }
       counter++;
@@ -3809,8 +4617,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   dataUpdate(String dId) async {
-    final String url =
-        API+'getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API + 'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -3836,7 +4643,7 @@ class _HomeTestState extends State<HomeTest>
       // 'pin19Status': s,
     };
     http.Response response =
-    await http.post(url, body: jsonEncode(data), headers: {
+        await http.post(url, body: jsonEncode(data), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
@@ -3859,8 +4666,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   dataUpdateforPin19(String dId) async {
-    final String url =
-        API+'getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API + 'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     Map data = {
       'put': 'yes',
@@ -3886,7 +4692,7 @@ class _HomeTestState extends State<HomeTest>
       'pin19Status': pin19Controller.text,
     };
     http.Response response =
-    await http.post(url, body: jsonEncode(data), headers: {
+        await http.post(url, body: jsonEncode(data), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token $token',
     });
@@ -3912,7 +4718,6 @@ class _HomeTestState extends State<HomeTest>
     await _deleteCacheDir();
     await _deleteAppDir();
     final deleteToken = await storage.delete(key: "token");
-
   }
 
   Future<void> _deleteCacheDir() async {
@@ -3935,13 +4740,12 @@ class _HomeTestState extends State<HomeTest>
 
   Future getSensorData(String dId) async {
     String token = await getToken();
-    final response = await http.get(
-        API+'tensensorsdata/?d_id=' + dId,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
+    final response =
+        await http.get(API + 'tensensorsdata/?d_id=' + dId, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
 
 // Appropriate action depending upon the
 // server response
@@ -3988,7 +4792,7 @@ class _HomeTestState extends State<HomeTest>
   Future devicePinSensorLocalUsingDeviceId(String dId) async {
     print('ssse $dId');
     sensorData =
-    await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
+        await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
     if (sensorData == null) {
       return Text('No Data');
     }
@@ -4002,7 +4806,7 @@ class _HomeTestState extends State<HomeTest>
     await devicePinSensorLocalUsingDeviceId(dId);
 
     nameData =
-    await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
+        await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
     if (nameData == null) {
       return Text('No Data');
     }
@@ -4014,7 +4818,7 @@ class _HomeTestState extends State<HomeTest>
   // ignore: missing_return
   Future<RoomType> addRoom(String data) async {
     print('floorwidgetid ${widget.flat.fltId}');
-    final url = API+'addroom/';
+    final url = API + 'addroom/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -4061,7 +4865,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> addFlat(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
-    final url = API+'addyourflat/';
+    final url = API + 'addyourflat/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -4105,7 +4909,7 @@ class _HomeTestState extends State<HomeTest>
 
   Future<void> addFlat2(String data) async {
     print('floorwidgetid ${widget.fl.fId}');
-    final url = API+'addyourflat/';
+    final url = API + 'addyourflat/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable2,
@@ -4131,7 +4935,6 @@ class _HomeTestState extends State<HomeTest>
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
       }
       print(' RoomTabs--> $tabbarState');
 
@@ -4143,10 +4946,9 @@ class _HomeTestState extends State<HomeTest>
 
   var roomQuery;
 
-
   Future<void> fetchPlace() async {
     String token = await getToken();
-    final url = API+'addyourplace/';
+    final url = API + 'addyourplace/';
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -4161,8 +4963,7 @@ class _HomeTestState extends State<HomeTest>
             var placeQuery = PlaceType(
                 pId: placeData[i]['p_id'],
                 pType: placeData[i]['p_type'],
-                user: placeData[i]['user']
-            );
+                user: placeData[i]['user']);
             NewDbProvider.instance.updatePlace(placeQuery);
           }
         } else {
@@ -4171,21 +4972,18 @@ class _HomeTestState extends State<HomeTest>
             var placeQuery = PlaceType(
                 pId: placeData[i]['p_id'],
                 pType: placeData[i]['p_type'],
-                user: placeData[i]['user']
-            );
+                user: placeData[i]['user']);
             NewDbProvider.instance.insertPlaceModelData(placeQuery);
           }
         }
         getAllFloor();
       }
     } catch (e) {}
-
   }
-
 
   Future<void> getAllFloor() async {
     String token = await getToken();
-    List  placeRows = await NewDbProvider.instance.queryPlace();
+    List placeRows = await NewDbProvider.instance.queryPlace();
     print('pId  $placeRows');
     var pId;
     var floorQuery;
@@ -4194,12 +4992,11 @@ class _HomeTestState extends State<HomeTest>
       pId = placeRows[i]['p_id'].toString();
       print('pId  $pId');
 
-      final url = API+"addyourfloor/?p_id=" + pId;
+      final url = API + "addyourfloor/?p_id=" + pId;
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
       if (response.statusCode == 200) {
         List floorData = jsonDecode(response.body);
@@ -4229,7 +5026,6 @@ class _HomeTestState extends State<HomeTest>
           }
         }
         print('floorData12 ${floorData}');
-
       }
       getAllFlat();
       // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
@@ -4246,14 +5042,13 @@ class _HomeTestState extends State<HomeTest>
     for (int i = 0; i < floorQueryRows.length; i++) {
       fId = floorQueryRows[i]['f_id'].toString();
       print("AllFlatFloorId $fId");
-      String url = API+'addyourflat/?f_id=' + fId;
+      String url = API + 'addyourflat/?f_id=' + fId;
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
-      if (response.statusCode ==200) {
+      if (response.statusCode == 200) {
         List flatData = jsonDecode(response.body);
         flatQueryRows2 = await NewDbProvider.instance.queryFlat();
         if (flatQueryRows2.length == flatData.length) {
@@ -4262,8 +5057,7 @@ class _HomeTestState extends State<HomeTest>
                 fId: flatData[i]['f_id'],
                 fltId: flatData[i]['flt_id'],
                 fltName: flatData[i]['flt_name'],
-                user: flatData[i]['user']
-            );
+                user: flatData[i]['user']);
             await NewDbProvider.instance.updateFlat(flatQuery);
             // print('FlatFlatQuery  ${flatQuery.fltName}');
             print('FlatFlatQuery  ${flatData[i]['f_id']}');
@@ -4278,8 +5072,7 @@ class _HomeTestState extends State<HomeTest>
                 fId: flatData[i]['f_id'],
                 fltId: flatData[i]['flt_id'],
                 fltName: flatData[i]['flt_name'],
-                user: flatData[i]['user']
-            );
+                user: flatData[i]['user']);
             await NewDbProvider.instance.insertFlatModelData(flatQuery);
             print('FlatFlatQuery  ${flatData[i]['f_id']}');
             print('FlatFlatQuery  ${flatData[i]['flt_id']}');
@@ -4291,13 +5084,10 @@ class _HomeTestState extends State<HomeTest>
         print('flatData ${flatData}');
       }
 
-
       // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
-
 
     }
   }
-
 
   Future getAllRoom() async {
     List roomData;
@@ -4308,8 +5098,7 @@ class _HomeTestState extends State<HomeTest>
       flatId = flatQueryRows2[i]['flt_id'].toString();
       print('checkFlatId ${flatId}');
 
-      String url =
-          API+"addroom/?flt_id=" + flatId;
+      String url = API + "addroom/?flt_id=" + flatId;
       var response;
 
       response = await http.get(Uri.parse(url), headers: {
@@ -4328,8 +5117,7 @@ class _HomeTestState extends State<HomeTest>
               rId: roomData[i]['r_id'],
               rName: roomData[i]['r_name'].toString(),
               fltId: roomData[i]['flt_id'],
-              user: roomData[i]['user']
-          );
+              user: roomData[i]['user']);
           await NewDbProvider.instance.updateRoom(roomQuery);
         }
       } else {
@@ -4339,19 +5127,16 @@ class _HomeTestState extends State<HomeTest>
               rId: roomData[i]['r_id'],
               rName: roomData[i]['r_name'].toString(),
               fltId: roomData[i]['flt_id'],
-              user: roomData[i]['user']
-          );
+              user: roomData[i]['user']);
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
         }
       }
     }
     getDeviceOffline();
-
   }
 
-
   Future<RoomType> addRoom2(String data) async {
-    final url = API+'addroom/';
+    final url = API + 'addroom/';
     String token = await getToken();
     var postData = {
       "user": getUidVariable,
@@ -4370,18 +5155,16 @@ class _HomeTestState extends State<HomeTest>
       print(response.statusCode);
       print(response.body);
       tabbarState = jsonDecode(response.body);
-
     } else {
       throw Exception('Failed to create Room.');
     }
   }
 
-
   var flatResponse;
 
   Future<FloorType> addFloor(String data) async {
     String token = await getToken();
-    final url = API+'addyourfloor/';
+    final url = API + 'addyourfloor/';
     var postData = {
       "user": getUidVariable,
       "p_id": widget.pt.pId,
@@ -4417,6 +5200,22 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
+  Future<List<PlaceType>> placeQueryModelFunc()async{
+    placeRows = await NewDbProvider.instance.queryPlace();
+    List<PlaceType> places =
+    placeRows.map((data) => PlaceType.fromJson(data)).toList();
+    print("placeQueryModelFunc $placeRows");
+    return places;
+  }
+  Future<List<FloorType>> floorQueryModelFunc(String pId)async{
+    List<Map<String, dynamic>> floorQueryRowsFloor = await NewDbProvider.instance.getFloorById(pId.toString());
+    print(" floorQueryModelFunc ${floorQueryRowsFloor}");
+    List<FloorType> floors =
+    floorQueryRowsFloor.map((data) => FloorType.fromJson(data)).toList();
+    print("floorQueryModelFunc ${floors.first.fName}");
+    return floors;
+  }
+
   Future returnPlaceQuery() async {
     placeVal = await placeQueryFunc();
     return NewDbProvider.instance.queryPlace();
@@ -4430,16 +5229,14 @@ class _HomeTestState extends State<HomeTest>
     // return places;
   }
 
-  Future returnFloorQuery(String pId) async{
-    floorQueryRowsFloor= await NewDbProvider.instance.getFloorById(pId);
+  Future returnFloorQuery(String pId) async {
+    floorQueryRowsFloor = await NewDbProvider.instance.getFloorById(pId);
     print('floorQueryRowsFloor $floorQueryRowsFloor');
-    return NewDbProvider.instance.queryFloor();
+    return NewDbProvider.instance.queryPlace();
   }
-
 
   Future floorval;
   Future floorval2;
-
 
   @override
   Widget build(BuildContext context) {
@@ -4448,97 +5245,414 @@ class _HomeTestState extends State<HomeTest>
         width: double.maxFinite,
         color: change_toDark ? Colors.black : Colors.white,
         // key: key,
-        child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints viewportConstraints) {
-              if (viewportConstraints.maxWidth > 600) {
-                print('webdsd ${widget.tabbarState}');
-                return HomeViewLarge( _currentIndex, (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },pt: widget.pt,fl: widget.fl,flt: widget.flat,rm: widget.rm,tabbarState: widget.tabbarState,dv: widget.dv,);
-              } else {
-
-                return Scaffold(
-                  backgroundColor: _switchValue ? Colors.white12 : Colors.white,
-                  resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    title: GestureDetector(
-                      onLongPress: () {
-                        _editPlaceNameAlertDialog(context);
-                      },
-                      child: Row(
-                        children: [
-
-                          Flexible(
-                            child: Text('Place - ', style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: fonttest==null?changeFont:fonttest,
-                            ),),
+        child: LayoutBuilder(builder:
+            (BuildContext context, BoxConstraints viewportConstraints) {
+          if (viewportConstraints.maxWidth > 600) {
+            print('webdsd ${widget.tabbarState}');
+            return HomeViewLarge(
+              _currentIndex,
+              (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              pt: widget.pt,
+              fl: widget.fl,
+              flt: widget.flat,
+              rm: widget.rm,
+              tabbarState: widget.tabbarState,
+              dv: widget.dv,
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: _switchValue ? Colors.white12 : Colors.white,
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: GestureDetector(
+                  onLongPress: () {
+                    _editPlaceNameAlertDialog(context);
+                  },
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'Place - ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily:
+                                fonttest == null ? changeFont : fonttest,
                           ),
-                          Text(widget.pt.pType,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
-                          Icon(Icons.arrow_drop_down)
-                        ],
+                        ),
                       ),
-                      onTap: () async {
-                        // placeVal=await NewDbProvider.instance.queryPlace();
-                        await  _createAlertDialogDropDown(context);
-                      },
-                    ),
-                    backgroundColor: Colors.blueAccent,
-                    actions: [
-                      CircularProfileAvatar(
-                        '',
-                        child: setImage == null
-                            ? Image.asset('assets/images/blank.png')
-                            : setImage,
-                        radius: 27.5,
-                        elevation: 5,
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfilePage(
-                                        // fl: widget.fl,
-                                        // fl: widget.fl,
-                                      ))).then((value) =>
-                          loadImageFromPreferences()
-                              ? _deleteImage()
-                              : loadImageFromPreferences());
-                        },
-                        cacheImage: true,
+                      Text(
+                        widget.pt.pType,
+                        style: TextStyle(
+                            fontFamily:
+                                fonttest == null ? changeFont : fonttest),
                       ),
-                      PopupMenuButton<String>(
-                        onSelected: choiceAction,
-                        itemBuilder: (BuildContext context) {
-                          return Constants.choices.map((String choice) {
-                            return PopupMenuItem<String>(
-                              value: choice,
-                              child: Text(choice,style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest),),
-                            );
-                          }).toList();
-                        },
-                      ),
+                      Icon(Icons.arrow_drop_down)
                     ],
                   ),
-                  drawer: Theme(
-                    data: Theme.of(context).copyWith(
-                      canvasColor: change_toDark ? Colors.black : Colors
+                  onTap: () async {
+                   placeVal =  placeQueryModelFunc();
+                    // placeVal=await NewDbProvider.instance.queryPlace();
+                   _dialogWithModel(context);
+                  },
+                ),
+                backgroundColor: Colors.blueAccent,
+                actions: [
+                  CircularProfileAvatar(
+                    '',
+                    child: setImage == null
+                        ? Image.asset('assets/images/blank.png')
+                        : setImage,
+                    radius: 27.5,
+                    elevation: 5,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                  // fl: widget.fl,
+                                  // fl: widget.fl,
+                                  ))).then((value) => loadImageFromPreferences()
+                          ? _deleteImage()
+                          : loadImageFromPreferences());
+                    },
+                    cacheImage: true,
+                  ),
+                  PopupMenuButton<String>(
+                    onSelected: choiceAction,
+                    itemBuilder: (BuildContext context) {
+                      return Constants.choices.map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(
+                            choice,
+                            style: TextStyle(
+                                fontFamily:
+                                    fonttest == null ? changeFont : fonttest),
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ],
+              ),
+              drawer: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: change_toDark
+                      ? Colors.black
+                      : Colors
                           .white, //This will change the drawer background to blue.
-                      //other styles
+                  //other styles
+                ),
+                child: Drawer(
+                  child: Container(
+                    width: double.maxFinite,
+                    color: change_toDark ? Colors.black : Colors.white,
+                    height: 100,
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          //padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color(0xff669df4),
+                                    Color(0xff4e80f3)
+                                  ]),
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(30),
+                                bottomLeft: Radius.circular(30),
+                              )),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                                ),
+                                CircularProfileAvatar(
+                                  '',
+                                  child: setImage == null
+                                      ? Image.asset('assets/images/blank.png')
+                                      : setImage,
+                                  radius: 60,
+                                  elevation: 5,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfilePage(
+                                                // fl: widget.fl,
+                                                )));
+                                  },
+                                  cacheImage: true,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  'Hello $firstName',
+                                  style: TextStyle(
+                                      fontFamily: fonttest == null
+                                          ? changeFont
+                                          : fonttest,
+                                      // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.home_work_rounded),
+                          title: Text(
+                            'Add Place',
+                            style: TextStyle(
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DropDown1()));
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.supervised_user_circle),
+                          title: Text(
+                            'Sub Access',
+                            style: TextStyle(
+                                color:
+                                    change_toDark ? Colors.white : Colors.black,
+                                fontFamily:
+                                    fonttest == null ? changeFont : fonttest),
+                          ),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SubAccessSinglePage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.supervised_user_circle),
+                          title: Text(
+                            'Temp Access',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () async {
+                            var result =
+                                await Connectivity().checkConnectivity();
+                            if (result == ConnectivityResult.none) {
+                              await _showDialogForNoInternet();
+                            } else {
+                              await _getTempNumber();
+                              if (number == null) {
+                                await _showDialogForTempAccessPge();
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TempAccessPage(
+                                            mobileNumber: number,
+                                          )),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        ListTile(
+                            leading: Icon(Icons.perm_identity),
+                            title: Text(
+                              'Add Members',
+                              style: TextStyle(
+                                fontFamily:
+                                    fonttest == null ? changeFont : fonttest,
+                                color:
+                                    change_toDark ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            onTap: () {
+                              _createAlertDialogForAddMembers(context);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ReadContacts(),
+                              //   ),
+                              // );
+                            }),
+                        ListTile(
+                            leading: Icon(Icons.power_rounded),
+                            title: Text('Bill Prediction',
+                                style: TextStyle(
+                                  fontFamily:
+                                      fonttest == null ? changeFont : fonttest,
+                                  color: change_toDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                )),
+                            onTap: () {
+                              _billPredictionNavigation(context);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => FlatBill(),
+                              //   ),
+                              // );
+                            }),
+                        ListTile(
+                            leading: Icon(Icons.schedule),
+                            title: Text('Scheduled device /pins ',
+                                style: TextStyle(
+                                  fontFamily:
+                                      fonttest == null ? changeFont : fonttest,
+                                  color: change_toDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ScheduledPin(),
+                                ),
+                              );
+                            }),
+                        ListTile(
+                          leading: Icon(Icons.settings),
+                          title: Text(
+                            'Setting',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SettingPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.help),
+                          title: Text(
+                            'Help',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WhatsNew()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.info),
+                          title: Text(
+                            'About GenOrion',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => information()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.quick_contacts_dialer_sharp),
+                          title: Text(
+                            'Contact ',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ContactPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.logout),
+                          title: Text(
+                            'Logout',
+                            style: TextStyle(
+                              fontFamily:
+                                  fonttest == null ? changeFont : fonttest,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            _showDialogForLogOut();
+
+                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())).then((_logout()));
+                          },
+                        ),
+                      ],
                     ),
-                    child: Drawer(
-                      child: Container(
-                        width: double.maxFinite,
-                        color: change_toDark ? Colors.black : Colors.white,
-                        height: 100,
-                        child: ListView(
-                          children: <Widget>[
-                            Container(
-                              width: double.infinity,
-                              //padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
+                  ),
+                ),
+              ),
+              body: Container(
+                width: double.maxFinite,
+                color: change_toDark ? Colors.black : Colors.white,
+                child: DefaultTabController(
+                  length: widget.rm.length,
+                  child: CustomScrollView(
+                      // key: key,
+
+                      // controller: _scrollController,
+                      slivers: <Widget>[
+                        //Upper Widget
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.41,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
@@ -4547,868 +5661,674 @@ class _HomeTestState extends State<HomeTest>
                                         Color(0xff4e80f3)
                                       ]),
                                   borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
-                                  )),
-                              child: Center(
+                                      bottomLeft: Radius.circular(30),
+                                      bottomRight: Radius.circular(30)),
+                                ),
+                                padding: EdgeInsets.only(
+                                  top: 40,
+                                  bottom: 10,
+                                  left: 28,
+                                  right: 30,
+                                ),
+                                // alignment: Alignment.topLeft,
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                                    ),
-                                    CircularProfileAvatar(
-                                      '',
-                                      child: setImage == null
-                                          ? Image.asset('assets/images/blank.png')
-                                          : setImage,
-                                      radius: 60,
-                                      elevation: 5,
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfilePage(
-                                                      // fl: widget.fl,
-                                                    )));
-                                      },
-                                      cacheImage: true,
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text('Hello $firstName', style: TextStyle(
-                                        fontFamily: fonttest==null?changeFont:fonttest,
-                                        // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white
-                                    ),),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.home_work_rounded),
-                              title: Text(
-                                'Add Place',
-                                style: TextStyle(
-                                  color: change_toDark ? Colors.white : Colors.black,
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>DropDown1()));
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.supervised_user_circle),
-                              title: Text(
-                                'Sub Access',
-                                style: TextStyle(
-                                    color: change_toDark ? Colors.white : Colors
-                                        .black,
-                                    fontFamily: fonttest==null?changeFont:fonttest
-                                ),
-                              ),
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SubAccessSinglePage()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.supervised_user_circle),
-                              title: Text(
-                                'Temp Access',
-                                style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () async {
-                                var result = await Connectivity().checkConnectivity();
-                                if(result == ConnectivityResult.none){
-                                  await _showDialogForNoInternet();
-                                }else{
-                                  await _getTempNumber();
-                                  if(number==null){
-                                    await _showDialogForTempAccessPge();
-                                  }else{
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TempAccessPage(
-                                            mobileNumber: number,
-                                          )),
-                                    );
-                                  }
-                                }
-
-
-
-                              },
-                            ),
-                            ListTile(
-                                leading: Icon(Icons.perm_identity),
-                                title: Text(
-                                  'Add Members',
-                                  style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,
-                                    color: change_toDark ? Colors.white : Colors
-                                        .black,
-                                  ),
-                                ),
-                                onTap: () {
-                                  _createAlertDialogForAddMembers(context);
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => ReadContacts(),
-                                  //   ),
-                                  // );
-                                }),
-                            ListTile(
-                                leading: Icon(Icons.power_rounded),
-                                title: Text('Bill Prediction',
-                                    style: TextStyle(
-                                      fontFamily: fonttest==null?changeFont:fonttest,
-                                      color: change_toDark ? Colors.white : Colors
-                                          .black,
-                                    )),
-                                onTap: () {
-                                  _billPredictionNavigation(context);
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => FlatBill(),
-                                  //   ),
-                                  // );
-                                }),
-                            ListTile(
-                                leading: Icon(Icons.schedule),
-                                title: Text('Scheduled device /pins ',
-                                    style: TextStyle(
-                                      fontFamily: fonttest==null?changeFont:fonttest,
-                                      color: change_toDark ? Colors.white : Colors
-                                          .black,
-                                    )),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ScheduledPin(),
-                                    ),
-                                  );
-                                }),
-                            ListTile(
-                              leading: Icon(Icons.settings),
-                              title: Text(
-                                'Setting',
-                                style: TextStyle(
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SettingPage()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.help),
-                              title: Text(
-                                'Help',
-                                style: TextStyle(
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WhatsNew()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.info),
-                              title: Text(
-                                'About GenOrion',
-                                style: TextStyle(
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => information()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.quick_contacts_dialer_sharp),
-                              title: Text(
-                                'Contact ',
-                                style: TextStyle(
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ContactPage()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.logout),
-                              title: Text(
-                                'Logout',
-                                style: TextStyle(
-                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                  color: change_toDark ? Colors.white : Colors
-                                      .black,
-                                ),
-                              ),
-                              onTap: () {
-                                _showDialogForLogOut();
-
-                                // Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())).then((_logout()));
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  body: Container(
-                    width: double.maxFinite,
-                    color: change_toDark ? Colors.black : Colors.white,
-                    child: DefaultTabController(
-                      length: widget.rm.length,
-                      child: CustomScrollView(
-                        // key: key,
-
-                        // controller: _scrollController,
-                          slivers: <Widget>[
-                            //Upper Widget
-                            SliverToBoxAdapter(
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    height: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.41,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Color(0xff669df4),
-                                            Color(0xff4e80f3)
-                                          ]),
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(30),
-                                          bottomRight: Radius.circular(30)),
-                                    ),
-                                    padding: EdgeInsets.only(
-                                      top: 40,
-                                      bottom: 10,
-                                      left: 28,
-                                      right: 30,
-                                    ),
-                                    // alignment: Alignment.topLeft,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
+                                    Row(
+                                      mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Column(
                                           children: <Widget>[
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onLongPress: () {
+                                                    _editFloorNameAlertDialog(
+                                                        context);
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        'Floor - ',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                          color: Colors.white,
+                                                          fontSize: 22,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          // fontStyle: FontStyle
+                                                          //     .italic
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: FittedBox(
+                                                          fit: BoxFit.cover,
+                                                          child: Text(
+                                                            widget.fl.fName,
 
+                                                            // 'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                fontFamily: fonttest ==
+                                                                        null
+                                                                    ? changeFont
+                                                                    : fonttest,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 22,
+
+                                                                // overflow:TextOverflow.ellipsis ,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Icon(Icons
+                                                          .arrow_drop_down),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  onTap: () {
+                                                    _createAlertDialogDropDownFloor(
+                                                        context);
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                GestureDetector(
+                                                  // child:Image.asset('assets/images/setting.png'),
+
+                                                  child: Icon(
+                                                    SettingIcon.params,
+                                                    size: 18,
+                                                  ),
+                                                  onTap: () async {
+                                                    await allFloor();
+                                                    _createAlertDialogForDeleteFloorAndAddFloor(
+                                                        context);
+                                                    // _createAlertDialogForFloor(context);
+                                                  },
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
                                             Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Row(
-                                                  children: [
+                                                  children: <Widget>[
                                                     GestureDetector(
                                                       onLongPress: () {
-                                                        _editFloorNameAlertDialog(context);
+                                                        _editFloorNameAlertDialog(
+                                                            context);
                                                       },
                                                       child: Row(
                                                         children: [
-                                                          Text('Floor - ',
+                                                          Text(
+                                                            'Flat - ',
                                                             style: TextStyle(
-                                                              fontFamily: fonttest==null?changeFont:fonttest,
-                                                              color: Colors.white,
-                                                              fontSize: 22,
-                                                              fontWeight: FontWeight
-                                                                  .bold,
-                                                              // fontStyle: FontStyle
-                                                              //     .italic
-                                                            ),),
-                                                          Container(
-                                                            child: FittedBox(
-                                                              fit: BoxFit.cover,
-                                                              child: Text(
-                                                                widget.fl.fName,
-
-                                                                // 'Hello ',
-                                                                // + widget.fl.user.first_name,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    color: Colors.white,
-                                                                    fontSize: 22,
-
-                                                                    // overflow:TextOverflow.ellipsis ,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontStyle: FontStyle.italic),
-                                                              ),
-                                                            ),
+                                                                fontFamily: fonttest ==
+                                                                        null
+                                                                    ? changeFont
+                                                                    : fonttest,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 22),
                                                           ),
-                                                          Icon(Icons.arrow_drop_down),
-                                                          SizedBox(width: 10,),
+                                                          Text(
+                                                            widget.flat.fltName,
+                                                            // 'Hello ',
+                                                            // + widget.fl.user.first_name,
+                                                            style: TextStyle(
+                                                                fontFamily: fonttest ==
+                                                                        null
+                                                                    ? changeFont
+                                                                    : fonttest,
+                                                                color: Colors
+                                                                    .white,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic,
+                                                                fontSize: 22),
+                                                          ),
+                                                          Icon(Icons
+                                                              .arrow_drop_down),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
                                                         ],
                                                       ),
                                                       onTap: () {
-                                                        _createAlertDialogDropDownFloor(context);
+                                                        _createAlertDialogDropDownFlat(
+                                                            context);
                                                       },
                                                     ),
-                                                    SizedBox(width: 10,),
+                                                    SizedBox(width: 28),
                                                     GestureDetector(
-                                                      // child:Image.asset('assets/images/setting.png'),
-
-                                                      child: Icon(SettingIcon.params,size: 18,),
                                                       onTap: () async {
-                                                        await allFloor();
-                                                        _createAlertDialogForDeleteFloorAndAddFloor(context);
-                                                        // _createAlertDialogForFloor(context);
+                                                        await allFlat();
+                                                        _createAlertDialogForDeleteFlatAndAddFlat(
+                                                            context);
                                                       },
-                                                    )
+                                                      child: Icon(
+                                                        SettingIcon.params,
+                                                        size: 18,
+                                                      ),
+                                                    ),
                                                   ],
-                                                ),
-                                                SizedBox(
-                                                  height: 12,
-                                                ),
-
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment
-                                                      .start,
-                                                  children: <Widget>[
-                                                    Row(
-                                                      children: <Widget>[
-                                                        GestureDetector(
-                                                          onLongPress: () {
-                                                            _editFloorNameAlertDialog(
-                                                                context);
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Text('Flat - ',
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                    fontSize: 22),),
-                                                              Text(
-                                                                widget.flat.fltName,
-                                                                // 'Hello ',
-                                                                // + widget.fl.user.first_name,
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontStyle: FontStyle
-                                                                        .italic,
-                                                                    fontSize: 22),
-                                                              ),
-                                                              Icon(Icons
-                                                                  .arrow_drop_down),
-                                                              SizedBox(width: 10,),
-                                                            ],
-                                                          ),
-                                                          onTap: () {
-                                                            _createAlertDialogDropDownFlat(context);
-                                                          },
-                                                        ),
-                                                        SizedBox(width: 28),
-                                                        GestureDetector(
-                                                          onTap: () async {
-                                                            await allFlat();
-                                                            _createAlertDialogForDeleteFlatAndAddFlat(
-                                                                context);
-                                                          },
-                                                          child: Icon(SettingIcon.params,size: 18,),
-                                                        ),
-                                                      ],
-                                                    )
-
-                                                  ],
-                                                ),
-
+                                                )
                                               ],
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 45,
-                                        ),
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            // mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              FutureBuilder(
-                                                future: deviceSensorVal,
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    return Column(
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 45,
+                                    ),
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          FutureBuilder(
+                                            future: deviceSensorVal,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Column(
+                                                  children: <Widget>[
+                                                    Row(
                                                       children: <Widget>[
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Text('Sensors- ',
-                                                              style: TextStyle(
-                                                                  fontFamily: fonttest==null?changeFont:fonttest,
-                                                                  // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight
+                                                        Text(
+                                                          'Sensors- ',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  fonttest ==
+                                                                          null
+                                                                      ? changeFont
+                                                                      : fonttest,
+                                                              // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
                                                                       .bold,
-                                                                  color: Colors.white
-                                                              ),),
-                                                            SizedBox(
-                                                              width: 8,
-                                                            ),
-                                                            Column(children: <Widget>[
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Column(
+                                                            children: <Widget>[
                                                               Icon(
-                                                                FontAwesomeIcons.fire,
-                                                                color: Colors.yellow,
+                                                                FontAwesomeIcons
+                                                                    .fire,
+                                                                color: Colors
+                                                                    .yellow,
                                                               ),
                                                               SizedBox(
                                                                 height: 25,
                                                               ),
                                                               Row(
-                                                                children: <Widget>[
+                                                                children: <
+                                                                    Widget>[
                                                                   Container(
                                                                     child: Text(
-                                                                        sensorData[index][
-                                                                        'sensor1']
+                                                                        sensorData[index]['sensor1']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?changeFont:fonttest,
-                                                                            fontSize: 14,
-                                                                            color: Colors
-                                                                                .white70)),
+                                                                            fontFamily: fonttest == null
+                                                                                ? changeFont
+                                                                                : fonttest,
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.white70)),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ]),
-                                                            SizedBox(
-                                                              width: 35,
-                                                            ),
-                                                            Column(children: <Widget>[
+                                                        SizedBox(
+                                                          width: 35,
+                                                        ),
+                                                        Column(
+                                                            children: <Widget>[
                                                               Icon(
                                                                 FontAwesomeIcons
                                                                     .temperatureLow,
-                                                                color: Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                               SizedBox(
                                                                 height: 30,
                                                               ),
                                                               Row(
-                                                                children: <Widget>[
+                                                                children: <
+                                                                    Widget>[
                                                                   Container(
                                                                     child: Text(
-                                                                        sensorData[index][
-                                                                        'sensor2']
+                                                                        sensorData[index]['sensor2']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?changeFont:fonttest,
-                                                                            fontSize: 14,
-                                                                            color: Colors
-                                                                                .white70)),
+                                                                            fontFamily: fonttest == null
+                                                                                ? changeFont
+                                                                                : fonttest,
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.white70)),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ]),
-                                                            SizedBox(
-                                                              width: 45,
-                                                            ),
-                                                            Column(children: <Widget>[
+                                                        SizedBox(
+                                                          width: 45,
+                                                        ),
+                                                        Column(
+                                                            children: <Widget>[
                                                               Icon(
-                                                                FontAwesomeIcons.wind,
-                                                                color: Colors.white,
+                                                                FontAwesomeIcons
+                                                                    .wind,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                               SizedBox(
                                                                 height: 30,
                                                               ),
                                                               Row(
-                                                                children: <Widget>[
+                                                                children: <
+                                                                    Widget>[
                                                                   Container(
                                                                     child: Text(
-                                                                        sensorData[index][
-                                                                        'sensor3']
+                                                                        sensorData[index]['sensor3']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontFamily: fonttest==null?changeFont:fonttest,
-                                                                            fontSize: 14,
-                                                                            color: Colors
-                                                                                .white70)),
+                                                                            fontFamily: fonttest == null
+                                                                                ? changeFont
+                                                                                : fonttest,
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.white70)),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ]),
-                                                            SizedBox(
-                                                              width: 42,
-                                                            ),
-                                                            Column(children: <Widget>[
+                                                        SizedBox(
+                                                          width: 42,
+                                                        ),
+                                                        Column(
+                                                            children: <Widget>[
                                                               Icon(
                                                                 FontAwesomeIcons
                                                                     .cloud,
-                                                                color: Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                               SizedBox(
                                                                 height: 30,
                                                               ),
                                                               Row(
-                                                                children: <Widget>[
+                                                                children: <
+                                                                    Widget>[
                                                                   Container(
                                                                     child: Text(
-                                                                        sensorData[index][
-                                                                        'sensor4']
+                                                                        sensorData[index]['sensor4']
                                                                             .toString(),
                                                                         style: TextStyle(
-                                                                            fontSize: 14,
-                                                                            fontFamily: fonttest==null?changeFont:fonttest,
-                                                                            color: Colors
-                                                                                .white70)),
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontFamily: fonttest == null
+                                                                                ? changeFont
+                                                                                : fonttest,
+                                                                            color:
+                                                                                Colors.white70)),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ]),
-
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          height: 12,
-                                                        ),
-                                                        Text(
-                                                          sensorData[index]['d_id'].toString(),
-                                                          style: TextStyle(
-                                                              fontFamily: fonttest==null?changeFont:fonttest,
-                                                              color: Colors.white70),
-
-                                                        ),
                                                       ],
-                                                    );
-                                                  } else {
-                                                    return Center(
-                                                      child: Text('Loading...'),
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-
-                            //Room Tabs
-                            SliverAppBar(
-                              automaticallyImplyLeading: false,
-                              // centerTitle: true,
-                              floating: true,
-                              pinned: true,
-                              backgroundColor: Colors.white,
-
-                              title: Container(
-                                alignment: Alignment.bottomLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            children: <Widget>[
-                                              Column(
-                                                children: [
-                                                  Container(
-                                                    // color: Colors.yellow,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            _createAlertDialogForAddRoom(
-                                                                context);
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Text('Rooms-',
-                                                                style: TextStyle(
-                                                                    fontFamily: fonttest==null?changeFont:fonttest,
-                                                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                    color: Colors
-                                                                        .black
-                                                                ),),
-                                                              Icon(Icons.add,color: Colors.black,),
-                                                            ],
-                                                          ))),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-
-                                          GestureDetector(
-                                            onLongPress: () {
-                                              print('longPress');
-                                              print('longpress ${tabbarState}');
-                                              _createAlertDialogForAddRoomDeleteDevices(
-                                                  context, tabbarState,deleteRoomIndex);
-                                            },
-                                            child: TabBar(
-                                              indicatorColor: Colors.blueAccent,
-                                              controller: tabC,
-                                              labelColor: Colors.blueAccent,
-                                              indicatorWeight: 2.0,
-                                              isScrollable: true,
-                                              tabs: widget.rm.map<Widget>((RoomType rm) {
-                                                rIdForName = rm.rId;
-                                                print('RoomId  $rIdForName');
-                                                print('RoomId  ${rm.rName}');
-                                                return Tab(
-                                                  text: rm.rName,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 12,
+                                                    ),
+                                                    Text(
+                                                      sensorData[index]['d_id']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                          color:
+                                                              Colors.white70),
+                                                    ),
+                                                  ],
                                                 );
-                                              }).toList(),
-                                              onTap: (index) async {
-                                                print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                                                print('Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
-
-                                                deleteRoomIndex=index;
-                                                if(widget.rm[index].rId==null) {
-                                                  setState(() {
-
-                                                    tabbarState = widget.tabbarState;
-                                                  });
-                                                }
-                                                setState(() {
-                                                  tabbarState =
-                                                      widget.rm[index].rId;
-                                                });
-                                                widget.dv = await NewDbProvider.instance
-                                                    .getDeviceByRoomId(tabbarState);
-
-                                                print("tabbarState Tabs->  $tabbarState");
-
-                                                // await getAllRoom();
-                                                getDeviceOnlySingleRoom(tabbarState);
-
-
-                                                print('getDevices123 }');
-                                              },
-                                            ),
+                                              } else {
+                                                return Center(
+                                                  child: Text('Loading...'),
+                                                );
+                                              }
+                                            },
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
-                              ),
+                              )
+                            ],
+                          ),
+                        ),
+
+                        //Room Tabs
+                        SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          // centerTitle: true,
+                          floating: true,
+                          pinned: true,
+                          backgroundColor: Colors.white,
+
+                          title: Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        children: <Widget>[
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  // color: Colors.yellow,
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        _createAlertDialogForAddRoom(
+                                                            context);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            'Rooms-',
+                                                            style: TextStyle(
+                                                                fontFamily: fonttest ==
+                                                                        null
+                                                                    ? changeFont
+                                                                    : fonttest,
+                                                                // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                          Icon(
+                                                            Icons.add,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ],
+                                                      ))),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      GestureDetector(
+                                        onLongPress: () {
+                                          print('longPress');
+                                          print('longpress ${tabbarState}');
+                                          _createAlertDialogForAddRoomDeleteDevices(
+                                              context,
+                                              tabbarState,
+                                              deleteRoomIndex);
+                                        },
+                                        child: TabBar(
+                                          indicatorColor: Colors.blueAccent,
+                                          controller: tabC,
+                                          labelColor: Colors.blueAccent,
+                                          indicatorWeight: 2.0,
+                                          isScrollable: true,
+                                          tabs: widget.rm
+                                              .map<Widget>((RoomType rm) {
+                                            rIdForName = rm.rId;
+                                            print('RoomId  $rIdForName');
+                                            print('RoomId  ${rm.rName}');
+                                            return Tab(
+                                              text: rm.rName,
+                                            );
+                                          }).toList(),
+                                          onTap: (index) async {
+                                            print(
+                                                'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                                            print(
+                                                'Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
+
+                                            deleteRoomIndex = index;
+                                            if (widget.rm[index].rId == null) {
+                                              setState(() {
+                                                tabbarState =
+                                                    widget.tabbarState;
+                                              });
+                                            }
+                                            setState(() {
+                                              tabbarState =
+                                                  widget.rm[index].rId;
+                                            });
+                                            widget.dv = await NewDbProvider
+                                                .instance
+                                                .getDeviceByRoomId(tabbarState);
+
+                                            print(
+                                                "tabbarState Tabs->  $tabbarState");
+
+                                            // await getAllRoom();
+                                            getDeviceOnlySingleRoom(
+                                                tabbarState);
+
+                                            print('getDevices123 }');
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                        ),
 
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate((context,
-                                  index) {
-                                if (index < widget.dv.length) {
-                                          if(widget.dv.length==null){
-                                        return CircularProgressIndicator();
-                                          }
-                                  return Container(
-                                    child: Column(
-                                      children: [
-                                        deviceContainer2(
-                                            widget.dv[index].dId, index),
-                                        Container(
-                                          //
-                                          // color: Colors.green,
-                                            height: 35,
-                                            child: GestureDetector(
-                                              child: RichText(
-                                                text: TextSpan(children: [
-                                                  TextSpan(
-                                                      text: widget.dv[index].dId,
-                                                      style: TextStyle(
-                                                          fontFamily: fonttest==null?changeFont:fonttest,
-                                                          fontSize: 15,
-                                                        color: change_toDark ? Colors.white : Colors.black,)),
-                                                  TextSpan(text: "   "),
-                                                  WidgetSpan(
-                                                      child: Icon(
-                                                      Icons.settings,
-                                                      color: change_toDark ? Colors.white : Colors.black,
-                                                        size: 18,
-                                                      ))
-                                                ]),
-                                              ),
-                                              onTap: () {
-                                                _createAlertDialogForSSIDAndEmergencyNumber(context,widget.dv[index].dId);
-                                                print('on tap');
-                                              },
-                                            )),
-                                      ],
-                                    ),
-                                    // child: Text(dv[index].dId),
-                                  );
-                                } else {
-                                  return null;
-                                }
-                              }),
-                            )
-                          ]),
+                        // SliverList(
+                        //   delegate:
+                        //       SliverChildBuilderDelegate((context, index) {
+                        //     if (index < widget.dv.length) {
+                        //       if (widget.dv.length == null) {
+                        //         return CircularProgressIndicator();
+                        //       }
+                        //       return Container(
+                        //         child: Column(
+                        //           children: [
+                        //             deviceContainer2(
+                        //                 widget.dv[index].dId, index),
+                        //             Container(
+                        //                 //
+                        //                 // color: Colors.green,
+                        //                 height: 35,
+                        //                 child: GestureDetector(
+                        //                   child: RichText(
+                        //                     text: TextSpan(children: [
+                        //                       TextSpan(
+                        //                           text: widget.dv[index].dId,
+                        //                           style: TextStyle(
+                        //                             fontFamily: fonttest == null
+                        //                                 ? changeFont
+                        //                                 : fonttest,
+                        //                             fontSize: 15,
+                        //                             color: change_toDark
+                        //                                 ? Colors.white
+                        //                                 : Colors.black,
+                        //                           )),
+                        //                       TextSpan(text: "   "),
+                        //                       WidgetSpan(
+                        //                           child: Icon(
+                        //                         Icons.settings,
+                        //                         color: change_toDark
+                        //                             ? Colors.white
+                        //                             : Colors.black,
+                        //                         size: 18,
+                        //                       ))
+                        //                     ]),
+                        //                   ),
+                        //                   onTap: () {
+                        //                     _createAlertDialogForSSIDAndEmergencyNumber(
+                        //                         context, widget.dv[index].dId);
+                        //                     print('on tap');
+                        //                   },
+                        //                 )),
+                        //           ],
+                        //         ),
+                        //         // child: Text(dv[index].dId),
+                        //       );
+                        //     } else {
+                        //       return null;
+                        //     }
+                        //   }),
+                        // )
+                      ]),
+                ),
+              ),
+              bottomNavigationBar: SingleChildScrollView(
+                child: BottomNavyBar(
+                  backgroundColor: Colors.white38,
+                  animationDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOutCirc,
+                  selectedIndex: _currentIndex,
+                  //type: BottomNavigationBarType.fixed,
+                  items: [
+                    BottomNavyBarItem(
+                        icon: Icon(FontAwesomeIcons.microphone),
+                        activeColor: Colors.blue,
+                        title: Text('')),
+                    BottomNavyBarItem(
+                      title: Text(''),
+                      icon: Icon(Icons.add),
+                      activeColor: Colors.blue,
                     ),
-                  ),
-                  bottomNavigationBar: SingleChildScrollView(
-                    child: BottomNavyBar(
-                      backgroundColor: Colors.white38,
-                      animationDuration: Duration(milliseconds: 500),
-                      curve: Curves.easeInOutCirc,
-                      selectedIndex: _currentIndex,
-                      //type: BottomNavigationBarType.fixed,
-                      items: [
-                        BottomNavyBarItem(
-                            icon: Icon(FontAwesomeIcons.microphone),
-                            activeColor: Colors.blue,
-                            title: Text('')),
-                        BottomNavyBarItem(
-                          title: Text(''),
-                          icon: Icon(Icons.add),
-                          activeColor: Colors.blue,
-                        ),
-                        BottomNavyBarItem(
-                          title: Text(''),
-                          icon: Icon(Icons.settings),
-                          activeColor: Colors.blue,
-                        ),
-                      ],
+                    BottomNavyBarItem(
+                      title: Text(''),
+                      icon: Icon(Icons.settings),
+                      activeColor: Colors.blue,
+                    ),
+                  ],
 
-                      onItemSelected: (newIndex) {
-                        // _createAlertDialog(context);
-                        setState(() {
-                          _currentIndex = newIndex;
-                        });
-                        for (int index = 0; index < isSelected.length; index++) {
-                          if (index == newIndex) {
-                            isSelected[index] = !isSelected[index];
-                            if (index == 0) {
-                              print('index 0 $index');
-                              return _openGoggleAssistant();
-                            }
-                            if (index == 1) {
-                              print('print -->  $tabbarState');
-                              return _createAlertDialog(context);
-                            }
-                          }
-                          if (index == 2) {
-                            print(index);
-                            return Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => SettingPage()));
-                          }
+                  onItemSelected: (newIndex) {
+                    // _createAlertDialog(context);
+                    setState(() {
+                      _currentIndex = newIndex;
+                    });
+                    for (int index = 0; index < isSelected.length; index++) {
+                      if (index == newIndex) {
+                        isSelected[index] = !isSelected[index];
+                        if (index == 0) {
+                          print('index 0 $index');
+                          return _openGoggleAssistant();
                         }
-                      },
-                    ),
-                  ),
-                );
-              }
-            }),
+                        if (index == 1) {
+                          print('print -->  $tabbarState');
+                          return _createAlertDialog(context);
+                        }
+                      }
+                      if (index == 2) {
+                        print(index);
+                        return Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingPage()));
+                      }
+                    }
+                  },
+                ),
+              ),
+            );
+          }
+        }),
       ),
-
     );
   }
 
-
-  _billPredictionNavigation(BuildContext context){
+  _billPredictionNavigation(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
             title: Text('Please Select'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PlaceBill2()));
                   },
                   child: Text("Place Bill Prediction"),
                 ),
-
                 TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => FloorBill()));
                   },
                   child: Text("Floor Bill Prediction"),
                 ),
-
                 TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => FlatBill()));
                   },
                   child: Text("Flat Bill Prediction"),
                 ),
-
                 TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RoomBill()));
                   },
                   child: Text("Room Bill Prediction"),
                 ),
-
                 TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => DeviceBill()));
                   },
                   child: Text("Device Bill Prediction"),
                 ),
               ],
             ),
           );
-        }
-    );
+        });
   }
 
-
-  remoteUiWidget(BuildContext context){
+  remoteUiWidget(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
             title: Text('Remote'),
             content: Column(
@@ -5422,12 +6342,12 @@ class _HomeTestState extends State<HomeTest>
                         child: Material(
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child:SizedBox(
+                            child: SizedBox(
                               height: 56,
                               width: 56,
                               child: Icon(Icons.dialpad),
                             ),
-                            onTap: (){},
+                            onTap: () {},
                           ),
                         ),
                       ),
@@ -5438,12 +6358,12 @@ class _HomeTestState extends State<HomeTest>
                           color: Colors.red,
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child:SizedBox(
+                            child: SizedBox(
                               height: 56,
                               width: 56,
                               child: Icon(Icons.power_settings_new),
                             ),
-                            onTap: (){},
+                            onTap: () {},
                           ),
                         ),
                       ),
@@ -5453,12 +6373,12 @@ class _HomeTestState extends State<HomeTest>
                         child: Material(
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child:SizedBox(
+                            child: SizedBox(
                               height: 56,
                               width: 56,
                               child: Icon(Icons.bubble_chart),
                             ),
-                            onTap: (){},
+                            onTap: () {},
                           ),
                         ),
                       ),
@@ -5482,13 +6402,15 @@ class _HomeTestState extends State<HomeTest>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Icon(Icons.arrow_drop_up),
-                            Text('VOL',style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text(
+                              'VOL',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
                       ),
                       JoystickView(
-
                         innerCircleColor: Colors.grey,
                         backgroundColor: Colors.grey.shade400,
                         iconsColor: Colors.white,
@@ -5507,7 +6429,10 @@ class _HomeTestState extends State<HomeTest>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Icon(Icons.arrow_drop_up),
-                            Text('CH',style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text(
+                              'CH',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
@@ -5526,7 +6451,8 @@ class _HomeTestState extends State<HomeTest>
                         borderRadius: BorderRadius.circular(18.0),
                         color: Colors.white,
                       ),
-                      child: Padding(padding: EdgeInsets.all(2.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(2.0),
                         child: Image.asset('assets/netflix.png'),
                       ),
                     ),
@@ -5538,7 +6464,8 @@ class _HomeTestState extends State<HomeTest>
                         borderRadius: BorderRadius.circular(18.0),
                         color: Colors.white,
                       ),
-                      child: Padding(padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Image.asset('assets/prime.png'),
                       ),
                     ),
@@ -5547,12 +6474,8 @@ class _HomeTestState extends State<HomeTest>
               ],
             ),
           );
-        }
-    );
+        });
   }
-
-
-
 
   _asyncSimpleDialog(BuildContext context) async {
     return await showDialog(
@@ -5562,31 +6485,37 @@ class _HomeTestState extends State<HomeTest>
             title: const Text('Please Select '),
             children: <Widget>[
               TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PlaceBill2()));
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PlaceBill2()));
                   },
-                  child: const Text('Place Bill Prediction',style:TextStyle(fontSize: 14))),
+                  child: const Text('Place Bill Prediction',
+                      style: TextStyle(fontSize: 14))),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FloorBill()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FloorBill()));
                 },
                 child: const Text('Floor Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FlatBill()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FlatBill()));
                 },
                 child: const Text('Flat Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RoomBill()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RoomBill()));
                 },
                 child: const Text('Room Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DeviceBill()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => DeviceBill()));
                 },
                 child: const Text('Device Bill Prediction'),
               ),
@@ -5594,7 +6523,6 @@ class _HomeTestState extends State<HomeTest>
           );
         });
   }
-
 
   _openGoggleAssistant() async {
     try {
@@ -5621,37 +6549,35 @@ class _HomeTestState extends State<HomeTest>
   var catchReturn;
   Future deviceSensorVal;
 
-  Future _setTempNumber( mobile)async{
-    final pref= await SharedPreferences.getInstance();
+  Future _setTempNumber(mobile) async {
+    final pref = await SharedPreferences.getInstance();
     pref.setString('mobileNumber', mobile);
-
-
   }
+
   var number;
-  _getTempNumber()async{
-    final SharedPreferences pref= await SharedPreferences.getInstance();
-    number= pref.getString('mobileNumber');
+  _getTempNumber() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    number = pref.getString('mobileNumber');
     print('number147859 ${number}');
   }
+
   bool switchOn;
   var deviceId;
 
-
-  seprate(int index,dId)async{
+  seprate(int index, dId) async {
     List namesDataList12 =
-    await NewDbProvider.instance.getPinNamesByDeviceId(dId);
-    var a=  namesDataList12.toString();
+        await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+    var a = namesDataList12.toString();
     print('plmkju ${a.indexOf(",")}');
-    while (index!=namesDataList12.length){
-      var nameIndex=a[index].indexOf(",");
-      print('plmkju2 ${a[index].substring(0,nameIndex)}');
+    while (index != namesDataList12.length) {
+      var nameIndex = a[index].indexOf(",");
+      print('plmkju2 ${a[index].substring(0, nameIndex)}');
       index++;
     }
-
   }
 
   deviceContainer(String dId, int index) async {
-    deviceId=dId;
+    deviceId = dId;
     getData(dId);
     getPinsName(dId);
     // await seprate(index,dId);
@@ -5678,86 +6604,82 @@ class _HomeTestState extends State<HomeTest>
       //   catchReturn[i][""]
       // }
     ];
-    if(responseGetData.contains(1)){
+    if (responseGetData.contains(1)) {
       setState(() {
-        switchOn=true;
+        switchOn = true;
       });
       print('else ${switchOn}');
       print('else ${responseGetData}');
-    }else{
+    } else {
       setState(() {
-        switchOn=false;
+        switchOn = false;
       });
       print('else ${switchOn}');
       print('else ${responseGetData}');
     }
 
     List namesDataList12 =
-    await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+        await NewDbProvider.instance.getPinNamesByDeviceId(dId);
 
-
-
-    String pin1=namesDataList12[index]['pin1Name'];
-    var indexOfPin1Name=pin1.indexOf(',');
-    var pin1FinalName=pin1.substring(0,indexOfPin1Name);
+    String pin1 = namesDataList12[index]['pin1Name'];
+    var indexOfPin1Name = pin1.indexOf(',');
+    var pin1FinalName = pin1.substring(0, indexOfPin1Name);
 
     print('indexofpppp ${namesDataList12}');
 
-
-    String pin2=namesDataList12[index]['pin2Name'];
-    var indexOfPin2Name=pin2.indexOf(',');
-    var pin2FinalName=pin2.substring(0,indexOfPin2Name);
+    String pin2 = namesDataList12[index]['pin2Name'];
+    var indexOfPin2Name = pin2.indexOf(',');
+    var pin2FinalName = pin2.substring(0, indexOfPin2Name);
     print('indexofpppppin2 $pin2');
 
-    String pin3=namesDataList12[index]['pin3Name'];
-    var indexOfPin3Name=pin3.indexOf(',');
-    var pin3FinalName=pin3.substring(0,indexOfPin3Name);
+    String pin3 = namesDataList12[index]['pin3Name'];
+    var indexOfPin3Name = pin3.indexOf(',');
+    var pin3FinalName = pin3.substring(0, indexOfPin3Name);
     print('indexofpppppin2 $pin3');
 
-    String pin4=namesDataList12[index]['pin4Name'];
-    var indexOfPin4Name=pin4.indexOf(',');
-    var pin4FinalName=pin4.substring(0,indexOfPin4Name);
+    String pin4 = namesDataList12[index]['pin4Name'];
+    var indexOfPin4Name = pin4.indexOf(',');
+    var pin4FinalName = pin4.substring(0, indexOfPin4Name);
     print('indexofpppppin2 $pin3');
 
-    String pin5=namesDataList12[index]['pin5Name'];
-    var indexOfPin5Name=pin5.indexOf(',');
-    var pin5FinalName=pin5.substring(0,indexOfPin5Name);
+    String pin5 = namesDataList12[index]['pin5Name'];
+    var indexOfPin5Name = pin5.indexOf(',');
+    var pin5FinalName = pin5.substring(0, indexOfPin5Name);
     print('indexofpppppin2 $pin3');
 
-    String pin6=namesDataList12[index]['pin6Name'];
-    var indexOfPin6Name=pin6.indexOf(',');
-    var pin6FinalName=pin6.substring(0,indexOfPin6Name);
+    String pin6 = namesDataList12[index]['pin6Name'];
+    var indexOfPin6Name = pin6.indexOf(',');
+    var pin6FinalName = pin6.substring(0, indexOfPin6Name);
     print('indexofpppppin2 $pin3');
 
-    String pin7=namesDataList12[index]['pin7Name'];
-    var indexOfPin7Name=pin7.indexOf(',');
-    var pin7FinalName=pin7.substring(0,indexOfPin7Name);
+    String pin7 = namesDataList12[index]['pin7Name'];
+    var indexOfPin7Name = pin7.indexOf(',');
+    var pin7FinalName = pin7.substring(0, indexOfPin7Name);
     print('indexofpppppin2 $pin3');
 
-    String pin8=namesDataList12[index]['pin8Name'];
-    var indexOfPin8Name=pin8.indexOf(',');
-    var pin8FinalName=pin8.substring(0,indexOfPin8Name);
+    String pin8 = namesDataList12[index]['pin8Name'];
+    var indexOfPin8Name = pin8.indexOf(',');
+    var pin8FinalName = pin8.substring(0, indexOfPin8Name);
     print('indexofpppppin2 $pin3');
 
-    String pin9=namesDataList12[index]['pin9Name'];
-    var indexOfPin9Name=pin9.indexOf(',');
-    var pin9FinalName=pin9.substring(0,indexOfPin9Name);
+    String pin9 = namesDataList12[index]['pin9Name'];
+    var indexOfPin9Name = pin9.indexOf(',');
+    var pin9FinalName = pin9.substring(0, indexOfPin9Name);
     print('indexofpppppin2 $pin3');
 
-    String pin10=namesDataList12[index]['pin10Name'];
-    var indexOfPin10Name=pin10.indexOf(',');
-    var pin10FinalName=pin9.substring(0,indexOfPin10Name);
+    String pin10 = namesDataList12[index]['pin10Name'];
+    var indexOfPin10Name = pin10.indexOf(',');
+    var pin10FinalName = pin9.substring(0, indexOfPin10Name);
     print('indexofpppppin2 $pin3');
 
-    String pin11=namesDataList12[index]['pin11Name'];
-    var indexOfPin11Name=pin11.indexOf(',');
-    var pin11FinalName=pin11.substring(0,indexOfPin11Name);
+    String pin11 = namesDataList12[index]['pin11Name'];
+    var indexOfPin11Name = pin11.indexOf(',');
+    var pin11FinalName = pin11.substring(0, indexOfPin11Name);
     print('indexofpppppin2 $pin3');
 
-
-    String pin12=namesDataList12[index]['pin12Name'];
-    var indexOfPin12Name=pin12.indexOf(',');
-    var pin12FinalName=pin12.substring(0,indexOfPin12Name);
+    String pin12 = namesDataList12[index]['pin12Name'];
+    var indexOfPin12Name = pin12.indexOf(',');
+    var pin12FinalName = pin12.substring(0, indexOfPin12Name);
     print('indexofpppppin2 $pin3');
 
     namesDataList = [
@@ -5775,359 +6697,448 @@ class _HomeTestState extends State<HomeTest>
       widget.switch12Name = pin12FinalName,
     ];
 
-    for(int i=0;i<namesDataList.length;i++){
-      if(pin1.contains('001') || pin1.contains('002')||pin1.contains('003') ||pin1.contains('004' )||pin1.contains('005') ||pin1.contains('006')||pin1.contains('007')||pin1.contains('008')||pin1.contains('009')|| pin1.contains('0010')||pin1.contains('0011')){
+    for (int i = 0; i < namesDataList.length; i++) {
+      if (pin1.contains('001') ||
+          pin1.contains('002') ||
+          pin1.contains('003') ||
+          pin1.contains('004') ||
+          pin1.contains('005') ||
+          pin1.contains('006') ||
+          pin1.contains('007') ||
+          pin1.contains('008') ||
+          pin1.contains('009') ||
+          pin1.contains('0010') ||
+          pin1.contains('0011')) {
         print('qwertyhgf $index');
         // icon1=Icons.ac_unit;
-        if(pin1.contains('001')){
+        if (pin1.contains('001')) {
           print('indexofpppp2 $pin1');
           setState(() {
-            changeIcon[index]=icon1;
+            changeIcon[index] = icon1;
           });
         }
-        if(pin1.contains('002')){
-          changeIcon[index]=icon2;
+        if (pin1.contains('002')) {
+          changeIcon[index] = icon2;
         }
-        if(pin1.contains('003')){
+        if (pin1.contains('003')) {
           // changeIcon[index]=icon3;
           setState(() {
-            changeIcon[index]=icon3;
+            changeIcon[index] = icon3;
           });
           print('imcomming ${changeIcon[index]}');
         }
-        if(pin1.contains('004')){
-          changeIcon[index]=icon5;
+        if (pin1.contains('004')) {
+          changeIcon[index] = icon5;
           print('imcomming4 ${changeIcon[index]}');
         }
-        if(pin1.contains('005')){
-          changeIcon[index]=icon6;
+        if (pin1.contains('005')) {
+          changeIcon[index] = icon6;
         }
-        if(pin1.contains('007')){
-          changeIcon[index]=icon6;
+        if (pin1.contains('007')) {
+          changeIcon[index] = icon6;
         }
-        if(pin1.contains('008')){
-          changeIcon[index]=icon7;
+        if (pin1.contains('008')) {
+          changeIcon[index] = icon7;
         }
-        if(pin1.contains('009')){
-          changeIcon[index]=icon8;
+        if (pin1.contains('009')) {
+          changeIcon[index] = icon8;
         }
-        if(pin1.contains('0010')){
-          changeIcon[index]=icon9;
+        if (pin1.contains('0010')) {
+          changeIcon[index] = icon9;
         }
-        if(pin1.contains('0011')){
-          changeIcon[index]=icon10;
+        if (pin1.contains('0011')) {
+          changeIcon[index] = icon10;
         }
-        if(pin1.contains('0012')){
-          changeIcon[index]=icon12;
+        if (pin1.contains('0012')) {
+          changeIcon[index] = icon12;
         }
       }
 
-      if(pin2.contains('001') || pin2.contains('002')||pin2.contains('003') ||pin2.contains('004' )||pin2.contains('005') ||pin2.contains('006')||pin2.contains('007')||pin2.contains('008')||pin2.contains('009')|| pin2.contains('0010')||pin2.contains('0011')){
+      if (pin2.contains('001') ||
+          pin2.contains('002') ||
+          pin2.contains('003') ||
+          pin2.contains('004') ||
+          pin2.contains('005') ||
+          pin2.contains('006') ||
+          pin2.contains('007') ||
+          pin2.contains('008') ||
+          pin2.contains('009') ||
+          pin2.contains('0010') ||
+          pin2.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin2.contains('001')){
-          changeIcon[index+1]=icon1;
+        if (pin2.contains('001')) {
+          changeIcon[index + 1] = icon1;
         }
-        if(pin2.contains('002')){
-          changeIcon[index+1]=icon2;
+        if (pin2.contains('002')) {
+          changeIcon[index + 1] = icon2;
         }
-        if(pin2.contains('003')){
-
-          changeIcon[index+1]=icon3;
+        if (pin2.contains('003')) {
+          changeIcon[index + 1] = icon3;
           print('commnng inde  3');
         }
-        if(pin2.contains('004')){
-          changeIcon[index+1]=icon5;
+        if (pin2.contains('004')) {
+          changeIcon[index + 1] = icon5;
         }
-        if(pin2.contains('005')){
-          changeIcon[index+1]=icon6;
+        if (pin2.contains('005')) {
+          changeIcon[index + 1] = icon6;
         }
-        if(pin2.contains('007')){
-          changeIcon[index+1]=icon6;
+        if (pin2.contains('007')) {
+          changeIcon[index + 1] = icon6;
         }
-        if(pin2.contains('008')){
-          changeIcon[index+1]=icon7;
+        if (pin2.contains('008')) {
+          changeIcon[index + 1] = icon7;
         }
-        if(pin2.contains('009')){
-          changeIcon[index]=icon8;
+        if (pin2.contains('009')) {
+          changeIcon[index] = icon8;
         }
-        if(pin2.contains('0010')){
-          changeIcon[index+1]=icon9;
+        if (pin2.contains('0010')) {
+          changeIcon[index + 1] = icon9;
         }
-        if(pin2.contains('0011')){
-          changeIcon[index+1]=icon10;
+        if (pin2.contains('0011')) {
+          changeIcon[index + 1] = icon10;
         }
-        if(pin2.contains('0012')){
-          changeIcon[index+1]=icon12;
-        }
-      }
-
-      if(pin3.contains('001') || pin3.contains('002')||pin3.contains('003') ||pin3.contains('004' )||pin3.contains('005') ||pin3.contains('006')||pin3.contains('007')||pin3.contains('008')||pin3.contains('009')|| pin3.contains('0010')||pin3.contains('0011')){
-        print('qwertyhgfnamesDataList $index');
-        // icon2=Icons.ac_unit;
-        // changeIcon[index+1]=icon2;
-        if(pin3.contains('001')){
-          changeIcon[index+2]=icon1;
-        }
-        if(pin3.contains('002')){
-          changeIcon[index+2]=icon2;
-        }
-        if(pin3.contains('003')){
-          changeIcon[index+2]=icon3;
-        }
-        if(pin3.contains('004')){
-          changeIcon[index+2]=icon5;
-        }
-        if(pin3.contains('005')){
-          changeIcon[index+2]=icon6;
-        }
-        if(pin3.contains('007')){
-          changeIcon[index+2]=icon6;
-        }
-        if(pin3.contains('008')){
-          changeIcon[index+2]=icon7;
-        }
-        if(pin3.contains('009')){
-          changeIcon[index+2]=icon8;
-        }
-        if(pin3.contains('0010')){
-          changeIcon[index+2]=icon9;
-        }
-        if(pin3.contains('0011')){
-          changeIcon[index+2]=icon10;
-        }
-        if(pin3.contains('0012')){
-          changeIcon[index+2]=icon12;
+        if (pin2.contains('0012')) {
+          changeIcon[index + 1] = icon12;
         }
       }
 
-      if(pin4.contains('001') || pin4.contains('002')||pin4.contains('003') ||pin4.contains('004' )||pin4.contains('005') ||pin4.contains('006')||pin4.contains('007')||pin4.contains('008')||pin4.contains('009')|| pin4.contains('0010')||pin4.contains('0011')){
+      if (pin3.contains('001') ||
+          pin3.contains('002') ||
+          pin3.contains('003') ||
+          pin3.contains('004') ||
+          pin3.contains('005') ||
+          pin3.contains('006') ||
+          pin3.contains('007') ||
+          pin3.contains('008') ||
+          pin3.contains('009') ||
+          pin3.contains('0010') ||
+          pin3.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin4.contains('001')){
-          changeIcon[index+3]=icon1;
+        if (pin3.contains('001')) {
+          changeIcon[index + 2] = icon1;
         }
-        if(pin4.contains('002')){
-          changeIcon[index+3]=icon2;
+        if (pin3.contains('002')) {
+          changeIcon[index + 2] = icon2;
         }
-        if(pin4.contains('003')){
-          changeIcon[index+3]=icon3;
+        if (pin3.contains('003')) {
+          changeIcon[index + 2] = icon3;
         }
-        if(pin4.contains('004')){
-          changeIcon[index+3]=icon5;
+        if (pin3.contains('004')) {
+          changeIcon[index + 2] = icon5;
         }
-        if(pin4.contains('005')){
-          changeIcon[index+3]=icon6;
+        if (pin3.contains('005')) {
+          changeIcon[index + 2] = icon6;
         }
-        if(pin4.contains('007')){
-          changeIcon[index+3]=icon6;
+        if (pin3.contains('007')) {
+          changeIcon[index + 2] = icon6;
         }
-        if(pin4.contains('008')){
-          changeIcon[index+3]=icon7;
+        if (pin3.contains('008')) {
+          changeIcon[index + 2] = icon7;
         }
-        if(pin4.contains('009')){
-          changeIcon[index+3]=icon8;
+        if (pin3.contains('009')) {
+          changeIcon[index + 2] = icon8;
         }
-        if(pin4.contains('0010')){
-          changeIcon[index+3]=icon9;
+        if (pin3.contains('0010')) {
+          changeIcon[index + 2] = icon9;
         }
-        if(pin4.contains('0011')){
-          changeIcon[index+3]=icon10;
+        if (pin3.contains('0011')) {
+          changeIcon[index + 2] = icon10;
         }
-        if(pin4.contains('0012')){
-          changeIcon[index+3]=icon12;
+        if (pin3.contains('0012')) {
+          changeIcon[index + 2] = icon12;
         }
       }
-      if(pin5.contains('001') || pin5.contains('002')||pin5.contains('003') ||pin5.contains('004' )||pin5.contains('005') ||pin5.contains('006')||pin5.contains('007')||pin5.contains('008')||pin5.contains('009')|| pin5.contains('0010')||pin5.contains('0011')){
+
+      if (pin4.contains('001') ||
+          pin4.contains('002') ||
+          pin4.contains('003') ||
+          pin4.contains('004') ||
+          pin4.contains('005') ||
+          pin4.contains('006') ||
+          pin4.contains('007') ||
+          pin4.contains('008') ||
+          pin4.contains('009') ||
+          pin4.contains('0010') ||
+          pin4.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin5.contains('001')){
-          changeIcon[index+4]=icon1;
+        if (pin4.contains('001')) {
+          changeIcon[index + 3] = icon1;
         }
-        if(pin5.contains('002')){
-          changeIcon[index+4]=icon2;
+        if (pin4.contains('002')) {
+          changeIcon[index + 3] = icon2;
         }
-        if(pin5.contains('003')){
-          changeIcon[index+4]=icon3;
+        if (pin4.contains('003')) {
+          changeIcon[index + 3] = icon3;
         }
-        if(pin5.contains('004')){
-          changeIcon[index+4]=icon5;
+        if (pin4.contains('004')) {
+          changeIcon[index + 3] = icon5;
         }
-        if(pin5.contains('005')){
-          changeIcon[index+4]=icon6;
+        if (pin4.contains('005')) {
+          changeIcon[index + 3] = icon6;
         }
-        if(pin5.contains('007')){
-          changeIcon[index+4]=icon6;
+        if (pin4.contains('007')) {
+          changeIcon[index + 3] = icon6;
         }
-        if(pin5.contains('008')){
-          changeIcon[index+4]=icon7;
+        if (pin4.contains('008')) {
+          changeIcon[index + 3] = icon7;
         }
-        if(pin5.contains('009')){
-          changeIcon[index+4]=icon8;
+        if (pin4.contains('009')) {
+          changeIcon[index + 3] = icon8;
         }
-        if(pin5.contains('0010')){
-          changeIcon[index+4]=icon9;
+        if (pin4.contains('0010')) {
+          changeIcon[index + 3] = icon9;
         }
-        if(pin5.contains('0011')){
-          changeIcon[index+4]=icon10;
+        if (pin4.contains('0011')) {
+          changeIcon[index + 3] = icon10;
         }
-        if(pin5.contains('0012')){
-          changeIcon[index+4]=icon12;
+        if (pin4.contains('0012')) {
+          changeIcon[index + 3] = icon12;
         }
       }
-      if(pin6.contains('001') || pin6.contains('002')||pin6.contains('003') ||pin6.contains('004' )||pin6.contains('005') ||pin6.contains('006')||pin6.contains('007')||pin6.contains('008')||pin6.contains('009')|| pin6.contains('0010')||pin6.contains('0011')){
+      if (pin5.contains('001') ||
+          pin5.contains('002') ||
+          pin5.contains('003') ||
+          pin5.contains('004') ||
+          pin5.contains('005') ||
+          pin5.contains('006') ||
+          pin5.contains('007') ||
+          pin5.contains('008') ||
+          pin5.contains('009') ||
+          pin5.contains('0010') ||
+          pin5.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin6.contains('001')){
-          changeIcon[index+5]=icon1;
+        if (pin5.contains('001')) {
+          changeIcon[index + 4] = icon1;
         }
-        if(pin6.contains('002')){
-          changeIcon[index+5]=icon2;
+        if (pin5.contains('002')) {
+          changeIcon[index + 4] = icon2;
         }
-        if(pin6.contains('003')){
-          changeIcon[index+5]=icon3;
+        if (pin5.contains('003')) {
+          changeIcon[index + 4] = icon3;
         }
-        if(pin6.contains('004')){
-          changeIcon[index+5]=icon5;
+        if (pin5.contains('004')) {
+          changeIcon[index + 4] = icon5;
         }
-        if(pin6.contains('005')){
-          changeIcon[index+5]=icon6;
+        if (pin5.contains('005')) {
+          changeIcon[index + 4] = icon6;
         }
-        if(pin6.contains('007')){
-          changeIcon[index+5]=icon6;
+        if (pin5.contains('007')) {
+          changeIcon[index + 4] = icon6;
         }
-        if(pin6.contains('008')){
-          changeIcon[index+5]=icon7;
+        if (pin5.contains('008')) {
+          changeIcon[index + 4] = icon7;
         }
-        if(pin6.contains('009')){
-          changeIcon[index+5]=icon8;
+        if (pin5.contains('009')) {
+          changeIcon[index + 4] = icon8;
         }
-        if(pin6.contains('0010')){
-          changeIcon[index+5]=icon9;
+        if (pin5.contains('0010')) {
+          changeIcon[index + 4] = icon9;
         }
-        if(pin6.contains('0011')){
-          changeIcon[index+5]=icon10;
+        if (pin5.contains('0011')) {
+          changeIcon[index + 4] = icon10;
         }
-        if(pin6.contains('0012')){
-          changeIcon[index+5]=icon12;
+        if (pin5.contains('0012')) {
+          changeIcon[index + 4] = icon12;
         }
       }
-      if(pin7.contains('001') || pin7.contains('002')||pin7.contains('003') ||pin7.contains('004' )||pin7.contains('005') ||pin7.contains('006')||pin7.contains('007')||pin7.contains('008')||pin7.contains('009')|| pin7.contains('0010')||pin7.contains('0011')){
+      if (pin6.contains('001') ||
+          pin6.contains('002') ||
+          pin6.contains('003') ||
+          pin6.contains('004') ||
+          pin6.contains('005') ||
+          pin6.contains('006') ||
+          pin6.contains('007') ||
+          pin6.contains('008') ||
+          pin6.contains('009') ||
+          pin6.contains('0010') ||
+          pin6.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin7.contains('001')){
-          changeIcon[index+6]=icon1;
+        if (pin6.contains('001')) {
+          changeIcon[index + 5] = icon1;
         }
-        if(pin7.contains('002')){
-          changeIcon[index+6]=icon2;
+        if (pin6.contains('002')) {
+          changeIcon[index + 5] = icon2;
         }
-        if(pin7.contains('003')){
-          changeIcon[index+6]=icon3;
+        if (pin6.contains('003')) {
+          changeIcon[index + 5] = icon3;
         }
-        if(pin7.contains('004')){
-          changeIcon[index+6]=icon5;
+        if (pin6.contains('004')) {
+          changeIcon[index + 5] = icon5;
         }
-        if(pin7.contains('005')){
-          changeIcon[index+6]=icon6;
+        if (pin6.contains('005')) {
+          changeIcon[index + 5] = icon6;
         }
-        if(pin7.contains('007')){
-          changeIcon[index+6]=icon6;
+        if (pin6.contains('007')) {
+          changeIcon[index + 5] = icon6;
         }
-        if(pin7.contains('008')){
-          changeIcon[index+6]=icon7;
+        if (pin6.contains('008')) {
+          changeIcon[index + 5] = icon7;
         }
-        if(pin7.contains('009')){
-          changeIcon[index+6]=icon8;
+        if (pin6.contains('009')) {
+          changeIcon[index + 5] = icon8;
         }
-        if(pin7.contains('0010')){
-          changeIcon[index+6]=icon9;
+        if (pin6.contains('0010')) {
+          changeIcon[index + 5] = icon9;
         }
-        if(pin7.contains('0011')){
-          changeIcon[index+6]=icon10;
+        if (pin6.contains('0011')) {
+          changeIcon[index + 5] = icon10;
         }
-        if(pin7.contains('0012')){
-          changeIcon[index+6]=icon12;
+        if (pin6.contains('0012')) {
+          changeIcon[index + 5] = icon12;
         }
       }
-      if(pin8.contains('001') || pin8.contains('002')||pin8.contains('003') ||pin8.contains('004' )||pin8.contains('005') ||pin8.contains('006')||pin8.contains('007')||pin8.contains('008')||pin8.contains('009')|| pin8.contains('0010')||pin8.contains('0011')){
+      if (pin7.contains('001') ||
+          pin7.contains('002') ||
+          pin7.contains('003') ||
+          pin7.contains('004') ||
+          pin7.contains('005') ||
+          pin7.contains('006') ||
+          pin7.contains('007') ||
+          pin7.contains('008') ||
+          pin7.contains('009') ||
+          pin7.contains('0010') ||
+          pin7.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin8.contains('001')){
-          changeIcon[index+7]=icon1;
+        if (pin7.contains('001')) {
+          changeIcon[index + 6] = icon1;
         }
-        if(pin8.contains('002')){
-          changeIcon[index+7]=icon2;
+        if (pin7.contains('002')) {
+          changeIcon[index + 6] = icon2;
         }
-        if(pin8.contains('003')){
-          changeIcon[index+7]=icon3;
+        if (pin7.contains('003')) {
+          changeIcon[index + 6] = icon3;
         }
-        if(pin8.contains('004')){
-          changeIcon[index+7]=icon5;
+        if (pin7.contains('004')) {
+          changeIcon[index + 6] = icon5;
         }
-        if(pin8.contains('005')){
-          changeIcon[index+7]=icon6;
+        if (pin7.contains('005')) {
+          changeIcon[index + 6] = icon6;
         }
-        if(pin8.contains('007')){
-          changeIcon[index+7]=icon6;
+        if (pin7.contains('007')) {
+          changeIcon[index + 6] = icon6;
         }
-        if(pin8.contains('008')){
-          changeIcon[index+7]=icon7;
+        if (pin7.contains('008')) {
+          changeIcon[index + 6] = icon7;
         }
-        if(pin8.contains('009')){
-          changeIcon[index+7]=icon8;
+        if (pin7.contains('009')) {
+          changeIcon[index + 6] = icon8;
         }
-        if(pin8.contains('0010')){
-          changeIcon[index+7]=icon9;
+        if (pin7.contains('0010')) {
+          changeIcon[index + 6] = icon9;
         }
-        if(pin8.contains('0011')){
-          changeIcon[index+7]=icon10;
+        if (pin7.contains('0011')) {
+          changeIcon[index + 6] = icon10;
         }
-        if(pin8.contains('0012')){
-          changeIcon[index+7]=icon12;
+        if (pin7.contains('0012')) {
+          changeIcon[index + 6] = icon12;
         }
       }
-      if(pin9.contains('001') || pin9.contains('002')||pin9.contains('003') ||pin9.contains('004' )||pin9.contains('005') ||pin9.contains('006')||pin9.contains('007')||pin9.contains('008')||pin9.contains('009')|| pin9.contains('0010')||pin9.contains('0011')){
+      if (pin8.contains('001') ||
+          pin8.contains('002') ||
+          pin8.contains('003') ||
+          pin8.contains('004') ||
+          pin8.contains('005') ||
+          pin8.contains('006') ||
+          pin8.contains('007') ||
+          pin8.contains('008') ||
+          pin8.contains('009') ||
+          pin8.contains('0010') ||
+          pin8.contains('0011')) {
         print('qwertyhgfnamesDataList $index');
         // icon2=Icons.ac_unit;
         // changeIcon[index+1]=icon2;
-        if(pin9.contains('001')){
-          changeIcon[index+8]=icon1;
+        if (pin8.contains('001')) {
+          changeIcon[index + 7] = icon1;
         }
-        if(pin9.contains('002')){
-          changeIcon[index+8]=icon2;
+        if (pin8.contains('002')) {
+          changeIcon[index + 7] = icon2;
         }
-        if(pin9.contains('003')){
-          changeIcon[index+8]=icon3;
+        if (pin8.contains('003')) {
+          changeIcon[index + 7] = icon3;
         }
-        if(pin9.contains('004')){
-          changeIcon[index+8]=icon5;
+        if (pin8.contains('004')) {
+          changeIcon[index + 7] = icon5;
         }
-        if(pin9.contains('005')){
-          changeIcon[index+8]=icon6;
+        if (pin8.contains('005')) {
+          changeIcon[index + 7] = icon6;
         }
-        if(pin9.contains('007')){
-          changeIcon[index+8]=icon6;
+        if (pin8.contains('007')) {
+          changeIcon[index + 7] = icon6;
         }
-        if(pin9.contains('008')){
-          changeIcon[index+8]=icon7;
+        if (pin8.contains('008')) {
+          changeIcon[index + 7] = icon7;
         }
-        if(pin9.contains('009')){
-          changeIcon[index+8]=icon8;
+        if (pin8.contains('009')) {
+          changeIcon[index + 7] = icon8;
         }
-        if(pin9.contains('0010')){
-          changeIcon[index+8]=icon9;
+        if (pin8.contains('0010')) {
+          changeIcon[index + 7] = icon9;
         }
-        if(pin9.contains('0011')){
-          changeIcon[index+8]=icon10;
+        if (pin8.contains('0011')) {
+          changeIcon[index + 7] = icon10;
         }
-        if(pin9.contains('0012')){
-          changeIcon[index+8]=icon12;
+        if (pin8.contains('0012')) {
+          changeIcon[index + 7] = icon12;
+        }
+      }
+      if (pin9.contains('001') ||
+          pin9.contains('002') ||
+          pin9.contains('003') ||
+          pin9.contains('004') ||
+          pin9.contains('005') ||
+          pin9.contains('006') ||
+          pin9.contains('007') ||
+          pin9.contains('008') ||
+          pin9.contains('009') ||
+          pin9.contains('0010') ||
+          pin9.contains('0011')) {
+        print('qwertyhgfnamesDataList $index');
+        // icon2=Icons.ac_unit;
+        // changeIcon[index+1]=icon2;
+        if (pin9.contains('001')) {
+          changeIcon[index + 8] = icon1;
+        }
+        if (pin9.contains('002')) {
+          changeIcon[index + 8] = icon2;
+        }
+        if (pin9.contains('003')) {
+          changeIcon[index + 8] = icon3;
+        }
+        if (pin9.contains('004')) {
+          changeIcon[index + 8] = icon5;
+        }
+        if (pin9.contains('005')) {
+          changeIcon[index + 8] = icon6;
+        }
+        if (pin9.contains('007')) {
+          changeIcon[index + 8] = icon6;
+        }
+        if (pin9.contains('008')) {
+          changeIcon[index + 8] = icon7;
+        }
+        if (pin9.contains('009')) {
+          changeIcon[index + 8] = icon8;
+        }
+        if (pin9.contains('0010')) {
+          changeIcon[index + 8] = icon9;
+        }
+        if (pin9.contains('0011')) {
+          changeIcon[index + 8] = icon10;
+        }
+        if (pin9.contains('0012')) {
+          changeIcon[index + 8] = icon12;
         }
       }
 
@@ -6172,7 +7183,6 @@ class _HomeTestState extends State<HomeTest>
         widget.switch11Name = pin11FinalName,
         widget.switch12Name = pin12FinalName,
       ];
-
     });
   }
 
@@ -6180,71 +7190,68 @@ class _HomeTestState extends State<HomeTest>
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("Alert"),
-            content: Text("Would to like to turn off all the appliances ?"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("Yes"),
-                  onPressed: () async {
-                    for (int i = 0; i < responseGetData.length; i++) {
-                      setState(() {
-                        // responseGetData[newIndex - 1]=0 ;
-                        if (responseGetData[i] > 0) {
-                          responseGetData[i] = 0;
-                          print('AllChange ${responseGetData.toString()}');
-                        }
-
-                      });
-
+      builder: (context) => AlertDialog(
+        title: Text("Alert"),
+        content: Text("Would to like to turn off all the appliances ?"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                for (int i = 0; i < responseGetData.length; i++) {
+                  setState(() {
+                    // responseGetData[newIndex - 1]=0 ;
+                    if (responseGetData[i] > 0) {
+                      responseGetData[i] = 0;
+                      print('AllChange ${responseGetData.toString()}');
                     }
-                    await dataUpdate(dId);
-                    var result = await Connectivity().checkConnectivity();
-                    if (result == ConnectivityResult.wifi) {
-                      print("True2-->   $result");
-                      // await localUpdate(dId);
-                      await dataUpdate(dId);
-                    } else if (result == ConnectivityResult.mobile) {
-                      await dataUpdate(dId);
-                      await NewDbProvider.instance.getPinStatusByDeviceId(dId);
-                    } else {
-                      messageSms(context, dId);
-                    }
+                  });
+                }
+                await dataUpdate(dId);
+                var result = await Connectivity().checkConnectivity();
+                if (result == ConnectivityResult.wifi) {
+                  print("True2-->   $result");
+                  // await localUpdate(dId);
+                  await dataUpdate(dId);
+                } else if (result == ConnectivityResult.mobile) {
+                  await dataUpdate(dId);
+                  await NewDbProvider.instance.getPinStatusByDeviceId(dId);
+                } else {
+                  messageSms(context, dId);
+                }
 
-                    Navigator.of(context).pop();
-                  }),
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("No"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          ),
+                Navigator.of(context).pop();
+              }),
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ],
+      ),
     );
   }
+
   _showDialogForNoInternet() {
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("No InterNet"),
-            content: Text("Check your connection"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: Text("No InterNet"),
+        content: Text("Check your connection"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ],
+      ),
     );
   }
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String validateMobile(String value) {
     String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
@@ -6258,86 +7265,83 @@ class _HomeTestState extends State<HomeTest>
     }
     return null;
   }
+
   _showDialogForTempAccessPge() {
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            content: Text("Enter your Mobile Number"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              Form(
-                key: formKey,
-                child: TextFormField(
-                  autofocus: true,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  autovalidateMode:
-                  AutovalidateMode.onUserInteraction,
-                  validator: validateMobile,
-                  controller: phoneController,
-                  // onSaved: (String value) {
-                  //   phone = value;
-                  // },
-                  style: TextStyle(
-                      fontSize: 18, color: Colors.black54),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.phone_android),
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Enter your Contact',
-                    errorStyle: TextStyle(),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    contentPadding: const EdgeInsets.all(15),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
+      builder: (context) => AlertDialog(
+        content: Text("Enter your Mobile Number"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          Form(
+            key: formKey,
+            child: TextFormField(
+              autofocus: true,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validateMobile,
+              controller: phoneController,
+              // onSaved: (String value) {
+              //   phone = value;
+              // },
+              style: TextStyle(fontSize: 18, color: Colors.black54),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.phone_android),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Enter your Contact',
+                errorStyle: TextStyle(),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                contentPadding: const EdgeInsets.all(15),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(50),
                 ),
               ),
+            ),
+          ),
+          // ignore: deprecated_member_use
+          Row(
+            children: [
               // ignore: deprecated_member_use
-              Row(
-                children: [
-                  // ignore: deprecated_member_use
-                  FlatButton(
-                      child: Text("Submit"),
-                      onPressed: () {
-                        if (formKey.currentState.validate()) {
-                          var mobile =phoneController.text;
-                          _setTempNumber(mobile);
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPage(
-                            mobileNumber: mobile,
-                          )));
-                        }else{
-                          return Text('Error');
-                        }
-
-                      }),
-                  FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                ],
-              ),
-
+              FlatButton(
+                  child: Text("Submit"),
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      var mobile = phoneController.text;
+                      _setTempNumber(mobile);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TempAccessPage(
+                                    mobileNumber: mobile,
+                                  )));
+                    } else {
+                      return Text('Error');
+                    }
+                  }),
+              FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
             ],
           ),
+        ],
+      ),
     );
   }
 
@@ -6345,98 +7349,95 @@ class _HomeTestState extends State<HomeTest>
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("Alert"),
-            content: Text("Are your sure to delete room with all devices"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("Yes"),
-                  onPressed: () async {
-                    await deleteRoomWithAllDevice(rId);
-                   // widget.rm = await roomQueryFunc();
-                    Navigator.pop(context);
-                  }
-              ),
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("No"),
-                  onPressed: () {
-                    // Navigator.of(context).pop();
-                  }),
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: Text("Alert"),
+        content: Text("Are your sure to delete room with all devices"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                await deleteRoomWithAllDevice(rId);
+                // widget.rm = await roomQueryFunc();
+                Navigator.pop(context);
+              }),
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                // Navigator.of(context).pop();
+              }),
+        ],
+      ),
     );
   }
-  _showDialogForDeleteSingleDevices(String rId,String dId) {
+
+  _showDialogForDeleteSingleDevices(String rId, String dId) {
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("Alert"),
-            content: Text("Are your sure to delete this devices"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("Yes"),
-                  onPressed: () async {
-                    await deleteDevice(rId,dId);
-                    Navigator.pop(context);
-                  }
-              ),
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("No"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: Text("Alert"),
+        content: Text("Are your sure to delete this devices"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                await deleteDevice(rId, dId);
+                Navigator.pop(context);
+              }),
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ],
+      ),
     );
   }
+
   _showDialogForLogOut() {
     // dialog implementation
 
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("LogOut"),
-            content: Text("Would to like to Log Out from this App ?"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("Yes"),
-                  onPressed: () async {
-                    await _logout();
+      builder: (context) => AlertDialog(
+        title: Text("LogOut"),
+        content: Text("Would to like to Log Out from this App ?"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                await _logout();
 
-                    CircularProgressIndicator();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GettingStartedScreen()));
-                    // await  _logout()
-                    //     .then((value) => Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => GettingStartedScreen())));
-                    //
-                  }),
-              // ignore: deprecated_member_use
-              FlatButton(
-                  child: Text("No"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          ),
+                CircularProgressIndicator();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GettingStartedScreen()));
+                // await  _logout()
+                //     .then((value) => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => GettingStartedScreen())));
+                //
+              }),
+          // ignore: deprecated_member_use
+          FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ],
+      ),
     );
   }
 
   Future schedulingDevicePin(String dId, index) async {
-    final url = API+'schedulingpinsalltheway/';
+    final url = API + 'schedulingpinsalltheway/';
     String token = await getToken();
     var postData;
     if (index == 0) {
@@ -6513,7 +7514,6 @@ class _HomeTestState extends State<HomeTest>
       };
     } else if (index == 9) {
       postData = {
-
         "user": getUidVariable2,
         "date1": cutDate,
         "timing1": _alarmTimeString,
@@ -6522,16 +7522,14 @@ class _HomeTestState extends State<HomeTest>
       };
     } else if (index == 10) {
       postData = {
-
         "user": getUidVariable2,
         "date1": cutDate,
         "timing1": _alarmTimeString,
         "pin11Status": sliderValue,
         "d_id": dId,
       };
-    }else if (index == 11) {
+    } else if (index == 11) {
       postData = {
-
         "user": getUidVariable2,
         "date1": cutDate,
         "timing1": _alarmTimeString,
@@ -6547,7 +7545,7 @@ class _HomeTestState extends State<HomeTest>
     if (response.statusCode > 0) {
       print("SchedulingStatus ${response.statusCode}");
       print("SchedulingStatus ${response.body}");
-      if(response.statusCode==201){
+      if (response.statusCode == 201) {
         final snackBar = SnackBar(
           content: Text('Device Scheduled '),
         );
@@ -6580,6 +7578,7 @@ class _HomeTestState extends State<HomeTest>
     print('pickedDate ${date2}');
     print('pickedDate ${cutDate}');
   }
+
   pickTime(index) async {
     time23 = await showTimePicker(
         context: context,
@@ -6593,19 +7592,17 @@ class _HomeTestState extends State<HomeTest>
       setState(() {
         time = time23;
         print('Time ${time}');
-
       });
-      time12=time.toString();
-      cutTime=time12.substring(10,15);
+      time12 = time.toString();
+      cutTime = time12.substring(10, 15);
       print('cutTime ${cutTime}');
     }
   }
+
   double _value = 0.0;
   int checkSwitch;
   int sliderValue;
-  String textSelected ="";
-
-
+  String textSelected = "";
 
   deviceContainer2(String dId, int x) {
     deviceContainer(dId, x);
@@ -6628,10 +7625,9 @@ class _HomeTestState extends State<HomeTest>
                         'Turn Off All Appliances',
                         style: TextStyle(
                           color: change_toDark ? Colors.white : Colors.black,
-                          fontFamily: fonttest==null?changeFont:fonttest,
+                          fontFamily: fonttest == null ? changeFont : fonttest,
                           fontSize: 12.5,
                           fontWeight: FontWeight.bold,
-
                         ),
                       ),
                     ),
@@ -6641,19 +7637,24 @@ class _HomeTestState extends State<HomeTest>
                     Padding(
                       padding: const EdgeInsets.all(4),
                       child: GestureDetector(
-                        child:  Container(
+                        child: Container(
                           // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(textSelected==dId.toString()?Icons.update:Icons.sensors,color: change_toDark ? Colors.white : Colors.black,),
+                          child: Icon(
+                            textSelected == dId.toString()
+                                ? Icons.update
+                                : Icons.sensors,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
                         ),
-
                         onTap: () {
                           print('check123${textSelected}');
 
                           setState(() {
-                            textSelected=dId.toString();
-                            deviceSensorVal = devicePinSensorLocalUsingDeviceId(dId);
+                            textSelected = dId.toString();
+                            deviceSensorVal =
+                                devicePinSensorLocalUsingDeviceId(dId);
                           });
-                          print('check123${textSelected==dId}');
+                          print('check123${textSelected == dId}');
                           print('_hasBeenPressed ${textSelected}');
                         },
                       ),
@@ -6661,10 +7662,12 @@ class _HomeTestState extends State<HomeTest>
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: GestureDetector(
-                        child: Icon(Icons.schedule,color: change_toDark ? Colors.white : Colors.black,),
+                        child: Icon(
+                          Icons.schedule,
+                          color: change_toDark ? Colors.white : Colors.black,
+                        ),
                         onTap: () {
-
-                          _createAlertDialogForPinSchedule(context,dId);
+                          _createAlertDialogForPinSchedule(context, dId);
                           // _createAlertDialogForPin17(context, dId);
                         },
                       ),
@@ -6674,7 +7677,8 @@ class _HomeTestState extends State<HomeTest>
                       height: 14,
 
                       decoration: BoxDecoration(
-                          color: statusOfDevice == 1 ? Colors.green : Colors.grey,
+                          color:
+                              statusOfDevice == 1 ? Colors.green : Colors.grey,
                           shape: BoxShape.circle),
                       // child: ...
                     ),
@@ -6688,14 +7692,17 @@ class _HomeTestState extends State<HomeTest>
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: GestureDetector(
-                        child: Icon(Icons.settings_remote , color: change_toDark ? Colors.white : Colors.black,),
+                        child: Icon(
+                          Icons.settings_remote,
+                          color: change_toDark ? Colors.white : Colors.black,
+                        ),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (
-                                    context,
-                                    ) =>
+                              context,
+                            ) =>
                                     RemoteUIPage()),
                           );
                           // remoteUiWidget(context);
@@ -6703,16 +7710,12 @@ class _HomeTestState extends State<HomeTest>
                         },
                       ),
                     ),
-
                   ],
                 ),
               ),
               Container(
                 // color: Colors.yellow,
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 1.32,
+                height: MediaQuery.of(context).size.height * 1.32,
                 // color: Colors.amber,
                 child: GridView.count(
                     crossAxisSpacing: 8,
@@ -6722,7 +7725,7 @@ class _HomeTestState extends State<HomeTest>
                     // shrinkWrap: true,
                     crossAxisCount: 2,
                     children:
-                    List.generate(responseGetData.length - 3, (index) {
+                        List.generate(responseGetData.length - 3, (index) {
                       print('Something');
                       print('catch return --> $catchReturn');
 
@@ -6733,12 +7736,12 @@ class _HomeTestState extends State<HomeTest>
                           children: [
                             GestureDetector(
                               // onTap:Text(),
-                              onLongPress: (){
+                              onLongPress: () {
                                 print('finalDate ${cutDate}');
                                 _alarmTimeString =
                                     DateFormat('HH:mm').format(DateTime.now());
-                                cutDate = DateFormat('dd-MM-yyyy').format(
-                                    DateTime.now());
+                                cutDate = DateFormat('dd-MM-yyyy')
+                                    .format(DateTime.now());
                                 print('finalDate ${cutDate}');
                                 showModalBottomSheet(
                                     useRootNavigator: true,
@@ -6752,89 +7755,105 @@ class _HomeTestState extends State<HomeTest>
                                     builder: (context) {
                                       return StatefulBuilder(
                                           builder: (context, setModalState) {
-                                            return Container(
-                                                padding: const EdgeInsets.all(
-                                                    32),
-                                                child: Column(children: [
-                                                  // ignore: deprecated_member_use
-                                                  Container(
-                                                    width: 145,
-                                                    child: GestureDetector(
-                                                        child: Text(cutDate
-                                                            .toString() == null
-                                                            ? _dateString
-                                                            : cutDate.toString()
-                                                            .toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                        onTap: () {
-                                                          pickDate();
-                                                        }
-
-                                                    ),
-                                                  ),
-
-                                                  FlatButton(
-                                                    onPressed: () async {
-                                                      pickTime(index);
-                                                      print("index --> $index");
-                                                      // var selectedTime = await showTimePicker(
-                                                      //   context: context,
-                                                      //   initialTime: TimeOfDay.now(),
-                                                      // );
-                                                      // if (selectedTime != null) {
-                                                      //   final now = DateTime.now();
-                                                      //   var selectedDateTime = DateTime(
-                                                      //       now.year,
-                                                      //       now.month,
-                                                      //       now.day,
-                                                      //       selectedTime.hour,
-                                                      //       selectedTime.minute);
-                                                      //   _alarmTime = selectedDateTime;
-                                                      //   setModalState(() {
-                                                      //     _alarmTimeString =
-                                                      //         DateFormat('HH:mm')
-                                                      //             .format(selectedDateTime);
-                                                      //   });
-                                                      // }
-                                                    },
+                                        return Container(
+                                            padding: const EdgeInsets.all(32),
+                                            child: Column(children: [
+                                              // ignore: deprecated_member_use
+                                              Container(
+                                                width: 145,
+                                                child: GestureDetector(
                                                     child: Text(
-                                                      _alarmTimeString,
-                                                      style:
-                                                      TextStyle(fontSize: 32,fontFamily: fonttest==null?changeFont:fonttest,),
+                                                      cutDate.toString() == null
+                                                          ? _dateString
+                                                          : cutDate
+                                                              .toString()
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            fonttest == null
+                                                                ? changeFont
+                                                                : fonttest,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  ListTile(
-                                                    title:
-                                                    Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                    trailing: Icon(Icons.timer),
-                                                  ),
-                                                  ListTile(
-                                                    title: ToggleSwitch(
-                                                      initialLabelIndex: 0,
-                                                      labels: ['Off', 'On'],
-                                                      onToggle: (index) {
-                                                        print(
-                                                            'switched to: $index');
-                                                        checkSwitch = index;
-                                                        // changeIndex(index);
-                                                        // setState(() {
-                                                        //
-                                                        // });
-                                                      },
-                                                    ),
-                                                    // trailing: Icon(Icons.arrow_forward_ios),
-                                                  ),
-                                                  FloatingActionButton.extended(
-                                                    onPressed: () async{
-                                                      await schedulingDevicePin(dId, index);
-                                                      Navigator.pop(context);
+                                                    onTap: () {
+                                                      pickDate();
+                                                    }),
+                                              ),
 
-                                                      print('Sceduled');
-                                                    },
-                                                    icon: Icon(Icons.alarm),
-                                                    label: Text('Save'),
+                                              FlatButton(
+                                                onPressed: () async {
+                                                  pickTime(index);
+                                                  print("index --> $index");
+                                                  // var selectedTime = await showTimePicker(
+                                                  //   context: context,
+                                                  //   initialTime: TimeOfDay.now(),
+                                                  // );
+                                                  // if (selectedTime != null) {
+                                                  //   final now = DateTime.now();
+                                                  //   var selectedDateTime = DateTime(
+                                                  //       now.year,
+                                                  //       now.month,
+                                                  //       now.day,
+                                                  //       selectedTime.hour,
+                                                  //       selectedTime.minute);
+                                                  //   _alarmTime = selectedDateTime;
+                                                  //   setModalState(() {
+                                                  //     _alarmTimeString =
+                                                  //         DateFormat('HH:mm')
+                                                  //             .format(selectedDateTime);
+                                                  //   });
+                                                  // }
+                                                },
+                                                child: Text(
+                                                  _alarmTimeString,
+                                                  style: TextStyle(
+                                                    fontSize: 32,
+                                                    fontFamily: fonttest == null
+                                                        ? changeFont
+                                                        : fonttest,
                                                   ),
-                                                ]));
-                                          });
+                                                ),
+                                              ),
+                                              ListTile(
+                                                title: Text(
+                                                  'What Do You Want ??',
+                                                  style: TextStyle(
+                                                    fontFamily: fonttest == null
+                                                        ? changeFont
+                                                        : fonttest,
+                                                  ),
+                                                ),
+                                                trailing: Icon(Icons.timer),
+                                              ),
+                                              ListTile(
+                                                title: ToggleSwitch(
+                                                  initialLabelIndex: 0,
+                                                  labels: ['Off', 'On'],
+                                                  onToggle: (index) {
+                                                    print(
+                                                        'switched to: $index');
+                                                    checkSwitch = index;
+                                                    // changeIndex(index);
+                                                    // setState(() {
+                                                    //
+                                                    // });
+                                                  },
+                                                ),
+                                                // trailing: Icon(Icons.arrow_forward_ios),
+                                              ),
+                                              FloatingActionButton.extended(
+                                                onPressed: () async {
+                                                  await schedulingDevicePin(
+                                                      dId, index);
+                                                  Navigator.pop(context);
+
+                                                  print('Sceduled');
+                                                },
+                                                icon: Icon(Icons.alarm),
+                                                label: Text('Save'),
+                                              ),
+                                            ]));
+                                      });
                                     });
                               },
                               child: Padding(
@@ -6848,7 +7867,7 @@ class _HomeTestState extends State<HomeTest>
                                     margin: index % 2 == 0
                                         ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
                                         : EdgeInsets.fromLTRB(
-                                        7.5, 7.5, 15, 7.5),
+                                            7.5, 7.5, 15, 7.5),
                                     // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                     decoration: BoxDecoration(
                                         boxShadow: <BoxShadow>[
@@ -6863,7 +7882,7 @@ class _HomeTestState extends State<HomeTest>
                                             style: BorderStyle.solid,
                                             color: Color(0xffa3a3a3)),
                                         borderRadius:
-                                        BorderRadius.circular(20)),
+                                            BorderRadius.circular(20)),
                                     child: Column(
                                       // crossAxisAlignment:
                                       // CrossAxisAlignment.stretch,
@@ -6874,17 +7893,22 @@ class _HomeTestState extends State<HomeTest>
                                               child: TextButton(
                                                 child: Text(
                                                   // '$index',
-                                                  '${namesDataList[index]
-                                                      .toString()} ',
+                                                  '${namesDataList[index].toString()} ',
                                                   overflow:
-                                                  TextOverflow.ellipsis,
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 2,
-                                                  style:
-                                                  TextStyle(fontSize: 10,fontFamily: fonttest==null?changeFont:fonttest,),
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontFamily: fonttest == null
+                                                        ? changeFont
+                                                        : fonttest,
+                                                  ),
                                                 ),
-                                                onPressed: ()async {
-                                                  print('indexpinNames->  $index');
-                                                  await _createAlertDialogForNameDeviceBox(context, index);
+                                                onPressed: () async {
+                                                  print(
+                                                      'indexpinNames->  $index');
+                                                  await _createAlertDialogForNameDeviceBox(
+                                                      context, index);
                                                 },
                                               ),
                                             ),
@@ -6895,49 +7919,73 @@ class _HomeTestState extends State<HomeTest>
                                               ),
                                               child: Switch(
                                                 value:
-                                                responseGetData[index] == 0
-                                                    ? val2
-                                                    : val1,
+                                                    responseGetData[index] == 0
+                                                        ? val2
+                                                        : val1,
                                                 //boolean value
                                                 onChanged: (val) async {
-                                                  print('12365 ${responseGetData[index]}');
+                                                  print(
+                                                      '12365 ${responseGetData[index]}');
                                                   setState(() {
-                                                    if (responseGetData[index] == 0) {
+                                                    if (responseGetData[
+                                                            index] ==
+                                                        0) {
                                                       responseGetData[index] =
-                                                      1;
+                                                          1;
                                                     } else {
-                                                      responseGetData[index] = 0;
+                                                      responseGetData[index] =
+                                                          0;
                                                     }
-                                                    print('yooooooooo ${responseGetData[index]}');
+                                                    print(
+                                                        'yooooooooo ${responseGetData[index]}');
                                                   });
                                                   // if Internet is not available then _checkInternetConnectivity = true
-                                                  var result = await Connectivity()
-                                                      .checkConnectivity();
+                                                  var result =
+                                                      await Connectivity()
+                                                          .checkConnectivity();
                                                   if (result ==
                                                       ConnectivityResult.none) {
                                                     messageSms(context, dId);
                                                   }
-                                                  if (result == ConnectivityResult.wifi && statusOfDevice == 1) {
+                                                  if (result ==
+                                                          ConnectivityResult
+                                                              .wifi &&
+                                                      statusOfDevice == 1) {
                                                     print("True2-->   $result");
                                                     localUpdate(dId);
                                                     dataUpdate(dId);
-                                                  } else if (result == ConnectivityResult.mobile && result ==ConnectivityResult.none && statusOfDevice == 1) {
+                                                  } else if (result ==
+                                                          ConnectivityResult
+                                                              .mobile &&
+                                                      result ==
+                                                          ConnectivityResult
+                                                              .none &&
+                                                      statusOfDevice == 1) {
                                                     dataUpdate(dId);
-                                                  } else if(result==ConnectivityResult.wifi && result ==ConnectivityResult.none && statusOfDevice == 1){
-                                                    _createAlertDialogForlocalUpdateAndMessage(context,dId);
-
+                                                  } else if (result ==
+                                                          ConnectivityResult
+                                                              .wifi &&
+                                                      result ==
+                                                          ConnectivityResult
+                                                              .none &&
+                                                      statusOfDevice == 1) {
+                                                    _createAlertDialogForlocalUpdateAndMessage(
+                                                        context, dId);
                                                   }
                                                 },
                                               ),
                                             ),
-
                                           ],
                                         ),
                                         GestureDetector(
-                                            onTap:(){
-                                              _createAlertDialogForNameDeviceBox(context,index);
+                                            onTap: () {
+                                              _createAlertDialogForNameDeviceBox(
+                                                  context, index);
                                             },
-                                            child: Icon(changeIcon[index]==null?null:changeIcon[index]))
+                                            child: Icon(
+                                                changeIcon[index] == null
+                                                    ? null
+                                                    : changeIcon[index]))
                                       ],
                                     )),
                               ),
@@ -6949,11 +7997,7 @@ class _HomeTestState extends State<HomeTest>
               ),
               Flexible(
                 child: Container(
-
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height *1.92,
+                  height: MediaQuery.of(context).size.height * 1.92,
                   // color: Colors.black,
                   // color: Colors.amber,
                   child: GridView.count(
@@ -6964,7 +8008,7 @@ class _HomeTestState extends State<HomeTest>
                       // shrinkWrap: true,
                       crossAxisCount: 2,
                       children:
-                      List.generate(responseGetData.length - 9, (index) {
+                          List.generate(responseGetData.length - 9, (index) {
                         print('Slider Start');
                         print('catch return --> $catchReturn');
                         var newIndex = index + 10;
@@ -6975,12 +8019,12 @@ class _HomeTestState extends State<HomeTest>
                             children: [
                               GestureDetector(
                                 // onTap:Text(),
-                                onLongPress: (){
+                                onLongPress: () {
                                   print('finalDate ${cutDate}');
-                                  _alarmTimeString =
-                                      DateFormat('HH:mm').format(DateTime.now());
-                                  cutDate = DateFormat('dd-MM-yyyy').format(
-                                      DateTime.now());
+                                  _alarmTimeString = DateFormat('HH:mm')
+                                      .format(DateTime.now());
+                                  cutDate = DateFormat('dd-MM-yyyy')
+                                      .format(DateTime.now());
                                   print('finalDate ${cutDate}');
                                   showModalBottomSheet(
                                       useRootNavigator: true,
@@ -6994,89 +8038,108 @@ class _HomeTestState extends State<HomeTest>
                                       builder: (context) {
                                         return StatefulBuilder(
                                             builder: (context, setModalState) {
-                                              return Container(
-                                                  padding: const EdgeInsets.all(
-                                                      32),
-                                                  child: Column(children: [
-                                                    // ignore: deprecated_member_use
-                                                    Container(
-                                                      width: 145,
-                                                      child: GestureDetector(
-                                                          child: Text(cutDate
-                                                              .toString() == null
-                                                              ? _dateString
-                                                              : cutDate.toString()
-                                                              .toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                          onTap: () {
-                                                            pickDate();
-                                                          }
-
-                                                      ),
-                                                    ),
-
-                                                    FlatButton(
-                                                      onPressed: () async {
-                                                        pickTime(index);
-                                                        print("index --> $index");
-                                                        // var selectedTime = await showTimePicker(
-                                                        //   context: context,
-                                                        //   initialTime: TimeOfDay.now(),
-                                                        // );
-                                                        // if (selectedTime != null) {
-                                                        //   final now = DateTime.now();
-                                                        //   var selectedDateTime = DateTime(
-                                                        //       now.year,
-                                                        //       now.month,
-                                                        //       now.day,
-                                                        //       selectedTime.hour,
-                                                        //       selectedTime.minute);
-                                                        //   _alarmTime = selectedDateTime;
-                                                        //   setModalState(() {
-                                                        //     _alarmTimeString =
-                                                        //         DateFormat('HH:mm')
-                                                        //             .format(selectedDateTime);
-                                                        //   });
-                                                        // }
-                                                      },
+                                          return Container(
+                                              padding: const EdgeInsets.all(32),
+                                              child: Column(children: [
+                                                // ignore: deprecated_member_use
+                                                Container(
+                                                  width: 145,
+                                                  child: GestureDetector(
                                                       child: Text(
-                                                        _alarmTimeString,
-                                                        style:
-                                                        TextStyle(fontSize: 32,fontFamily: fonttest==null?changeFont:fonttest,),
+                                                        cutDate.toString() ==
+                                                                null
+                                                            ? _dateString
+                                                            : cutDate
+                                                                .toString()
+                                                                .toString(),
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    ListTile(
-                                                      title:
-                                                      Text('What Do You Want ??',style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-                                                      trailing: Icon(Icons.timer),
-                                                    ),
-                                                    ListTile(
-                                                      title: ToggleSwitch(
-                                                        initialLabelIndex: 0,
-                                                        labels: ['Off', 'On'],
-                                                        onToggle: (index) {
-                                                          print(
-                                                              'switched to: $index');
-                                                          checkSwitch = index;
-                                                          // changeIndex(index);
-                                                          // setState(() {
-                                                          //
-                                                          // });
-                                                        },
-                                                      ),
-                                                      // trailing: Icon(Icons.arrow_forward_ios),
-                                                    ),
-                                                    FloatingActionButton.extended(
-                                                      onPressed: () async{
-                                                        await schedulingDevicePin(dId, index);
-                                                        Navigator.pop(context);
+                                                      onTap: () {
+                                                        pickDate();
+                                                      }),
+                                                ),
 
-                                                        print('Sceduled');
-                                                      },
-                                                      icon: Icon(Icons.alarm),
-                                                      label: Text('Save'),
+                                                FlatButton(
+                                                  onPressed: () async {
+                                                    pickTime(index);
+                                                    print("index --> $index");
+                                                    // var selectedTime = await showTimePicker(
+                                                    //   context: context,
+                                                    //   initialTime: TimeOfDay.now(),
+                                                    // );
+                                                    // if (selectedTime != null) {
+                                                    //   final now = DateTime.now();
+                                                    //   var selectedDateTime = DateTime(
+                                                    //       now.year,
+                                                    //       now.month,
+                                                    //       now.day,
+                                                    //       selectedTime.hour,
+                                                    //       selectedTime.minute);
+                                                    //   _alarmTime = selectedDateTime;
+                                                    //   setModalState(() {
+                                                    //     _alarmTimeString =
+                                                    //         DateFormat('HH:mm')
+                                                    //             .format(selectedDateTime);
+                                                    //   });
+                                                    // }
+                                                  },
+                                                  child: Text(
+                                                    _alarmTimeString,
+                                                    style: TextStyle(
+                                                      fontSize: 32,
+                                                      fontFamily:
+                                                          fonttest == null
+                                                              ? changeFont
+                                                              : fonttest,
                                                     ),
-                                                  ]));
-                                            });
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                    'What Do You Want ??',
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          fonttest == null
+                                                              ? changeFont
+                                                              : fonttest,
+                                                    ),
+                                                  ),
+                                                  trailing: Icon(Icons.timer),
+                                                ),
+                                                ListTile(
+                                                  title: ToggleSwitch(
+                                                    initialLabelIndex: 0,
+                                                    labels: ['Off', 'On'],
+                                                    onToggle: (index) {
+                                                      print(
+                                                          'switched to: $index');
+                                                      checkSwitch = index;
+                                                      // changeIndex(index);
+                                                      // setState(() {
+                                                      //
+                                                      // });
+                                                    },
+                                                  ),
+                                                  // trailing: Icon(Icons.arrow_forward_ios),
+                                                ),
+                                                FloatingActionButton.extended(
+                                                  onPressed: () async {
+                                                    await schedulingDevicePin(
+                                                        dId, index);
+                                                    Navigator.pop(context);
+
+                                                    print('Sceduled');
+                                                  },
+                                                  icon: Icon(Icons.alarm),
+                                                  label: Text('Save'),
+                                                ),
+                                              ]));
+                                        });
                                       });
                                 },
                                 child: Padding(
@@ -7089,9 +8152,9 @@ class _HomeTestState extends State<HomeTest>
                                           horizontal: 1, vertical: 10),
                                       margin: index % 2 == 0
                                           ? EdgeInsets.fromLTRB(
-                                          15, 7.5, 7.5, 7.5)
+                                              15, 7.5, 7.5, 7.5)
                                           : EdgeInsets.fromLTRB(
-                                          7.5, 7.5, 15, 7.5),
+                                              7.5, 7.5, 15, 7.5),
                                       // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                       decoration: BoxDecoration(
                                           boxShadow: <BoxShadow>[
@@ -7106,10 +8169,10 @@ class _HomeTestState extends State<HomeTest>
                                               style: BorderStyle.solid,
                                               color: Color(0xffa3a3a3)),
                                           borderRadius:
-                                          BorderRadius.circular(20)),
+                                              BorderRadius.circular(20)),
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                                            CrossAxisAlignment.stretch,
                                         children: [
                                           Row(
                                             children: [
@@ -7119,40 +8182,52 @@ class _HomeTestState extends State<HomeTest>
                                                   // value: 5.0,
                                                   value: double.parse(
                                                       responseGetData[
-                                                      newIndex - 1]
+                                                              newIndex - 1]
                                                           .toString()),
                                                   min: 0,
                                                   max: 10,
                                                   divisions: 500,
                                                   activeColor: Colors.blue,
                                                   inactiveColor: Colors.black,
-                                                  label: '${double.parse(
-                                                      responseGetData[newIndex -
-                                                          1].toString())}',
+                                                  label:
+                                                      '${double.parse(responseGetData[newIndex - 1].toString())}',
                                                   onChanged:
                                                       (double newValue) async {
-                                                    print('index of data $index --> ${responseGetData[newIndex - 1]}');
-                                                    print('index of $index --> ${newIndex - 1}');
+                                                    print(
+                                                        'index of data $index --> ${responseGetData[newIndex - 1]}');
+                                                    print(
+                                                        'index of $index --> ${newIndex - 1}');
 
                                                     setState(() {
-                                                      print("Round-->  ${newValue.round()}");
-                                                      var roundVar = newValue.round();
-                                                      print("Round 2-->  $roundVar");
-                                                      responseGetData[newIndex - 1] = roundVar;
-                                                      print("Response Round-->  ${responseGetData[newIndex - 1]}");
+                                                      print(
+                                                          "Round-->  ${newValue.round()}");
+                                                      var roundVar =
+                                                          newValue.round();
+                                                      print(
+                                                          "Round 2-->  $roundVar");
+                                                      responseGetData[newIndex -
+                                                          1] = roundVar;
+                                                      print(
+                                                          "Response Round-->  ${responseGetData[newIndex - 1]}");
                                                     });
                                                     await dataUpdate(dId);
 
                                                     // if Internet is not available then _checkInternetConnectivity = true
                                                     var result =
-                                                    await Connectivity().checkConnectivity();
-                                                    if (result == ConnectivityResult.wifi) {
-                                                      print("True2-->   $result");
+                                                        await Connectivity()
+                                                            .checkConnectivity();
+                                                    if (result ==
+                                                        ConnectivityResult
+                                                            .wifi) {
+                                                      print(
+                                                          "True2-->   $result");
                                                       await localUpdate(dId);
                                                       await dataUpdate(dId);
                                                     } else if (result ==
-                                                        ConnectivityResult.mobile) {
-                                                      print("mobile-->   $result");
+                                                        ConnectivityResult
+                                                            .mobile) {
+                                                      print(
+                                                          "mobile-->   $result");
                                                       // await localUpdate(d_id);
                                                       await dataUpdate(dId);
                                                     } else {
@@ -7169,31 +8244,33 @@ class _HomeTestState extends State<HomeTest>
                                           Expanded(
                                             child: TextButton(
                                               child: Text(
-                                                '${namesDataList[index + 9]
-                                                    .toString()} ',
+                                                '${namesDataList[index + 9].toString()} ',
                                                 // '${namesDataList[index].toString()} ',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
                                                 style: TextStyle(fontSize: 10),
                                               ),
-                                              onPressed: ()async {
-                                                await _createAlertDialogForNameDeviceBox(context, index);
+                                              onPressed: () async {
+                                                await _createAlertDialogForNameDeviceBox(
+                                                    context, index);
 
                                                 // return addDeviceName(index);
                                               },
                                             ),
                                           ),
                                           GestureDetector(
-                                              onTap:()async{
-                                                _createAlertDialogForNameDeviceBox(context,index);
+                                              onTap: () async {
+                                                _createAlertDialogForNameDeviceBox(
+                                                    context, index);
                                               },
-                                              child: Icon(changeIcon[index]==null?null:changeIcon[index]))
+                                              child: Icon(
+                                                  changeIcon[index] == null
+                                                      ? null
+                                                      : changeIcon[index]))
                                         ],
-
                                       )),
                                 ),
                               ),
-
                             ],
                           ),
                         );
@@ -7212,10 +8289,8 @@ class _HomeTestState extends State<HomeTest>
     await preferences.clear();
   }
 
-
-
-  void scheduleAlarm(DateTime scheduledNotificationDateTime,
-      AlarmInfo alarmInfo) async {
+  void scheduleAlarm(
+      DateTime scheduledNotificationDateTime, AlarmInfo alarmInfo) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
@@ -7254,14 +8329,12 @@ class _HomeTestState extends State<HomeTest>
     Navigator.pop(context);
   }
 
-
   getData(String dId) async {
     print("Vice Id $dId");
     deviceIdForSensor = dId;
     print('getDataFunction $deviceIdForSensor');
     getSensorData(deviceIdForSensor);
-    final String url =
-        API+'getpostdevicePinStatus/?d_id=' + dId;
+    final String url = API + 'getpostdevicePinStatus/?d_id=' + dId;
     String token = await getToken();
     http.Response response = await http.get(url, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -7308,11 +8381,9 @@ class _HomeTestState extends State<HomeTest>
         // int aa=int.parse(a);
 
         int ms =
-        // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
-        ((DateTime
-            .now()
-            .millisecondsSinceEpoch) / 1000).round() -
-            100; // -100 for checking a difference for 100 seconds in current time
+            // ((DateTime.now().millisecondsSinceEpoch) / 1000).round() + 19700;
+            ((DateTime.now().millisecondsSinceEpoch) / 1000).round() -
+                100; // -100 for checking a difference for 100 seconds in current time
         print('CheckMs ${ms}');
         // print('Checkaa ${aa}');
         // if (aa >= ms) {
@@ -7360,10 +8431,8 @@ class _HomeTestState extends State<HomeTest>
     return data;
   }
 
-
-
   _launchURL() async {
-    var url = API+'change_password_phone';
+    var url = API + 'change_password_phone';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -7372,11 +8441,8 @@ class _HomeTestState extends State<HomeTest>
   }
 
   void onOffSchedule() {
-    print(time23);
-    // _alarms = _alarmHelper.getAlarms();
     if (time == TimeOfDay.now()) {
-      // dataUpdate(index);
-      print(switch_1);
+        print(switch_1);
     }
   }
 
@@ -7401,7 +8467,6 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
@@ -7412,8 +8477,9 @@ class _HomeTestState extends State<HomeTest>
         .add(DiagnosticsProperty<Future<List<AlarmInfo>>>('_alarms', _alarms));
   }
 }
+
 class Item {
-  const Item(this.name,this.icon);
+  const Item(this.name, this.icon);
   final String name;
   final Icon icon;
 }

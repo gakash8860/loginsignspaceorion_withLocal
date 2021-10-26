@@ -22,8 +22,8 @@ class PlaceType {
 
 
   factory PlaceType.fromJson(Map<String, dynamic> json) => PlaceType(
-    pId: json["p_id"] ,
-    pType: json["p_type"],
+    pId: json["p_id"].toString() ,
+    pType: json["p_type"].toString(),
     user: json["user"] ,
   );
 
@@ -54,8 +54,8 @@ class FloorType {
   String pId;
 
   factory FloorType.fromJson(Map<String, dynamic> json) => FloorType(
-    fId: json["f_id"],
-    fName: json["f_name"],
+    fId: json["f_id"].toString(),
+    fName: json["f_name"].toString(),
     user: json["user"],
     pId: json["p_id"].toString(),
   );

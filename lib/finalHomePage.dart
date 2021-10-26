@@ -2,7 +2,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loginsignspaceorion/BillPrediction.dart';
-import 'package:loginsignspaceorion/ProfilePage.dart';
+import 'package:loginsignspaceorion/profilepage.dart';
 import 'package:loginsignspaceorion/Setting_Page.dart';
 import 'package:loginsignspaceorion/about_Genorion.dart';
 import 'package:loginsignspaceorion/addMember.dart';

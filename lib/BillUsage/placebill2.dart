@@ -911,6 +911,9 @@ class _PlaceBill2State extends State<PlaceBill2> {
 
   sumOfEnergyHour() async {
     double totalValue = 0.0;
+    if(hourEnergy.isEmpty){
+      return thereIsNoData(context);
+    }
     setState(() {
       lengthHour = hourEnergy.length;
     });
@@ -1782,7 +1785,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
     print('currentDifference ${currentDifference}');
   }
 
-  void findDifferenceBetweenDates() {
+   findDifferenceBetweenDates() {
     print(date1);
     print(date2);
     setState(() {
@@ -1791,6 +1794,21 @@ class _PlaceBill2State extends State<PlaceBill2> {
 
     print('difference $difference');
   }
+
+  thereIsNoData(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return const AlertDialog(
+            title: Text('Oops !'),
+            content: Card(
+              child: Text('No Data'),
+            ),
+          );
+        }
+    );
+  }
+
 
   Future getEnergyDay() async {
     var dId;
@@ -1814,7 +1832,9 @@ class _PlaceBill2State extends State<PlaceBill2> {
       }
     }
     onlyDayEnergyList = List.from(data);
-
+    if(onlyDayEnergyList.isEmpty){
+      return thereIsNoData(context);
+    }
     await sumYearData();
     print('beforeSumData ${onlyDayEnergyList}');
     print('sumData ${onlyDayEnergyList}');
@@ -1977,7 +1997,7 @@ class _PlaceBill2State extends State<PlaceBill2> {
                           ],
                         )
                       : Text(''),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   completeTask

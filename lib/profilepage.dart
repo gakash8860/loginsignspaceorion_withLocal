@@ -477,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage> {
               appBar: AppBar(
                 title: Text('GenOrion',style: TextStyle( fontFamily: fonttest==null?'RobotoMono':fonttest),),
                 leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -486,7 +486,7 @@ class _ProfilePageState extends State<ProfilePage> {
               body: Container(
                 // color: change_toDark ? Colors.black : Colors.white,
                 height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
@@ -504,9 +504,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // ),
                       CircularProfileAvatar(
                         '',
-                        child: setImage == null
-                            ? Image.asset('assets/images/blank.png')
-                            : setImage,
+                        child: setImage ?? Image.asset('assets/images/blank.png'),
                         // '',child: Image.network(imageData['images']),
                         radius: 90,
                         elevation: 5,
@@ -532,12 +530,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             // crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              SizedBox(
+                              const SizedBox(
                                 height: 1.1,
                               ),
 
-                              Container(
-                                  height: MediaQuery.of(context).size.height / 18,
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height / 15,
                                   width: MediaQuery.of(context).size.width / 1.8,
                                   child: Card(
                                     child: Padding(
@@ -553,8 +551,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   )),
-                              Container(
-                                  height: MediaQuery.of(context).size.height / 18,
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height / 15,
                                   width: MediaQuery.of(context).size.width / 1.8,
                                   child: Card(
                                     child: Padding(
@@ -568,8 +566,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   )),
-                              Container(
-                                  height: MediaQuery.of(context).size.height / 18,
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height / 15,
                                   width: MediaQuery.of(context).size.width / 1.8,
                                   child: Card(
                                     child: Padding(
@@ -583,11 +581,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   )),
-                              //
-                              // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                              // textformfield(text: userData['last_name'].toString()),
-                              // SizedBox(height: MediaQuery.of(context).size.height/68,),
-                              // textformfield(text: userData['email'].toString()),
+
                             ],
                           ),
                         ),

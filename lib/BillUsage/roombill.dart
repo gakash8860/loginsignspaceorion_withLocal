@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
-import 'package:loginsignspaceorion/SQLITE_database/NewDatabase.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,6 +104,12 @@ class _RoomBillState extends State<RoomBill> {
 
   TextEditingController billTotalController = TextEditingController();
 
+  bool placeBool = false;
+  bool floorBool = false;
+  bool flatBool = false;
+  bool roomBool = false;
+
+  @override
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -271,7 +277,19 @@ class _RoomBillState extends State<RoomBill> {
       return rooms;
     }
   }
-
+  noDevice() {
+    return AwesomeDialog(
+      context: context,
+      dialogType: DialogType.ERROR,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Error ',
+      desc: 'No Device',
+      // btnCancelOnPress: () {},
+      btnOkOnPress: () async {
+        Navigator.pop(context);
+      },
+    )..show();
+  }
   Future getDevice(String r_id) async {
     final url = API + 'addyourdevice/?r_id=' + r_id;
     String token = await getToken();
@@ -282,6 +300,13 @@ class _RoomBillState extends State<RoomBill> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
+      if(data.isEmpty ){
+        setState(() {
+          pleaseSelect='There is not Data';
+        });
+        return noDevice();
+
+      }
       allDeviceId = List.from(data);
       print('allDeviceIdDeviceId-->  ${allDeviceId}');
       print('allDeviceIdDeviceId-->  ${allDeviceId.length}');
@@ -319,7 +344,7 @@ class _RoomBillState extends State<RoomBill> {
   List totalEnergyList;
 
   Future getEnergyTenMinutes() async {
-    totalEnergyList = List(allDeviceId.length);
+    totalEnergyList = [allDeviceId.length];
     tenMinuteEnergy = List.empty(growable: true);
     var dId;
     String token = await getToken();
@@ -530,7 +555,7 @@ class _RoomBillState extends State<RoomBill> {
 
   Future getEnergyHour() async {
     hourEnergy = List.empty(growable: true);
-    var dId;
+
     String token = await getToken();
     for (int i = 0; i < allDeviceId.length; i++) {
       var dId = allDeviceId[i]['d_id'];
@@ -550,7 +575,7 @@ class _RoomBillState extends State<RoomBill> {
 
   Future getEnergyHourWeb() async {
     hourEnergy = List.empty(growable: true);
-    var dId;
+
     String token = await getTokenWeb();
     for (int i = 0; i < allDeviceId.length; i++) {
       var dId = allDeviceId[i]['d_id'];
@@ -567,10 +592,31 @@ class _RoomBillState extends State<RoomBill> {
       }
     }
   }
+  thereIsNoData(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return const AlertDialog(
+            title: Text('Oops !'),
+            content: Card(
+              child: Text('No Data'),
+            ),
+          );
+        }
+    );
+  }
+
 
   sumOfEnergyHour() async {
     dataMap = {};
     double totalValue = 0.0;
+    if(hourEnergy.isEmpty ){
+      setState(() {
+        pleaseSelect='There is not Data';
+      });
+      return thereIsNoData(context);
+
+    }
     setState(() {
       lengthHour = hourEnergy.length;
     });
@@ -1761,7 +1807,7 @@ class _RoomBillState extends State<RoomBill> {
     print('currentDifference ${currentDifference}');
   }
 
-  void findDifferenceBetweenDates() {
+   findDifferenceBetweenDates() {
     print(date1);
     print(date2);
     setState(() {
@@ -1789,25 +1835,21 @@ class _RoomBillState extends State<RoomBill> {
       print('tenMinuteEnergy ${response.body}');
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
-        print('dayEnergy ${data[0]['d_id']}');
+
       }
     }
     onlyDayEnergyList = List.from(data);
 
+    if(onlyDayEnergyList.isEmpty ){
+      setState(() {
+        pleaseSelect='There is not Data';
+      });
+      return thereIsNoData(context);
+
+    }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
-    int i = 0;
 
-    // while(i<onlyDayEnergyList.length){
-    //
-    //   for(int j=1;j<onlyDayEnergyList.length;i++){
-    //     print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
-    //     print('JbeforeSsumData ${onlyDayEnergyList[i]['day${j}']}');
-    //   }
-    //
-    //   i++;
-    //
-    // }
     print('sumData ${onlyDayEnergyList}');
   }
 
@@ -1834,20 +1876,16 @@ class _RoomBillState extends State<RoomBill> {
     }
     onlyDayEnergyList = List.from(data);
 
+    if(onlyDayEnergyList.isEmpty ){
+      setState(() {
+        pleaseSelect='There is not Data';
+      });
+      return thereIsNoData(context);
+
+    }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
-    int i = 0;
 
-    // while(i<onlyDayEnergyList.length){
-    //
-    //   for(int j=1;j<onlyDayEnergyList.length;i++){
-    //     print('beforeSsumData ${onlyDayEnergyList[i]['d_id']}');
-    //     print('JbeforeSsumData ${onlyDayEnergyList[i]['day${j}']}');
-    //   }
-    //
-    //   i++;
-    //
-    // }
     print('sumData ${onlyDayEnergyList}');
   }
 
@@ -2404,16 +2442,16 @@ class _RoomBillState extends State<RoomBill> {
       } else {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Room Bill'),
+            title: const Text('Room Bill'),
           ),
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
-                FutureBuilder<List<PlaceType>>(
+                placeBool==false?  FutureBuilder<List<PlaceType>>(
                     future: placeVal,
                     builder:
                         (context, AsyncSnapshot<List<PlaceType>> snapshot) {
@@ -2474,6 +2512,7 @@ class _RoomBillState extends State<RoomBill> {
                               setState(() {
                                 fl = null;
                                 pt = selectedPlace;
+                                placeBool=true;
                                 floorVal = getfloors(selectedPlace.pId);
                               });
                             },
@@ -2482,11 +2521,9 @@ class _RoomBillState extends State<RoomBill> {
                       } else {
                         return CircularProgressIndicator();
                       }
-                    }),
-                SizedBox(
-                  height: 10,
-                ),
-                FutureBuilder<List<FloorType>>(
+                    }):
+
+                floorBool==false? FutureBuilder<List<FloorType>>(
                     future: floorVal,
                     builder:
                         (context, AsyncSnapshot<List<FloorType>> snapshot) {
@@ -2544,6 +2581,7 @@ class _RoomBillState extends State<RoomBill> {
                             onChanged: (FloorType selectedFloor) {
                               setState(() {
                                 fl = selectedFloor;
+                                floorBool = true;
                                 flatVal = getflat(selectedFloor.fId);
                               });
                             },
@@ -2554,11 +2592,8 @@ class _RoomBillState extends State<RoomBill> {
                             child: Text(
                                 "Please select a place to proceed further"));
                       }
-                    }),
-                SizedBox(
-                  height: 10,
-                ),
-                FutureBuilder<List<Flat>>(
+                    }):
+                flatBool==false?  FutureBuilder<List<Flat>>(
                     future: flatVal,
                     builder: (context, AsyncSnapshot<List<Flat>> snapshot) {
                       if (snapshot.hasData) {
@@ -2599,7 +2634,7 @@ class _RoomBillState extends State<RoomBill> {
                             dropdownColor: Colors.white70,
                             icon: Icon(Icons.arrow_drop_down),
                             iconSize: 28,
-                            hint: Text('Select Floor'),
+                            hint: Text('Select Flat'),
                             isExpanded: true,
                             value: flt,
                             style: TextStyle(
@@ -2616,6 +2651,7 @@ class _RoomBillState extends State<RoomBill> {
                               setState(() {
                                 flt = selectedFlat;
                                 selectedflat = selectedFlat.fltId;
+                                flatBool = true;
                                 roomVal = getrooms(selectedflat);
                               });
                             },
@@ -2626,11 +2662,9 @@ class _RoomBillState extends State<RoomBill> {
                             child: Text(
                                 "Please select a place to proceed further"));
                       }
-                    }),
-                SizedBox(
-                  height: 10,
-                ),
-                FutureBuilder<List<RoomType>>(
+                    }):
+
+                roomBool==false? FutureBuilder<List<RoomType>>(
                     future: roomVal,
                     builder: (context, AsyncSnapshot<List<RoomType>> snapshot) {
                       if (snapshot.hasData) {
@@ -2688,6 +2722,7 @@ class _RoomBillState extends State<RoomBill> {
                               setState(() {
                                 rm2 = selectedRoom;
                                 selectedroom = selectedRoom.rId;
+                                roomBool = true;
                               });
                               await getDevice(selectedroom);
                               setState(() {
@@ -2701,7 +2736,7 @@ class _RoomBillState extends State<RoomBill> {
                             child: Text(
                                 "Please select a place to proceed further"));
                       }
-                    }),
+                    }):
                 completeTask
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2765,7 +2800,7 @@ class _RoomBillState extends State<RoomBill> {
                               await showDatePicker1();
                             },
                             child:
-                                Text(cutDate == null ? 'Select Date' : cutDate),
+                                Text(cutDate ?? 'Select Date'),
                           ),
                           InkWell(
                             onTap: () {
@@ -2773,11 +2808,11 @@ class _RoomBillState extends State<RoomBill> {
                               // print12();
                             },
                             child: Text(
-                                cutDate2 == null ? 'Select Date' : cutDate2),
+                                cutDate2 ?? 'Select Date'),
                           ),
                         ],
                       )
-                    : Text("Please Wait"),
+                    : const Text("Please Wait"),
                 completeTask
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2796,17 +2831,15 @@ class _RoomBillState extends State<RoomBill> {
                               child: Text('Click'))
                         ],
                       )
-                    : Text("Please Wait"),
-                SizedBox(
+                    : const Text("Please Wait"),
+                const SizedBox(
                   height: 10,
                 ),
                 completeTask
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Text(tenMinuteTotalUsage == null
-                              ? varFinalTotalValue
-                              : tenMinuteTotalUsage),
+                          Text(tenMinuteTotalUsage ?? varFinalTotalValue),
 
                           // Text('X'),
                           SizedBox(
@@ -2815,10 +2848,10 @@ class _RoomBillState extends State<RoomBill> {
                             child: Center(
                               child: TextField(
                                 controller: billTotalController,
-                                keyboardType:TextInputType.numberWithOptions(decimal: true) ,
+                                keyboardType:const TextInputType.numberWithOptions(decimal: true) ,
                                 textAlign: TextAlign.center,
                                 textDirection:TextDirection.rtl,
-                                decoration:  InputDecoration(
+                                decoration:  const InputDecoration(
                                     // border: OutlineInputBorder(),
                                     hintText: 'Enter a rs per unit'),
                               ),
@@ -2827,48 +2860,42 @@ class _RoomBillState extends State<RoomBill> {
                         ],
                       )
                     : Container(),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 completeTask
-                    ? Container(
-                        child: Center(
-                          child: RaisedButton(
-                            color: Colors.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 60),
-                              child: Text(
-                                'Total Usage',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            onPressed: () async {
-                              await totalAmount(billTotalController.text);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TotalUsage(
-                                            totalEnergy:
-                                                tenMinuteTotalUsage == null
-                                                    ? varFinalTotalValue
-                                                    : tenMinuteTotalUsage,
-                                            chooseValueMinute:
-                                                chooseValueMinute == null
-                                                    ? "60 Minute"
-                                                    : chooseValueMinute,
-                                            deviceId: dataMap,
-                                        totalAmountInRs: totalAmountInRs,
-                                          )));
-                            },
+                    ? Center(
+                      child: RaisedButton(
+                        color: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6.0)),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 60),
+                          child: Text(
+                            'Total Usage',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                      )
+                        onPressed: () async {
+                          await totalAmount(billTotalController.text);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TotalUsage(
+                                        totalEnergy:
+                                            tenMinuteTotalUsage ?? varFinalTotalValue,
+                                        chooseValueMinute:
+                                            chooseValueMinute ?? "60 Minute",
+                                        deviceId: dataMap,
+                                    totalAmountInRs: totalAmountInRs,
+                                      )));
+                        },
+                      ),
+                    )
                     : Container(),
               ],
             ),

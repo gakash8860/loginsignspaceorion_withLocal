@@ -21,7 +21,7 @@ import 'package:loginsignspaceorion/wrongpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'Manage Theme/darkmodeandFont.dart';
-import 'ProfilePage.dart';
+import 'profilepage.dart';
 import 'SQLITE_database/NewDatabase.dart';
 import 'Setting_Page.dart';
 import 'SubAccessPage/singlePageForSubAccess.dart';
@@ -33,8 +33,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-var API = 'http://127.0.0.1:8000/';
-// var API = 'https://genorion1.herokuapp.com/';
+// var API = 'http://127.0.0.1:8000/';
+var API = 'https://genorion1.herokuapp.com/';
 List roomData;
 List floorData;
 List placeData;
@@ -61,7 +61,6 @@ Future<String> getToken() async {
 void main()async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
   runApp(MaterialApp(
     theme: ThemeData(
       // primarySwatch: Colors.grey,
@@ -1002,7 +1001,7 @@ List deviceResult;
               ),
             );
           }else{
-            return WillPopScope(
+            return token==null? WillPopScope(
               child: Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
@@ -1012,7 +1011,7 @@ List deviceResult;
                   ),
                 ),
                 body: Container(
-                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -1052,7 +1051,9 @@ List deviceResult;
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
+                          
                           children: <Widget>[
+                            
                             FlatButton(
                               child: Text(
                                 'Getting Started',
@@ -1116,7 +1117,7 @@ List deviceResult;
               ),
               onWillPop: () =>
                   showDialog(context: context, builder: (c) => backPopPage(context)),
-            );
+            ):CircularProgressIndicator();
           }
         }
 
@@ -1141,11 +1142,7 @@ List deviceResult;
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('ThemeData', ThemeData));
-  }
+  
 }
 
 class SlideItem extends StatelessWidget {

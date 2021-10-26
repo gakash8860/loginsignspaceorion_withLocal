@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:loginsignspaceorion/BillUsage/total_usage.dart';
 import 'package:loginsignspaceorion/models/modeldefine.dart';
@@ -108,6 +109,13 @@ class _FloorBillState extends State<FloorBill> {
   Future floorValWeb;
 
 
+  bool placeBool = false;
+  bool floorBool = false;
+  bool flatBool = false;
+  bool roomBool = false;
+
+
+  @override
   void initState() {
     super.initState();
     placeVal = getplaces();
@@ -245,7 +253,19 @@ class _FloorBillState extends State<FloorBill> {
   }
 
   List dataRoom=[];
-
+  noDevice() {
+    return AwesomeDialog(
+      context: context,
+      dialogType: DialogType.ERROR,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Error ',
+      desc: 'No Device',
+      // btnCancelOnPress: () {},
+      btnOkOnPress: () async {
+        Navigator.pop(context);
+      },
+    )..show();
+  }
   Future getrooms() async {
     List data= List.empty(growable: true);
     String flt_id;
@@ -374,6 +394,7 @@ class _FloorBillState extends State<FloorBill> {
         if (datawe.isEmpty) {
           print('dataisEmpty');
           print('dataisEmpty $dataMap');
+          // return noDevice();
         }
         await totalEnergyAccordingRoom();
       }
@@ -862,6 +883,7 @@ class _FloorBillState extends State<FloorBill> {
       });
       print('tenMinuteEnergyResponse ${response.statusCode}');
       if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
 
         hourEnergy.addAll(jsonDecode(response.body));
         print('hour $hourEnergy');
@@ -963,13 +985,15 @@ class _FloorBillState extends State<FloorBill> {
       print('tenMinuteEnergy ${response.body}');
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
-        print('dayEnergy ${data[0]['d_id']}');
+
 
 
       }
     }
     onlyDayEnergyList=List.from(data);
-
+    if(onlyDayEnergyList.isEmpty){
+      return thereIsNoData(context);
+    }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
     int i=0;
@@ -1056,11 +1080,26 @@ class _FloorBillState extends State<FloorBill> {
 
 
   int lengthHour;
-
+  thereIsNoData(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (context){
+          return const AlertDialog(
+            title: Text('Oops !'),
+            content: Card(
+              child: Text('No Data'),
+            ),
+          );
+        }
+    );
+  }
   sumOfEnergyHour()async{
     dataMap={
 
     };
+    if(hourEnergy.isEmpty){
+      return thereIsNoData(context);
+    }
     double totalValue=0.0;
     setState(() {
       lengthHour=hourEnergy.length;
@@ -1713,7 +1752,7 @@ class _FloorBillState extends State<FloorBill> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     FutureBuilder<List<PlaceType>>(
@@ -1737,7 +1776,7 @@ class _FloorBillState extends State<FloorBill> {
                                   2,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                         color: Colors.black,
                                         blurRadius: 10,
@@ -1821,7 +1860,7 @@ class _FloorBillState extends State<FloorBill> {
                                   2,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                         color: Colors.black,
                                         blurRadius: 10,
@@ -1859,7 +1898,7 @@ class _FloorBillState extends State<FloorBill> {
                                 ),
                                 dropdownColor: Colors.white70,
                                 icon:
-                                Icon(Icons.arrow_drop_down),
+                                const Icon(Icons.arrow_drop_down),
                                 iconSize: 28,
                                 hint: Text('Select Floor'),
                                 isExpanded: true,
@@ -1890,12 +1929,12 @@ class _FloorBillState extends State<FloorBill> {
                               ),
                             );
                           } else {
-                            return Center(
+                            return const Center(
                                 child: Text(
                                     "Please select a place to proceed further"));
                           }
                         }),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     completeTask? Row(
@@ -2068,15 +2107,15 @@ class _FloorBillState extends State<FloorBill> {
           }else{
             return Scaffold(
               appBar: AppBar(
-                title: Text('Floor Bill'),
+                title: const Text('Floor Bill'),
               ),
               body:SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    FutureBuilder<List<PlaceType>>(
+                  placeBool == false?  FutureBuilder<List<PlaceType>>(
                         future: placeVal,
                         builder: (context,
                             AsyncSnapshot<List<PlaceType>> snapshot) {
@@ -2085,8 +2124,8 @@ class _FloorBillState extends State<FloorBill> {
                             // setState(() {
                             //   floorVal = getfloors(snapshot.data[0].p_id);
                             // });
-                            if (snapshot.data.length == 0) {
-                              return Center(
+                            if (snapshot.data.isEmpty) {
+                              return const Center(
                                   child:
                                   Text("No Devices on this place"));
                             }
@@ -2097,7 +2136,7 @@ class _FloorBillState extends State<FloorBill> {
                                   2,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                         color: Colors.black,
                                         blurRadius: 10,
@@ -2114,26 +2153,26 @@ class _FloorBillState extends State<FloorBill> {
                                   contentPadding:
                                   const EdgeInsets.all(15),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: Colors.white),
                                     borderRadius:
                                     BorderRadius.circular(10),
                                   ),
                                   enabledBorder:
                                   UnderlineInputBorder(
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: Colors.black),
                                     borderRadius:
                                     BorderRadius.circular(50),
                                   ),
                                 ),
                                 dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
+                                icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 28,
-                                hint: Text('Select Place'),
+                                hint: const Text('Select Place'),
                                 isExpanded: true,
                                 value: pt,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -2151,6 +2190,7 @@ class _FloorBillState extends State<FloorBill> {
                                   setState(() {
                                     fl = null;
                                     pt = selectedPlace;
+                                    placeBool = true;
                                     floorVal = getfloors(
                                         selectedPlace.pId);
                                   });
@@ -2160,17 +2200,15 @@ class _FloorBillState extends State<FloorBill> {
                           } else {
                             return CircularProgressIndicator();
                           }
-                        }),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    FutureBuilder<List<FloorType>>(
+                        }):
+
+                  floorBool == false?  FutureBuilder<List<FloorType>>(
                         future: floorVal,
                         builder: (context,
                             AsyncSnapshot<List<FloorType>> snapshot) {
                           if (snapshot.hasData) {
-                            if (snapshot.data.length == 0) {
-                              return Center(
+                            if (snapshot.data.isEmpty) {
+                              return const Center(
                                   child:
                                   Text("No Devices on this place"));
                             }
@@ -2181,7 +2219,7 @@ class _FloorBillState extends State<FloorBill> {
                                   2,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                         color: Colors.black,
                                         blurRadius: 10,
@@ -2202,7 +2240,7 @@ class _FloorBillState extends State<FloorBill> {
                                   const EdgeInsets.all(15),
                                   focusedBorder:
                                   OutlineInputBorder(
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: Colors.white),
                                     borderRadius:
                                     BorderRadius.circular(
@@ -2210,7 +2248,7 @@ class _FloorBillState extends State<FloorBill> {
                                   ),
                                   enabledBorder:
                                   UnderlineInputBorder(
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: Colors.white),
                                     borderRadius:
                                     BorderRadius.circular(
@@ -2219,12 +2257,12 @@ class _FloorBillState extends State<FloorBill> {
                                 ),
                                 dropdownColor: Colors.white70,
                                 icon:
-                                Icon(Icons.arrow_drop_down),
+                                const Icon(Icons.arrow_drop_down),
                                 iconSize: 28,
-                                hint: Text('Select Floor'),
+                                hint: const Text('Select Floor'),
                                 isExpanded: true,
                                 value: fl,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -2241,6 +2279,7 @@ class _FloorBillState extends State<FloorBill> {
                                   setState(() {
                                     fl = selectedFloor;
                                     selectedFloorId=selectedFloor.fId;
+                                    floorBool = true;
                                   });
                                   await getflat(selectedFloorId);
                                   setState(() {
@@ -2250,14 +2289,11 @@ class _FloorBillState extends State<FloorBill> {
                               ),
                             );
                           } else {
-                            return Center(
+                            return const Center(
                                 child: Text(
                                     "Please select a place to proceed further"));
                           }
-                        }),
-                    SizedBox(
-                      height: 15,
-                    ),
+                        }) :
                     completeTask? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -2355,9 +2391,7 @@ class _FloorBillState extends State<FloorBill> {
                         ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(tenMinuteTotalUsage == null
-                            ? varFinalTotalValue
-                            : tenMinuteTotalUsage),
+                        Text(tenMinuteTotalUsage ?? varFinalTotalValue),
 
                         // Text('X'),
                         SizedBox(
@@ -2365,11 +2399,11 @@ class _FloorBillState extends State<FloorBill> {
                           width: 75,
                           child: Center(
                             child: TextField(
-                              keyboardType:TextInputType.numberWithOptions(decimal: true) ,
+                              keyboardType:const TextInputType.numberWithOptions(decimal: true) ,
                               controller: billTotalController,
                               textAlign: TextAlign.center,
                               textDirection:TextDirection.rtl,
-                              decoration:  InputDecoration(
+                              decoration:  const InputDecoration(
                                 // border: OutlineInputBorder(),
                                   hintText: 'Enter a rs per unit'),
                             ),
