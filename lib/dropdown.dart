@@ -824,6 +824,7 @@ class _DropDownState extends State<DropDown> {
                                   return CircularProgressIndicator();
                                 }
                               }),
+                         
                           FutureBuilder<List<FloorType>>(
                               future: floorVal,
                               builder: (context,

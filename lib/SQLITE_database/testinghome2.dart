@@ -3,13 +3,22 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:ui';
+
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:control_pad/control_pad.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/painting.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:control_pad/control_pad.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:loginsignspaceorion/Add%20SubUser/showSubUser.dart';
 import 'package:loginsignspaceorion/BillUsage/devicebill.dart';
 import 'package:loginsignspaceorion/BillUsage/flatbill.dart';
@@ -27,31 +36,25 @@ import 'package:loginsignspaceorion/TempAccessPage/tempaccess.dart';
 import 'package:loginsignspaceorion/TemporaryUser/showTempUser.dart';
 import 'package:loginsignspaceorion/changeFont.dart';
 import 'package:loginsignspaceorion/components/constant.dart';
+import 'package:loginsignspaceorion/dropdown1.dart';
+import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/googleAssistant/DeviceApps.dart';
 import 'package:loginsignspaceorion/information.dart';
-import 'package:loginsignspaceorion/models/modeldefine.dart';
-import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:loginsignspaceorion/dropdown2.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/intl.dart';
-import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/main.dart';
+import 'package:loginsignspaceorion/models/modeldefine.dart';
+import 'package:loginsignspaceorion/profilepage.dart';
+import 'package:loginsignspaceorion/schedulePin/schedulPin.dart';
 import 'package:loginsignspaceorion/scheduling/alarmHelper.dart';
 import 'package:loginsignspaceorion/scheduling/alarmInfo.dart';
 import 'package:loginsignspaceorion/scopedModel/connectedModel.dart';
 import 'package:loginsignspaceorion/utility.dart';
-import 'package:http/http.dart' as http;
 import 'package:loginsignspaceorion/whatNew.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:loginsignspaceorion/profilepage.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/io.dart';
+
 import '../Setting_Page.dart';
 import '../setting_icons.dart';
 import 'DesktopUi/gotoDesktopUi.dart';
@@ -73,7 +76,6 @@ void main() => runApp(MaterialApp(
     ));
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -115,61 +117,62 @@ class HomeTest extends StatefulWidget {
       this.sensorData})
       : super(key: key);
 
-  // ignore: non_constant_identifier_names
-  var switch1_get;
-  var switch1Name;
-  var switch2Name;
-  var switch3Name;
-  var switch4Name;
-  var switch5Name;
-  var switch6Name;
-  var switch7Name;
-  var switch8Name;
-  var switch9Name;
-  var switch10Name;
-  var switch11Name;
-  var switch12Name;
-
-  // ignore: non_constant_identifier_names
-  var Slider_get = 1;
-
-  // ignore: non_constant_identifier_names
-  var Slider_get2 = 1;
-
-  // ignore: non_constant_identifier_names
-  var Slider_get3 = 1;
-  var Slider_get4;
-
-  var Slider_get5;
-
-  var Slider_get6;
-
-  var Slider_get7;
-
-  var Slider_get8;
-
-  var Slider_get9;
-
-  var Slider_get10;
-  var Slider_get11;
-  var Slider_get12;
-
-  // ignore: non_constant_identifier_names
-  var switch2_get,
-      // ignore: non_constant_identifier_names
-      switch3_get,
-      // ignore: non_constant_identifier_names
-      switch4_get,
-      // ignore: non_constant_identifier_names
-      switch5_get,
-      // ignore: non_constant_identifier_names
-      switch6_get,
-      // ignore: non_constant_identifier_names
-      switch7_get,
-      // ignore: non_constant_identifier_names
-      switch8_get,
-      // ignore: non_constant_identifier_names
-      switch9_get;
+  //
+  // // ignore: non_constant_identifier_names
+  // var switch1_get;
+  // var switch1Name;
+  // var switch2Name;
+  // var switch3Name;
+  // var switch4Name;
+  // var switch5Name;
+  // var switch6Name;
+  // var switch7Name;
+  // var switch8Name;
+  // var switch9Name;
+  // var switch10Name;
+  // var switch11Name;
+  // var switch12Name;
+  //
+  // // ignore: non_constant_identifier_names
+  // var Slider_get = 1;
+  //
+  // // ignore: non_constant_identifier_names
+  // var Slider_get2 = 1;
+  //
+  // // ignore: non_constant_identifier_names
+  // var Slider_get3 = 1;
+  // var Slider_get4;
+  //
+  // var Slider_get5;
+  //
+  // var Slider_get6;
+  //
+  // var Slider_get7;
+  //
+  // var Slider_get8;
+  //
+  // var Slider_get9;
+  //
+  // var Slider_get10;
+  // var Slider_get11;
+  // var Slider_get12;
+  //
+  // // ignore: non_constant_identifier_names
+  // var switch2_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch3_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch4_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch5_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch6_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch7_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch8_get,
+  //     // ignore: non_constant_identifier_names
+  //     switch9_get;
 
   @override
   _HomeTestState createState() => _HomeTestState();
@@ -188,6 +191,7 @@ class _HomeTestState extends State<HomeTest>
   GlobalKey key;
   DateTime pickedDate;
   int deleteRoomIndex = 0;
+
   // List<RoomType> rm;
   // AudioCache _player;
   var postData;
@@ -197,6 +201,7 @@ class _HomeTestState extends State<HomeTest>
   Future placeVal;
   Future floorVal;
   final item = List.from(ConnectedModel.applianceList);
+
   // Image setImage;
   SharedPreferences preferences;
   DateTime now = new DateTime.now();
@@ -256,7 +261,7 @@ class _HomeTestState extends State<HomeTest>
   bool val2 = false;
   Timer timer;
   var formattedTime = DateFormat('HH:mm').format(DateTime.now());
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   TextEditingController idText = new TextEditingController();
   DropDown1 down1 = new DropDown1();
 
@@ -327,15 +332,15 @@ class _HomeTestState extends State<HomeTest>
     if (deviceResponse == 'data created') {
       readId();
     } else {
-      final snackBar = SnackBar(
-        content: Text('Enter The Valid Device Id'),
+      final snackBar = const SnackBar(
+        content: const Text('Enter The Valid Device Id'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
+  IOWebSocketChannel _channel;
   var deviceofI;
-
 
   @override
   void initState() {
@@ -343,11 +348,13 @@ class _HomeTestState extends State<HomeTest>
 
     pickedDate = DateTime.now();
     loadImageFromPreferences();
-    timer = Timer.periodic(Duration(seconds: 10), (timer) {
-      print('10seconds');
-      fetchPlace();
-      // getAllFloor();
-    });
+    // timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    //   print('10seconds');
+    //   // fetchPlace();
+    //   // getAllFloor();
+    // });
+    fetchPlace();
+    connectFunc();
   }
 
   TextEditingController placeEditing = new TextEditingController();
@@ -375,6 +382,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   var tokenWeb;
+
   getTokenWeb() async {
     final pref = await SharedPreferences.getInstance();
     tokenWeb = pref.getString('tokenWeb');
@@ -406,7 +414,7 @@ class _HomeTestState extends State<HomeTest>
       body: jsonEncode(postDataPlaceName),
     );
 
-    if (response.statusCode > 0) {
+    if (response.statusCode == 200) {
       print(response.statusCode);
       print("ResponseBody  ${response.body}");
 
@@ -446,7 +454,7 @@ class _HomeTestState extends State<HomeTest>
         setState(() {
           widget.fl.fName = postDataFloorName['f_name'];
         });
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Name Updated'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -571,6 +579,7 @@ class _HomeTestState extends State<HomeTest>
 
   List pinNames = [];
   var postDataPinName;
+
   Future addPinsName(String data, int index) async {
     print('editpinnames ${index}');
     String token = await getToken();
@@ -714,7 +723,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Enter Place Name"),
+            title: const Text("Enter Place Name"),
             content: TextField(
               controller: placeEditing,
             ),
@@ -723,7 +732,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     await addPlaceName(placeEditing.text);
                     Navigator.of(context).pop();
@@ -740,7 +749,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Enter Floor Name"),
+            title: const Text("Enter Floor Name"),
             content: TextField(
               controller: floorNameEditing,
             ),
@@ -749,7 +758,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     addFloorName(floorNameEditing.text);
                     Navigator.of(context).pop();
@@ -766,7 +775,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Enter Flat Name"),
+            title: const Text("Enter Flat Name"),
             content: TextField(
               controller: flatNameEditing,
             ),
@@ -775,7 +784,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     await addFlatName(flatNameEditing.text);
                     Navigator.of(context).pop();
@@ -792,7 +801,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Enter Room Name"),
+            title: const Text("Enter Room Name"),
             content: TextField(
               controller: roomNameEditing,
             ),
@@ -801,7 +810,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     await addRoomName(roomNameEditing.text, index);
                     // await getAllRoom();
@@ -819,185 +828,229 @@ class _HomeTestState extends State<HomeTest>
     return NewDbProvider.instance.queryFlat();
   }
 
-  PlaceType selectedPlace;
+  PlaceType selectedPlace = PlaceType();
   FloorType selectedFloor;
   Flat selectedFlat;
   PlaceType pt;
   FloorType fl;
+  bool placeBool = false;
+  bool floorBool = false;
+  bool flatBool = false;
 
-  _dialogWithModel(BuildContext context){
+  _dialogWithModel(BuildContext context) {
     return showDialog(
-      context:context,
-      builder:(context){
-        return AlertDialog(
-          title : Text("Change Place"),
-          content:Container(
-            height: 390,
-            child:SingleChildScrollView(
-              child: Column(
-                children: [
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: FutureBuilder<List<PlaceType>>(
-                    future:placeVal,
-                    builder: (context,snapshot){
-                      if(snapshot.hasData){
-                        print("daasnapshot ${snapshot.data.first.pType}");
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 30,
-                                    offset: Offset(20, 20))
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<PlaceType>(
-                            decoration: InputDecoration(
-                              contentPadding:
-                              const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white),
-                                borderRadius:
-                                BorderRadius.circular(10),
-                              ),
-                              enabledBorder:
-                              UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.black),
-                                borderRadius:
-                                BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Place'),
-                            isExpanded: true,
-                            value: pt,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data
-                                .map((selectedPlace) {
-                              return DropdownMenuItem<PlaceType>(
-                                value: selectedPlace,
-                                child:
-                                Text(selectedPlace.pType),
-                              );
-                            }).toList(),
-                            onChanged: (PlaceType selectedPlace) {
-                              setState(() {
-                                fl = null;
-                                pt = selectedPlace;
-                                floorVal = floorQueryModelFunc(selectedPlace.pId.toString());
-                                print("floorvl ${floorVal.toString()}");
-                                // floorValWeb = getfloorsWeb(
-                                //     selectedPlace.pId);
-                              });
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text("Change Place"),
+              content: SizedBox(
+                  height: 390,
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: FutureBuilder<List<PlaceType>>(
+                            future: placeVal,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width * 2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 30,
+                                            offset: Offset(20, 20))
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child: DropdownButtonFormField<PlaceType>(
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.all(15),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.black),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: const Text('Select Place'),
+                                    isExpanded: true,
+                                    value: pt,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data.map((selectedPlace) {
+                                      return DropdownMenuItem<PlaceType>(
+                                        value: selectedPlace,
+                                        child: Text(selectedPlace.pType),
+                                      );
+                                    }).toList(),
+                                    onChanged: (PlaceType selectedPlace) {
+                                      setState(() {
+                                        fl = null;
+                                        pt = selectedPlace;
+                                        floorVal = floorQueryModelFunc(
+                                            selectedPlace.pId.toString());
+                                        placeBool = true;
+                                        print("floorvl ${floorVal.toString()}");
+                                        // floorValWeb = getfloorsWeb(
+                                        //     selectedPlace.pId);
+                                      });
+                                    },
+                                  ),
+                                );
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
                             },
-                          ),
-                        );
-                      }else{
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: FutureBuilder<List<FloorType>>(
-                    future:floorVal,
-                    builder: (context,snapshot){
-                      print("floorValdaasnapshot ${snapshot.data}");
-                      if(snapshot.hasData){
-                        print("floorValdaasnapshotdaasnapshot ${snapshot.data.first.fName}");
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: FutureBuilder<List<FloorType>>(
+                          future: floorVal,
+                          builder: (context, snapshot) {
+                            print("floorValdaasnapshot ${snapshot.data}");
+                            if (snapshot.hasData) {
+                              print(
+                                  "floorValdaasnapshotdaasnapshot ${snapshot.data.first.fName}");
+                              return Container(
+                                width: MediaQuery.of(context).size.width * 2,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 30,
+                                          offset: Offset(20, 20))
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    )),
+                                child: DropdownButtonFormField<FloorType>(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          const BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          const BorderSide(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                  dropdownColor: Colors.white70,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  iconSize: 28,
+                                  hint: const Text('Select Place'),
+                                  isExpanded: true,
+                                  value: fl,
+                                  style: const TextStyle(
                                     color: Colors.black,
-                                    blurRadius: 30,
-                                    offset: Offset(20, 20))
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<FloorType>(
-                            decoration: InputDecoration(
-                              contentPadding:
-                              const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white),
-                                borderRadius:
-                                BorderRadius.circular(10),
-                              ),
-                              enabledBorder:
-                              UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.black),
-                                borderRadius:
-                                BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Place'),
-                            isExpanded: true,
-                            value: fl,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data
-                                .map((selectedPlace) {
-                              return DropdownMenuItem<FloorType>(
-                                value: selectedPlace,
-                                child:
-                                Text(selectedPlace.fName),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  items: snapshot.data.map((selectedPlace) {
+                                    return DropdownMenuItem<FloorType>(
+                                      value: selectedPlace,
+                                      child: Text(selectedPlace.fName),
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedFloor) {
+                                    setState(() {
+                                      // fl = null;
+                                      fl = selectedFloor;
+                                      floorVal = floorQueryModelFunc(
+                                          selectedFloor.pId);
+                                      // floorValWeb = getfloorsWeb(
+                                      //     selectedPlace.pId);
+                                    });
+                                  },
+                                ),
                               );
-                            }).toList(),
-                            onChanged:
-                                ( selectedFloor) {
-                              setState(() {
-                                // fl = null;
-                                fl = selectedFloor;
-                                floorVal = floorQueryModelFunc(selectedFloor.pId);
-                                // floorValWeb = getfloorsWeb(
-                                //     selectedPlace.pId);
-                              });
-                            },
-                          ),
-                        );
-                      }else{
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
-                ),
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                      ),
+                    ]),
+                  )));
+        });
+  }
 
-
-                    ]
-              ),
-            )
-          )
-        );
-      }
+  changePlaceFunc() async {
+    List result = await NewDbProvider.instance.getRoomById(flatId.toString());
+    print("SubmitAllDetails  ${result}");
+    List<RoomType> room = List.generate(
+        result.length,
+        (index) => RoomType(
+              rId: result[index]['r_id'].toString(),
+              fltId: result[index]['flt_id'].toString(),
+              rName: result[index]['r_name'].toString(),
+              user: result[index]['user'],
+            ));
+    setState(() {
+      rm = room;
+    });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (
+        context,
+      ) =>
+              HomeTest(
+                pt: selectedPlace,
+                fl: selectedFloor,
+                flat: selectedFlat,
+                rm: rm,
+                // dv: dv
+              )),
     );
   }
 
+  changeFloorFunc() async {
+    List result = await NewDbProvider.instance.getRoomById(flatId.toString());
+    print("SubmitAllDetails  ${result}");
+    List<RoomType> room = List.generate(
+        result.length,
+        (index) => RoomType(
+              rId: result[index]['r_id'].toString(),
+              fltId: result[index]['flt_id'].toString(),
+              rName: result[index]['r_name'].toString(),
+              user: result[index]['user'],
+            ));
+    setState(() {
+      rm = room;
+    });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (
+        context,
+      ) =>
+              HomeTest(
+                pt: widget.pt,
+                fl: fl,
+                flat: flat,
+                rm: rm,
+                // dv: dv
+              )),
+    );
+  }
 
   _createAlertDialogDropDown(BuildContext context) {
     return showDialog(
@@ -1064,17 +1117,21 @@ class _HomeTestState extends State<HomeTest>
                                     floorval = null;
                                     var placeId =
                                         selectedPlace.substring(7, 14);
-                                    var placeName = selectedPlace.substring(24, 31);
-                                    print('checkPlaceName ${placeName.toString()}');
+                                    var placeName =
+                                        selectedPlace.substring(24, 31);
+                                    print(
+                                        'checkPlaceName ${placeName.toString()}');
 
                                     var aa = await NewDbProvider.instance
                                         .getFloorById(placeId.toString());
                                     print('AA  ${aa}');
 
-                                    floorval =  returnFloorQuery(placeId.toString());
+                                    floorval =
+                                        returnFloorQuery(placeId.toString());
                                     setState(() {
                                       floorQueryRows2 = aa;
-                                      floorval = returnFloorQuery(placeId.toString());
+                                      floorval =
+                                          returnFloorQuery(placeId.toString());
                                       returnFloorQuery(placeId);
                                     });
                                     var place = PlaceType(
@@ -1323,8 +1380,8 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Change Place'),
-            content: Container(
+            title: const Text('Change Place'),
+            content: SizedBox(
               height: 390,
               child: SingleChildScrollView(
                 child: Column(
@@ -1417,7 +1474,7 @@ class _HomeTestState extends State<HomeTest>
                     //         }
                     //       }),
                     // ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Padding(
@@ -1430,7 +1487,7 @@ class _HomeTestState extends State<HomeTest>
                                 width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
                                           color: Colors.black,
                                           blurRadius: 30,
@@ -1445,21 +1502,21 @@ class _HomeTestState extends State<HomeTest>
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide:
-                                          BorderSide(color: Colors.white),
+                                          const BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide:
-                                          BorderSide(color: Colors.black),
+                                          const BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
                                   dropdownColor: Colors.white70,
-                                  icon: Icon(Icons.arrow_drop_down),
+                                  icon: const Icon(Icons.arrow_drop_down),
                                   iconSize: 28,
-                                  hint: Text('Select Floor'),
+                                  hint: const Text('Select Floor'),
                                   isExpanded: true,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1501,11 +1558,11 @@ class _HomeTestState extends State<HomeTest>
                                 ),
                               );
                             } else {
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             }
                           }),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Padding(
@@ -1518,7 +1575,7 @@ class _HomeTestState extends State<HomeTest>
                                 width: MediaQuery.of(context).size.width * 2,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
                                           color: Colors.black,
                                           blurRadius: 30,
@@ -1533,21 +1590,21 @@ class _HomeTestState extends State<HomeTest>
                                     contentPadding: const EdgeInsets.all(15),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide:
-                                          BorderSide(color: Colors.white),
+                                          const BorderSide(color: Colors.white),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide:
-                                          BorderSide(color: Colors.black),
+                                          const BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
                                   dropdownColor: Colors.white70,
-                                  icon: Icon(Icons.arrow_drop_down),
+                                  icon: const Icon(Icons.arrow_drop_down),
                                   iconSize: 28,
-                                  hint: Text('Select Flat'),
+                                  hint: const Text('Select Flat'),
                                   isExpanded: true,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1591,7 +1648,7 @@ class _HomeTestState extends State<HomeTest>
                                 ),
                               );
                             } else {
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             }
                           }),
                     ),
@@ -1604,7 +1661,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     List result = await NewDbProvider.instance
                         .getRoomById(flatId.toString());
@@ -1626,14 +1683,12 @@ class _HomeTestState extends State<HomeTest>
                           builder: (
                         context,
                       ) =>
-                              Container(
-                                child: HomeTest(
-                                  pt: pt,
-                                  fl: fl,
-                                  flat: flat,
-                                  rm: rm,
-                                  // dv: dv
-                                ),
+                              HomeTest(
+                                pt: pt,
+                                fl: fl,
+                                flat: flat,
+                                rm: rm,
+                                // dv: dv
                               )),
                     );
                   },
@@ -1649,7 +1704,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Change Flat'),
+            title: const Text('Change Flat'),
             content: Container(
               height: 100,
               child: SingleChildScrollView(
@@ -1666,7 +1721,7 @@ class _HomeTestState extends State<HomeTest>
                                   width: MediaQuery.of(context).size.width * 2,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
                                             color: Colors.black,
                                             blurRadius: 30,
@@ -1680,22 +1735,22 @@ class _HomeTestState extends State<HomeTest>
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.all(15),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.white),
+                                        borderSide: const BorderSide(
+                                            color: Colors.white),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.black),
+                                        borderSide: const BorderSide(
+                                            color: Colors.black),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
                                     dropdownColor: Colors.white70,
-                                    icon: Icon(Icons.arrow_drop_down),
+                                    icon: const Icon(Icons.arrow_drop_down),
                                     iconSize: 28,
-                                    hint: Text('Select Flat'),
+                                    hint: const Text('Select Flat'),
                                     isExpanded: true,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -1740,7 +1795,7 @@ class _HomeTestState extends State<HomeTest>
                                   ),
                                 );
                               } else {
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               }
                             }),
                       ),
@@ -1754,7 +1809,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   // elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     List result = await NewDbProvider.instance
                         .getRoomById(flatId.toString());
@@ -1799,7 +1854,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Device Id'),
+            title: const Text('Enter the Device Id'),
             content: TextField(
               controller: controller,
             ),
@@ -1808,7 +1863,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () {
                     // readId();
                     // addDynamic();
@@ -1833,13 +1888,10 @@ class _HomeTestState extends State<HomeTest>
 
   Future<List<RoomType>> roomQueryFunc() async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
-    print('qqqq ${roomQueryRows}');
-
     var id = widget.flat.fltId;
 
     roomQueryRows2 = roomQueryRows;
     List result = await NewDbProvider.instance.getRoomById(id);
-    print('roomResult $result');
     room = List.generate(
         result.length,
         (index) => RoomType(
@@ -1848,8 +1900,6 @@ class _HomeTestState extends State<HomeTest>
               rName: result[index]['r_name'].toString(),
               user: result[index]['user'],
             ));
-    // widget.rm=room;
-    print('roomCheck123 ${widget.rm.length}');
     return room;
   }
 
@@ -1858,7 +1908,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Name of Room'),
+            title: const Text('Enter the Name of Room'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -1866,7 +1916,7 @@ class _HomeTestState extends State<HomeTest>
                 //   'assets/images/signin.png',
                 //   height: 130,
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -1875,19 +1925,19 @@ class _HomeTestState extends State<HomeTest>
                   controller: roomEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Room Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -1897,7 +1947,7 @@ class _HomeTestState extends State<HomeTest>
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
                     elevation: 5.0,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                     onPressed: () async {
                       await addRoom(roomEditing.text);
 
@@ -1909,12 +1959,13 @@ class _HomeTestState extends State<HomeTest>
                 )
               ],
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
 
   Box scheduledPinBox2;
+
   Future openSchedulePinBox() async {
     var dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
@@ -1925,6 +1976,7 @@ class _HomeTestState extends State<HomeTest>
 
   var pinDecode;
   List listOfScheduledPins = [];
+
   Future getScheduledPins(String dId) async {
     await openSchedulePinBox();
     String token = await getToken();
@@ -1973,7 +2025,7 @@ class _HomeTestState extends State<HomeTest>
             title: Text(
               'Enter the Any Text For Pin 19',
               style: TextStyle(
-                fontFamily: fonttest == null ? changeFont : fonttest,
+                fontFamily: fonttest ?? changeFont,
               ),
             ),
             content: Column(
@@ -1983,7 +2035,7 @@ class _HomeTestState extends State<HomeTest>
                 //   'assets/images/signin.png',
                 //   height: 130,
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -1995,20 +2047,20 @@ class _HomeTestState extends State<HomeTest>
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black54,
-                    fontFamily: fonttest == null ? changeFont : fonttest,
+                    fontFamily: fonttest ?? changeFont,
                   ),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter ANy Text ',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -2018,7 +2070,7 @@ class _HomeTestState extends State<HomeTest>
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
                     elevation: 5.0,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                     onPressed: () async {
                       await dataUpdateforPin19(dId);
                       // await getAllRoom();
@@ -2030,7 +2082,7 @@ class _HomeTestState extends State<HomeTest>
                 )
               ],
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -2038,6 +2090,7 @@ class _HomeTestState extends State<HomeTest>
   String on = "On";
   String off = "Off";
   List namesDataList2;
+
   allPinNames(String dId) async {
     namesDataList2 = await NewDbProvider.instance.getPinNamesByDeviceId(dId);
     print('names123654 ${namesDataList}');
@@ -2051,7 +2104,7 @@ class _HomeTestState extends State<HomeTest>
             title: Text(
               'Device Id ${dId}',
               style: TextStyle(
-                fontFamily: fonttest == null ? changeFont : fonttest,
+                fontFamily: fonttest ?? changeFont,
               ),
             ),
             content: Container(
@@ -2065,7 +2118,7 @@ class _HomeTestState extends State<HomeTest>
                       if (listOfScheduledPins == null) {
                         return Column(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 250,
                             ),
                             Center(
@@ -2073,8 +2126,7 @@ class _HomeTestState extends State<HomeTest>
                               'Sorry we cannot find any Temp User please add',
                               style: TextStyle(
                                 fontSize: 18,
-                                fontFamily:
-                                    fonttest == null ? changeFont : fonttest,
+                                fontFamily: fonttest ?? changeFont,
                               ),
                             )),
                           ],
@@ -2084,7 +2136,7 @@ class _HomeTestState extends State<HomeTest>
                           color: Colors.red,
                           child: Column(
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 25,
                               ),
                               Expanded(
@@ -2105,45 +2157,30 @@ class _HomeTestState extends State<HomeTest>
                                                 ListTile(
                                                   title: Text(
                                                     listOfScheduledPins[index]
-                                                                    ['d_id']
-                                                                .toString() ==
-                                                            null
-                                                        ? "Loading"
-                                                        : listOfScheduledPins[
-                                                                index]['d_id']
-                                                            .toString(),
+                                                                ['d_id']
+                                                            .toString() ??
+                                                        "Loading",
                                                     style: TextStyle(
-                                                      fontFamily:
-                                                          fonttest == null
-                                                              ? changeFont
-                                                              : fonttest,
+                                                      fontFamily: fonttest ??
+                                                          changeFont,
                                                     ),
                                                   ),
                                                   trailing: Text(
                                                       listOfScheduledPins[index]
-                                                                      ['date1']
-                                                                  .toString() ==
-                                                              null
-                                                          ? "Loading"
-                                                          : listOfScheduledPins[
-                                                                      index]
                                                                   ['date1']
-                                                              .toString(),
+                                                              .toString() ??
+                                                          "Loading",
                                                       style: TextStyle(
-                                                        fontFamily:
-                                                            fonttest == null
-                                                                ? changeFont
-                                                                : fonttest,
+                                                        fontFamily: fonttest ??
+                                                            changeFont,
                                                       )),
                                                   subtitle: Text(
                                                       listOfScheduledPins[index]
                                                               ['timing1']
                                                           .toString(),
                                                       style: TextStyle(
-                                                        fontFamily:
-                                                            fonttest == null
-                                                                ? changeFont
-                                                                : fonttest,
+                                                        fontFamily: fonttest ??
+                                                            changeFont,
                                                       )),
                                                   onTap: () {
                                                     print(
@@ -2176,13 +2213,12 @@ class _HomeTestState extends State<HomeTest>
                                                                             .toString(),
                                                                     style:
                                                                         TextStyle(
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2191,10 +2227,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2212,13 +2247,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         .toString(),
                                                                     style:
                                                                         TextStyle(
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2227,10 +2261,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2250,13 +2283,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2265,10 +2297,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2288,13 +2319,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2303,10 +2333,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2326,13 +2355,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2341,10 +2369,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2364,13 +2391,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2379,10 +2405,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2402,13 +2427,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2417,10 +2441,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2440,13 +2463,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2455,10 +2477,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2478,13 +2499,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2493,10 +2513,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2516,13 +2535,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2531,10 +2549,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2554,13 +2571,12 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
@@ -2569,10 +2585,9 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -2592,22 +2607,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2628,22 +2641,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2664,22 +2675,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2700,22 +2709,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2736,22 +2743,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2772,22 +2777,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2808,22 +2811,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2844,22 +2845,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2880,22 +2879,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2916,22 +2913,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2952,22 +2947,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -2988,22 +2981,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     off,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -3024,22 +3015,20 @@ class _HomeTestState extends State<HomeTest>
                                                                         TextStyle(
                                                                       fontSize:
                                                                           22,
-                                                                      fontFamily: fonttest ==
-                                                                              null
-                                                                          ? changeFont
-                                                                          : fonttest,
+                                                                      fontFamily:
+                                                                          fonttest ??
+                                                                              changeFont,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 14,
                                                                   ),
                                                                   Text(
                                                                     on,
                                                                     style: TextStyle(
-                                                                        fontFamily: fonttest ==
-                                                                                null
-                                                                            ? changeFont
-                                                                            : fonttest,
+                                                                        fontFamily:
+                                                                            fonttest ??
+                                                                                changeFont,
                                                                         fontSize:
                                                                             22),
                                                                   ),
@@ -3159,7 +3148,7 @@ class _HomeTestState extends State<HomeTest>
                         );
                       }
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.red,
                           semanticsLabel: 'Loading...',
@@ -3168,7 +3157,7 @@ class _HomeTestState extends State<HomeTest>
                     }
                   }),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -3178,7 +3167,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Cell Number of your Device'),
+            title: const Text('Enter the Cell Number of your Device'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -3186,7 +3175,7 @@ class _HomeTestState extends State<HomeTest>
                 //   'assets/images/signin.png',
                 //   height: 130,
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -3195,19 +3184,19 @@ class _HomeTestState extends State<HomeTest>
                   controller: pin17Controller,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Mobile Number ',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -3217,7 +3206,7 @@ class _HomeTestState extends State<HomeTest>
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
                     elevation: 5.0,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                     onPressed: () async {
                       await dataUpdateforPin19(dId);
                       // await getAllRoom();
@@ -3229,7 +3218,7 @@ class _HomeTestState extends State<HomeTest>
                 )
               ],
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -3239,7 +3228,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Name of Floor'),
+            title: const Text('Enter the Name of Floor'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3248,7 +3237,7 @@ class _HomeTestState extends State<HomeTest>
                 //   'assets/images/signin.png',
                 //   height: 130,
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -3257,24 +3246,24 @@ class _HomeTestState extends State<HomeTest>
                   controller: floorEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Floor Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextFormField(
@@ -3282,24 +3271,24 @@ class _HomeTestState extends State<HomeTest>
                   controller: flatEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Flat Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextFormField(
@@ -3307,19 +3296,19 @@ class _HomeTestState extends State<HomeTest>
                   controller: roomEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Room Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -3328,7 +3317,7 @@ class _HomeTestState extends State<HomeTest>
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
                     elevation: 5.0,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                     onPressed: () async {
                       await addFloor(floorEditing.text);
                       await addFlat2(flatEditing.text);
@@ -3339,8 +3328,8 @@ class _HomeTestState extends State<HomeTest>
                       //   Navigator.of(context).push(
                       //       MaterialPageRoute(builder: (context) => DropDown2()));
                       Navigator.of(context).pop();
-                      final snackBar = SnackBar(
-                        content: Text('Floor Added'),
+                      final snackBar = const SnackBar(
+                        content: const Text('Floor Added'),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
@@ -3357,7 +3346,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Enter the Name of Flat'),
+            title: const Text('Enter the Name of Flat'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3366,7 +3355,7 @@ class _HomeTestState extends State<HomeTest>
                 //   'assets/images/signin.png',
                 //   height: 130,
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -3375,25 +3364,25 @@ class _HomeTestState extends State<HomeTest>
                   controller: flatEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Flat Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextFormField(
@@ -3401,19 +3390,19 @@ class _HomeTestState extends State<HomeTest>
                   controller: roomEditing,
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.place),
+                    prefixIcon: const Icon(Icons.place),
                     filled: true,
                     fillColor: Colors.white,
                     hintText: 'Enter Room Name',
                     contentPadding: const EdgeInsets.all(15),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
@@ -3422,7 +3411,7 @@ class _HomeTestState extends State<HomeTest>
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
                     elevation: 5.0,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                     onPressed: () async {
                       await addFlat(flatEditing.text);
                       await addRoom2(roomEditing.text);
@@ -3430,7 +3419,7 @@ class _HomeTestState extends State<HomeTest>
                       //   Navigator.of(context).push(
                       //       MaterialPageRoute(builder: (context) => DropDown2()));
                       Navigator.of(context).pop();
-                      final snackBar = SnackBar(
+                      final snackBar = const SnackBar(
                         content: Text('Floor Added'),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -3474,6 +3463,7 @@ class _HomeTestState extends State<HomeTest>
     ''
   ];
   String piname;
+
   _createAlertDialogForNameDeviceBox(BuildContext context, int index) {
     return showDialog(
         context: context,
@@ -3484,7 +3474,7 @@ class _HomeTestState extends State<HomeTest>
                 DropdownButton<String>(
                   value: _chosenValue,
                   //elevation: 5,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
 
                   items: <String>[
                     'Air Conditioner',
@@ -3499,9 +3489,9 @@ class _HomeTestState extends State<HomeTest>
                       child: Text(value),
                     );
                   }).toList(),
-                  hint: Text(
+                  hint: const Text(
                     "Please choose a Icon",
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.w600),
@@ -3558,7 +3548,7 @@ class _HomeTestState extends State<HomeTest>
                     });
                   },
                 ),
-                Text('Enter the Name of Device'),
+                const Text('Enter the Name of Device'),
               ],
             ),
             content: TextField(
@@ -3569,7 +3559,7 @@ class _HomeTestState extends State<HomeTest>
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   elevation: 5.0,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () async {
                     piname = pinNameController.text;
                     print('checkConditioncheck ${iconCode[index]}');
@@ -3579,7 +3569,7 @@ class _HomeTestState extends State<HomeTest>
 
                     await addPinsName(aa, index);
                     Navigator.of(context).pop();
-                    final snackBar = SnackBar(
+                    final snackBar = const SnackBar(
                       content: Text('Name Added'),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -3610,9 +3600,9 @@ class _HomeTestState extends State<HomeTest>
                                       deviceId: dId,
                                     )));
                       },
-                      child: Text(
+                      child: const Text(
                         'Set SSID and Password',
-                        style: TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 20),
                       )),
                   TextButton(
                       onPressed: () {
@@ -3623,7 +3613,7 @@ class _HomeTestState extends State<HomeTest>
                                       deviceId: dId,
                                     )));
                       },
-                      child: Text(
+                      child: const Text(
                         'Emergency Number',
                         style: TextStyle(fontSize: 20),
                       )),
@@ -3638,7 +3628,7 @@ class _HomeTestState extends State<HomeTest>
                         //               deviceId: widget.dv[index].dId,
                         //             )));
                       },
-                      child: Text(
+                      child: const Text(
                         'Add Device Cell Number',
                         style: TextStyle(fontSize: 20),
                       )),
@@ -3653,7 +3643,7 @@ class _HomeTestState extends State<HomeTest>
                         //               deviceId: widget.dv[index].dId,
                         //             )));
                       },
-                      child: Text(
+                      child: const Text(
                         'Delete Device',
                         style: TextStyle(fontSize: 20),
                       )),
@@ -3668,14 +3658,14 @@ class _HomeTestState extends State<HomeTest>
                         //               deviceId: widget.dv[index].dId,
                         //             )));
                       },
-                      child: Text(
+                      child: const Text(
                         'Show',
-                        style: TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 20),
                       )),
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -3691,12 +3681,12 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.supervised_user_circle_rounded,
                         color: Colors.deepOrange,
                       ),
                       TextButton(
-                        child: Text(
+                        child: const Text(
                           'Sub User',
                           style: TextStyle(fontSize: 20),
                         ),
@@ -3711,12 +3701,12 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.supervised_user_circle_rounded,
                         color: Colors.deepOrange,
                       ),
                       TextButton(
-                        child: Text(
+                        child: const Text(
                           'Temporary User',
                           style: TextStyle(fontSize: 20),
                         ),
@@ -3732,7 +3722,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -3750,11 +3740,12 @@ class _HomeTestState extends State<HomeTest>
 
   _createAlertDialogForAddRoomDeleteDevices(
       BuildContext context, String rId, int index) {
+   
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               'Choose One',
               style: TextStyle(fontSize: 20),
             ),
@@ -3763,16 +3754,16 @@ class _HomeTestState extends State<HomeTest>
               child: Column(
                 children: [
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Edit Room Name',
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
                       _editRoomNameAlertDialog(context, index);
                     },
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Delete Room',
                       style: TextStyle(fontSize: 20),
                     ),
@@ -3783,7 +3774,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -3793,13 +3784,13 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               'Oops',
             ),
             content: Container(
               color: Colors.blueGrey,
               child: MaterialButton(
-                  child: Text('Ok'),
+                  child: const Text('Ok'),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
@@ -3813,7 +3804,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Select Floor'),
+            title: const Text('Select Floor'),
             content: Container(
               color: Colors.amber,
               width: 78,
@@ -3833,7 +3824,7 @@ class _HomeTestState extends State<HomeTest>
                                 title: Text(listOfAllFloor[index]['f_name']),
                               ),
                               RaisedButton(
-                                child: Text('Delete Floor'),
+                                child: const Text('Delete Floor'),
                                 onPressed: () async {
                                   var floorId = widget.fl.fId.toString();
                                   var selectDelete =
@@ -3863,7 +3854,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Select Flat'),
+            title: const Text('Select Flat'),
             content: Container(
               color: Colors.amber,
               width: 78,
@@ -3883,7 +3874,7 @@ class _HomeTestState extends State<HomeTest>
                                 title: Text(listOfAllFlat[index]['flt_name']),
                               ),
                               RaisedButton(
-                                child: Text('Delete Floor'),
+                                child: const Text('Delete Floor'),
                                 onPressed: () {
                                   print(listOfAllFlat[index]['flt_id']);
                                   var selectedFlat =
@@ -3914,9 +3905,9 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               'Choose One For Floor',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
             content: Container(
               // height: MediaQuery
@@ -3927,7 +3918,7 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.add),
                         SizedBox(
                           width: 54,
@@ -3948,7 +3939,7 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.delete),
                         SizedBox(
                           width: 54,
@@ -3970,7 +3961,7 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.edit),
                         SizedBox(
                           width: 54,
@@ -3994,7 +3985,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -4005,7 +3996,7 @@ class _HomeTestState extends State<HomeTest>
         builder: (context) {
           return AlertDialog(
             title: Column(
-              children: [
+              children: const [
                 Text(
                   'Your Internet Connection is not working... ',
                   style: TextStyle(fontSize: 20),
@@ -4025,7 +4016,7 @@ class _HomeTestState extends State<HomeTest>
                 children: [
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.add),
                         SizedBox(
                           width: 54,
@@ -4046,7 +4037,7 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.delete),
                         SizedBox(
                           width: 54,
@@ -4068,7 +4059,7 @@ class _HomeTestState extends State<HomeTest>
                   ),
                   TextButton(
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.edit),
                         SizedBox(
                           width: 54,
@@ -4092,7 +4083,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -4102,16 +4093,16 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               'Choose One',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
             content: Container(
               height: MediaQuery.of(context).size.height - 120,
               child: Column(
                 children: [
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Add Flat',
                       style: TextStyle(fontSize: 20),
                     ),
@@ -4124,7 +4115,7 @@ class _HomeTestState extends State<HomeTest>
                     },
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Delete Flat',
                       style: TextStyle(fontSize: 20),
                     ),
@@ -4138,9 +4129,9 @@ class _HomeTestState extends State<HomeTest>
                     },
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Edit Flat Name',
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
                       _editFlatNameAlertDialog(context);
@@ -4155,7 +4146,7 @@ class _HomeTestState extends State<HomeTest>
                 ],
               ),
             ),
-            actions: <Widget>[],
+            actions: const <Widget>[],
           );
         });
   }
@@ -4166,7 +4157,7 @@ class _HomeTestState extends State<HomeTest>
     addDynamic();
 
     addSlider();
-    final snackBar = SnackBar(
+    final snackBar = const SnackBar(
       content: Text('Device Added'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4432,13 +4423,13 @@ class _HomeTestState extends State<HomeTest>
       'Authorization': 'Token $token',
     });
     if (response.statusCode == 200) {
-      final snackBar = SnackBar(
-        content: Text('Device Deleted'),
+      final snackBar = const SnackBar(
+        content: const Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       await getDeviceOffline();
     } else {
-      final snackBar = SnackBar(
+      final snackBar = const SnackBar(
         content: Text('Something went wrong'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4474,13 +4465,13 @@ class _HomeTestState extends State<HomeTest>
     });
     if (response.statusCode == 200) {
       print('delete ${response.body}');
-      final snackBar = SnackBar(
+      final snackBar = const SnackBar(
         content: Text('Device Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       // widget.rm = await getrooms(widget.flat.fltId);
     } else {
-      final snackBar = SnackBar(
+      final snackBar = const SnackBar(
         content: Text('Something went wrong'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4497,13 +4488,13 @@ class _HomeTestState extends State<HomeTest>
     });
     if (response.statusCode == 200) {
       print('deleteFloor ${response.body}');
-      final snackBar = SnackBar(
-        content: Text('Floor Deleted'),
+      final snackBar = const SnackBar(
+        content: const Text('Floor Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       getAllFloor();
     } else {
-      final snackBar = SnackBar(
+      final snackBar = const SnackBar(
         content: Text('Something went wrong'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4520,13 +4511,13 @@ class _HomeTestState extends State<HomeTest>
     });
     if (response.statusCode == 200) {
       print('deleteFloor ${response.body}');
-      final snackBar = SnackBar(
-        content: Text('Flat Deleted'),
+      final snackBar = const SnackBar(
+        content: const Text('Flat Deleted'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       getAllFlat();
     } else {
-      final snackBar = SnackBar(
+      final snackBar = const SnackBar(
         content: Text('Something went wrong'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4656,7 +4647,7 @@ class _HomeTestState extends State<HomeTest>
       print('Switch 2 --> $switch_2');
       print('Switch 3 --> $switch_3');
       print('Switch 4 --> $switch_4');
-      getData(dId);
+      await getData(dId);
       //jsonDecode only for get method
       //return place_type.fromJson(jsonDecode(response.body));
     } else {
@@ -4794,7 +4785,7 @@ class _HomeTestState extends State<HomeTest>
     sensorData =
         await NewDbProvider.instance.getSensorByDeviceId(dId.toString());
     if (sensorData == null) {
-      return Text('No Data');
+      return const Text('No Data');
     }
     return sensorData;
   }
@@ -4808,7 +4799,7 @@ class _HomeTestState extends State<HomeTest>
     nameData =
         await NewDbProvider.instance.getPinNamesByDeviceId(dId.toString());
     if (nameData == null) {
-      return Text('No Data');
+      return const Text('No Data');
     }
     return nameData;
   }
@@ -4840,7 +4831,7 @@ class _HomeTestState extends State<HomeTest>
       if (response.statusCode == 200 || response.statusCode == 201) {
         tabbarState = jsonDecode(response.body);
 
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Room Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4887,7 +4878,7 @@ class _HomeTestState extends State<HomeTest>
       if (response.statusCode == 200 || response.statusCode == 201) {
         flatResponse = jsonDecode(response.body);
 
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -4931,7 +4922,7 @@ class _HomeTestState extends State<HomeTest>
       if (response.statusCode == 200 || response.statusCode == 201) {
         flatResponse = jsonDecode(response.body);
 
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Flat Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -5200,18 +5191,20 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
-  Future<List<PlaceType>> placeQueryModelFunc()async{
+  Future<List<PlaceType>> placeQueryModelFunc() async {
     placeRows = await NewDbProvider.instance.queryPlace();
     List<PlaceType> places =
-    placeRows.map((data) => PlaceType.fromJson(data)).toList();
+        placeRows.map((data) => PlaceType.fromJson(data)).toList();
     print("placeQueryModelFunc $placeRows");
     return places;
   }
-  Future<List<FloorType>> floorQueryModelFunc(String pId)async{
-    List<Map<String, dynamic>> floorQueryRowsFloor = await NewDbProvider.instance.getFloorById(pId.toString());
+
+  Future<List<FloorType>> floorQueryModelFunc(String pId) async {
+    List<Map<String, dynamic>> floorQueryRowsFloor =
+        await NewDbProvider.instance.getFloorById(pId.toString());
     print(" floorQueryModelFunc ${floorQueryRowsFloor}");
     List<FloorType> floors =
-    floorQueryRowsFloor.map((data) => FloorType.fromJson(data)).toList();
+        floorQueryRowsFloor.map((data) => FloorType.fromJson(data)).toList();
     print("floorQueryModelFunc ${floors.first.fName}");
     return floors;
   }
@@ -5237,6 +5230,21 @@ class _HomeTestState extends State<HomeTest>
 
   Future floorval;
   Future floorval2;
+  Stream broadcastStream;
+
+  void connectFunc() {
+    setState(() {
+      _channel = IOWebSocketChannel.connect(
+          Uri.parse('ws://192.168.0.112:8000/ws/pinstatusupdate/'));
+    });
+    broadcastStream = _channel.stream.asBroadcastStream();
+
+    broadcastStream.listen((event) {
+      print("eepeepe ${event}");
+      var data = jsonDecode(event);
+      // setMessage(data['sent_by'].toString(), data['message'].toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -5279,33 +5287,31 @@ class _HomeTestState extends State<HomeTest>
                           'Place - ',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontFamily:
-                                fonttest == null ? changeFont : fonttest,
+                            fontFamily: fonttest ?? changeFont,
                           ),
                         ),
                       ),
                       Text(
-                        widget.pt.pType,
-                        style: TextStyle(
-                            fontFamily:
-                                fonttest == null ? changeFont : fonttest),
+                        widget.pt.pType.toString(),
+                        style: TextStyle(fontFamily: fonttest ?? changeFont),
                       ),
-                      Icon(Icons.arrow_drop_down)
+                      const Icon(Icons.arrow_drop_down)
                     ],
                   ),
                   onTap: () async {
-                   placeVal =  placeQueryModelFunc();
+                    placeVal = placeQueryModelFunc();
+                    setState(() {
+                      changePlaceBool = !changePlaceBool;
+                    });
                     // placeVal=await NewDbProvider.instance.queryPlace();
-                   _dialogWithModel(context);
+                    // _createAlertDialogDropDown(context);
                   },
                 ),
                 backgroundColor: Colors.blueAccent,
                 actions: [
                   CircularProfileAvatar(
                     '',
-                    child: setImage == null
-                        ? Image.asset('assets/images/blank.png')
-                        : setImage,
+                    child: setImage ?? Image.asset('assets/images/blank.png'),
                     radius: 27.5,
                     elevation: 5,
                     onTap: () {
@@ -5329,9 +5335,8 @@ class _HomeTestState extends State<HomeTest>
                           value: choice,
                           child: Text(
                             choice,
-                            style: TextStyle(
-                                fontFamily:
-                                    fonttest == null ? changeFont : fonttest),
+                            style:
+                                TextStyle(fontFamily: fonttest ?? changeFont),
                           ),
                         );
                       }).toList();
@@ -5339,903 +5344,857 @@ class _HomeTestState extends State<HomeTest>
                   ),
                 ],
               ),
-              drawer: Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor: change_toDark
-                      ? Colors.black
-                      : Colors
-                          .white, //This will change the drawer background to blue.
-                  //other styles
-                ),
-                child: Drawer(
-                  child: Container(
-                    width: double.maxFinite,
-                    color: change_toDark ? Colors.black : Colors.white,
-                    height: 100,
-                    child: ListView(
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          //padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color(0xff669df4),
-                                    Color(0xff4e80f3)
-                                  ]),
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(30),
-                                bottomLeft: Radius.circular(30),
-                              )),
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                                ),
-                                CircularProfileAvatar(
-                                  '',
-                                  child: setImage == null
-                                      ? Image.asset('assets/images/blank.png')
-                                      : setImage,
-                                  radius: 60,
-                                  elevation: 5,
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProfilePage(
-                                                // fl: widget.fl,
-                                                )));
-                                  },
-                                  cacheImage: true,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  'Hello $firstName',
-                                  style: TextStyle(
-                                      fontFamily: fonttest == null
-                                          ? changeFont
-                                          : fonttest,
-                                      // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.home_work_rounded),
-                          title: Text(
-                            'Add Place',
-                            style: TextStyle(
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DropDown1()));
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.supervised_user_circle),
-                          title: Text(
-                            'Sub Access',
-                            style: TextStyle(
-                                color:
-                                    change_toDark ? Colors.white : Colors.black,
-                                fontFamily:
-                                    fonttest == null ? changeFont : fonttest),
-                          ),
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SubAccessSinglePage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.supervised_user_circle),
-                          title: Text(
-                            'Temp Access',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () async {
-                            var result =
-                                await Connectivity().checkConnectivity();
-                            if (result == ConnectivityResult.none) {
-                              await _showDialogForNoInternet();
-                            } else {
-                              await _getTempNumber();
-                              if (number == null) {
-                                await _showDialogForTempAccessPge();
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TempAccessPage(
-                                            mobileNumber: number,
-                                          )),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                        ListTile(
-                            leading: Icon(Icons.perm_identity),
-                            title: Text(
-                              'Add Members',
-                              style: TextStyle(
-                                fontFamily:
-                                    fonttest == null ? changeFont : fonttest,
-                                color:
-                                    change_toDark ? Colors.white : Colors.black,
-                              ),
-                            ),
-                            onTap: () {
-                              _createAlertDialogForAddMembers(context);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => ReadContacts(),
-                              //   ),
-                              // );
-                            }),
-                        ListTile(
-                            leading: Icon(Icons.power_rounded),
-                            title: Text('Bill Prediction',
-                                style: TextStyle(
-                                  fontFamily:
-                                      fonttest == null ? changeFont : fonttest,
-                                  color: change_toDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            onTap: () {
-                              _billPredictionNavigation(context);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => FlatBill(),
-                              //   ),
-                              // );
-                            }),
-                        ListTile(
-                            leading: Icon(Icons.schedule),
-                            title: Text('Scheduled device /pins ',
-                                style: TextStyle(
-                                  fontFamily:
-                                      fonttest == null ? changeFont : fonttest,
-                                  color: change_toDark
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ScheduledPin(),
-                                ),
-                              );
-                            }),
-                        ListTile(
-                          leading: Icon(Icons.settings),
-                          title: Text(
-                            'Setting',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SettingPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.help),
-                          title: Text(
-                            'Help',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => WhatsNew()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.info),
-                          title: Text(
-                            'About GenOrion',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => information()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.quick_contacts_dialer_sharp),
-                          title: Text(
-                            'Contact ',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ContactPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.logout),
-                          title: Text(
-                            'Logout',
-                            style: TextStyle(
-                              fontFamily:
-                                  fonttest == null ? changeFont : fonttest,
-                              color:
-                                  change_toDark ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          onTap: () {
-                            _showDialogForLogOut();
-
-                            // Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())).then((_logout()));
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              body: Container(
-                width: double.maxFinite,
-                color: change_toDark ? Colors.black : Colors.white,
-                child: DefaultTabController(
-                  length: widget.rm.length,
-                  child: CustomScrollView(
-                      // key: key,
-
-                      // controller: _scrollController,
-                      slivers: <Widget>[
-                        //Upper Widget
-                        SliverToBoxAdapter(
+              drawer: Drawer(
+                child: Container(
+                  width: double.maxFinite,
+                  color: change_toDark ? Colors.black : Colors.white,
+                  height: 100,
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        width: double.infinity,
+                        //padding: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Color(0xff669df4), Color(0xff4e80f3)]),
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(30),
+                              bottomLeft: Radius.circular(30),
+                            )),
+                        child: Center(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.41,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Color(0xff669df4),
-                                        Color(0xff4e80f3)
-                                      ]),
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(30),
-                                      bottomRight: Radius.circular(30)),
-                                ),
-                                padding: EdgeInsets.only(
-                                  top: 40,
-                                  bottom: 10,
-                                  left: 28,
-                                  right: 30,
-                                ),
-                                // alignment: Alignment.topLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Column(
-                                          children: <Widget>[
-                                            Row(
-                                              children: [
-                                                GestureDetector(
-                                                  onLongPress: () {
-                                                    _editFloorNameAlertDialog(
-                                                        context);
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        'Floor - ',
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                              fonttest == null
-                                                                  ? changeFont
-                                                                  : fonttest,
-                                                          color: Colors.white,
-                                                          fontSize: 22,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          // fontStyle: FontStyle
-                                                          //     .italic
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        child: FittedBox(
-                                                          fit: BoxFit.cover,
-                                                          child: Text(
-                                                            widget.fl.fName,
-
-                                                            // 'Hello ',
-                                                            // + widget.fl.user.first_name,
-                                                            style: TextStyle(
-                                                                fontFamily: fonttest ==
-                                                                        null
-                                                                    ? changeFont
-                                                                    : fonttest,
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 22,
-
-                                                                // overflow:TextOverflow.ellipsis ,
-                                                                // fontWeight: FontWeight.bold,
-                                                                fontStyle:
-                                                                    FontStyle
-                                                                        .italic),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Icon(Icons
-                                                          .arrow_drop_down),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  onTap: () {
-                                                    _createAlertDialogDropDownFloor(
-                                                        context);
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                GestureDetector(
-                                                  // child:Image.asset('assets/images/setting.png'),
-
-                                                  child: Icon(
-                                                    SettingIcon.params,
-                                                    size: 18,
-                                                  ),
-                                                  onTap: () async {
-                                                    await allFloor();
-                                                    _createAlertDialogForDeleteFloorAndAddFloor(
-                                                        context);
-                                                    // _createAlertDialogForFloor(context);
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                  children: <Widget>[
-                                                    GestureDetector(
-                                                      onLongPress: () {
-                                                        _editFloorNameAlertDialog(
-                                                            context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            'Flat - ',
-                                                            style: TextStyle(
-                                                                fontFamily: fonttest ==
-                                                                        null
-                                                                    ? changeFont
-                                                                    : fonttest,
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 22),
-                                                          ),
-                                                          Text(
-                                                            widget.flat.fltName,
-                                                            // 'Hello ',
-                                                            // + widget.fl.user.first_name,
-                                                            style: TextStyle(
-                                                                fontFamily: fonttest ==
-                                                                        null
-                                                                    ? changeFont
-                                                                    : fonttest,
-                                                                color: Colors
-                                                                    .white,
-                                                                // fontWeight: FontWeight.bold,
-                                                                fontStyle:
-                                                                    FontStyle
-                                                                        .italic,
-                                                                fontSize: 22),
-                                                          ),
-                                                          Icon(Icons
-                                                              .arrow_drop_down),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      onTap: () {
-                                                        _createAlertDialogDropDownFlat(
-                                                            context);
-                                                      },
-                                                    ),
-                                                    SizedBox(width: 28),
-                                                    GestureDetector(
-                                                      onTap: () async {
-                                                        await allFlat();
-                                                        _createAlertDialogForDeleteFlatAndAddFlat(
-                                                            context);
-                                                      },
-                                                      child: Icon(
-                                                        SettingIcon.params,
-                                                        size: 18,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 45,
-                                    ),
-                                    SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        // mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          FutureBuilder(
-                                            future: deviceSensorVal,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData) {
-                                                return Column(
-                                                  children: <Widget>[
-                                                    Row(
-                                                      children: <Widget>[
-                                                        Text(
-                                                          'Sensors- ',
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  fonttest ==
-                                                                          null
-                                                                      ? changeFont
-                                                                      : fonttest,
-                                                              // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Column(
-                                                            children: <Widget>[
-                                                              Icon(
-                                                                FontAwesomeIcons
-                                                                    .fire,
-                                                                color: Colors
-                                                                    .yellow,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 25,
-                                                              ),
-                                                              Row(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    child: Text(
-                                                                        sensorData[index]['sensor1']
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            fontFamily: fonttest == null
-                                                                                ? changeFont
-                                                                                : fonttest,
-                                                                            fontSize:
-                                                                                14,
-                                                                            color:
-                                                                                Colors.white70)),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ]),
-                                                        SizedBox(
-                                                          width: 35,
-                                                        ),
-                                                        Column(
-                                                            children: <Widget>[
-                                                              Icon(
-                                                                FontAwesomeIcons
-                                                                    .temperatureLow,
-                                                                color: Colors
-                                                                    .orange,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 30,
-                                                              ),
-                                                              Row(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    child: Text(
-                                                                        sensorData[index]['sensor2']
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            fontFamily: fonttest == null
-                                                                                ? changeFont
-                                                                                : fonttest,
-                                                                            fontSize:
-                                                                                14,
-                                                                            color:
-                                                                                Colors.white70)),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ]),
-                                                        SizedBox(
-                                                          width: 45,
-                                                        ),
-                                                        Column(
-                                                            children: <Widget>[
-                                                              Icon(
-                                                                FontAwesomeIcons
-                                                                    .wind,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 30,
-                                                              ),
-                                                              Row(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    child: Text(
-                                                                        sensorData[index]['sensor3']
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            fontFamily: fonttest == null
-                                                                                ? changeFont
-                                                                                : fonttest,
-                                                                            fontSize:
-                                                                                14,
-                                                                            color:
-                                                                                Colors.white70)),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ]),
-                                                        SizedBox(
-                                                          width: 42,
-                                                        ),
-                                                        Column(
-                                                            children: <Widget>[
-                                                              Icon(
-                                                                FontAwesomeIcons
-                                                                    .cloud,
-                                                                color: Colors
-                                                                    .orange,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 30,
-                                                              ),
-                                                              Row(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Container(
-                                                                    child: Text(
-                                                                        sensorData[index]['sensor4']
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontFamily: fonttest == null
-                                                                                ? changeFont
-                                                                                : fonttest,
-                                                                            color:
-                                                                                Colors.white70)),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ]),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 12,
-                                                    ),
-                                                    Text(
-                                                      sensorData[index]['d_id']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              fonttest == null
-                                                                  ? changeFont
-                                                                  : fonttest,
-                                                          color:
-                                                              Colors.white70),
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                return Center(
-                                                  child: Text('Loading...'),
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
+                                margin:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                              ),
+                              CircularProfileAvatar(
+                                '',
+                                child: setImage ??
+                                    Image.asset('assets/images/blank.png'),
+                                radius: 60,
+                                elevation: 5,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfilePage(
+                                              // fl: widget.fl,
+                                              )));
+                                },
+                                cacheImage: true,
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                'Hello $firstName',
+                                style: TextStyle(
+                                    fontFamily: fonttest ?? changeFont,
+                                    // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
                             ],
                           ),
                         ),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.home_work_rounded),
+                        title: Text(
+                          'Add Place',
+                          style: TextStyle(
+                            color: change_toDark ? Colors.white : Colors.black,
+                            fontFamily: fonttest ?? changeFont,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DropDown1()));
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.supervised_user_circle),
+                        title: Text(
+                          'Sub Access',
+                          style: TextStyle(
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                              fontFamily: fonttest ?? changeFont),
+                        ),
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SubAccessSinglePage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.supervised_user_circle),
+                        title: Text(
+                          'Temp Access',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () async {
+                          var result = await Connectivity().checkConnectivity();
+                          if (result == ConnectivityResult.none) {
+                            await _showDialogForNoInternet();
+                          } else {
+                            await _getTempNumber();
+                            if (number == null) {
+                              await _showDialogForTempAccessPge();
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TempAccessPage(
+                                          mobileNumber: number,
+                                        )),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                      ListTile(
+                          leading: const Icon(Icons.perm_identity),
+                          title: Text(
+                            'Add Members',
+                            style: TextStyle(
+                              fontFamily: fonttest ?? changeFont,
+                              color:
+                                  change_toDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            _createAlertDialogForAddMembers(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => ReadContacts(),
+                            //   ),
+                            // );
+                          }),
+                      ListTile(
+                          leading: const Icon(Icons.power_rounded),
+                          title: Text('Bill Prediction',
+                              style: TextStyle(
+                                fontFamily: fonttest ?? changeFont,
+                                color:
+                                    change_toDark ? Colors.white : Colors.black,
+                              )),
+                          onTap: () {
+                            _billPredictionNavigation(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => FlatBill(),
+                            //   ),
+                            // );
+                          }),
+                      ListTile(
+                          leading: const Icon(Icons.schedule),
+                          title: Text('Scheduled device /pins ',
+                              style: TextStyle(
+                                fontFamily: fonttest ?? changeFont,
+                                color:
+                                    change_toDark ? Colors.white : Colors.black,
+                              )),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ScheduledPin(),
+                              ),
+                            );
+                          }),
+                      ListTile(
+                        leading: const Icon(Icons.settings),
+                        title: Text(
+                          'Setting',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingPage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.help),
+                        title: Text(
+                          'Help',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => WhatsNew()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.info),
+                        title: Text(
+                          'About GenOrion',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => information()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.quick_contacts_dialer_sharp),
+                        title: Text(
+                          'Contact ',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ContactPage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.logout),
+                        title: Text(
+                          'Logout',
+                          style: TextStyle(
+                            fontFamily: fonttest ?? changeFont,
+                            color: change_toDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          _showDialogForLogOut();
 
-                        //Room Tabs
-                        SliverAppBar(
-                          automaticallyImplyLeading: false,
-                          // centerTitle: true,
-                          floating: true,
-                          pinned: true,
-                          backgroundColor: Colors.white,
+                          // Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())).then((_logout()));
+                        },
+                      ),
+                    ],
+                  ),
+              
+                ),
+              ),
+            
+              body: changePlaceBool == true
+                  ? changePlace()
+                  : changeFloorBool == true
+                      ? changeFloor()
+                      : Container(
+                          width: double.maxFinite,
+                          color: change_toDark ? Colors.black : Colors.white,
+                          child: DefaultTabController(
+                            length: widget.rm.length,
+                            child: CustomScrollView(
+                                // key: key,
 
-                          title: Container(
-                            alignment: Alignment.bottomLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        children: <Widget>[
-                                          Column(
-                                            children: [
-                                              Container(
-                                                  // color: Colors.yellow,
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        _createAlertDialogForAddRoom(
-                                                            context);
-                                                      },
-                                                      child: Row(
+                                // controller: _scrollController,
+                                slivers: <Widget>[
+                                  //Upper Widget
+                                  SliverToBoxAdapter(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.41,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Color(0xff669df4),
+                                                  Color(0xff4e80f3)
+                                                ]),
+                                            borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(30),
+                                                bottomRight:
+                                                    Radius.circular(30)),
+                                          ),
+                                          padding: const EdgeInsets.only(
+                                            top: 40,
+                                            bottom: 10,
+                                            left: 28,
+                                            right: 30,
+                                          ),
+                                          // alignment: Alignment.topLeft,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Column(
+                                                    children: <Widget>[
+                                                      Row(
                                                         children: [
-                                                          Text(
-                                                            'Rooms-',
-                                                            style: TextStyle(
-                                                                fontFamily: fonttest ==
-                                                                        null
-                                                                    ? changeFont
-                                                                    : fonttest,
-                                                                // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .black),
+                                                          GestureDetector(
+                                                            onLongPress: () {
+                                                              _editFloorNameAlertDialog(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  'Floor - ',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        fonttest ??
+                                                                            changeFont,
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        22,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    // fontStyle: FontStyle
+                                                                    //     .italic
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  child:
+                                                                      FittedBox(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    child: Text(
+                                                                      widget.fl
+                                                                          .fName,
+
+                                                                      // 'Hello ',
+                                                                      // + widget.fl.user.first_name,
+                                                                      style: TextStyle(
+                                                                          fontFamily: fonttest ?? changeFont,
+                                                                          color: Colors.white,
+                                                                          fontSize: 22,
+
+                                                                          // overflow:TextOverflow.ellipsis ,
+                                                                          // fontWeight: FontWeight.bold,
+                                                                          fontStyle: FontStyle.italic),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const Icon(Icons
+                                                                    .arrow_drop_down),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            onTap: () {
+                                                              // _createAlertDialogDropDownFloor(
+                                                              //     context);
+                                                              setState(() {
+                                                                changeFloorBool =
+                                                                    !changeFloorBool;
+                                                              });
+                                                            },
                                                           ),
-                                                          Icon(
-                                                            Icons.add,
-                                                            color: Colors.black,
+                                                          const SizedBox(
+                                                            width: 10,
                                                           ),
+                                                          GestureDetector(
+                                                            // child:Image.asset('assets/images/setting.png'),
+
+                                                            child: const Icon(
+                                                              SettingIcon
+                                                                  .params,
+                                                              size: 18,
+                                                            ),
+                                                            onTap: () async {
+                                                              await allFloor();
+                                                              _createAlertDialogForDeleteFloorAndAddFloor(
+                                                                  context);
+                                                              // _createAlertDialogForFloor(context);
+                                                            },
+                                                          )
                                                         ],
-                                                      ))),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 12,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          Row(
+                                                            children: <Widget>[
+                                                              GestureDetector(
+                                                                onLongPress:
+                                                                    () {
+                                                                  _editFloorNameAlertDialog(
+                                                                      context);
+                                                                },
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      'Flat - ',
+                                                                      style: TextStyle(
+                                                                          fontFamily: fonttest ??
+                                                                              changeFont,
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              22),
+                                                                    ),
+                                                                    Text(
+                                                                      widget
+                                                                          .flat
+                                                                          .fltName,
+                                                                      // 'Hello ',
+                                                                      // + widget.fl.user.first_name,
+                                                                      style: TextStyle(
+                                                                          fontFamily: fonttest ?? changeFont,
+                                                                          color: Colors.white,
+                                                                          // fontWeight: FontWeight.bold,
+                                                                          fontStyle: FontStyle.italic,
+                                                                          fontSize: 22),
+                                                                    ),
+                                                                    const Icon(Icons
+                                                                        .arrow_drop_down),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                onTap: () {
+                                                                  _createAlertDialogDropDownFlat(
+                                                                      context);
+                                                                },
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 28),
+                                                              GestureDetector(
+                                                                onTap:
+                                                                    () async {
+                                                                  await allFlat();
+                                                                  _createAlertDialogForDeleteFlatAndAddFlat(
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                    const Icon(
+                                                                  SettingIcon
+                                                                      .params,
+                                                                  size: 18,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 45,
+                                              ),
+                                              SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  // mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    FutureBuilder(
+                                                      future: deviceSensorVal,
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          return Column(
+                                                            children: <Widget>[
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'Sensors- ',
+                                                                    style: TextStyle(
+                                                                        fontFamily: fonttest ?? changeFont,
+                                                                        // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Colors.white),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Column(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .fire,
+                                                                          color:
+                                                                              Colors.yellow,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              25,
+                                                                        ),
+                                                                        Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Container(
+                                                                              child: Text(sensorData[index]['sensor1'].toString(), style: TextStyle(fontFamily: fonttest ?? changeFont, fontSize: 14, color: Colors.white70)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ]),
+                                                                  const SizedBox(
+                                                                    width: 35,
+                                                                  ),
+                                                                  Column(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .temperatureLow,
+                                                                          color:
+                                                                              Colors.orange,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                        ),
+                                                                        Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Container(
+                                                                              child: Text(sensorData[index]['sensor2'].toString(), style: TextStyle(fontFamily: fonttest ?? changeFont, fontSize: 14, color: Colors.white70)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ]),
+                                                                  const SizedBox(
+                                                                    width: 45,
+                                                                  ),
+                                                                  Column(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .wind,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                        ),
+                                                                        Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Container(
+                                                                              child: Text(sensorData[index]['sensor3'].toString(), style: TextStyle(fontFamily: fonttest ?? changeFont, fontSize: 14, color: Colors.white70)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ]),
+                                                                  const SizedBox(
+                                                                    width: 42,
+                                                                  ),
+                                                                  Column(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        const Icon(
+                                                                          FontAwesomeIcons
+                                                                              .cloud,
+                                                                          color:
+                                                                              Colors.orange,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              30,
+                                                                        ),
+                                                                        Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            Text(sensorData[index]['sensor4'].toString(),
+                                                                                style: TextStyle(fontSize: 14, fontFamily: fonttest ?? changeFont, color: Colors.white70)),
+                                                                          ],
+                                                                        ),
+                                                                      ]),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 12,
+                                                              ),
+                                                              Text(
+                                                                sensorData[index]
+                                                                        ['d_id']
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        fonttest ??
+                                                                            changeFont,
+                                                                    color: Colors
+                                                                        .white70),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        } else {
+                                                          return const Center(
+                                                            child: Text(
+                                                                'Loading...'),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                               
+                                                  ],
+                                                ),
+                                              )
                                             ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+
+                                  //Room Tabs
+                                  SliverAppBar(
+                                    automaticallyImplyLeading: false,
+                                    // centerTitle: true,
+                                    floating: true,
+                                    pinned: true,
+                                    backgroundColor: Colors.white,
+
+                                    title: Container(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: [
+                                                Column(
+                                                  children: <Widget>[
+                                                    Column(
+                                                      children: [
+                                                        Container(
+                                                            // color: Colors.yellow,
+                                                            child:
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                      _createAlertDialogForAddRoom(
+                                                                          context);
+                                                                    },
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          'Rooms-',
+                                                                          style: TextStyle(
+                                                                              fontFamily: fonttest ?? changeFont,
+                                                                              // backgroundColor: _switchValue?Colors.white:Colors.blueAccent,
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.black),
+                                                                        ),
+                                                                        const Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ],
+                                                                    ))),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                GestureDetector(
+                                                  onLongPress: () {
+                                                    print('longPress');
+                                                    print(
+                                                        'longpress ${tabbarState}');
+                                                    _createAlertDialogForAddRoomDeleteDevices(
+                                                        context,
+                                                        tabbarState,
+                                                        deleteRoomIndex);
+                                                  },
+                                                  child: TabBar(
+                                                    indicatorColor:
+                                                        Colors.blueAccent,
+                                                    controller: tabC,
+                                                    labelColor:
+                                                        Colors.blueAccent,
+                                                    indicatorWeight: 2.0,
+                                                    isScrollable: true,
+                                                    tabs: widget.rm.map<Widget>(
+                                                        (RoomType rm) {
+                                                      rIdForName = rm.rId;
+                                                      print(
+                                                          'RoomId  $rIdForName');
+                                                      print(
+                                                          'RoomId  ${rm.rName}');
+                                                      return Tab(
+                                                        text: rm.rName,
+                                                      );
+                                                    }).toList(),
+                                                    onTap: (index) async {
+                                                      print(
+                                                          'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
+                                                      print(
+                                                          'Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
+
+                                                      deleteRoomIndex = index;
+                                                      if (widget
+                                                              .rm[index].rId ==
+                                                          null) {
+                                                        setState(() {
+                                                          tabbarState = widget
+                                                              .tabbarState;
+                                                        });
+                                                      }
+                                                      setState(() {
+                                                        tabbarState = widget
+                                                            .rm[index].rId;
+                                                      });
+                                                      widget.dv =
+                                                          await NewDbProvider
+                                                              .instance
+                                                              .getDeviceByRoomId(
+                                                                  tabbarState);
+
+                                                      print(
+                                                          "tabbarState Tabs->  $tabbarState");
+
+                                                      // await getAllRoom();
+                                                      getDeviceOnlySingleRoom(
+                                                          tabbarState);
+
+                                                      print('getDevices123 }');
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      GestureDetector(
-                                        onLongPress: () {
-                                          print('longPress');
-                                          print('longpress ${tabbarState}');
-                                          _createAlertDialogForAddRoomDeleteDevices(
-                                              context,
-                                              tabbarState,
-                                              deleteRoomIndex);
-                                        },
-                                        child: TabBar(
-                                          indicatorColor: Colors.blueAccent,
-                                          controller: tabC,
-                                          labelColor: Colors.blueAccent,
-                                          indicatorWeight: 2.0,
-                                          isScrollable: true,
-                                          tabs: widget.rm
-                                              .map<Widget>((RoomType rm) {
-                                            rIdForName = rm.rId;
-                                            print('RoomId  $rIdForName');
-                                            print('RoomId  ${rm.rName}');
-                                            return Tab(
-                                              text: rm.rName,
-                                            );
-                                          }).toList(),
-                                          onTap: (index) async {
-                                            print(
-                                                'Roomsssss RID-->>>>>>>   ${widget.rm[index].rId}');
-                                            print(
-                                                'Roomsssss RID-->>>>>>>   ${widget.rm[index].rName}');
-
-                                            deleteRoomIndex = index;
-                                            if (widget.rm[index].rId == null) {
-                                              setState(() {
-                                                tabbarState =
-                                                    widget.tabbarState;
-                                              });
-                                            }
-                                            setState(() {
-                                              tabbarState =
-                                                  widget.rm[index].rId;
-                                            });
-                                            widget.dv = await NewDbProvider
-                                                .instance
-                                                .getDeviceByRoomId(tabbarState);
-
-                                            print(
-                                                "tabbarState Tabs->  $tabbarState");
-
-                                            // await getAllRoom();
-                                            getDeviceOnlySingleRoom(
-                                                tabbarState);
-
-                                            print('getDevices123 }');
-                                          },
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+
+                                  SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                      if (index < widget.dv.length) {
+                                        if (widget.dv.length == null) {
+                                          return const CircularProgressIndicator();
+                                        }
+                                        return Column(
+                                          children: [
+                                            deviceContainer2(
+                                                widget.dv[index].dId, index),
+                                            SizedBox(
+                                                //
+                                                // color: Colors.green,
+                                                height: 35,
+                                                child: GestureDetector(
+                                                  child: RichText(
+                                                    text: TextSpan(children: [
+                                                      TextSpan(
+                                                          text: widget
+                                                              .dv[index].dId,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                fonttest ??
+                                                                    changeFont,
+                                                            fontSize: 15,
+                                                            color: change_toDark
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                          )),
+                                                      const TextSpan(
+                                                          text: "   "),
+                                                      WidgetSpan(
+                                                          child: Icon(
+                                                        Icons.settings,
+                                                        color: change_toDark
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        size: 18,
+                                                      ))
+                                                    ]),
+                                                  ),
+                                                  onTap: () {
+                                                    _createAlertDialogForSSIDAndEmergencyNumber(
+                                                        context,
+                                                        widget.dv[index].dId);
+                                                    print('on tap');
+                                                  },
+                                                )),
+                                          ],
+                                        );
+                                      } else {
+                                        return null;
+                                      }
+                                    }),
+                                  )
+                              
+                                ]),
                           ),
                         ),
-
-                        // SliverList(
-                        //   delegate:
-                        //       SliverChildBuilderDelegate((context, index) {
-                        //     if (index < widget.dv.length) {
-                        //       if (widget.dv.length == null) {
-                        //         return CircularProgressIndicator();
-                        //       }
-                        //       return Container(
-                        //         child: Column(
-                        //           children: [
-                        //             deviceContainer2(
-                        //                 widget.dv[index].dId, index),
-                        //             Container(
-                        //                 //
-                        //                 // color: Colors.green,
-                        //                 height: 35,
-                        //                 child: GestureDetector(
-                        //                   child: RichText(
-                        //                     text: TextSpan(children: [
-                        //                       TextSpan(
-                        //                           text: widget.dv[index].dId,
-                        //                           style: TextStyle(
-                        //                             fontFamily: fonttest == null
-                        //                                 ? changeFont
-                        //                                 : fonttest,
-                        //                             fontSize: 15,
-                        //                             color: change_toDark
-                        //                                 ? Colors.white
-                        //                                 : Colors.black,
-                        //                           )),
-                        //                       TextSpan(text: "   "),
-                        //                       WidgetSpan(
-                        //                           child: Icon(
-                        //                         Icons.settings,
-                        //                         color: change_toDark
-                        //                             ? Colors.white
-                        //                             : Colors.black,
-                        //                         size: 18,
-                        //                       ))
-                        //                     ]),
-                        //                   ),
-                        //                   onTap: () {
-                        //                     _createAlertDialogForSSIDAndEmergencyNumber(
-                        //                         context, widget.dv[index].dId);
-                        //                     print('on tap');
-                        //                   },
-                        //                 )),
-                        //           ],
-                        //         ),
-                        //         // child: Text(dv[index].dId),
-                        //       );
-                        //     } else {
-                        //       return null;
-                        //     }
-                        //   }),
-                        // )
-                      ]),
-                ),
-              ),
               bottomNavigationBar: SingleChildScrollView(
                 child: BottomNavyBar(
                   backgroundColor: Colors.white38,
-                  animationDuration: Duration(milliseconds: 500),
+                  animationDuration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOutCirc,
                   selectedIndex: _currentIndex,
                   //type: BottomNavigationBarType.fixed,
                   items: [
                     BottomNavyBarItem(
-                        icon: Icon(FontAwesomeIcons.microphone),
+                        icon: const Icon(FontAwesomeIcons.microphone),
                         activeColor: Colors.blue,
-                        title: Text('')),
+                        title: const Text('')),
                     BottomNavyBarItem(
-                      title: Text(''),
-                      icon: Icon(Icons.add),
+                      title: const Text(''),
+                      icon: const Icon(Icons.add),
                       activeColor: Colors.blue,
                     ),
                     BottomNavyBarItem(
-                      title: Text(''),
-                      icon: Icon(Icons.settings),
+                      title: const Text(''),
+                      icon: const Icon(Icons.settings),
                       activeColor: Colors.blue,
                     ),
                   ],
@@ -6275,12 +6234,629 @@ class _HomeTestState extends State<HomeTest>
     );
   }
 
+  bool changePlaceBool = false;
+  Widget changePlace() {
+    return SizedBox(
+      height: 590,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FutureBuilder(
+                  future: returnPlaceQuery(),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 2,
+                        margin: EdgeInsets.only(right: 45, left: 45),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: Text('Select Place'),
+                          isExpanded: true,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+
+                          items: placeRows.map((selectedPlaces) {
+                            return DropdownMenuItem(
+                              value: selectedPlaces.toString(),
+                              child: Text("${selectedPlaces['p_type']}"),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic selectedPlaces) async {
+                            floorval = null;
+                            var r = selectedPlaces.indexOf("p_type");
+                            print("qpqpqpqpqpqqp ${r}");
+                            print("qpqpqpqpqpqqp ${selectedPlaces}");
+                            var placeId = selectedPlaces.substring(7, 14);
+                            var placeName = selectedPlaces.substring(24, 31);
+                            // print('checkPlaceName ${selectedPlaces.}');
+
+                            var aa = await NewDbProvider.instance
+                                .getFloorById(placeId.toString());
+                            // print('AA  ${aa}');
+
+                            floorval = returnFloorQuery(placeId.toString());
+                            setState(() {
+                              floorQueryRows2 = aa;
+                              floorval = returnFloorQuery(placeId.toString());
+                              // returnFloorQuery(placeId);
+                            });
+                            var place = PlaceType(
+                                pId: placeId,
+                                pType: placeName,
+                                user: getUidVariable2);
+                            setState(() {
+                              selectedPlace = place;
+                            });
+
+                            print('Floorqwe  ${floorQueryRows2}');
+                          },
+                          // items:snapshot.data
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FutureBuilder(
+                  future: floorval,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 2,
+                        margin: EdgeInsets.only(right: 45, left: 45),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: Text('Select Floor'),
+                          isExpanded: true,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          items: floorQueryRows2.map((selectedFloor) {
+                            return DropdownMenuItem(
+                              value: selectedFloor.toString(),
+                              child: Text("${selectedFloor['f_name']}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedFloors) async {
+                            print('Floor selected $selectedFloor');
+
+                            var floorId = selectedFloors.substring(7, 14);
+                            var floorName = selectedFloors.substring(24, 32);
+                            var placeId = selectedFloors.substring(39, 46);
+                            var floor = FloorType(
+                                fId: floorId,
+                                fName: floorName,
+                                pId: placeId,
+                                user: getUidVariable2);
+                            print('Floor selected $floorName');
+                            setState(() {
+                              selectedFloor = floor;
+                            });
+
+                            var getFlat = await NewDbProvider.instance
+                                .getFlatByFId(floorId.toString());
+                            print(getFlat);
+                            flatVal = returnFlatQuery(floorId);
+                            flatQueryRows2 = getFlat;
+                            setState(() {
+                              flatVal = returnFlatQuery(floorId);
+                              flatQueryRows2 = getFlat;
+                            });
+                            print('forRoom  ${roomQueryRows2}');
+
+                            returnFloorQuery(floorId);
+                          },
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FutureBuilder(
+                  future: flatVal,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 2,
+                        margin: const EdgeInsets.only(right: 45, left: 45),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: Text('Select Flat'),
+                          isExpanded: true,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          items: flatQueryRows2.map((selectedFlat) {
+                            return DropdownMenuItem(
+                              value: selectedFlat.toString(),
+                              child: Text("${selectedFlat['flt_name']}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedFlats) async {
+                            flatId = selectedFlats.substring(9, 16);
+                            // var flatId = selectedFlat.substring(7, 14);
+                            var flatName = selectedFlats.substring(28, 35);
+                            var floorId = selectedFlats.substring(39, 46);
+                            print('flatName $selectedFlat');
+                            // print('flatName $user');
+                            // int user2 =int.parse(user);
+                            // int user2=int.parse(user.toString());
+                            var flt = Flat(
+                                fId: floorId,
+                                fltId: flatId,
+                                fltName: flatName,
+                                user: getUidVariable2);
+                            setState(() {
+                              selectedFlat = flt;
+                            });
+
+                            print(flatId);
+
+                            // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
+                            // print('AA  ${aa}');
+                            setState(() {
+                              // roomQueryRows2=aa;
+                              // roomVal=returnRoomQuery(flatId);
+                            });
+                            print('forRoom  ${roomQueryRows2}');
+
+                            // returnFloorQuery(floorId);
+                          },
+                          // items:snapshot.data
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+            ),
+            Container(
+              height: 50.0,
+              width: 150.0,
+              color: Colors.transparent,
+              child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  child: Center(
+                    child: InkWell(
+                      child: Text(
+                        "Submit",
+                        style: TextStyle(color: Colors.white, fontSize: 22),
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: () async {
+                        await changePlaceFunc();
+                      },
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool changeFloorBool = false;
+  Widget changeFloor() {
+    return SizedBox(
+      height: 590,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Padding(
+            //   padding: const EdgeInsets.all(18.0),
+            //   child: FutureBuilder(
+            //       future: returnPlaceQuery(),
+            //       builder: (context, AsyncSnapshot snapshot) {
+            //         if (snapshot.hasData) {
+            //           return Container(
+            //             width: MediaQuery
+            //                 .of(context)
+            //                 .size
+            //                 .width * 2,
+            //             decoration: BoxDecoration(
+            //                 color: Colors.white,
+            //                 boxShadow: [
+            //                   BoxShadow(
+            //                       color: Colors.black,
+            //                       blurRadius: 30,
+            //                       offset: Offset(20, 20))
+            //                 ],
+            //                 border: Border.all(
+            //                   color: Colors.black,
+            //                   width: 0.5,
+            //                 )),
+            //             child: DropdownButtonFormField(
+            //               decoration: InputDecoration(
+            //                 contentPadding: const EdgeInsets.all(15),
+            //                 focusedBorder: OutlineInputBorder(
+            //                   borderSide: BorderSide(
+            //                       color: Colors.white),
+            //                   borderRadius: BorderRadius.circular(10),
+            //                 ),
+            //                 enabledBorder: UnderlineInputBorder(
+            //                   borderSide: BorderSide(
+            //                       color: Colors.black),
+            //                   borderRadius: BorderRadius.circular(50),
+            //                 ),
+            //               ),
+            //               dropdownColor: Colors.white70,
+            //               icon: Icon(Icons.arrow_drop_down),
+            //               iconSize: 28,
+            //               hint: Text('Select Place'),
+            //               isExpanded: true,
+            //               style: TextStyle(
+            //                 color: Colors.black,
+            //                 fontWeight: FontWeight.bold,
+            //               ),
+            //
+            //               items: placeRows.map((selectedPlace) {
+            //                 return DropdownMenuItem(
+            //                   value: selectedPlace.toString(),
+            //                   child: Text("${selectedPlace['p_type']}"),
+            //                 );
+            //               }).toList(),
+            //               onChanged: (selectedPlace) async {
+            //                 floorval=null;
+            //                 var placeId = selectedPlace.substring(7, 14);
+            //                 var placeName = selectedPlace.substring(24, 31);
+            //                 print('checkPlaceName ${placeName.toString()}');
+            //                 print("SElectedPlace ${selectedPlace}");
+            //
+            //                 var aa = await NewDbProvider.instance.getFloorById(placeId.toString());
+            //                 print('AA  ${aa}');
+            //
+            //                 returnFloorQuery(placeId);
+            //                 setState(() {
+            //                   floorQueryRows2 = aa;
+            //                   floorval = returnFloorQuery(placeId);
+            //                   returnFloorQuery(placeId);
+            //
+            //                 });
+            //                 var place = PlaceType(
+            //                     pId: placeId,
+            //                     pType: placeName,
+            //                     user: getUidVariable2
+            //                 );
+            //                 pt = place;
+            //                 print('Floorqwe  ${floorQueryRows2}');
+            //
+            //                 // qwe= ;
+            //               },
+            //               // items:snapshot.data
+            //             ),
+            //           );
+            //         } else {
+            //           return CircularProgressIndicator();
+            //         }
+            //       }),
+            // ),
+            const SizedBox(
+              height: 10,
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FutureBuilder(
+                  future: returnFloorQuery(widget.pt.pId),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 45, left: 45),
+                        width: MediaQuery.of(context).size.width * 2,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: const Text('Select Floor'),
+                          isExpanded: true,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          items: floorQueryRowsFloor.map((selectedFloor) {
+                            return DropdownMenuItem(
+                              value: selectedFloor.toString(),
+                              child: Text("${selectedFloor['f_name']}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedFloor) async {
+                            print('Floor selected $selectedFloor');
+
+                            var floorId = selectedFloor.substring(7, 14);
+                            var floorName = selectedFloor.substring(24, 32);
+                            var placeId = selectedFloor.substring(39, 46);
+                            var floor = FloorType(
+                                fId: floorId,
+                                fName: floorName,
+                                pId: placeId,
+                                user: getUidVariable2);
+
+                            var getFlat = await NewDbProvider.instance
+                                .getFlatByFId(floorId.toString());
+                            print(getFlat);
+                            flatVal = returnFlatQuery(floorId);
+                            flatQueryRows2 = getFlat;
+                            setState(() {
+                              flatVal = returnFlatQuery(floorId);
+                              flatQueryRows2 = getFlat;
+                              fl = floor;
+                            });
+                            print('forRoom  ${roomQueryRows2}');
+
+                            returnFloorQuery(floorId);
+                          },
+                        ),
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FutureBuilder(
+                  future: flatVal,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 45, left: 45),
+                        width: MediaQuery.of(context).size.width * 2,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 30,
+                                  offset: Offset(20, 20))
+                            ],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 0.5,
+                            )),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(15),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          dropdownColor: Colors.white70,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 28,
+                          hint: const Text('Select Flat'),
+                          isExpanded: true,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          items: flatQueryRows2.map((selectedFlat) {
+                            return DropdownMenuItem(
+                              value: selectedFlat.toString(),
+                              child: Text("${selectedFlat['flt_name']}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedFlat) async {
+                            flatId = selectedFlat.substring(9, 16);
+                            // var flatId = selectedFlat.substring(7, 14);
+                            var flatName = selectedFlat.substring(28, 35);
+                            var floorId = selectedFlat.substring(39, 46);
+                            print('flatName $selectedFlat');
+                            // print('flatName $user');
+                            // int user2 =int.parse(user);
+                            // int user2=int.parse(user.toString());
+                            var flt = Flat(
+                                fId: floorId,
+                                fltId: flatId,
+                                fltName: flatName,
+                                user: getUidVariable2);
+                            flat = flt;
+                            print(flatId);
+
+                            // var  aa= await NewDbProvider.instance.getRoomById(flatId.toString());
+                            // print('AA  ${aa}');
+                            setState(() {
+                              // roomQueryRows2=aa;
+                              // roomVal=returnRoomQuery(flatId);
+                            });
+                            print('forRoom  ${roomQueryRows2}');
+
+                            // returnFloorQuery(floorId);
+                          },
+                          // items:snapshot.data
+                        ),
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  height: 50.0,
+                  width: 80.0,
+                  color: Colors.transparent,
+                  child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.green,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Center(
+                        child: InkWell(
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(color: Colors.white, fontSize: 22),
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () async {
+                            await changeFloorFunc();
+                          },
+                        ),
+                      )),
+                ),
+                Container(
+                  height: 50.0,
+                  width: 80.0,
+                  color: Colors.transparent,
+                  child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.green,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Center(
+                        child: InkWell(
+                          child: Icon(Icons.arrow_back),
+                          onTap: () async {
+                            setState(() {
+                              changeFloorBool = !changeFloorBool;
+                            });
+                            // await changePlaceFunc();
+                          },
+                        ),
+                      )),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   _billPredictionNavigation(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Please Select'),
+            title: const Text('Please Select'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -6289,35 +6865,43 @@ class _HomeTestState extends State<HomeTest>
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PlaceBill2()));
                   },
-                  child: Text("Place Bill Prediction"),
+                  child: const Text("Place Bill Prediction"),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => FloorBill()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FloorBill()));
                   },
-                  child: Text("Floor Bill Prediction"),
+                  child: const Text("Floor Bill Prediction"),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => FlatBill()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FlatBill()));
                   },
-                  child: Text("Flat Bill Prediction"),
+                  child: const Text("Flat Bill Prediction"),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => RoomBill()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RoomBill()));
                   },
-                  child: Text("Room Bill Prediction"),
+                  child: const Text("Room Bill Prediction"),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DeviceBill()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DeviceBill()));
                   },
-                  child: Text("Device Bill Prediction"),
+                  child: const Text("Device Bill Prediction"),
                 ),
               ],
             ),
@@ -6330,7 +6914,7 @@ class _HomeTestState extends State<HomeTest>
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Remote'),
+            title: const Text('Remote'),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -6342,10 +6926,10 @@ class _HomeTestState extends State<HomeTest>
                         child: Material(
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child: SizedBox(
+                            child: const SizedBox(
                               height: 56,
                               width: 56,
-                              child: Icon(Icons.dialpad),
+                              child: const Icon(Icons.dialpad),
                             ),
                             onTap: () {},
                           ),
@@ -6358,10 +6942,10 @@ class _HomeTestState extends State<HomeTest>
                           color: Colors.red,
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child: SizedBox(
+                            child: const SizedBox(
                               height: 56,
                               width: 56,
-                              child: Icon(Icons.power_settings_new),
+                              child: const Icon(Icons.power_settings_new),
                             ),
                             onTap: () {},
                           ),
@@ -6373,10 +6957,10 @@ class _HomeTestState extends State<HomeTest>
                         child: Material(
                           child: InkWell(
                             splashColor: Colors.white24,
-                            child: SizedBox(
+                            child: const SizedBox(
                               height: 56,
                               width: 56,
-                              child: Icon(Icons.bubble_chart),
+                              child: const Icon(Icons.bubble_chart),
                             ),
                             onTap: () {},
                           ),
@@ -6400,7 +6984,7 @@ class _HomeTestState extends State<HomeTest>
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
+                          children: const [
                             Icon(Icons.arrow_drop_up),
                             Text(
                               'VOL',
@@ -6427,7 +7011,7 @@ class _HomeTestState extends State<HomeTest>
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
+                          children: const [
                             Icon(Icons.arrow_drop_up),
                             Text(
                               'CH',
@@ -6452,7 +7036,7 @@ class _HomeTestState extends State<HomeTest>
                         color: Colors.white,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         child: Image.asset('assets/netflix.png'),
                       ),
                     ),
@@ -6465,7 +7049,7 @@ class _HomeTestState extends State<HomeTest>
                         color: Colors.white,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Image.asset('assets/prime.png'),
                       ),
                     ),
@@ -6493,29 +7077,37 @@ class _HomeTestState extends State<HomeTest>
                       style: TextStyle(fontSize: 14))),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FloorBill()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FloorBill()));
                 },
                 child: const Text('Floor Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FlatBill()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FlatBill()));
                 },
                 child: const Text('Flat Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => RoomBill()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RoomBill()));
                 },
                 child: const Text('Room Bill Prediction'),
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => DeviceBill()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DeviceBill()));
                 },
                 child: const Text('Device Bill Prediction'),
               ),
@@ -6555,6 +7147,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   var number;
+
   _getTempNumber() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     number = pref.getString('mobileNumber');
@@ -6576,29 +7169,31 @@ class _HomeTestState extends State<HomeTest>
     }
   }
 
+  List allName = List.empty(growable: true);
+
   deviceContainer(String dId, int index) async {
     deviceId = dId;
     getData(dId);
-    getPinsName(dId);
+    // getPinsName(dId);
     // await seprate(index,dId);
-    devicePinSensorLocalUsingDeviceId(dId);
-    await devicePinNameLocalUsingDeviceId(dId);
+    // devicePinSensorLocalUsingDeviceId(dId);
+    // await devicePinNameLocalUsingDeviceId(dId);
 
     catchReturn = await NewDbProvider.instance.getPinStatusByDeviceId(dId);
     print('catchReturn123 ${catchReturn}');
     responseGetData = [
-      widget.switch1_get = catchReturn[index]["pin1Status"],
+      catchReturn[index]["pin1Status"],
       catchReturn[index]["pin2Status"],
-      widget.switch3_get = catchReturn[index]["pin3Status"],
-      widget.switch4_get = catchReturn[index]["pin4Status"],
-      widget.switch5_get = catchReturn[index]["pin5Status"],
-      widget.switch6_get = catchReturn[index]["pin6Status"],
-      widget.switch7_get = catchReturn[index]["pin7Status"],
-      widget.switch8_get = catchReturn[index]["pin8Status"],
-      widget.switch9_get = catchReturn[index]["pin9Status"],
-      widget.Slider_get = catchReturn[index]["pin10Status"],
-      widget.Slider_get2 = catchReturn[index]["pin11Status"],
-      widget.Slider_get3 = catchReturn[index]["pin12Status"],
+      catchReturn[index]["pin3Status"],
+      catchReturn[index]["pin4Status"],
+
+      catchReturn[index]["pin5Status"],
+      catchReturn[index]["pin6Status"],
+      catchReturn[index]["pin7Status"],
+      catchReturn[index]["pin9Status"],
+      catchReturn[index]["pin10Status"],
+      catchReturn[index]["pin11Status"],
+      catchReturn[index]["pin12Status"],
       //
       // for(i=0;i<367;i++){
       //   catchReturn[i][""]
@@ -6620,8 +7215,10 @@ class _HomeTestState extends State<HomeTest>
 
     List namesDataList12 =
         await NewDbProvider.instance.getPinNamesByDeviceId(dId);
+    print("AllPinNAME $namesDataList12");
 
     String pin1 = namesDataList12[index]['pin1Name'];
+
     var indexOfPin1Name = pin1.indexOf(',');
     var pin1FinalName = pin1.substring(0, indexOfPin1Name);
 
@@ -6683,18 +7280,18 @@ class _HomeTestState extends State<HomeTest>
     print('indexofpppppin2 $pin3');
 
     namesDataList = [
-      widget.switch1Name = pin1FinalName,
-      widget.switch2Name = pin2FinalName,
-      widget.switch3Name = pin3FinalName,
-      widget.switch4Name = pin4FinalName,
-      widget.switch5Name = pin5FinalName,
-      widget.switch6Name = pin6FinalName,
-      widget.switch7Name = pin7FinalName,
-      widget.switch8Name = pin8FinalName,
-      widget.switch9Name = pin9FinalName,
-      widget.switch10Name = pin10FinalName,
-      widget.switch11Name = pin11FinalName,
-      widget.switch12Name = pin12FinalName,
+      pin1FinalName,
+      pin2FinalName,
+      pin3FinalName,
+      pin4FinalName,
+      pin5FinalName,
+      pin6FinalName,
+      pin7FinalName,
+      pin8FinalName,
+      pin9FinalName,
+      pin10FinalName,
+      pin11FinalName,
+      pin12FinalName,
     ];
 
     for (int i = 0; i < namesDataList.length; i++) {
@@ -7156,32 +7753,32 @@ class _HomeTestState extends State<HomeTest>
     print('namesList123 ${namesDataList}');
     setState(() {
       responseGetData = [
-        widget.switch1_get = catchReturn[index]["pin1Status"],
-        widget.switch2_get = catchReturn[index]["pin2Status"],
-        widget.switch3_get = catchReturn[index]["pin3Status"],
-        widget.switch4_get = catchReturn[index]["pin4Status"],
-        widget.switch5_get = catchReturn[index]["pin5Status"],
-        widget.switch6_get = catchReturn[index]["pin6Status"],
-        widget.switch7_get = catchReturn[index]["pin7Status"],
-        widget.switch8_get = catchReturn[index]["pin8Status"],
-        widget.switch9_get = catchReturn[index]["pin9Status"],
-        widget.Slider_get = catchReturn[index]["pin10Status"],
-        widget.Slider_get2 = catchReturn[index]["pin11Status"],
-        widget.Slider_get3 = catchReturn[index]["pin12Status"],
+        catchReturn[index]["pin1Status"],
+        catchReturn[index]["pin2Status"],
+        catchReturn[index]["pin3Status"],
+        catchReturn[index]["pin4Status"],
+        catchReturn[index]["pin5Status"],
+        catchReturn[index]["pin6Status"],
+        catchReturn[index]["pin7Status"],
+        catchReturn[index]["pin8Status"],
+        catchReturn[index]["pin9Status"],
+        catchReturn[index]["pin10Status"],
+        catchReturn[index]["pin11Status"],
+        catchReturn[index]["pin12Status"],
       ];
       namesDataList = [
-        widget.switch1Name = pin1FinalName,
-        widget.switch2Name = pin2FinalName,
-        widget.switch3Name = pin3FinalName,
-        widget.switch4Name = pin4FinalName,
-        widget.switch5Name = pin5FinalName,
-        widget.switch6Name = pin6FinalName,
-        widget.switch7Name = pin7FinalName,
-        widget.switch8Name = pin8FinalName,
-        widget.switch9Name = pin9FinalName,
-        widget.switch10Name = pin10FinalName,
-        widget.switch11Name = pin11FinalName,
-        widget.switch12Name = pin12FinalName,
+        pin1FinalName,
+        pin2FinalName,
+        pin3FinalName,
+        pin4FinalName,
+        pin5FinalName,
+        pin6FinalName,
+        pin7FinalName,
+        pin8FinalName,
+        pin9FinalName,
+        pin10FinalName,
+        pin11FinalName,
+        pin12FinalName,
       ];
     });
   }
@@ -7191,12 +7788,12 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Alert"),
-        content: Text("Would to like to turn off all the appliances ?"),
+        title: const Text("Alert"),
+        content: const Text("Would to like to turn off all the appliances ?"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () async {
                 for (int i = 0; i < responseGetData.length; i++) {
                   setState(() {
@@ -7224,7 +7821,7 @@ class _HomeTestState extends State<HomeTest>
               }),
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("No"),
+              child: const Text("No"),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
@@ -7238,12 +7835,12 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("No InterNet"),
-        content: Text("Check your connection"),
+        title: const Text("No InterNet"),
+        content: const Text("Check your connection"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("Ok"),
+              child: const Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
@@ -7253,6 +7850,7 @@ class _HomeTestState extends State<HomeTest>
   }
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   String validateMobile(String value) {
     String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
     RegExp regExp = new RegExp(patttern);
@@ -7271,7 +7869,7 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text("Enter your Mobile Number"),
+        content: const Text("Enter your Mobile Number"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           Form(
@@ -7286,28 +7884,28 @@ class _HomeTestState extends State<HomeTest>
               // onSaved: (String value) {
               //   phone = value;
               // },
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+              style: const TextStyle(fontSize: 18, color: Colors.black54),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.phone_android),
+                prefixIcon: const Icon(Icons.phone_android),
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Enter your Contact',
-                errorStyle: TextStyle(),
+                errorStyle: const TextStyle(),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
+                  borderSide: const BorderSide(color: Colors.red),
                   borderRadius: BorderRadius.circular(50),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
+                  borderSide: const BorderSide(color: Colors.red),
                   borderRadius: BorderRadius.circular(50),
                 ),
                 contentPadding: const EdgeInsets.all(15),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(50),
                 ),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
@@ -7318,7 +7916,7 @@ class _HomeTestState extends State<HomeTest>
             children: [
               // ignore: deprecated_member_use
               FlatButton(
-                  child: Text("Submit"),
+                  child: const Text("Submit"),
                   onPressed: () {
                     if (formKey.currentState.validate()) {
                       var mobile = phoneController.text;
@@ -7330,11 +7928,11 @@ class _HomeTestState extends State<HomeTest>
                                     mobileNumber: mobile,
                                   )));
                     } else {
-                      return Text('Error');
+                      return const Text('Error');
                     }
                   }),
               FlatButton(
-                  child: Text("Cancel"),
+                  child: const Text("Cancel"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }),
@@ -7350,12 +7948,12 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Alert"),
-        content: Text("Are your sure to delete room with all devices"),
+        title: const Text("Alert"),
+        content: const Text("Are your sure to delete room with all devices"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () async {
                 await deleteRoomWithAllDevice(rId);
                 // widget.rm = await roomQueryFunc();
@@ -7363,7 +7961,7 @@ class _HomeTestState extends State<HomeTest>
               }),
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("No"),
+              child: const Text("No"),
               onPressed: () {
                 // Navigator.of(context).pop();
               }),
@@ -7377,19 +7975,19 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Alert"),
-        content: Text("Are your sure to delete this devices"),
+        title: const Text("Alert"),
+        content: const Text("Are your sure to delete this devices"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () async {
                 await deleteDevice(rId, dId);
                 Navigator.pop(context);
               }),
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("No"),
+              child: const Text("No"),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
@@ -7404,16 +8002,16 @@ class _HomeTestState extends State<HomeTest>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("LogOut"),
-        content: Text("Would to like to Log Out from this App ?"),
+        title: const Text("LogOut"),
+        content: const Text("Would to like to Log Out from this App ?"),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () async {
                 await _logout();
 
-                CircularProgressIndicator();
+                const CircularProgressIndicator();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -7427,7 +8025,7 @@ class _HomeTestState extends State<HomeTest>
               }),
           // ignore: deprecated_member_use
           FlatButton(
-              child: Text("No"),
+              child: const Text("No"),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
@@ -7546,7 +8144,7 @@ class _HomeTestState extends State<HomeTest>
       print("SchedulingStatus ${response.statusCode}");
       print("SchedulingStatus ${response.body}");
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Device Scheduled '),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -7609,7 +8207,7 @@ class _HomeTestState extends State<HomeTest>
     // fetchIp(dId);
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height * 1.95,
           // color: Colors.redAccent,
           child: Column(
@@ -7625,26 +8223,23 @@ class _HomeTestState extends State<HomeTest>
                         'Turn Off All Appliances',
                         style: TextStyle(
                           color: change_toDark ? Colors.white : Colors.black,
-                          fontFamily: fonttest == null ? changeFont : fonttest,
+                          fontFamily: fonttest ?? changeFont,
                           fontSize: 12.5,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 14,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(4),
                       child: GestureDetector(
-                        child: Container(
-                          // color:textSelected==dId.toString()?Colors.green:Colors.red,
-                          child: Icon(
-                            textSelected == dId.toString()
-                                ? Icons.update
-                                : Icons.sensors,
-                            color: change_toDark ? Colors.white : Colors.black,
-                          ),
+                        child: Icon(
+                          textSelected == dId.toString()
+                              ? Icons.update
+                              : Icons.sensors,
+                          color: change_toDark ? Colors.white : Colors.black,
                         ),
                         onTap: () {
                           print('check123${textSelected}');
@@ -7703,7 +8298,7 @@ class _HomeTestState extends State<HomeTest>
                                 builder: (
                               context,
                             ) =>
-                                    RemoteUIPage()),
+                                    const RemoteUIPage()),
                           );
                           // remoteUiWidget(context);
                           // _createAlertDialogForPin19(context, dId);
@@ -7721,7 +8316,7 @@ class _HomeTestState extends State<HomeTest>
                     crossAxisSpacing: 8,
                     childAspectRatio: 2 / 1.8,
                     mainAxisSpacing: 4,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     // shrinkWrap: true,
                     crossAxisCount: 2,
                     children:
@@ -7747,7 +8342,7 @@ class _HomeTestState extends State<HomeTest>
                                     useRootNavigator: true,
                                     context: context,
                                     clipBehavior: Clip.antiAlias,
-                                    shape: RoundedRectangleBorder(
+                                    shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(24),
                                       ),
@@ -7769,10 +8364,8 @@ class _HomeTestState extends State<HomeTest>
                                                               .toString()
                                                               .toString(),
                                                       style: TextStyle(
-                                                        fontFamily:
-                                                            fonttest == null
-                                                                ? changeFont
-                                                                : fonttest,
+                                                        fontFamily: fonttest ??
+                                                            changeFont,
                                                       ),
                                                     ),
                                                     onTap: () {
@@ -7808,9 +8401,8 @@ class _HomeTestState extends State<HomeTest>
                                                   _alarmTimeString,
                                                   style: TextStyle(
                                                     fontSize: 32,
-                                                    fontFamily: fonttest == null
-                                                        ? changeFont
-                                                        : fonttest,
+                                                    fontFamily:
+                                                        fonttest ?? changeFont,
                                                   ),
                                                 ),
                                               ),
@@ -7818,17 +8410,17 @@ class _HomeTestState extends State<HomeTest>
                                                 title: Text(
                                                   'What Do You Want ??',
                                                   style: TextStyle(
-                                                    fontFamily: fonttest == null
-                                                        ? changeFont
-                                                        : fonttest,
+                                                    fontFamily:
+                                                        fonttest ?? changeFont,
                                                   ),
                                                 ),
-                                                trailing: Icon(Icons.timer),
+                                                trailing:
+                                                    const Icon(Icons.timer),
                                               ),
                                               ListTile(
                                                 title: ToggleSwitch(
                                                   initialLabelIndex: 0,
-                                                  labels: ['Off', 'On'],
+                                                  labels: const ['Off', 'On'],
                                                   onToggle: (index) {
                                                     print(
                                                         'switched to: $index');
@@ -7849,28 +8441,30 @@ class _HomeTestState extends State<HomeTest>
 
                                                   print('Sceduled');
                                                 },
-                                                icon: Icon(Icons.alarm),
-                                                label: Text('Save'),
+                                                icon: const Icon(Icons.alarm),
+                                                label: const Text('Save'),
                                               ),
                                             ]));
                                       });
                                     });
                               },
+                             
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Container(
-                                    alignment: new FractionalOffset(1.0, 0.0),
+                                    alignment: const FractionalOffset(1.0, 0.0),
                                     // alignment: Alignment.bottomRight,
                                     height: 120,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 1, vertical: 10),
                                     margin: index % 2 == 0
-                                        ? EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5)
-                                        : EdgeInsets.fromLTRB(
+                                        ? const EdgeInsets.fromLTRB(
+                                            15, 7.5, 7.5, 7.5)
+                                        : const EdgeInsets.fromLTRB(
                                             7.5, 7.5, 15, 7.5),
                                     // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                     decoration: BoxDecoration(
-                                        boxShadow: <BoxShadow>[
+                                        boxShadow: const <BoxShadow>[
                                           BoxShadow(
                                               blurRadius: 10,
                                               offset: Offset(8, 10),
@@ -7880,7 +8474,7 @@ class _HomeTestState extends State<HomeTest>
                                         border: Border.all(
                                             width: 1,
                                             style: BorderStyle.solid,
-                                            color: Color(0xffa3a3a3)),
+                                            color: const Color(0xffa3a3a3)),
                                         borderRadius:
                                             BorderRadius.circular(20)),
                                     child: Column(
@@ -7899,9 +8493,8 @@ class _HomeTestState extends State<HomeTest>
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                     fontSize: 10,
-                                                    fontFamily: fonttest == null
-                                                        ? changeFont
-                                                        : fonttest,
+                                                    fontFamily:
+                                                        fonttest ?? changeFont,
                                                   ),
                                                 ),
                                                 onPressed: () async {
@@ -7913,7 +8506,8 @@ class _HomeTestState extends State<HomeTest>
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                 horizontal: 4.5,
                                                 // vertical: 10
                                               ),
@@ -7982,19 +8576,19 @@ class _HomeTestState extends State<HomeTest>
                                               _createAlertDialogForNameDeviceBox(
                                                   context, index);
                                             },
-                                            child: Icon(
-                                                changeIcon[index] == null
-                                                    ? null
-                                                    : changeIcon[index]))
+                                            child:
+                                                Icon(changeIcon[index] ?? null))
                                       ],
                                     )),
                               ),
+                            
                             ),
                           ],
                         ),
                       );
                     })),
               ),
+             
               Flexible(
                 child: Container(
                   height: MediaQuery.of(context).size.height * 1.92,
@@ -8004,7 +8598,7 @@ class _HomeTestState extends State<HomeTest>
                       crossAxisSpacing: 8,
                       childAspectRatio: 2 / 1.8,
                       mainAxisSpacing: 4,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       // shrinkWrap: true,
                       crossAxisCount: 2,
                       children:
@@ -8030,9 +8624,9 @@ class _HomeTestState extends State<HomeTest>
                                       useRootNavigator: true,
                                       context: context,
                                       clipBehavior: Clip.antiAlias,
-                                      shape: RoundedRectangleBorder(
+                                      shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(24),
+                                          top: const Radius.circular(24),
                                         ),
                                       ),
                                       builder: (context) {
@@ -8054,9 +8648,8 @@ class _HomeTestState extends State<HomeTest>
                                                                 .toString(),
                                                         style: TextStyle(
                                                           fontFamily:
-                                                              fonttest == null
-                                                                  ? changeFont
-                                                                  : fonttest,
+                                                              fonttest ??
+                                                                  changeFont,
                                                         ),
                                                       ),
                                                       onTap: () {
@@ -8092,10 +8685,8 @@ class _HomeTestState extends State<HomeTest>
                                                     _alarmTimeString,
                                                     style: TextStyle(
                                                       fontSize: 32,
-                                                      fontFamily:
-                                                          fonttest == null
-                                                              ? changeFont
-                                                              : fonttest,
+                                                      fontFamily: fonttest ??
+                                                          changeFont,
                                                     ),
                                                   ),
                                                 ),
@@ -8103,18 +8694,17 @@ class _HomeTestState extends State<HomeTest>
                                                   title: Text(
                                                     'What Do You Want ??',
                                                     style: TextStyle(
-                                                      fontFamily:
-                                                          fonttest == null
-                                                              ? changeFont
-                                                              : fonttest,
+                                                      fontFamily: fonttest ??
+                                                          changeFont,
                                                     ),
                                                   ),
-                                                  trailing: Icon(Icons.timer),
+                                                  trailing:
+                                                      const Icon(Icons.timer),
                                                 ),
                                                 ListTile(
                                                   title: ToggleSwitch(
                                                     initialLabelIndex: 0,
-                                                    labels: ['Off', 'On'],
+                                                    labels: const ['Off', 'On'],
                                                     onToggle: (index) {
                                                       print(
                                                           'switched to: $index');
@@ -8135,8 +8725,8 @@ class _HomeTestState extends State<HomeTest>
 
                                                     print('Sceduled');
                                                   },
-                                                  icon: Icon(Icons.alarm),
-                                                  label: Text('Save'),
+                                                  icon: const Icon(Icons.alarm),
+                                                  label: const Text('Save'),
                                                 ),
                                               ]));
                                         });
@@ -8148,16 +8738,16 @@ class _HomeTestState extends State<HomeTest>
                                       alignment: new FractionalOffset(1.0, 0.0),
                                       // alignment: Alignment.bottomRight,
                                       height: 120,
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: 1, vertical: 10),
                                       margin: index % 2 == 0
-                                          ? EdgeInsets.fromLTRB(
+                                          ? const EdgeInsets.fromLTRB(
                                               15, 7.5, 7.5, 7.5)
-                                          : EdgeInsets.fromLTRB(
+                                          : const EdgeInsets.fromLTRB(
                                               7.5, 7.5, 15, 7.5),
                                       // margin: EdgeInsets.fromLTRB(15, 7.5, 7.5, 7.5),
                                       decoration: BoxDecoration(
-                                          boxShadow: <BoxShadow>[
+                                          boxShadow: const <BoxShadow>[
                                             BoxShadow(
                                                 blurRadius: 10,
                                                 offset: Offset(8, 10),
@@ -8167,7 +8757,7 @@ class _HomeTestState extends State<HomeTest>
                                           border: Border.all(
                                               width: 1,
                                               style: BorderStyle.solid,
-                                              color: Color(0xffa3a3a3)),
+                                              color: const Color(0xffa3a3a3)),
                                           borderRadius:
                                               BorderRadius.circular(20)),
                                       child: Column(
@@ -8248,7 +8838,8 @@ class _HomeTestState extends State<HomeTest>
                                                 // '${namesDataList[index].toString()} ',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
-                                                style: TextStyle(fontSize: 10),
+                                                style: const TextStyle(
+                                                    fontSize: 10),
                                               ),
                                               onPressed: () async {
                                                 await _createAlertDialogForNameDeviceBox(
@@ -8264,9 +8855,7 @@ class _HomeTestState extends State<HomeTest>
                                                     context, index);
                                               },
                                               child: Icon(
-                                                  changeIcon[index] == null
-                                                      ? null
-                                                      : changeIcon[index]))
+                                                  changeIcon[index] ?? null))
                                         ],
                                       )),
                                 ),
@@ -8291,7 +8880,7 @@ class _HomeTestState extends State<HomeTest>
 
   void scheduleAlarm(
       DateTime scheduledNotificationDateTime, AlarmInfo alarmInfo) async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
       'Channel for Alarm notification',
@@ -8300,7 +8889,7 @@ class _HomeTestState extends State<HomeTest>
       largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
     );
 
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+    var iOSPlatformChannelSpecifics = const IOSNotificationDetails(
         sound: 'a_long_cold_sting.wav',
         presentAlert: true,
         presentBadge: true,
@@ -8317,7 +8906,7 @@ class _HomeTestState extends State<HomeTest>
     if (_alarmTime.isAfter(DateTime.now()))
       scheduleAlarmDateTime = _alarmTime;
     else
-      scheduleAlarmDateTime = _alarmTime.add(Duration(days: 1));
+      scheduleAlarmDateTime = _alarmTime.add(const Duration(days: 1));
 
     var alarmInfo = AlarmInfo(
       alarmDateTime: scheduleAlarmDateTime,
@@ -8349,6 +8938,8 @@ class _HomeTestState extends State<HomeTest>
       ];
       print('sensorData  ${listOfPinStatus}');
       for (int i = 0; i < listOfPinStatus.length; i++) {
+        var a = PinStatus.fromJson(listOfPinStatus[i]);
+        print("AAAAAAAAAAAAQWQWQ $a");
         var pinStatus = PinStatus(
           dId: listOfPinStatus[i]['d_id'],
           pin1Status: listOfPinStatus[i]['pin1Status'],
@@ -8396,34 +8987,20 @@ class _HomeTestState extends State<HomeTest>
       }
       print("DATA-->  $data");
       print('\n');
-      deviceStatus = [
-        widget.switch1_get = data["pin1Status"],
-        widget.switch2_get = data["pin2Status"],
-        widget.switch3_get = data["pin3Status"],
-        widget.switch4_get = data["pin4Status"],
-        widget.switch5_get = data["pin5Status"],
-        widget.switch6_get = data["pin6Status"],
-        widget.switch7_get = data["pin7Status"],
-        widget.switch8_get = data["pin8Status"],
-        widget.switch9_get = data["pin9Status"],
-        widget.Slider_get = data["pin10Status"],
-        widget.Slider_get2 = data["pin11Status"],
-        widget.Slider_get3 = data["pin12Status"],
-      ];
-      for (int i = 0; i < data.length; i++) {}
-
-      print('Switch 1 --> ${widget.switch1_get}');
-      print('Switch 2 --> ${widget.switch2_get}');
-      print('Switch 3 --> ${widget.switch3_get}');
-      print('Switch 4 --> ${widget.switch4_get}');
-      print('Switch 5 --> ${widget.switch5_get}');
-      print('Switch 6 --> ${widget.switch6_get}');
-      print('Switch 7 --> ${widget.switch7_get}');
-      print('Switch 8 --> ${widget.switch8_get}');
-      print('Switch 9 --> ${widget.switch9_get}');
-      print('Switch 10 --> ${widget.Slider_get}');
-      print('Switch 11 --> ${widget.Slider_get2}');
-      print('Switch 12 --> ${widget.Slider_get3}');
+      // deviceStatus = [
+      //   data["pin1Status"],
+      //   data["pin2Status"],
+      //   data["pin3Status"],
+      //   data["pin4Status"],
+      //   data["pin5Status"],
+      //   data["pin6Status"],
+      //   data["pin7Status"],
+      //   data["pin8Status"],
+      //   data["pin9Status"],
+      //   data["pin10Status"],
+      //   data["pin11Status"],
+      //   data["pin12Status"],
+      // ];
     } else {
       print(response.statusCode);
       throw Exception('Failed to getData.');
@@ -8442,7 +9019,7 @@ class _HomeTestState extends State<HomeTest>
 
   void onOffSchedule() {
     if (time == TimeOfDay.now()) {
-        print(switch_1);
+      print(switch_1);
     }
   }
 
@@ -8480,6 +9057,7 @@ class _HomeTestState extends State<HomeTest>
 
 class Item {
   const Item(this.name, this.icon);
+
   final String name;
   final Icon icon;
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -203,6 +205,8 @@ class _RoomBillState extends State<RoomBill> {
           data.map((data) => FloorType.fromJson(data)).toList();
       print(floors);
       return floors;
+    } else {
+      return null;
     }
   }
 
@@ -219,6 +223,8 @@ class _RoomBillState extends State<RoomBill> {
       List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
       print(flatData);
       return flatData;
+    } else {
+      return null;
     }
   }
 
@@ -235,6 +241,8 @@ class _RoomBillState extends State<RoomBill> {
       List<Flat> flatData = data.map((data) => Flat.fromJson(data)).toList();
       print(flatData);
       return flatData;
+    } else {
+      return null;
     }
   }
 
@@ -255,6 +263,8 @@ class _RoomBillState extends State<RoomBill> {
       print('allRoomId $allRoomId');
 
       return rooms;
+    } else {
+      return null;
     }
   }
 
@@ -275,8 +285,11 @@ class _RoomBillState extends State<RoomBill> {
       print('allRoomId $allRoomId');
 
       return rooms;
+    } else {
+      return null;
     }
   }
+
   noDevice() {
     return AwesomeDialog(
       context: context,
@@ -290,6 +303,7 @@ class _RoomBillState extends State<RoomBill> {
       },
     )..show();
   }
+
   Future getDevice(String r_id) async {
     final url = API + 'addyourdevice/?r_id=' + r_id;
     String token = await getToken();
@@ -300,12 +314,11 @@ class _RoomBillState extends State<RoomBill> {
     });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
-      if(data.isEmpty ){
+      if (data.isEmpty) {
         setState(() {
-          pleaseSelect='There is not Data';
+          pleaseSelect = 'There is not Data';
         });
         return noDevice();
-
       }
       allDeviceId = List.from(data);
       print('allDeviceIdDeviceId-->  ${allDeviceId}');
@@ -449,7 +462,6 @@ class _RoomBillState extends State<RoomBill> {
           dataMap.putIfAbsent(tenMinuteEnergy[i]['d_id'],
               () => double.parse(tenMinuteEnergy[i]['enrgy10']));
         });
-
       }
       print('totalans ${dataMap}');
     }
@@ -592,30 +604,28 @@ class _RoomBillState extends State<RoomBill> {
       }
     }
   }
-  thereIsNoData(BuildContext context){
+
+  thereIsNoData(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return const AlertDialog(
             title: Text('Oops !'),
             content: Card(
               child: Text('No Data'),
             ),
           );
-        }
-    );
+        });
   }
-
 
   sumOfEnergyHour() async {
     dataMap = {};
     double totalValue = 0.0;
-    if(hourEnergy.isEmpty ){
+    if (hourEnergy.isEmpty) {
       setState(() {
-        pleaseSelect='There is not Data';
+        pleaseSelect = 'There is not Data';
       });
       return thereIsNoData(context);
-
     }
     setState(() {
       lengthHour = hourEnergy.length;
@@ -1807,7 +1817,7 @@ class _RoomBillState extends State<RoomBill> {
     print('currentDifference ${currentDifference}');
   }
 
-   findDifferenceBetweenDates() {
+  findDifferenceBetweenDates() {
     print(date1);
     print(date2);
     setState(() {
@@ -1835,17 +1845,15 @@ class _RoomBillState extends State<RoomBill> {
       print('tenMinuteEnergy ${response.body}');
       if (response.statusCode == 200) {
         data.addAll(jsonDecode(response.body));
-
       }
     }
     onlyDayEnergyList = List.from(data);
 
-    if(onlyDayEnergyList.isEmpty ){
+    if (onlyDayEnergyList.isEmpty) {
       setState(() {
-        pleaseSelect='There is not Data';
+        pleaseSelect = 'There is not Data';
       });
       return thereIsNoData(context);
-
     }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
@@ -1876,12 +1884,11 @@ class _RoomBillState extends State<RoomBill> {
     }
     onlyDayEnergyList = List.from(data);
 
-    if(onlyDayEnergyList.isEmpty ){
+    if (onlyDayEnergyList.isEmpty) {
       setState(() {
-        pleaseSelect='There is not Data';
+        pleaseSelect = 'There is not Data';
       });
       return thereIsNoData(context);
-
     }
     await sumYearData();
     print('beforeSsumData ${onlyDayEnergyList}');
@@ -1915,13 +1922,13 @@ class _RoomBillState extends State<RoomBill> {
       if (viewportConstraints.maxWidth > 600) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Room Bill'),
+            title: const Text('Room Bill'),
           ),
           body: SingleChildScrollView(
             child: Container(
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   FutureBuilder<List<PlaceType>>(
@@ -1933,8 +1940,8 @@ class _RoomBillState extends State<RoomBill> {
                           // setState(() {
                           //   floorVal = getfloors(snapshot.data[0].p_id);
                           // });
-                          if (snapshot.data.length == 0) {
-                            return Center(
+                          if (snapshot.data.isEmpty) {
+                            return const Center(
                                 child: Text("No Devices on this place"));
                           }
                           return Container(
@@ -1948,7 +1955,7 @@ class _RoomBillState extends State<RoomBill> {
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       boxShadow: [
-                                        BoxShadow(
+                                        const BoxShadow(
                                             color: Colors.black,
                                             blurRadius: 10,
                                             offset: Offset(7, 7)
@@ -1964,22 +1971,22 @@ class _RoomBillState extends State<RoomBill> {
                                       contentPadding: const EdgeInsets.all(15),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide:
-                                            BorderSide(color: Colors.white),
+                                            const BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide:
-                                            BorderSide(color: Colors.black),
+                                            const BorderSide(color: Colors.black),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
                                     dropdownColor: Colors.white70,
-                                    icon: Icon(Icons.arrow_drop_down),
+                                    icon: const Icon(Icons.arrow_drop_down),
                                     iconSize: 28,
-                                    hint: Text('Select Place'),
+                                    hint: const Text('Select Place'),
                                     isExpanded: true,
                                     value: pt,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -2005,10 +2012,10 @@ class _RoomBillState extends State<RoomBill> {
                                 vertical: 10, horizontal: 10),
                           );
                         } else {
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   FutureBuilder<List<FloorType>>(
@@ -2017,8 +2024,8 @@ class _RoomBillState extends State<RoomBill> {
                           (context, AsyncSnapshot<List<FloorType>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
-                            return Center(
-                                child: Text("No Devices on this place"));
+                            return const Center(
+                                child: const Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
@@ -2034,7 +2041,7 @@ class _RoomBillState extends State<RoomBill> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
-                                            BoxShadow(
+                                            const BoxShadow(
                                                 color: Colors.black,
                                                 blurRadius: 10,
                                                 offset: Offset(7, 7)
@@ -2053,24 +2060,24 @@ class _RoomBillState extends State<RoomBill> {
                                               const EdgeInsets.all(15),
                                           focusedBorder: OutlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
                                           enabledBorder: UnderlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
+                                        icon: const Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Floor'),
+                                        hint: const Text('Select Floor'),
                                         isExpanded: true,
                                         value: fl,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -2095,18 +2102,18 @@ class _RoomBillState extends State<RoomBill> {
                                 margin: new EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                             ],
                           );
                         } else {
-                          return Center(
-                              child: Text(
+                          return const Center(
+                              child: const Text(
                                   "Please select a place to proceed further"));
                         }
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   FutureBuilder<List<Flat>>(
@@ -2114,8 +2121,8 @@ class _RoomBillState extends State<RoomBill> {
                       builder: (context, AsyncSnapshot<List<Flat>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
-                            return Center(
-                                child: Text("No Devices on this place"));
+                            return const Center(
+                                child: const Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
@@ -2131,7 +2138,7 @@ class _RoomBillState extends State<RoomBill> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
-                                            BoxShadow(
+                                            const BoxShadow(
                                                 color: Colors.black,
                                                 blurRadius: 10,
                                                 offset: Offset(7, 7)
@@ -2150,24 +2157,24 @@ class _RoomBillState extends State<RoomBill> {
                                               const EdgeInsets.all(15),
                                           focusedBorder: OutlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
                                           enabledBorder: UnderlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
+                                        icon: const Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Floor'),
+                                        hint: const Text('Select Floor'),
                                         isExpanded: true,
                                         value: flt,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -2196,12 +2203,12 @@ class _RoomBillState extends State<RoomBill> {
                             ],
                           );
                         } else {
-                          return Center(
-                              child: Text(
+                          return const Center(
+                              child: const Text(
                                   "Please select a place to proceed further"));
                         }
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   FutureBuilder<List<RoomType>>(
@@ -2210,8 +2217,8 @@ class _RoomBillState extends State<RoomBill> {
                           (context, AsyncSnapshot<List<RoomType>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data.length == 0) {
-                            return Center(
-                                child: Text("No Devices on this place"));
+                            return const Center(
+                                child: const Text("No Devices on this place"));
                           }
                           return Column(
                             children: [
@@ -2227,10 +2234,10 @@ class _RoomBillState extends State<RoomBill> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
-                                            BoxShadow(
+                                            const BoxShadow(
                                                 color: Colors.black,
                                                 blurRadius: 10,
-                                                offset: Offset(7, 7)
+                                                offset: const Offset(7, 7)
                                                 // blurRadius: 30,
                                                 // // offset for Upward Effect
                                                 // offset: Offset(20,20)
@@ -2246,24 +2253,24 @@ class _RoomBillState extends State<RoomBill> {
                                               const EdgeInsets.all(15),
                                           focusedBorder: OutlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
                                           enabledBorder: UnderlineInputBorder(
                                             borderSide:
-                                                BorderSide(color: Colors.white),
+                                                const BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
+                                        icon: const Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
-                                        hint: Text('Select Room'),
+                                        hint: const Text('Select Room'),
                                         isExpanded: true,
                                         value: rm2,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -2292,14 +2299,14 @@ class _RoomBillState extends State<RoomBill> {
                                 margin: new EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                             ],
                           );
                         } else {
-                          return Center(
-                              child: Text(
+                          return const Center(
+                              child: const Text(
                                   "Please select a place to proceed further"));
                         }
                       }),
@@ -2328,8 +2335,8 @@ class _RoomBillState extends State<RoomBill> {
                                 : _valueMinute.toString()),
                           ],
                         )
-                      : Text("Wait"),
-                  SizedBox(
+                      : const Text("Wait"),
+                  const SizedBox(
                     height: 15,
                   ),
                   completeTask
@@ -2356,7 +2363,7 @@ class _RoomBillState extends State<RoomBill> {
                                 : _valueHour.toString()),
                           ],
                         )
-                      : Text("Wait"),
+                      : const Text("Wait"),
                   completeTask
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2378,7 +2385,7 @@ class _RoomBillState extends State<RoomBill> {
                             ),
                           ],
                         )
-                      : Text("Please Wait"),
+                      : const Text("Please Wait"),
                   completeTask
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2394,10 +2401,10 @@ class _RoomBillState extends State<RoomBill> {
                                   await getEnergyDayWeb();
                                   await sumYearData();
                                 },
-                                child: Text('Click'))
+                                child: const Text('Click'))
                           ],
                         )
-                      : Text("Please Wait"),
+                      : const Text("Please Wait"),
                   completeTask
                       ? Container(
                           child: Center(
@@ -2405,10 +2412,10 @@ class _RoomBillState extends State<RoomBill> {
                               color: Colors.lightBlue,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6.0)),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 60),
-                                child: Text(
+                                child: const Text(
                                   'Total Usage',
                                   style: TextStyle(
                                       color: Colors.white,
@@ -2451,319 +2458,348 @@ class _RoomBillState extends State<RoomBill> {
                 const SizedBox(
                   height: 25,
                 ),
-                placeBool==false?  FutureBuilder<List<PlaceType>>(
-                    future: placeVal,
-                    builder:
-                        (context, AsyncSnapshot<List<PlaceType>> snapshot) {
-                      if (snapshot.hasData) {
-                        // print(snapshot.hasData);
-                        // setState(() {
-                        //   floorVal = getfloors(snapshot.data[0].p_id);
-                        // });
-                        if (snapshot.data.length == 0) {
-                          return Center(
-                              child: Text("No Devices on this place"));
-                        }
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
+                placeBool == false
+                    ? FutureBuilder<List<PlaceType>>(
+                        future: placeVal,
+                        builder:
+                            (context, AsyncSnapshot<List<PlaceType>> snapshot) {
+                          if (snapshot.hasData) {
+                            // print(snapshot.hasData);
+                            // setState(() {
+                            //   floorVal = getfloors(snapshot.data[0].p_id);
+                            // });
+                            if (snapshot.data.length == 0) {
+                              return const Center(
+                                  child: const Text("No Devices on this place"));
+                            }
+                            return Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 10,
+                                        offset: Offset(7, 7)
+                                        // offset: Offset(20,20)
+                                        )
+                                  ],
+                                  border: Border.all(
                                     color: Colors.black,
-                                    blurRadius: 10,
-                                    offset: Offset(7, 7)
-                                    // offset: Offset(20,20)
-                                    )
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<PlaceType>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
+                                    width: 0.5,
+                                  )),
+                              child: DropdownButtonFormField<PlaceType>(
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                                dropdownColor: Colors.white70,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                iconSize: 28,
+                                hint: const Text('Select Place'),
+                                isExpanded: true,
+                                value: pt,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                items: snapshot.data.map((selectedPlace) {
+                                  return DropdownMenuItem<PlaceType>(
+                                    value: selectedPlace,
+                                    child: Text(selectedPlace.pType),
+                                  );
+                                }).toList(),
+                                onChanged: (PlaceType selectedPlace) {
+                                  setState(() {
+                                    fl = null;
+                                    pt = selectedPlace;
+                                    placeBool = true;
+                                    floorVal = getfloors(selectedPlace.pId);
+                                  });
+                                },
                               ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Place'),
-                            isExpanded: true,
-                            value: pt,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data.map((selectedPlace) {
-                              return DropdownMenuItem<PlaceType>(
-                                value: selectedPlace,
-                                child: Text(selectedPlace.pType),
-                              );
-                            }).toList(),
-                            onChanged: (PlaceType selectedPlace) {
-                              setState(() {
-                                fl = null;
-                                pt = selectedPlace;
-                                placeBool=true;
-                                floorVal = getfloors(selectedPlace.pId);
-                              });
-                            },
-                          ),
-                        );
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    }):
-
-                floorBool==false? FutureBuilder<List<FloorType>>(
-                    future: floorVal,
-                    builder:
-                        (context, AsyncSnapshot<List<FloorType>> snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data.length == 0) {
-                          return Center(
-                              child: Text("No Devices on this place"));
-                        }
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10,
-                                    offset: Offset(7, 7)
-                                    // blurRadius: 30,
-                                    // // offset for Upward Effect
-                                    // offset: Offset(20,20)
-                                    )
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<FloorType>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Floor'),
-                            isExpanded: true,
-                            value: fl,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data.map((selectedFloor) {
-                              return DropdownMenuItem<FloorType>(
-                                value: selectedFloor,
-                                child: Text(selectedFloor.fName),
-                              );
-                            }).toList(),
-                            onChanged: (FloorType selectedFloor) {
-                              setState(() {
-                                fl = selectedFloor;
-                                floorBool = true;
-                                flatVal = getflat(selectedFloor.fId);
-                              });
-                            },
-                          ),
-                        );
-                      } else {
-                        return Center(
-                            child: Text(
-                                "Please select a place to proceed further"));
-                      }
-                    }):
-                flatBool==false?  FutureBuilder<List<Flat>>(
-                    future: flatVal,
-                    builder: (context, AsyncSnapshot<List<Flat>> snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data.length == 0) {
-                          return Center(
-                              child: Text("No Devices on this place"));
-                        }
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10,
-                                    offset: Offset(7, 7)
-                                    // blurRadius: 30,
-                                    // // offset for Upward Effect
-                                    // offset: Offset(20,20)
-                                    )
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<Flat>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Flat'),
-                            isExpanded: true,
-                            value: flt,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data.map((selectedFlat) {
-                              return DropdownMenuItem<Flat>(
-                                value: selectedFlat,
-                                child: Text(selectedFlat.fltName),
-                              );
-                            }).toList(),
-                            onChanged: (Flat selectedFlat) {
-                              setState(() {
-                                flt = selectedFlat;
-                                selectedflat = selectedFlat.fltId;
-                                flatBool = true;
-                                roomVal = getrooms(selectedflat);
-                              });
-                            },
-                          ),
-                        );
-                      } else {
-                        return Center(
-                            child: Text(
-                                "Please select a place to proceed further"));
-                      }
-                    }):
-
-                roomBool==false? FutureBuilder<List<RoomType>>(
-                    future: roomVal,
-                    builder: (context, AsyncSnapshot<List<RoomType>> snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data.length == 0) {
-                          return Center(
-                              child: Text("No Devices on this place"));
-                        }
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10,
-                                    offset: Offset(7, 7)
-                                    // blurRadius: 30,
-                                    // // offset for Upward Effect
-                                    // offset: Offset(20,20)
-                                    )
-                              ],
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              )),
-                          child: DropdownButtonFormField<RoomType>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(15),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            dropdownColor: Colors.white70,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 28,
-                            hint: Text('Select Room'),
-                            isExpanded: true,
-                            value: rm2,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: snapshot.data.map((selectedRoom) {
-                              return DropdownMenuItem<RoomType>(
-                                value: selectedRoom,
-                                child: Text(selectedRoom.rName),
-                              );
-                            }).toList(),
-                            onChanged: (RoomType selectedRoom) async {
-                              setState(() {
-                                rm2 = selectedRoom;
-                                selectedroom = selectedRoom.rId;
-                                roomBool = true;
-                              });
-                              await getDevice(selectedroom);
-                              setState(() {
-                                completeTask = true;
-                              });
-                            },
-                          ),
-                        );
-                      } else {
-                        return Center(
-                            child: Text(
-                                "Please select a place to proceed further"));
-                      }
-                    }):
-                completeTask
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DropdownButton(
-                              value: chooseValueMinute,
-                              onChanged: (index) async {
-                                setState(() {
-                                  chooseValueMinute = index;
-                                });
-                                totalValue = 0.0;
-
-                                await sumOfEnergyTenMinutes();
-                              },
-                              items: minute.map((valueItem) {
-                                return DropdownMenuItem(
-                                  value: valueItem,
-                                  child: Text(valueItem),
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        })
+                    : floorBool == false
+                        ? FutureBuilder<List<FloorType>>(
+                            future: floorVal,
+                            builder: (context,
+                                AsyncSnapshot<List<FloorType>> snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return const Center(
+                                      child: Text("No Devices on this place"));
+                                }
+                                return Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        const BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 10,
+                                            offset: Offset(7, 7)
+                                            // blurRadius: 30,
+                                            // // offset for Upward Effect
+                                            // offset: Offset(20,20)
+                                            )
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )),
+                                  child: DropdownButtonFormField<FloorType>(
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.all(15),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                            const BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            const BorderSide(color: Colors.white),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                    dropdownColor: Colors.white70,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 28,
+                                    hint: const Text('Select Floor'),
+                                    isExpanded: true,
+                                    value: fl,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    items: snapshot.data.map((selectedFloor) {
+                                      return DropdownMenuItem<FloorType>(
+                                        value: selectedFloor,
+                                        child: Text(selectedFloor.fName),
+                                      );
+                                    }).toList(),
+                                    onChanged: (FloorType selectedFloor) {
+                                      setState(() {
+                                        fl = selectedFloor;
+                                        floorBool = true;
+                                        flatVal = getflat(selectedFloor.fId);
+                                      });
+                                    },
+                                  ),
                                 );
-                              }).toList()),
-                          Text(_valueMinute == null
-                              ? pleaseSelect
-                              : _valueMinute.toString()),
-                        ],
-                      )
-                    : Text("Wait"),
-                SizedBox(
+                              } else {
+                                return const Center(
+                                    child: const Text(
+                                        "Please select a place to proceed further"));
+                              }
+                            })
+                        : flatBool == false
+                            ? FutureBuilder<List<Flat>>(
+                                future: flatVal,
+                                builder: (context,
+                                    AsyncSnapshot<List<Flat>> snapshot) {
+                                  if (snapshot.hasData) {
+                                    if (snapshot.data.length == 0) {
+                                      return const Center(
+                                          child:
+                                              const Text("No Devices on this place"));
+                                    }
+                                    return Container(
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            const BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                                offset: const Offset(7, 7)
+                                                // blurRadius: 30,
+                                                // // offset for Upward Effect
+                                                // offset: Offset(20,20)
+                                                )
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )),
+                                      child: DropdownButtonFormField<Flat>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.all(15),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                                const BorderSide(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                const BorderSide(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                        ),
+                                        dropdownColor: Colors.white70,
+                                        icon: const Icon(Icons.arrow_drop_down),
+                                        iconSize: 28,
+                                        hint: const Text('Select Flat'),
+                                        isExpanded: true,
+                                        value: flt,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        items:
+                                            snapshot.data.map((selectedFlat) {
+                                          return DropdownMenuItem<Flat>(
+                                            value: selectedFlat,
+                                            child: Text(selectedFlat.fltName),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Flat selectedFlat) {
+                                          setState(() {
+                                            flt = selectedFlat;
+                                            selectedflat = selectedFlat.fltId;
+                                            flatBool = true;
+                                            roomVal = getrooms(selectedflat);
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    return const Center(
+                                        child: const Text(
+                                            "Please select a place to proceed further"));
+                                  }
+                                })
+                            : roomBool == false
+                                ? FutureBuilder<List<RoomType>>(
+                                    future: roomVal,
+                                    builder: (context,
+                                        AsyncSnapshot<List<RoomType>>
+                                            snapshot) {
+                                      if (snapshot.hasData) {
+                                        if (snapshot.data.length == 0) {
+                                          return const Center(
+                                              child: const Text(
+                                                  "No Devices on this place"));
+                                        }
+                                        return Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                const BoxShadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 10,
+                                                    offset: const Offset(7, 7)
+                                                    // blurRadius: 30,
+                                                    // // offset for Upward Effect
+                                                    // offset: Offset(20,20)
+                                                    )
+                                              ],
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5,
+                                              )),
+                                          child:
+                                              DropdownButtonFormField<RoomType>(
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                            ),
+                                            dropdownColor: Colors.white70,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 28,
+                                            hint: const Text('Select Room'),
+                                            isExpanded: true,
+                                            value: rm2,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            items: snapshot.data
+                                                .map((selectedRoom) {
+                                              return DropdownMenuItem<RoomType>(
+                                                value: selectedRoom,
+                                                child: Text(selectedRoom.rName),
+                                              );
+                                            }).toList(),
+                                            onChanged:
+                                                (RoomType selectedRoom) async {
+                                              setState(() {
+                                                rm2 = selectedRoom;
+                                                selectedroom = selectedRoom.rId;
+                                                roomBool = true;
+                                              });
+                                              await getDevice(selectedroom);
+                                              setState(() {
+                                                completeTask = true;
+                                              });
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(
+                                            child: const Text(
+                                                "Please select a place to proceed further"));
+                                      }
+                                    })
+                                : completeTask
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          DropdownButton(
+                                              value: chooseValueMinute,
+                                              onChanged: (index) async {
+                                                setState(() {
+                                                  chooseValueMinute = index;
+                                                });
+                                                totalValue = 0.0;
+
+                                                await sumOfEnergyTenMinutes();
+                                              },
+                                              items: minute.map((valueItem) {
+                                                return DropdownMenuItem(
+                                                  value: valueItem,
+                                                  child: Text(valueItem),
+                                                );
+                                              }).toList()),
+                                          Text(_valueMinute == null
+                                              ? pleaseSelect
+                                              : _valueMinute.toString()),
+                                        ],
+                                      )
+                                    : const Text("Wait"),
+                const SizedBox(
                   height: 10,
                 ),
                 completeTask
@@ -2790,7 +2826,7 @@ class _RoomBillState extends State<RoomBill> {
                               : _valueHour.toString()),
                         ],
                       )
-                    : Text("Wait"),
+                    : const Text("Wait"),
                 completeTask
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2799,16 +2835,14 @@ class _RoomBillState extends State<RoomBill> {
                             onTap: () async {
                               await showDatePicker1();
                             },
-                            child:
-                                Text(cutDate ?? 'Select Date'),
+                            child: Text(cutDate ?? 'Select Date'),
                           ),
                           InkWell(
                             onTap: () {
                               showDatePicker2();
                               // print12();
                             },
-                            child: Text(
-                                cutDate2 ?? 'Select Date'),
+                            child: Text(cutDate2 ?? 'Select Date'),
                           ),
                         ],
                       )
@@ -2828,7 +2862,7 @@ class _RoomBillState extends State<RoomBill> {
                                 await getEnergyDay();
                                 await sumYearData();
                               },
-                              child: Text('Click'))
+                              child: const Text('Click'))
                         ],
                       )
                     : const Text("Please Wait"),
@@ -2848,10 +2882,12 @@ class _RoomBillState extends State<RoomBill> {
                             child: Center(
                               child: TextField(
                                 controller: billTotalController,
-                                keyboardType:const TextInputType.numberWithOptions(decimal: true) ,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                        decimal: true),
                                 textAlign: TextAlign.center,
-                                textDirection:TextDirection.rtl,
-                                decoration:  const InputDecoration(
+                                textDirection: TextDirection.rtl,
+                                decoration: const InputDecoration(
                                     // border: OutlineInputBorder(),
                                     hintText: 'Enter a rs per unit'),
                               ),
@@ -2865,37 +2901,37 @@ class _RoomBillState extends State<RoomBill> {
                 ),
                 completeTask
                     ? Center(
-                      child: RaisedButton(
-                        color: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0)),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 60),
-                          child: Text(
-                            'Total Usage',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold),
+                        child: RaisedButton(
+                          color: Colors.lightBlue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6.0)),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 60),
+                            child: Text(
+                              'Total Usage',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
+                          onPressed: () async {
+                            await totalAmount(billTotalController.text);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TotalUsage(
+                                          totalEnergy: tenMinuteTotalUsage ??
+                                              varFinalTotalValue,
+                                          chooseValueMinute:
+                                              chooseValueMinute ?? "60 Minute",
+                                          deviceId: dataMap,
+                                          totalAmountInRs: totalAmountInRs,
+                                        )));
+                          },
                         ),
-                        onPressed: () async {
-                          await totalAmount(billTotalController.text);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TotalUsage(
-                                        totalEnergy:
-                                            tenMinuteTotalUsage ?? varFinalTotalValue,
-                                        chooseValueMinute:
-                                            chooseValueMinute ?? "60 Minute",
-                                        deviceId: dataMap,
-                                    totalAmountInRs: totalAmountInRs,
-                                      )));
-                        },
-                      ),
-                    )
+                      )
                     : Container(),
               ],
             ),
@@ -2904,10 +2940,11 @@ class _RoomBillState extends State<RoomBill> {
       }
     });
   }
-  double totalAmountInRs=0.0;
-  totalAmount(String rsValue){
-    double rsConversion=double.parse(rsValue);
-    double conversion=double.parse(varFinalTotalValue);
-    totalAmountInRs=(conversion/1000)*rsConversion;
+
+  double totalAmountInRs = 0.0;
+  totalAmount(String rsValue) {
+    double rsConversion = double.parse(rsValue);
+    double conversion = double.parse(varFinalTotalValue);
+    totalAmountInRs = (conversion / 1000) * rsConversion;
   }
 }

@@ -61,6 +61,7 @@ void initState(){
 
     var dir= await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
+
     tempUserBox=await Hive.openBox('tempUser');
     print('tempUserBox  ${tempUserBox.values.toString()}');
     return;

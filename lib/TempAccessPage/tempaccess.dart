@@ -25,7 +25,8 @@ void main() => runApp(MaterialApp(
 
 class TempAccessPage extends StatefulWidget {
   var mobileNumber;
-  TempAccessPage({Key key,
+  TempAccessPage({
+    Key key,
     this.mobileNumber,
   });
   @override
@@ -54,19 +55,23 @@ class _TempAccessPageState extends State<TempAccessPage> {
   void initState() {
     super.initState();
     print('initState123 ${widget.mobileNumber}');
-    getTempFuture=getTempUsers();
-    getTempFutureWeb=getTempUsersWeb().then((value) => getPlaceNameWeb().then((value) =>  getFloorNameWeb().then((value) => getFlatNameWeb()).then((value) => getRoomNameWeb())));
-    getTempFuture=getTempUsers().then((value) => getPlaceName().then((value) =>  getFloorName().then((value) => getFlatName()).then((value) => getRoomName())));
-
+    getTempFuture = getTempUsers();
+    getTempFutureWeb = getTempUsersWeb().then((value) => getPlaceNameWeb().then(
+        (value) => getFloorNameWeb()
+            .then((value) => getFlatNameWeb())
+            .then((value) => getRoomNameWeb())));
+    getTempFuture = getTempUsers();
+    // .then((value) =>
+     getPlaceName().then(
+        (value) => getFloorName()
+            .then((value) => getFlatName())
+            .then((value) => getRoomName()));
   }
-
-
-
 
   TempUser tempUser;
 
   List tempUserDecodeList;
-  List tempUserDecode=[''];
+  List tempUserDecode = [''];
   List tempUserPlaceNameDecode;
 
   Future openTempUserBox() async {
@@ -74,7 +79,6 @@ class _TempAccessPageState extends State<TempAccessPage> {
     Hive.init(dir.path);
     tempUserBox = await Hive.openBox('tempUser');
     print('tempUserBoxLength  ${tempUserBox.length}');
-    return;
   }
 
   var tokenWeb;
@@ -86,11 +90,10 @@ class _TempAccessPageState extends State<TempAccessPage> {
   }
 
   Future<bool> getTempUsers() async {
-
     String token = await getToken();
-    await openTempUserBox();
+     openTempUserBox();
 
-    final url = API+'giveaccesstotempuser/?mobile='+widget.mobileNumber;
+    final url = API + 'giveaccesstotempuser/?mobile=' + widget.mobileNumber;
     try {
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -100,15 +103,18 @@ class _TempAccessPageState extends State<TempAccessPage> {
 
       await tempUserBox.clear();
 
-       tempUserDecode = jsonDecode(response.body);
+      if (response.statusCode > 0) {
+        tempUserDecode = jsonDecode(response.body);
 
-      print('tempResponse ${tempUserDecode}');
-      setState(() {
-        tempUserDecodeList = tempUserDecode;
-        putTempUser(tempUserDecodeList);
-      });
-      print('tempUserDecode ${tempUserDecodeList.length}');
-      print('Number1123->  ${tempUserDecodeList}');
+        print('tempResponse ${tempUserDecode}');
+        print('tempResponse ${response.statusCode}');
+        setState(() {
+          tempUserDecodeList = tempUserDecode;
+          putTempUser(tempUserDecodeList);
+        });
+        print('tempUserDecode ${tempUserDecodeList.length}');
+        print('Number1123->  ${tempUserDecodeList}');
+      } else {}
     } catch (e) {
       // print('Status Exception $e');
 
@@ -122,12 +128,12 @@ class _TempAccessPageState extends State<TempAccessPage> {
     }
     return Future.value(true);
   }
+
   List tempUserDecodeWeb;
   Future<bool> getTempUsersWeb() async {
-
     await getTokenWeb();
 
-    final url = API+'giveaccesstotempuser/?mobile=7042717549';
+    final url = API + 'giveaccesstotempuser/?mobile=7042717549';
     try {
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -155,21 +161,17 @@ class _TempAccessPageState extends State<TempAccessPage> {
     }
   }
 
-
-var pId;
+  var pId;
   List tempUserDecodeListNames;
-  List <PlaceNameModelsForTempUSer> placeName;
-
-
-
+  List<PlaceNameModelsForTempUSer> placeName;
 
   Future getPlaceName() async {
-    String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
-    for(int i=0;i<tempUserDecodeList.length;i++){
-      pId=tempUserDecodeList[i]['p_id'];
+    String token = await getToken();
+    for (int i = 0; i < tempUserDecodeList.length; i++) {
+      pId = tempUserDecodeList[i]['p_id'];
       print('checkPlaceId $pId');
-      if(pId!=null){
-        final url = API+'getyouplacename/?p_id='+ pId;
+      if (pId != null) {
+        final url = API + 'getyouplacename/?p_id=' + pId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -179,30 +181,26 @@ var pId;
           print("GetPlaceName  ${response.statusCode}");
           print("GetPlaceNameResponseBody  ${response.body}");
           var data = jsonDecode(response.body);
-          placeNameList=data;
+          placeNameList = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("GetPlaceNameResponseBodynames ${placeNameList}");
-
         }
-      }else{
+      } else {
         return;
       }
-
-
     }
-    
-
   }
+
   Future getPlaceNameWeb() async {
     await getTokenWeb();
     print('yoyoy');
-    for(int i=0;i<tempUserDecodeWeb.length;i++){
-      pId=tempUserDecodeWeb[i]['p_id'];
+    for (int i = 0; i < tempUserDecodeWeb.length; i++) {
+      pId = tempUserDecodeWeb[i]['p_id'];
       print('checkPlaceId $pId');
-      if(pId!=null){
-        final url = API+'getyouplacename/?p_id='+ pId;
+      if (pId != null) {
+        final url = API + 'getyouplacename/?p_id=' + pId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -212,30 +210,25 @@ var pId;
           print("GetPlaceName  ${response.statusCode}");
           print("GetPlaceNameResponseBody  ${response.body}");
           var data = jsonDecode(response.body);
-          placeNameListWeb=data;
+          placeNameListWeb = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("GetPlaceNameResponseBodynames ${placeNameListWeb}");
-
         }
-      }else{
+      } else {
         return;
       }
-
-
     }
-
-
   }
 
   Future getFloorName() async {
     String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
-    for(int i=0;i<tempUserDecodeList.length;i++){
-     var fId=tempUserDecodeList[i]['f_id'];
+    for (int i = 0; i < tempUserDecodeList.length; i++) {
+      var fId = tempUserDecodeList[i]['f_id'];
       print('checkFloorId $fId');
-      if(fId!=null){
-        final url = API+'getyoufloorname/?f_id='+ fId;
+      if (fId != null) {
+        final url = API + 'getyoufloorname/?f_id=' + fId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -245,28 +238,23 @@ var pId;
           print("GetFloorName  ${response.statusCode}");
           print("GetFloorNameResponseBody  ${response.body}");
           var data = jsonDecode(response.body);
-          floorNameList=data;
+          floorNameList = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("GetFloorNameResponseBodynames ${floorNameList[0]['f_name']}");
-
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
+
   Future getFloorNameWeb() async {
     await getTokenWeb();
-    for(int i=0;i<tempUserDecodeWeb.length;i++){
-     var fId=tempUserDecodeWeb[i]['f_id'];
+    for (int i = 0; i < tempUserDecodeWeb.length; i++) {
+      var fId = tempUserDecodeWeb[i]['f_id'];
       print('checkFloorId $fId');
-      if(fId!=null){
-        final url = API+'getyoufloorname/?f_id='+ fId;
+      if (fId != null) {
+        final url = API + 'getyoufloorname/?f_id=' + fId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -276,30 +264,24 @@ var pId;
           print("GetFloorName  ${response.statusCode}");
           print("GetFloorNameResponseBody  ${response.body}");
           var data = jsonDecode(response.body);
-          floorNameListWeb=data;
+          floorNameListWeb = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
-          print("GetFloorNameResponseBodynames ${floorNameListWeb[0]['f_name']}");
-
+          print(
+              "GetFloorNameResponseBodynames ${floorNameListWeb[0]['f_name']}");
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
-
 
   Future getFlatName() async {
     String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
-    for(int i=0;i<tempUserDecodeList.length;i++){
-      var flatId=tempUserDecodeList[i]['flt_id'];
+    for (int i = 0; i < tempUserDecodeList.length; i++) {
+      var flatId = tempUserDecodeList[i]['flt_id'];
       print('checkFloorId $flatId');
-      if(flatId!=null){
-        final url = API+'getyouflatname/?flt_id='+ flatId;
+      if (flatId != null) {
+        final url = API + 'getyouflatname/?flt_id=' + flatId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -309,28 +291,23 @@ var pId;
           print("getyouflatname  ${response.statusCode}");
           print("getyouflatname  ${response.body}");
           var data = jsonDecode(response.body);
-          flatNameList=data;
+          flatNameList = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("getyouflatname ${flatNameList[0]['f_name']}");
-
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
+
   Future getFlatNameWeb() async {
     await getTokenWeb();
-    for(int i=0;i<tempUserDecodeWeb.length;i++){
-      var flatId=tempUserDecodeWeb[i]['flt_id'];
+    for (int i = 0; i < tempUserDecodeWeb.length; i++) {
+      var flatId = tempUserDecodeWeb[i]['flt_id'];
       print('checkFloorId $flatId');
-      if(flatId!=null){
-        final url = API+'getyouflatname/?flt_id='+ flatId;
+      if (flatId != null) {
+        final url = API + 'getyouflatname/?flt_id=' + flatId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -340,29 +317,23 @@ var pId;
           print("getyouflatname  ${response.statusCode}");
           print("getyouflatnameWeb  ${response.body}");
           var data = jsonDecode(response.body);
-          flatNameListWeb=data;
+          flatNameListWeb = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("getyouflatnameWeb ${flatNameListWeb[0]['f_name']}");
-
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
 
   Future getRoomName() async {
     String token = "a039b535792f99ee21d34dc544caad703cb7f78e";
-    for(int i=0;i<tempUserDecodeList.length;i++){
-      var rId=tempUserDecodeList[i]['r_id'];
+    for (int i = 0; i < tempUserDecodeList.length; i++) {
+      var rId = tempUserDecodeList[i]['r_id'];
       print('checkRoomId $rId');
-      if(rId!=null){
-        final url = API+'getyouroomname/?r_id='+ rId;
+      if (rId != null) {
+        final url = API + 'getyouroomname/?r_id=' + rId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -372,28 +343,23 @@ var pId;
           print("getyouroomname  ${response.statusCode}");
           print("getyouroomname  ${response.body}");
           var data = jsonDecode(response.body);
-          roomNameList=data;
+          roomNameList = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
           print("GetFloorNameResponseBodynames ${roomNameList[0]['r_name']}");
-
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
+
   Future getRoomNameWeb() async {
     await getTokenWeb();
-    for(int i=0;i<tempUserDecodeWeb.length;i++){
-      var rId=tempUserDecodeWeb[i]['r_id'];
+    for (int i = 0; i < tempUserDecodeWeb.length; i++) {
+      var rId = tempUserDecodeWeb[i]['r_id'];
       print('checkRoomId $rId');
-      if(rId!=null){
-        final url = API+'getyouroomname/?r_id='+ rId;
+      if (rId != null) {
+        final url = API + 'getyouroomname/?r_id=' + rId;
         final response = await http.get(url, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -403,32 +369,26 @@ var pId;
           print("getyouroomname  ${response.statusCode}");
           print("getyouroomnameWeb  ${response.body}");
           var data = jsonDecode(response.body);
-          roomNameListWeb=data;
+          roomNameListWeb = data;
           // setState(() {
           //   placeName=data.map((data) =>PlaceNameModelsForTempUSer.fromJson(data));
           // });
-          print("GetFloorNameResponseBodynames ${roomNameListWeb[0]['r_name']}");
-
+          print(
+              "GetFloorNameResponseBodynames ${roomNameListWeb[0]['r_name']}");
         }
-      }else{
-
-      }
-
-
+      } else {}
     }
-
   }
 
-
-var number;
-  _removeTempNumber()async{
-    final SharedPreferences pref= await SharedPreferences.getInstance();
+  var number;
+  _removeTempNumber() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
     // number= pref.getString('mobileNumber');
     pref.remove('mobileNumber');
     print('number147859 ${number}');
   }
 
-TextEditingController phoneController= new TextEditingController();
+  TextEditingController phoneController = new TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String validateMobile(String value) {
     String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
@@ -442,96 +402,86 @@ TextEditingController phoneController= new TextEditingController();
     }
     return null;
   }
-  Future _setTempNumber( mobile)async{
-    final pref= await SharedPreferences.getInstance();
+
+  Future _setTempNumber(mobile) async {
+    final pref = await SharedPreferences.getInstance();
     pref.setString('mobileNumber', mobile);
-
-
   }
+
   _showDialogForTempAccessPge() {
     // dialog implementation
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            content: Text("Enter your Mobile Number"),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              Form(
-                key: formKey,
-                child: TextFormField(
-                  autofocus: true,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  autovalidateMode:
-                  AutovalidateMode.onUserInteraction,
-                  validator: validateMobile,
-                  controller: phoneController,
-                  // onSaved: (String value) {
-                  //   phone = value;
-                  // },
-                  style: TextStyle(
-                      fontSize: 18, color: Colors.black54),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.phone_android),
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Enter your Contact',
-                    errorStyle: TextStyle(),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    contentPadding: const EdgeInsets.all(15),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
+      builder: (context) => AlertDialog(
+        content: Text("Enter your Mobile Number"),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          Form(
+            key: formKey,
+            child: TextFormField(
+              autofocus: true,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validateMobile,
+              controller: phoneController,
+              // onSaved: (String value) {
+              //   phone = value;
+              // },
+              style: TextStyle(fontSize: 18, color: Colors.black54),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.phone_android),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Enter your Contact',
+                errorStyle: TextStyle(),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                contentPadding: const EdgeInsets.all(15),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(50),
                 ),
               ),
+            ),
+          ),
+          // ignore: deprecated_member_use
+          Row(
+            children: [
               // ignore: deprecated_member_use
-              Row(
-                children: [
-                  // ignore: deprecated_member_use
-                  FlatButton(
-                      child: Text("Submit"),
-                      onPressed: ()async {
-                        await _removeTempNumber();
-                        var mobile =phoneController.text;
-                        _setTempNumber(mobile);
-
-
-                      }),
-                  FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                ],
-              ),
-
+              FlatButton(
+                  child: Text("Submit"),
+                  onPressed: () async {
+                    await _removeTempNumber();
+                    var mobile = phoneController.text;
+                    _setTempNumber(mobile);
+                  }),
+              FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
             ],
           ),
+        ],
+      ),
     );
   }
 
-
-var NoPlace='NoPlace';
+  var NoPlace = 'NoPlace';
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
       if (viewportConstraints.maxWidth > 600) {
         return Scaffold(
@@ -569,7 +519,7 @@ var NoPlace='NoPlace';
                       builder: (context, snapshot) {
                         print('snapdatnoo');
                         if (snapshot.hasData) {
-                            print('snapdatdone');
+                          print('snapdatdone');
                           if (tempUserDecodeWeb.isEmpty) {
                             return Column(
                               children: [
@@ -578,9 +528,13 @@ var NoPlace='NoPlace';
                                 ),
                                 Center(
                                     child: Text(
-                                      'Sorry we cannot find any Temp User please add',
-                                      style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
-                                    )),
+                                  'Sorry we cannot find any Temp User please add',
+                                  style: TextStyle(
+                                      fontFamily: fonttest == null
+                                          ? changeFont
+                                          : fonttest,
+                                      fontSize: 18),
+                                )),
                               ],
                             );
                           } else {
@@ -603,51 +557,111 @@ var NoPlace='NoPlace';
                                               child: Column(
                                                 children: [
                                                   ListTile(
-                                                    onTap: (){
-                                                      if(tempUserDecodeWeb[index]['p_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
-                                                          placeId: tempUserDecodeWeb[index]['p_id'].toString(),
-                                                          ownerName: tempUserDecodeWeb[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeWeb[index]['f_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
-                                                          floorId: tempUserDecodeWeb[index]['f_id'].toString(),
-                                                          ownerName: tempUserDecodeWeb[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeWeb[index]['flt_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
-                                                          flatId: tempUserDecodeWeb[index]['flt_id'].toString(),
-                                                          ownerName: tempUserDecodeWeb[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeWeb[index]['r_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
-                                                          ownerName: tempUserDecodeWeb[index]['owner_name'].toString(),
-                                                          roomId: tempUserDecodeWeb[index]['r_id'],
-                                                        )));
-                                                      }else if(tempUserDecodeWeb[index]['d_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
-                                                          ownerName: tempUserDecodeWeb[index]['owner_name'].toString(),
-                                                          deviceId: tempUserDecodeWeb[index]['d_id'],
-                                                        )));
+                                                    onTap: () {
+                                                      if (tempUserDecodeWeb[
+                                                              index]['p_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessPlacePage(
+                                                                          placeId:
+                                                                              tempUserDecodeWeb[index]['p_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeWeb[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeWeb[
+                                                              index]['f_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessFloorPage(
+                                                                          floorId:
+                                                                              tempUserDecodeWeb[index]['f_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeWeb[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeWeb[
+                                                                  index]
+                                                              ['flt_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessFlatPage(
+                                                                          flatId:
+                                                                              tempUserDecodeWeb[index]['flt_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeWeb[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeWeb[
+                                                              index]['r_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessRoomPage(
+                                                                          ownerName:
+                                                                              tempUserDecodeWeb[index]['owner_name'].toString(),
+                                                                          roomId:
+                                                                              tempUserDecodeWeb[index]['r_id'],
+                                                                        )));
+                                                      } else if (tempUserDecodeWeb[
+                                                              index]['d_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessDevicePage(
+                                                                          ownerName:
+                                                                              tempUserDecodeWeb[index]['owner_name'].toString(),
+                                                                          deviceId:
+                                                                              tempUserDecodeWeb[index]['d_id'],
+                                                                        )));
                                                       }
-
-
                                                     },
-                                                    title: Text(tempUserDecodeWeb[index]['owner_name']  .toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-
+                                                    title: Text(
+                                                      tempUserDecodeWeb[index]
+                                                              ['owner_name']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            fonttest == null
+                                                                ? changeFont
+                                                                : fonttest,
+                                                      ),
+                                                    ),
                                                   ),
-
                                                   Row(
                                                     children: [
                                                       SizedBox(
                                                         width: 5,
                                                       ),
-
                                                       Padding(
-                                                        padding: const EdgeInsets.all(4.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
                                                         child: Text(
-                                                          tempUserDecodeWeb[index]['p_id']==null?'':"PlaceName : ${placeNameListWeb[index]['p_type']}",
-                                                          textAlign: TextAlign.end,
+                                                          tempUserDecodeWeb[
+                                                                          index]
+                                                                      [
+                                                                      'p_id'] ==
+                                                                  null
+                                                              ? ''
+                                                              : "PlaceName : ${placeNameListWeb[index]['p_type']}",
+                                                          textAlign:
+                                                              TextAlign.end,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -655,47 +669,80 @@ var NoPlace='NoPlace';
                                                       ),
                                                       Text(
                                                         tempUserDecodeWeb[index]
-                                                        ['f_id']==null?'':"FloorName : ${floorNameListWeb[0]['f_name'].toString()}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                                    ['f_id'] ==
+                                                                null
+                                                            ? ''
+                                                            : "FloorName : ${floorNameListWeb[0]['f_name'].toString()}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
                                                       Text(
                                                         tempUserDecodeWeb[index]
-                                                        ['flt_id']
-                                                            ==null?'':"Flat Name :  ${flatNameListWeb[0]['flt_name']}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                                    [
+                                                                    'flt_id'] ==
+                                                                null
+                                                            ? ''
+                                                            : "Flat Name :  ${flatNameListWeb[0]['flt_name']}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
                                                       Text(
                                                         tempUserDecodeWeb[index]
-                                                        ['r_id']==null?"":  "RoomName : ${roomNameListWeb[0]['r_name']}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                                    ['r_id'] ==
+                                                                null
+                                                            ? ""
+                                                            : "RoomName : ${roomNameListWeb[0]['r_name']}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
-
                                                       Text(
                                                         tempUserDecodeWeb[index]
-                                                        ['d_id']==null?'':'Device : ${tempUserDecodeWeb[index]['d_id']}',
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                                    ['d_id'] ==
+                                                                null
+                                                            ? ''
+                                                            : 'Device : ${tempUserDecodeWeb[index]['d_id']}',
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
-
                                                 ],
                                               ),
                                             ),
                                           );
-
                                         })),
                               ],
                             );
@@ -714,20 +761,20 @@ var NoPlace='NoPlace';
             ),
           ),
         );
-      }else{
+      } else {
         return Scaffold(
-
           appBar: AppBar(
             title: Text('Temp Access'),
             actions: [
               MaterialButton(
-                  onPressed: ()async {
-
+                  onPressed: () async {
                     await _showDialogForTempAccessPge();
                   },
                   child: Text(
                     'Edit PhoneNumber',
-                    style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 15),
+                    style: TextStyle(
+                        fontFamily: fonttest == null ? changeFont : fonttest,
+                        fontSize: 15),
                   )),
             ],
           ),
@@ -746,7 +793,7 @@ var NoPlace='NoPlace';
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: FutureBuilder(
-                      future: getTempUsers(),
+                      future: getTempFuture,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // getPlaceName();
@@ -758,9 +805,13 @@ var NoPlace='NoPlace';
                                 ),
                                 Center(
                                     child: Text(
-                                      'Sorry we cannot find any Temp User please add',
-                                      style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,fontSize: 18),
-                                    )),
+                                  'Sorry we cannot find any Temp User please add',
+                                  style: TextStyle(
+                                      fontFamily: fonttest == null
+                                          ? changeFont
+                                          : fonttest,
+                                      fontSize: 18),
+                                )),
                               ],
                             );
                           } else {
@@ -783,40 +834,92 @@ var NoPlace='NoPlace';
                                               child: Column(
                                                 children: [
                                                   ListTile(
-                                                    onTap: (){
-                                                      if(tempUserDecodeList[index]['p_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessPlacePage(
-                                                          placeId: tempUserDecodeList[index]['p_id'].toString(),
-                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeList[index]['f_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFloorPage(
-                                                          floorId: tempUserDecodeList[index]['f_id'].toString(),
-                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeList[index]['flt_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessFlatPage(
-                                                          flatId: tempUserDecodeList[index]['flt_id'].toString(),
-                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                        )));
-                                                      }else if(tempUserDecodeList[index]['r_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessRoomPage(
-                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                          roomId: tempUserDecodeList[index]['r_id'],
-                                                        )));
-                                                      }else if(tempUserDecodeList[index]['d_id']!=null){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TempAccessDevicePage(
-                                                          ownerName: tempUserDecodeList[index]['owner_name'].toString(),
-                                                          deviceId: tempUserDecodeList[index]['d_id'],
-                                                        )));
+                                                    onTap: () {
+                                                      if (tempUserDecodeList[
+                                                              index]['p_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessPlacePage(
+                                                                          placeId:
+                                                                              tempUserDecodeList[index]['p_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeList[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeList[
+                                                              index]['f_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessFloorPage(
+                                                                          floorId:
+                                                                              tempUserDecodeList[index]['f_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeList[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeList[
+                                                                  index]
+                                                              ['flt_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessFlatPage(
+                                                                          flatId:
+                                                                              tempUserDecodeList[index]['flt_id'].toString(),
+                                                                          ownerName:
+                                                                              tempUserDecodeList[index]['owner_name'].toString(),
+                                                                        )));
+                                                      } else if (tempUserDecodeList[
+                                                              index]['r_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessRoomPage(
+                                                                          ownerName:
+                                                                              tempUserDecodeList[index]['owner_name'].toString(),
+                                                                          roomId:
+                                                                              tempUserDecodeList[index]['r_id'],
+                                                                        )));
+                                                      } else if (tempUserDecodeList[
+                                                              index]['d_id'] !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        TempAccessDevicePage(
+                                                                          ownerName:
+                                                                              tempUserDecodeList[index]['owner_name'].toString(),
+                                                                          deviceId:
+                                                                              tempUserDecodeList[index]['d_id'],
+                                                                        )));
                                                       }
-
-
                                                     },
-                                                    title: Text(tempUserDecodeList[index]['owner_name'].toString(),style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),),
-
+                                                    title: Text(
+                                                      tempUserDecodeList[index]
+                                                              ['owner_name']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            fonttest == null
+                                                                ? changeFont
+                                                                : fonttest,
+                                                      ),
+                                                    ),
                                                   ),
-
 
                                                   // Column(
                                                   //   children: [
@@ -851,60 +954,104 @@ var NoPlace='NoPlace';
                                                       SizedBox(
                                                         width: 5,
                                                       ),
-
                                                       Padding(
-                                                        padding: const EdgeInsets.all(4.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
                                                         child: Text(
-                                                          tempUserDecodeList[index]['p_id']==null?'':"PlaceName : ${placeNameList[index]['p_type']}",
-                                                          textAlign: TextAlign.end,
+                                                          tempUserDecodeList[
+                                                                          index]
+                                                                      [
+                                                                      'p_id'] ==
+                                                                  null
+                                                              ? ''
+                                                              : "PlaceName : ${placeNameList[index]['p_type']}",
+                                                          textAlign:
+                                                              TextAlign.end,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
                                                       Text(
-                                                        tempUserDecodeList[index]
-                                                        ['f_id']==null?"":"FloorName : ${floorNameList[0]['f_name'].toString()}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                        tempUserDecodeList[
+                                                                        index]
+                                                                    ['f_id'] ==
+                                                                null
+                                                            ? ""
+                                                            : "FloorName : ${floorNameList[0]['f_name'].toString()}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
                                                       Text(
-                                                        tempUserDecodeList[index]
-                                                        ['flt_id']
-                                                            ==null?"":"Flat Name :  ${flatNameList[0]['flt_name']}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                        tempUserDecodeList[
+                                                                        index][
+                                                                    'flt_id'] ==
+                                                                null
+                                                            ? ""
+                                                            : "Flat Name :  ${flatNameList[0]['flt_name']}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
                                                       Text(
-                                                        tempUserDecodeList[index]
-                                                        ['r_id']==null?"":  "RoomName : ${roomNameList[0]['r_name']}",
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                        tempUserDecodeList[
+                                                                        index]
+                                                                    ['r_id'] ==
+                                                                null
+                                                            ? ""
+                                                            : "RoomName : ${roomNameList[0]['r_name']}",
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                       SizedBox(
                                                         width: 10,
                                                       ),
-
                                                       Text(
-                                                        tempUserDecodeList[index]
-                                                        ['d_id']==null?"":'Device : ${tempUserDecodeList[index]['d_id']}',
-                                                        textAlign: TextAlign.end,
-                                                        style: TextStyle(fontFamily: fonttest==null?changeFont:fonttest,),
+                                                        tempUserDecodeList[
+                                                                        index]
+                                                                    ['d_id'] ==
+                                                                null
+                                                            ? ""
+                                                            : 'Device : ${tempUserDecodeList[index]['d_id']}',
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              fonttest == null
+                                                                  ? changeFont
+                                                                  : fonttest,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
-
                                                 ],
                                               ),
                                             ),
                                           );
-
                                         })),
                               ],
                             );
@@ -924,9 +1071,6 @@ var NoPlace='NoPlace';
           ),
         );
       }
-        }
-
-
-    );
+    });
   }
 }

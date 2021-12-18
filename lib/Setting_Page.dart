@@ -228,7 +228,7 @@ class _SettingPageState extends State<SettingPage> {
             color: change_toDark ? Colors.black : Colors.white,
             child: ListView(
 
-              padding: EdgeInsets.all(19.0),
+              padding: const EdgeInsets.all(19.0),
               children: <Widget>[
 
                 // Card(
@@ -394,6 +394,7 @@ class _SettingPageState extends State<SettingPage> {
                     ],
                   ),
                 )
+            
               ],
             ),
           ),

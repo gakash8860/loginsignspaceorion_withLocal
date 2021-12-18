@@ -33,6 +33,7 @@ class ContactPage extends StatelessWidget {
 
                 // instagramUserName: '_abhishek_doshi',
               ),
+           
             ),
           )
         );

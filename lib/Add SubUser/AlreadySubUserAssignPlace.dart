@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
@@ -57,7 +59,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
     if(response.statusCode>0){
 
       if(response.statusCode==201){
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Place Assigned'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -86,7 +88,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
     if(response.statusCode>0){
 
       if(response.statusCode==201){
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Place Assigned'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -154,7 +156,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                 title: Text('Already SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
               ),
               body: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -193,16 +195,16 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               hintText: 'Enter Email for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20,),
+                          const SizedBox(height: 20,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -220,16 +222,16 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               hintText: 'Enter Name for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           // ignore: deprecated_member_use
 
                           Padding(
@@ -259,10 +261,10 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                           decoration: BoxDecoration(
                                               color: Colors.white,
                                               boxShadow: [
-                                                BoxShadow(
+                                                const BoxShadow(
                                                     color: Colors.black,
                                                     blurRadius: 30,
-                                                    offset: Offset(20, 20))
+                                                    offset: const Offset(20, 20))
                                               ],
                                               border: Border.all(
                                                 color: Colors.black,
@@ -272,23 +274,23 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                             decoration: InputDecoration(
                                               contentPadding: const EdgeInsets.all(15),
                                               focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
+                                                borderSide: const BorderSide(
                                                     color: Colors.white),
                                                 borderRadius: BorderRadius.circular(10),
                                               ),
                                               enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
+                                                borderSide: const BorderSide(
                                                     color: Colors.black),
                                                 borderRadius: BorderRadius.circular(50),
                                               ),
                                             ),
                                             dropdownColor: Colors.white70,
-                                            icon: Icon(Icons.arrow_drop_down),
+                                            icon: const Icon(Icons.arrow_drop_down),
                                             iconSize: 28,
                                             hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                             isExpanded: true,
                                             value: pt,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -310,15 +312,15 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                             // items:snapshot.data
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 80,
                                         ),
                                       ],
                                     );
 
                                   } else {
-                                    SizedBox(height: 45,);
-                                    return Center(child: Text('Add User'));
+                                    const SizedBox(height: 45,);
+                                    return const Center(child: Text('Add User'));
                                   }
                                 }
                             ),
@@ -335,7 +337,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               ),
                               shape: OutlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.white, width: 2),
+                                const BorderSide(color: Colors.white, width: 2),
                                 borderRadius: BorderRadius.circular(90),
                               ),
                               padding: const EdgeInsets.all(15),
@@ -367,7 +369,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                 title: Text('Already SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
               ),
               body: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -406,16 +408,16 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               hintText: 'Enter Email for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20,),
+                          const SizedBox(height: 20,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -433,16 +435,16 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               hintText: 'Enter Name for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           // ignore: deprecated_member_use
 
                           Padding(
@@ -459,10 +461,10 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           boxShadow: [
-                                            BoxShadow(
+                                            const BoxShadow(
                                                 color: Colors.black,
                                                 blurRadius: 30,
-                                                offset: Offset(20, 20))
+                                                offset: const Offset(20, 20))
                                           ],
                                           border: Border.all(
                                             color: Colors.black,
@@ -474,23 +476,23 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                                               15),
                                           focusedBorder: OutlineInputBorder(
                                             borderSide:
-                                            BorderSide(color: Colors.white),
+                                            const BorderSide(color: Colors.white),
                                             borderRadius: BorderRadius.circular(
                                                 10),
                                           ),
                                           enabledBorder: UnderlineInputBorder(
                                             borderSide:
-                                            BorderSide(color: Colors.black),
+                                            const BorderSide(color: Colors.black),
                                             borderRadius: BorderRadius.circular(
                                                 50),
                                           ),
                                         ),
                                         dropdownColor: Colors.white70,
-                                        icon: Icon(Icons.arrow_drop_down),
+                                        icon: const Icon(Icons.arrow_drop_down),
                                         iconSize: 28,
                                         hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                                         isExpanded: true,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -532,7 +534,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               ),
                               shape: OutlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.white, width: 2),
+                                const BorderSide(color: Colors.white, width: 2),
                                 borderRadius: BorderRadius.circular(90),
                               ),
                               padding: const EdgeInsets.all(15),
@@ -569,7 +571,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -577,7 +579,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 140,),
+          const SizedBox(height: 140,),
           FutureBuilder<List<PlaceType>>(
               future: placeValWeb,
               builder: (context,
@@ -603,7 +605,7 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
-                              BoxShadow(
+                              const BoxShadow(
                                   color: Colors.black,
                                   blurRadius: 30,
                                   offset: Offset(20, 20))
@@ -616,23 +618,23 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(15),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.white),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.black),
                               borderRadius: BorderRadius.circular(50),
                             ),
                           ),
                           dropdownColor: Colors.white70,
-                          icon: Icon(Icons.arrow_drop_down),
+                          icon: const Icon(Icons.arrow_drop_down),
                           iconSize: 28,
                           hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
                           isExpanded: true,
                           value: pt,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
@@ -654,11 +656,11 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                           // items:snapshot.data
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 80,
                       ),
                       Container(
-                        margin: EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(8),
                         // ignore: deprecated_member_use
                         child: FlatButton(
                           child: Text(
@@ -670,9 +672,9 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           shape: OutlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.white, width: 1),
                               borderRadius:
                               BorderRadius.circular(50)),
@@ -686,8 +688,8 @@ class _AlreadySubUserState extends State<AlreadySubUser> {
                   );
 
                 } else {
-                  SizedBox(height: 45,);
-                  return Center(child: Text('Add User'));
+                  const SizedBox(height: 45,);
+                  return const Center(child: Text('Add User'));
                 }
               }
           ),

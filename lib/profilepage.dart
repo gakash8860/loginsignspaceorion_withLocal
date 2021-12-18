@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 Image setImage;
-var firstName;
+var firstName = "";
 var userQuery;
 var email;
 

@@ -3,7 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:loginsignspaceorion/dropDown.dart';
+import 'package:loginsignspaceorion/dropdown.dart';
 import 'package:loginsignspaceorion/widget/circularprogress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'SQLITE_database/testinghome2.dart';
@@ -36,14 +36,14 @@ class _DropDown1State extends State<DropDown1> {
   bool isVisible = false;
   var futureRoom;
   TextEditingController editingController = new TextEditingController();
-  TextEditingController editingControllerWeb = new TextEditingController();
-  TextEditingController floorEditingController = new TextEditingController();
-  TextEditingController floorEditingControllerWeb = new TextEditingController();
-  TextEditingController flatEditingController = new TextEditingController();
-  TextEditingController flatEditingControllerWeb = new TextEditingController();
-  TextEditingController roomEditingController = new TextEditingController();
-  TextEditingController roomEditingControllerWeb = new TextEditingController();
-  TextEditingController deviceEditingController = new TextEditingController();
+  TextEditingController editingControllerWeb = TextEditingController();
+  TextEditingController floorEditingController = TextEditingController();
+  TextEditingController floorEditingControllerWeb = TextEditingController();
+  TextEditingController flatEditingController = TextEditingController();
+  TextEditingController flatEditingControllerWeb = TextEditingController();
+  TextEditingController roomEditingController = TextEditingController();
+  TextEditingController roomEditingControllerWeb = TextEditingController();
+  TextEditingController deviceEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _DropDown1State extends State<DropDown1> {
   }
 
   getUid() async {
-    final url = await API + 'getuid/';
+    final url =  API + 'getuid/';
     String token = await getToken();
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ class _DropDown1State extends State<DropDown1> {
     }
   }
   getUidWeb() async{
-    final url=await API+'getuid/';
+    final url= API+'getuid/';
     final response =
     await http.get(url,
         headers: {
@@ -104,7 +104,7 @@ class _DropDown1State extends State<DropDown1> {
         body: isVisible
             ? Container(
                 color: Colors.blueAccent,
-                child: Center(
+                child:const Center(
                   child: CircularProgressIndicator(
                     backgroundColor: Colors.red,
                   ),
@@ -113,7 +113,7 @@ class _DropDown1State extends State<DropDown1> {
             : Container(
                 height: MediaQuery.of(context).size.height,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -130,7 +130,7 @@ class _DropDown1State extends State<DropDown1> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            SizedBox(
+                           const SizedBox(
                               height: 75,
                             ),
                             Padding(
@@ -333,7 +333,7 @@ class _DropDown1State extends State<DropDown1> {
                         ],
                       ),
                       body: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
@@ -351,7 +351,7 @@ class _DropDown1State extends State<DropDown1> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  SizedBox(
+                                 const SizedBox(
                                     height: 35,
                                   ),
                                   Padding(
@@ -365,11 +365,9 @@ class _DropDown1State extends State<DropDown1> {
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.black54,
-                                          fontFamily: fonttest == null
-                                              ? 'RobotoMono'
-                                              : fonttest),
+                                          fontFamily:  fonttest ?? 'RobotoMono'),
                                       decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
+                                        prefixIcon:const Icon(Icons.place),
                                         filled: true,
                                         fillColor: Colors.white,
                                         hintText: 'Enter Place Name',
@@ -387,7 +385,8 @@ class _DropDown1State extends State<DropDown1> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15),
+                                
+                                  const SizedBox(height: 15),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: TextFormField(
@@ -399,29 +398,27 @@ class _DropDown1State extends State<DropDown1> {
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.black54,
-                                          fontFamily: fonttest == null
-                                              ? 'RobotoMono'
-                                              : fonttest),
+                                          fontFamily: fonttest ?? 'RobotoMono'),
                                       decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
+                                        prefixIcon: const Icon(Icons.place),
                                         filled: true,
                                         fillColor: Colors.white,
                                         hintText: 'Enter Floor Name',
                                         contentPadding: const EdgeInsets.all(15),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                            const  BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                         enabledBorder: UnderlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                              const BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15),
+                                 const SizedBox(height: 15),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: TextFormField(
@@ -431,31 +428,29 @@ class _DropDown1State extends State<DropDown1> {
                                       autovalidateMode:
                                           AutovalidateMode.onUserInteraction,
                                       style: TextStyle(
-                                          fontFamily: fonttest == null
-                                              ? 'RobotoMono'
-                                              : fonttest,
+                                          fontFamily: fonttest ?? 'RobotoMono',
                                           fontSize: 18,
                                           color: Colors.black54),
                                       decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
+                                        prefixIcon:const Icon(Icons.place),
                                         filled: true,
                                         fillColor: Colors.white,
                                         hintText: 'Enter Flat Name',
                                         contentPadding: const EdgeInsets.all(15),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                            const  BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                         enabledBorder: UnderlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                            const  BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15),
+                                 const SizedBox(height: 15),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: TextFormField(
@@ -465,33 +460,31 @@ class _DropDown1State extends State<DropDown1> {
                                       autovalidateMode:
                                           AutovalidateMode.onUserInteraction,
                                       style: TextStyle(
-                                          fontFamily: fonttest == null
-                                              ? 'RobotoMono'
-                                              : fonttest,
+                                          fontFamily: fonttest ?? 'RobotoMono',
                                           fontSize: 18,
                                           color: Colors.black54),
                                       decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.place),
+                                        prefixIcon: const Icon(Icons.place),
                                         filled: true,
                                         fillColor: Colors.white,
                                         hintText: 'Enter Room Name',
                                         contentPadding: const EdgeInsets.all(15),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                             const BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                         enabledBorder: UnderlineInputBorder(
                                           borderSide:
-                                              BorderSide(color: Colors.white),
+                                            const  BorderSide(color: Colors.white),
                                           borderRadius: BorderRadius.circular(50),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15),
+                                const  SizedBox(height: 15),
                                   ElevatedButton(
-                                    child: Text('Submit'),
+                                    child:const Text('Submit'),
                                     onPressed: () async {
                                       //
                                       // pt = await placeName(editingController.text);
@@ -505,7 +498,7 @@ class _DropDown1State extends State<DropDown1> {
                                       //   isVisible=true;
                                       //   // tabbarState=rm[0].rId;
                                       //   tabbarState = roomResponse;
-                                      //   // dv=[deviceResponse] ;
+                                      //   // hhtpdv=[deviceResponse] ;
                                       //
                                       // });
 
@@ -530,6 +523,7 @@ class _DropDown1State extends State<DropDown1> {
                                       // isVisible=false;
                                     },
                                   ),
+                                
                                 ],
                               ),
                             ),

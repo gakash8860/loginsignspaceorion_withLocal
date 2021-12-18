@@ -130,7 +130,7 @@ class Device {
 
   factory Device.fromJson(Map<String, dynamic> json) => Device(
     // id: json["id"],
-    // dateInstalled: DateTime.parse(json["date_installed"]),
+    dateInstalled: DateTime.parse(json["date_installed"]),
     user: json["user"],
     rId: json["r_id"],
     dId: json["d_id"],

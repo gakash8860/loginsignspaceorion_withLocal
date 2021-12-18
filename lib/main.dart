@@ -32,7 +32,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-
 // var API = 'http://127.0.0.1:8000/';
 var API = 'https://genorion1.herokuapp.com/';
 List roomData;
@@ -48,7 +47,7 @@ var userDataVariable;
 List<FloorType> lisOfFloor;
 List<Map<String, dynamic>> roomQueryRows;
 List<PlaceType> placeType;
-List<RoomType>  room;
+List<RoomType> room;
 final storage = new FlutterSecureStorage();
 var statusOfDevice;
 
@@ -58,8 +57,7 @@ Future<String> getToken() async {
   return token;
 }
 
-void main()async {
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
     theme: ThemeData(
@@ -68,19 +66,25 @@ void main()async {
     ),
     debugShowCheckedModeBanner: false,
     home: GettingStartedScreen(),
-    routes:{
+    routes: {
       LoginScreen.routeName: (ctx) => LoginScreen(),
       SignUpScreen1.routeName: (ctx) => SignUpScreen1(),
-      DropDown1.routeName:(ctx) => DropDown1(),
-      DropDown.routeName:(ctx) => DropDown(),
-      WrongPassword.routeName:(ctx) => WrongPassword(),
-      SubAccessSinglePage.routeName:(ctx) => SubAccessSinglePage(),
-      TotalUsage.routeName:(ctx) => TotalUsage(),
-      BillEstimation.routeName:(ctx) => BillEstimation(),
-      DarkModeAndFont.routeName:(ctx) => DarkModeAndFont(),
-      HomeTest.routeName:(ctx) => HomeTest(),
+      DropDown1.routeName: (ctx) => DropDown1(),
+      DropDown.routeName: (ctx) => DropDown(),
+      WrongPassword.routeName: (ctx) => WrongPassword(),
+      SubAccessSinglePage.routeName: (ctx) => SubAccessSinglePage(),
+      TotalUsage.routeName: (ctx) => TotalUsage(),
+      BillEstimation.routeName: (ctx) => BillEstimation(),
+      DarkModeAndFont.routeName: (ctx) => DarkModeAndFont(),
+      HomeTest.routeName: (ctx) => HomeTest(),
 
-      '/main': (ctx) =>  HomeTest(pt: pt, fl: fl,flat: flt,rm: room,dv: dvdata,),
+      '/main': (ctx) => HomeTest(
+            pt: pt,
+            fl: fl,
+            flat: flt,
+            rm: room,
+            dv: dvdata,
+          ),
 
       // '/main': (ctx) =>  DropDown2(),
     },
@@ -127,22 +131,23 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future deviceVal;
   Permission permission;
   PageController pageController = PageController(initialPage: 0);
-  DropDown1 down=new DropDown1();
+  DropDown1 down = DropDown1();
   Timer timer;
-
 
   @override
   void initState() {
     super.initState();
     requestPermission();
-    Timer.periodic(Duration(seconds: 5), (Timer timer) {
+    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (currentPage < 2) {
         currentPage++;
       } else {
         currentPage = 0;
       }
-      if(pageController.hasClients){
-        pageController.animateToPage(currentPage, duration: Duration(milliseconds: 300),
+      if (pageController.hasClients) {
+        pageController.animateToPage(
+          currentPage,
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
       }
@@ -150,20 +155,23 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
     read();
   }
-  var font;
-  _getFont()async{
-    final SharedPreferences pref= await SharedPreferences.getInstance();
-    font= pref.getString('font');
-    if(font!=null){
-      fonttest=font;
+
+  var font = "";
+  _getFont() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    font = pref.getString('font');
+    if (font != null) {
+      fonttest = font;
     }
     print('number147859Main ${font}');
   }
-  _getTheme()async{
-    final SharedPreferences pref= await SharedPreferences.getInstance();
-    changeDark=pref.getBool('darkmode');
-    change_toDark=changeDark;
+
+  _getTheme() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    changeDark = pref.getBool('darkmode');
+    change_toDark = changeDark;
   }
+
   requestPermission() async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
@@ -171,37 +179,44 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     }
   }
 
-
-  getUid() async{
-    final url= API+'getuid/';
+  getUid() async {
+    final url = API + 'getuid/';
     String token = await getToken();
-    final response =
-    await http.get(url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Token $token',
-        });
-    if(response.statusCode==200){
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token $token',
+    });
+    if (response.statusCode == 200) {
       print('UiD ${response.body}');
-      getUidVariable=response.body ;
-      getUidVariable2=int.parse(getUidVariable);
+      getUidVariable = response.body;
+      getUidVariable2 = int.parse(getUidVariable);
       getUserDetailsSql();
-    }else{
+    } else {
       print(response.statusCode);
     }
   }
 
-  allAwaitFunction()async{
+  allAwaitFunction() async {
     getUid();
 
     getUserDataOfflineSql();
-   await loadImageFromPreferences();
-    fetchPlace().then((value) =>   placeQueryFunc()).then((value) => getAllFloor())
-      .then((value) => floorQueryFunc()).then((value) => getAllFlat().then((value) => flatQueryFunc())).then((value) => getAllRoom())
-      .then((value) => roomQueryFunc()).then((value) => getAllDevice()).then((value) => deviceQueryFunc()).then((value) => getPinStatusData())
-      .then((value) => devicePinStatusQueryFunc()).then((value) => getAllPinNames()).then((value) => devicePinNamesQueryFunc())
-      .then((value) => getSensorData()).then((value) => devicePinSensorQueryFunc());
+    await loadImageFromPreferences();
+    fetchPlace()
+        .then((value) => placeQueryFunc())
+        .then((value) => getAllFloor())
+        .then((value) => floorQueryFunc())
+        .then((value) => getAllFlat().then((value) => flatQueryFunc()))
+        .then((value) => getAllRoom())
+        .then((value) => roomQueryFunc())
+        .then((value) => getAllDevice())
+        .then((value) => deviceQueryFunc())
+        .then((value) => getPinStatusData())
+        .then((value) => devicePinStatusQueryFunc())
+        .then((value) => getAllPinNames())
+        .then((value) => devicePinNamesQueryFunc())
+        .then((value) => getSensorData())
+        .then((value) => devicePinSensorQueryFunc());
 
     await placeQueryFunc();
     await floorQueryFunc();
@@ -212,11 +227,10 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     await devicePinSensorQueryFunc();
     await devicePinStatusQueryFunc();
     await devicePinNamesQueryFunc();
-
   }
 
   getUserDataOfflineSql() async {
-   List data = await NewDbProvider.instance.userQuery();
+    List data = await NewDbProvider.instance.userQuery();
     print('qqqqqq $data');
     var userQuery = User(
         lastName: data.first['last_name'].toString(),
@@ -233,138 +247,110 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
   Future<List<PlaceType>> fetchPlace() async {
     // await openPlaceBox();
     String token = await getToken();
-    final url = API+'addyourplace/';
-    final response = await http.get(url,
-        headers: {
+    final url = API + 'addyourplace/';
+    final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
-    }
-    );
+    });
 
     try {
       if (response.statusCode > 0) {
         placeData = jsonDecode(response.body);
         for (int i = 0; i < placeData.length; i++) {
-
           var placeQuery = PlaceType(
               pId: placeData[i]['p_id'],
               pType: placeData[i]['p_type'],
-              user: placeData[i]['user']
-          );
+              user: placeData[i]['user']);
           NewDbProvider.instance.insertPlaceModelData(placeQuery);
-
-
         }
 
-
         places = placeData.map((data) => PlaceType.fromJson(data)).toList();
-
-
       }
     } catch (e) {}
     return places;
 // return PlaceType.fromJson(true);
-
   }
 
-
-
-
-
-  Future<void> getAllFloor()async{
+  Future<void> getAllFloor() async {
     String token = await getToken();
     var pId;
 
-    for(int i=0;i<placeData.length;i++){
+    for (int i = 0; i < placeData.length; i++) {
       // Box poop;
-      pId=placeData[i]['p_id'].toString();
+      pId = placeData[i]['p_id'].toString();
       // print(pId);
 
-      final url=API+"addyourfloor/?p_id="+pId;
-      final  response= await http.get(Uri.parse(url),headers: {
+      final url = API + "addyourfloor/?p_id=" + pId;
+      final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
-      if(response.statusCode>0){
-
+      if (response.statusCode > 0) {
         floorData = jsonDecode(response.body);
         print('floorData12 ${floorData}');
-        for(int i=0;i<floorData.length;i++){
-          var floorQuery=FloorType(
+        for (int i = 0; i < floorData.length; i++) {
+          var floorQuery = FloorType(
               fId: floorData[i]['f_id'],
               fName: floorData[i]['f_name'].toString(),
               pId: floorData[i]['p_id'],
-              user: floorData[i]['user']
-          );
+              user: floorData[i]['user']);
           print('floorData12 ${floorQuery}');
-          await  NewDbProvider.instance.insertFloorModelData(floorQuery);
+          await NewDbProvider.instance.insertFloorModelData(floorQuery);
         }
       }
-
 
       floors = floorData.map((data) => FloorType.fromJson(data)).toList();
       // floorData=floorData+floors;
 
-
     }
     print('lastFloor ${floorData.iterator.current}');
-
   }
 
-
-  Future<void> getAllFlat()async{
+  Future<void> getAllFlat() async {
     var fId;
 
-    String token=await getToken();
-    for(int i=0;i<floorQueryRows.length;i++){
-      fId=floorQueryRows[i]['f_id'].toString();
+    String token = await getToken();
+    for (int i = 0; i < floorQueryRows.length; i++) {
+      fId = floorQueryRows[i]['f_id'].toString();
       print("AllFlatFloorId $fId");
-      String url=API+'addyourflat/?f_id='+fId;
-      final  response= await http.get(Uri.parse(url),headers: {
+      String url = API + 'addyourflat/?f_id=' + fId;
+      final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
-      if(response.statusCode>0){
-
+      if (response.statusCode > 0) {
         List flatData = jsonDecode(response.body);
         print('flatData ${flatData}');
-        for(int i=0;i<flatData.length;i++){
-
-          var flatQuery=Flat(
+        for (int i = 0; i < flatData.length; i++) {
+          var flatQuery = Flat(
               fId: flatData[i]['f_id'],
               fltId: flatData[i]['flt_id'],
               fltName: flatData[i]['flt_name'],
-              user: flatData[i]['user']
-          );
-          await  NewDbProvider.instance.insertFlatModelData(flatQuery);
+              user: flatData[i]['user']);
+          await NewDbProvider.instance.insertFlatModelData(flatQuery);
           print('FlatFlatQuery  ${flatQuery.fltName}');
         }
-
       }
-
 
       // floors = floorData.map((data) => FloorType.fromJson(data)).toList();
 
-
     }
   }
-  Future<void> getAllRoom()async{
+
+  Future<void> getAllRoom() async {
     var fId;
-    for(int i=0;i<flatQueryRows.length;i++) {
+    for (int i = 0; i < flatQueryRows.length; i++) {
       //   print(NewDbProvider.instance.dogs());
       fId = flatQueryRows[i]['flt_id'].toString();
       print('flt_id  ${fId}');
 
-
       // String url="http://10.0.2.2:8000/api/data";
       // String token= await getToken();
-      String token=await getToken();
-      String url = API+"addroom/?flt_id="+fId;
+      String token = await getToken();
+      String url = API + "addroom/?flt_id=" + fId;
       var response;
       try {
         response = await http.get(Uri.parse(url), headers: {
@@ -398,18 +384,16 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         //     await NewDbProvider.instance.insertRoomModelData(roomQuery);
         //   }
         // }
-        for(int i=0;i<roomData.length;i++){
-          roomQuery=RoomType(
+        for (int i = 0; i < roomData.length; i++) {
+          roomQuery = RoomType(
               rId: roomData[i]['r_id'],
               rName: roomData[i]['r_name'].toString(),
               fltId: roomData[i]['flt_id'],
-              user: roomData[i]['user']
-          );
+              user: roomData[i]['user']);
           await NewDbProvider.instance.insertRoomModelData(roomQuery);
         }
-       rm = roomData.map((data) => RoomType.fromJson(data)).toList();
+        rm = roomData.map((data) => RoomType.fromJson(data)).toList();
         print('checkRoomData $roomData');
-
       } catch (e) {
         print('RoomCatch $e');
         // }
@@ -419,22 +403,20 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     return Future.value(true);
   }
 
-  List arr=[];
-  Future<void> getAllDevice()async{
+  List arr = [];
+  Future<void> getAllDevice() async {
     String token = await getToken();
     var rId;
-    for(int i=0;i<roomQueryRows.length;i++) {
+    for (int i = 0; i < roomQueryRows.length; i++) {
       rId = roomQueryRows2[i]['r_id'].toString();
       print('roomId  $rId');
-      String url = API+"addyourdevice/?r_id=" +
-          rId;
-      var response;
+      String url = API + "addyourdevice/?r_id=" + rId;
+    
       // try {
-      response = await http.get(Uri.parse(url), headers: {
+    var  response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
       deviceData = jsonDecode(response.body);
       print('deviceData  ${deviceData}');
@@ -442,42 +424,39 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         var deviceQuery = Device(
             user: deviceData[i]['user'],
             rId: deviceData[i]['r_id'],
-            dId: deviceData[i]['d_id']
-
-        );
+            dId: deviceData[i]['d_id']);
         print('deviceQueryFunc   $deviceData}');
 
         await NewDbProvider.instance.insertDeviceModelData(deviceQuery);
-
       }
     }
     return Future.value(true);
   }
-  Future<void> getAllPinNames()async{
+
+  Future<void> getAllPinNames() async {
     String token = await getToken();
     var did;
     print('pinNamesFunction $deviceQueryRows');
-    for(int i=0;i<deviceQueryRows.length;i++){
-
-      did=deviceQueryRows[i]['d_id'];
+    for (int i = 0; i < deviceQueryRows.length; i++) {
+      did = deviceQueryRows[i]['d_id'];
       print('diddevice $did');
-      String url = API+"editpinnames/?d_id="+did;
+      String url = API + "editpinnames/?d_id=" + did;
       // try {
-      final   response = await http.get(Uri.parse(url), headers: {
+      final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Token $token',
-
       });
-      if(response.statusCode==200) {
-        var  devicePinNamesData=json.decode(response.body);
+      if (response.statusCode == 200) {
+        var devicePinNamesData = json.decode(response.body);
         // DevicePin devicePin=DevicePin.fromJson(devicePinNamesData);
 
-        List listOfPinNames=[devicePinNamesData,];
+        List listOfPinNames = [
+          devicePinNamesData,
+        ];
 
         print('QWERTY  $listOfPinNames');
         for (int i = 0; i < listOfPinNames.length; i++) {
-
           print('devicePinData $listOfPinNames}');
 
           var devicePinNamesQuery = DevicePin(
@@ -498,54 +477,38 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           );
           print('devicePinNamesInsertQuery    ${devicePinNamesQuery.toJson()}');
           print('devicePinQueryToJson    ${devicePinNamesQuery.toJson()}');
-              await NewDbProvider.instance.insertDevicePinNames(devicePinNamesQuery);
-          var check= await NewDbProvider.instance.getPinNamesByDeviceId(listOfPinNames[i]['d_id']);
+          await NewDbProvider.instance
+              .insertDevicePinNames(devicePinNamesQuery);
+          var check = await NewDbProvider.instance
+              .getPinNamesByDeviceId(listOfPinNames[i]['d_id']);
           print('check456 ${check}');
         }
-
-
       }
     }
-
-
   }
 
-  Future<void> getUserDetailsSql()async{
+  Future<void> getUserDetailsSql() async {
     String token = await getToken();
     print(getUidVariable);
-    String url=API+"getthedataofuser/?id="+getUidVariable;
+    String url = API + "getthedataofuser/?id=" + getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
 
-
-    if (response.statusCode >0) {
+    if (response.statusCode > 0) {
       print('responseStatus ${response.statusCode}');
-      userDataVariable=jsonDecode(response.body);
+      var userDataVariable = jsonDecode(response.body);
       print('response $userDataVariable');
 
-      var userQuery=User(
-        email: userDataVariable['email'],
-        firstName: userDataVariable['first_name'],
-        lastName: userDataVariable['last_name'],
-      );
+      var userQuery = User.fromJson(userDataVariable);
       await NewDbProvider.instance.insertUserDetailsModelData(userQuery);
-      print('userQuery  ${userQuery.firstName}' );
+      print('userQuery  ${userQuery.firstName}');
       // await NewDbProvider.instance.close();
 
-
-
     }
-
-
   }
-
-
-
-
-
 
   Future<void> getSensorData() async {
     // arr=[arr.length-arr.length];
@@ -553,23 +516,23 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
 
     var did;
     print('SensorFunction $deviceQueryRows');
-    for(int i=0;i<deviceQueryRows.length;i++) {
-      did=deviceQueryRows[i]['d_id'];
+    for (int i = 0; i < deviceQueryRows.length; i++) {
+      did = deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = API+"tensensorsdata/?d_id="+did.toString();
-      final response = await http.get(Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Token $token',
-          });
-      if(response.statusCode==200){
+      String url = API + "tensensorsdata/?d_id=" + did.toString();
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
+      if (response.statusCode == 200) {
         print('sensorResponse  ${response.statusCode}');
-
       }
       var arr = jsonDecode(response.body);
       print('arrsensorData  ${arr}');
-      List listOfPinSensor=[arr,];
+      List listOfPinSensor = [
+        arr,
+      ];
       print('sensorData  ${listOfPinSensor}');
       for (int i = 0; i < listOfPinSensor.length; i++) {
         var sensorQuery = SensorData(
@@ -589,7 +552,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         await NewDbProvider.instance.insertSensorData(sensorQuery);
         await NewDbProvider.instance.updateSensorData(sensorQuery);
       }
-
     }
   }
 
@@ -597,22 +559,23 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     String token = await getToken();
     var did;
     print('PinStatusFunction $deviceQueryRows');
-    for(int i=0;i<deviceQueryRows.length;i++) {
-      did=deviceQueryRows[i]['d_id'];
+    for (int i = 0; i < deviceQueryRows.length; i++) {
+      did = deviceQueryRows[i]['d_id'];
       print('insideLoop $did');
-      String url = API+"getpostdevicePinStatus/?d_id="+did.toString();
-      final response = await http.get(Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Token $token',
-          });
+      String url = API + "getpostdevicePinStatus/?d_id=" + did.toString();
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token',
+      });
 
-      if(response.statusCode==200){
+      if (response.statusCode == 200) {
         print('PinStatusResponse  ${response.statusCode}');
-        var pinStatus= jsonDecode(response.body);
+        var pinStatus = jsonDecode(response.body);
         // var pinStatus2=pinStatus;
-        List listOfPinStatusValue=[pinStatus,];
+        List listOfPinStatusValue = [
+          pinStatus,
+        ];
         print('printFunction $listOfPinStatusValue}');
         for (int i = 0; i < listOfPinStatusValue.length; i++) {
           var pinQuery = PinStatus(
@@ -643,7 +606,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           print('check1234567}');
         }
 
-
         // String a=listOfPinStatusValue[i]['pin20Status'].toString();
         // print('aaaaaaaaaa ${a}');
         //   int aa= int.parse(a);
@@ -659,25 +621,17 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         //   statusOfDevice = 0;
         // }
       }
-
-
-
     }
   }
 
-
-  List<dynamic> devicePinNamesData=[];
+  List<dynamic> devicePinNamesData = [];
   var roomQuery;
   var deviceQuery;
   var aa;
 
-
-
-
   getImage() async {
     String token = await getToken();
-    final url =
-        API+'testimages123/?user=' + getUidVariable;
+    final url = API + 'testimages123/?user=' + getUidVariable;
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -688,7 +642,8 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       print('statusCode ${response.body}');
       var imageData = json.decode(response.body);
       print('statusCode ${response.body}');
-      Utility.saveImage(imageData['file']).then((value) => loadImageFromPreferences());
+      Utility.saveImage(imageData['file'])
+          .then((value) => loadImageFromPreferences());
       // setImage=Utility.imageFrom64BaseString(imageData['file']);
       // setImage=convertImage;
 
@@ -696,7 +651,6 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       print('ConvertImage ${imageData['file']}');
     }
   }
-
 
   loadImageFromPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -709,112 +663,109 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     }
   }
 
-  Future placeQueryFunc()async{
-    placeTypeSingle=  await NewDbProvider.instance.queryPlace();
+  Future placeQueryFunc() async {
+    placeTypeSingle = await NewDbProvider.instance.queryPlace();
     queryRows = await NewDbProvider.instance.queryPlace();
-    placeTypeSingle=queryRows;
+    placeTypeSingle = queryRows;
 
-    var pids=PlaceType(
-      pId: queryRows[0]['p_id'].toString(),
-      pType: queryRows[0]['p_type'].toString(),
-      user: queryRows[0]['user']
-    );
+    var pids = PlaceType(
+        pId: queryRows[0]['p_id'].toString(),
+        pType: queryRows[0]['p_type'].toString(),
+        user: queryRows[0]['user']);
 
-    pt=pids;
+    pt = pids;
     print('checkPlaces123654 ${placeTypeSingle.last}');
-
   }
-List resultFloor;
-  Future floorQueryFunc()async{
-    floorTypeSingle=    await NewDbProvider.instance.queryFloor();
-    floorQueryRows = await NewDbProvider.instance.queryFloor();
-    floorQueryData=floorQueryRows;
-    floorTypeSingle=floorQueryRows;
-    var pId=placeTypeSingle[0]['p_id'].toString();
-    print('placeId $pId');
-    resultFloor= await NewDbProvider.instance.getFloorById(pId);
 
-    var floor=FloorType(
-      fId: resultFloor[0]['f_id'].toString(),
-      fName: resultFloor[0]['f_name'].toString(),
-      user: resultFloor[0]['user'],
-      pId: resultFloor[0]['p_id'].toString()
-    );
-    fl=floor;
+  List resultFloor;
+  Future floorQueryFunc() async {
+    floorTypeSingle = await NewDbProvider.instance.queryFloor();
+    floorQueryRows = await NewDbProvider.instance.queryFloor();
+    floorQueryData = floorQueryRows;
+    floorTypeSingle = floorQueryRows;
+    var pId = placeTypeSingle[0]['p_id'].toString();
+    print('placeId $pId');
+    resultFloor = await NewDbProvider.instance.getFloorById(pId);
+
+    var floor = FloorType(
+        fId: resultFloor[0]['f_id'].toString(),
+        fName: resultFloor[0]['f_name'].toString(),
+        user: resultFloor[0]['user'],
+        pId: resultFloor[0]['p_id'].toString());
+    fl = floor;
 
     // floors=floorQueryRows;
     print('floorLocalData ${fl.fName}');
-
-
-
   }
+
   List resultFlat;
-  Future flatQueryFunc()async{
-    flatTypeSingle=    await NewDbProvider.instance.queryFlat();
+  Future flatQueryFunc() async {
+    flatTypeSingle = await NewDbProvider.instance.queryFlat();
     flatQueryRows = await NewDbProvider.instance.queryFlat();
-      print("Query $flatQueryRows");
-      flatQueryData=flatQueryRows;
+    print("Query $flatQueryRows");
+    flatQueryData = flatQueryRows;
 
-    floorTypeSingle=floorQueryRows;
-    var fId=resultFloor[0]['f_id'].toString();
+    floorTypeSingle = floorQueryRows;
+    var fId = resultFloor[0]['f_id'].toString();
     print(fId);
-    resultFlat= await NewDbProvider.instance.getFlatByFId(fId.toString());
+    resultFlat = await NewDbProvider.instance.getFlatByFId(fId.toString());
     print('checkFlat123  ${resultFlat}');
-    var flat=Flat(
-      fId: resultFlat[0]['f_id'].toString(),
-      fltName: resultFlat[0]['flt_name'].toString(),
-      fltId: resultFlat[0]['flt_id'].toString(),
-      user: resultFlat[0]['user']
-    );
-    flt=flat;
-
-
+    var flat = Flat(
+        fId: resultFlat[0]['f_id'].toString(),
+        fltName: resultFlat[0]['flt_name'].toString(),
+        fltId: resultFlat[0]['flt_id'].toString(),
+        user: resultFlat[0]['user']);
+    flt = flat;
   }
+
   List resultRoom;
-  Future<List<RoomType>> roomQueryFunc()async {
+  Future<List<RoomType>> roomQueryFunc() async {
     roomQueryRows = await NewDbProvider.instance.queryRoom();
     print('qqqq ${roomQueryRows}');
 
-    var id=resultFlat[0]['flt_id'].toString();
+    var id = resultFlat[0]['flt_id'].toString();
 
-    roomQueryRows2=roomQueryRows;
-     resultRoom= await NewDbProvider.instance.getRoomById(id);
+    roomQueryRows2 = roomQueryRows;
+    resultRoom = await NewDbProvider.instance.getRoomById(id);
     print('roomResult $resultRoom');
-    room= List.generate(resultRoom.length, (index) => RoomType(
-      rId: resultRoom[index]['r_id'].toString(),
-      fltId: resultRoom[index]['flt_id'].toString(),
-      rName:resultRoom[index]['r_name'].toString(),
-      user: resultRoom[index]['user'],
-    ));
-return room;
+    room = List.generate(
+        resultRoom.length,
+        (index) => RoomType(
+              rId: resultRoom[index]['r_id'].toString(),
+              fltId: resultRoom[index]['flt_id'].toString(),
+              rName: resultRoom[index]['r_name'].toString(),
+              user: resultRoom[index]['user'],
+            ));
+    return room;
   }
-List deviceResult;
-  Future<List<Device>> deviceQueryFunc()async{
+
+  List deviceResult;
+  Future<List<Device>> deviceQueryFunc() async {
     deviceQueryRows = await NewDbProvider.instance.queryDevice();
     print('maindeviceQuery $deviceQueryRows');
-    List dv1= deviceQueryRows;
-    var roomId=resultRoom[0]['r_id'];
+    List dv1 = deviceQueryRows;
+    var roomId = resultRoom[0]['r_id'];
     // dv=deviceQueryRows;
-     deviceResult= await NewDbProvider.instance.getDeviceByRId(roomId.toString());
+    deviceResult =
+        await NewDbProvider.instance.getDeviceByRId(roomId.toString());
     print('dvlouye ${deviceResult}');
-    dvdata= List.generate(deviceResult.length, (index) => Device(
-        dId: deviceResult[index]['d_id'].toString(),
-        rId: deviceResult[index]['r_id'].toString(),
-        user: deviceResult[index]['user']
-    ));
+    dvdata = List.generate(
+        deviceResult.length,
+        (index) => Device(
+            dId: deviceResult[index]['d_id'].toString(),
+            rId: deviceResult[index]['r_id'].toString(),
+            user: deviceResult[index]['user']));
     return dvdata;
-
   }
-  Future devicePinNamesQueryFunc()async{
-    devicePinNamesQueryRows =
-    await NewDbProvider.instance.queryPinNames();
+
+  Future devicePinNamesQueryFunc() async {
+    devicePinNamesQueryRows = await NewDbProvider.instance.queryPinNames();
     print('devicePinQueryFunc  $devicePinNamesQueryRows');
 
     return devicePinNamesQueryRows;
-
   }
 
-  Future devicePinSensorQueryFunc()async{
+  Future devicePinSensorQueryFunc() async {
     sensorQueryRows = await NewDbProvider.instance.querySensor();
     print('deviceSensorQueryFunc  $sensorQueryRows');
     // var deviceId= deviceResult[0]['d_id'];
@@ -827,16 +778,13 @@ List deviceResult;
     // );
     // sensorData= sensorDataSend;
     return sensorQueryRows;
-
   }
-  Future devicePinStatusQueryFunc()async{
-    pinStatusQueryRows= await NewDbProvider.instance.queryPinStatus();
+
+  Future devicePinStatusQueryFunc() async {
+    pinStatusQueryRows = await NewDbProvider.instance.queryPinStatus();
     print('devicePinStatusLocal  $pinStatusQueryRows');
     return pinStatusQueryRows;
-
-
   }
-
 
   //
   // _checkInternetConnectivity()async{
@@ -857,20 +805,17 @@ List deviceResult;
   //     ),
   //   );
   // }
-  void  read() async {
-    final storage = new FlutterSecureStorage();
-   await _getFont();
-   // await _getTheme();
+  void read() async {
+    final storage =  FlutterSecureStorage();
+    await _getFont();
+    // await _getTheme();
     await allAwaitFunction();
     token = await storage.read(key: "token");
 
     print(token);
     if (token != null) {
-
-
       Navigator.popAndPushNamed(context, '/main');
     }
-
   }
 
   @override
@@ -878,7 +823,6 @@ List deviceResult;
     super.dispose();
 
     pageController.dispose();
-
   }
 
   onPageChanged(int index) {
@@ -890,238 +834,245 @@ List deviceResult;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          if(viewportConstraints.maxWidth>600){
-            return Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: Stack(
-                        alignment: AlignmentDirectional.bottomCenter,
-                        children: <Widget>[
-                          PageView.builder(
-                            scrollDirection: Axis.horizontal,
-                            onPageChanged: onPageChanged,
-                            controller: pageController,
-                            itemCount: slideList.length,
-                            itemBuilder: (ctx, i) => SlideItem(i),
+          builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        if (viewportConstraints.maxWidth > 600) {
+          return Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: <Widget>[
+                        PageView.builder(
+                          scrollDirection: Axis.horizontal,
+                          onPageChanged: onPageChanged,
+                          controller: pageController,
+                          itemCount: slideList.length,
+                          itemBuilder: (ctx, i) => SlideItem(i),
+                        ),
+                        Stack(
+                          alignment: AlignmentDirectional.topStart,
+                          children: <Widget>[
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 35),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  for (int i = 0; i < slideList.length; i++)
+                                    if (i == currentPage)
+                                      SlideDots(true)
+                                    else
+                                      SlideDots(false)
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Column(
+                    // crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        width: 300,
+                        child: FlatButton(
+                          child: Text(
+                            'Getting Started',
+                            style: TextStyle(fontSize: 18),
                           ),
-                          Stack(
-                            alignment: AlignmentDirectional.topStart,
-                            children: <Widget>[
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 35),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    for (int i = 0; i < slideList.length; i++)
-                                      if (i == currentPage)
-                                        SlideDots(true)
-                                      else
-                                        SlideDots(false)
-                                  ],
-                                ),
-                              )
-                            ],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(500),
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          padding: const EdgeInsets.all(15),
+                          textColor: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(SignUpScreen1.routeName);
+                          },
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Have an account',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Login',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(LoginScreen.routeName);
+                            },
                           )
                         ],
                       ),
-                    ),
-                    Column(
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          width: 300,
-                          child: FlatButton(
-                            child: Text(
-                              'Getting Started',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(500),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(15),
-                            textColor: Colors.white,
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(SignUpScreen1.routeName);
-                            },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Temporary User',
+                            style: TextStyle(fontSize: 14),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Have an account',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            FlatButton(
-                              child: Text(
-                                'Login',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(LoginScreen.routeName);
-                              },
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Temporary User',
+                          FlatButton(
+                            child: Text(
+                              'Click Here !',
                               style: TextStyle(fontSize: 14),
                             ),
-
-                            FlatButton(
-                              child: Text(
-                                'Click Here !',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
-                              },
-                            )
-                          ],
-                        )
-
-                      ],
-                    )
-                  ],
-                ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EnterPhoneNumber()));
+                            },
+                          )
+                        ],
+                      )
+                    ],
+                  )
+                ],
               ),
-            );
-          }else{
-            return token==null? WillPopScope(
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  title: Text(
-                    'GenOrion',
-                    style: TextStyle(letterSpacing: 0.5, fontFamily: 'Volvo-Regular'),
-                  ),
-                ),
-                body: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Stack(
-                            alignment: AlignmentDirectional.bottomCenter,
-                            children: <Widget>[
-                              PageView.builder(
-                                scrollDirection: Axis.horizontal,
-                                onPageChanged: onPageChanged,
-                                controller: pageController,
-                                itemCount: slideList.length,
-                                itemBuilder: (ctx, i) => SlideItem(i),
-                              ),
-                              Stack(
-                                alignment: AlignmentDirectional.topStart,
+            ),
+          );
+        } else {
+          return token == null
+              ? WillPopScope(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    appBar: AppBar(
+                      title: Text(
+                        'GenOrion',
+                        style: TextStyle(
+                            letterSpacing: 0.5, fontFamily: 'Volvo-Regular'),
+                      ),
+                    ),
+                    body: Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Stack(
+                                alignment: AlignmentDirectional.bottomCenter,
                                 children: <Widget>[
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 35),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        for (int i = 0; i < slideList.length; i++)
-                                          if (i == currentPage)
-                                            SlideDots(true)
-                                          else
-                                            SlideDots(false)
-                                      ],
-                                    ),
+                                  PageView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    onPageChanged: onPageChanged,
+                                    controller: pageController,
+                                    itemCount: slideList.length,
+                                    itemBuilder: (ctx, i) => SlideItem(i),
+                                  ),
+                                  Stack(
+                                    alignment: AlignmentDirectional.topStart,
+                                    children: <Widget>[
+                                      Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 35),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            for (int i = 0;
+                                                i < slideList.length;
+                                                i++)
+                                              if (i == currentPage)
+                                                SlideDots(true)
+                                              else
+                                                SlideDots(false)
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          
-                          children: <Widget>[
-                            
-                            FlatButton(
-                              child: Text(
-                                'Getting Started',
-                                style: TextStyle(fontSize: 18),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(500),
-                              ),
-                              color: Theme.of(context).primaryColor,
-                              padding: const EdgeInsets.all(15),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(SignUpScreen1.routeName);
-                              },
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                Text(
-                                  'Have an account',
-                                  style: TextStyle(fontSize: 18),
-                                ),
                                 FlatButton(
                                   child: Text(
-                                    'Login',
+                                    'Getting Started',
                                     style: TextStyle(fontSize: 18),
                                   ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(500),
+                                  ),
+                                  color: Theme.of(context).primaryColor,
+                                  padding: const EdgeInsets.all(15),
+                                  textColor: Colors.white,
                                   onPressed: () {
                                     Navigator.of(context)
-                                        .pushNamed(LoginScreen.routeName);
+                                        .pushNamed(SignUpScreen1.routeName);
                                   },
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'Temporary User',
-                                  style: TextStyle(fontSize: 14),
                                 ),
-                                FlatButton(
-                                  child: Text(
-                                    'Click Here !',
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>EnterPhoneNumber()));
-                                  },
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Have an account',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    FlatButton(
+                                      child: Text(
+                                        'Login',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pushNamed(LoginScreen.routeName);
+                                      },
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Temporary User',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    FlatButton(
+                                      child: Text(
+                                        'Click Here !',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EnterPhoneNumber()));
+                                      },
+                                    )
+                                  ],
                                 )
                               ],
                             )
-
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              onWillPop: () =>
-                  showDialog(context: context, builder: (c) => backPopPage(context)),
-            ):CircularProgressIndicator();
-          }
+                  onWillPop: () => showDialog(
+                      context: context, builder: (c) => backPopPage(context)),
+                )
+              : CircularProgressIndicator();
         }
-
-      ),
+      }),
     );
   }
 
@@ -1141,8 +1092,6 @@ List deviceResult;
       ],
     );
   }
-
-  
 }
 
 class SlideItem extends StatelessWidget {
@@ -1191,11 +1140,7 @@ class Slide {
   final String tittle;
   final String description;
 
-  Slide(
-      {
-      this.imageURL,
-      this.tittle,
-      this.description});
+  Slide({this.imageURL, this.tittle, this.description});
 }
 
 final slideList = [
@@ -1213,7 +1158,7 @@ final slideList = [
       imageURL: 'assets/images/qwe.png',
       tittle: 'Proposed Solutions by our product',
       description:
-      'The system can work with or without the internet on the same network.'
+          'The system can work with or without the internet on the same network.'
           'Capable of working with old manual switching as well as new.'
           'Users can control devices by manual switching too.'),
 ];

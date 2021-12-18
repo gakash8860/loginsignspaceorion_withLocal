@@ -150,14 +150,14 @@ class _SignUpScreen1State extends State<SignUpScreen1> {
   //   RegExp regex = new RegExp(pattern);
   //   if (!regex.hasMatch(value) || value == null)
   //     return 'Enter a valid email address';
-  //
+  
   //   if (acceptemail == value) {
   //     goToNextPage();
   //     return null;
   //   } else if (rejectemail == value) {
   //     return "Already Registered";
   //   } else {
-  //
+  
   //     return "Checking Email";
   //   }
   // }

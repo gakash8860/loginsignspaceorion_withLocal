@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:loginsignspaceorion/dropDown.dart';
+import 'package:loginsignspaceorion/dropdown.dart';
 import 'package:loginsignspaceorion/dropdown1.dart';
 import 'package:loginsignspaceorion/dropdown2.dart';
 import 'package:loginsignspaceorion/main.dart';
@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     });
   }
+  
   goToNextPageWeb() {
 // '192.168.0.107':800
 
@@ -252,6 +253,7 @@ List userPlace;
 
     }
   }
+ 
   var tokenWeb;
   Future getTokenWeb() async {
     final pref = await SharedPreferences.getInstance();
@@ -330,6 +332,7 @@ List userPlace;
       await getRooms(flat.fltId) ;
     }
   }
+ 
   Future getFlatWeb(String fId) async {
     final url = API + 'addyourflat/?f_id=' + fId;
     String token = await getTokenWeb();
@@ -376,6 +379,7 @@ List userPlace;
      await getDevices(rm[0].rId);
     }
   }
+  
   Future getRoomsWeb(String flt_id) async {
     final url = API + 'addroom/?flt_id=' + flt_id;
     String token = await getTokenWeb();
@@ -418,6 +422,8 @@ List userPlace;
         Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeTest(pt: pt,fl: fl,flat: flat,rm: rm,dv: dv,)));
     }
   }
+ 
+ 
   Future getDevicesWeb(String rId) async {
     final url = API+'addyourdevice/?r_id='+rId;
     String token = await getTokenWeb();

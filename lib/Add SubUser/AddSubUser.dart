@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +15,13 @@ import 'assignplace.dart';
 
 
 void main() =>
-    runApp(MaterialApp(
+    runApp(const MaterialApp(
       home: AddSubUser(),
     ));
 
 class AddSubUser extends StatefulWidget {
+  const AddSubUser({Key key}) : super(key: key);
+
 
 
   @override
@@ -26,8 +30,8 @@ class AddSubUser extends StatefulWidget {
 
 class _AddSubUserState extends State<AddSubUser> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController nameController = new TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   var assignSubUserPlaceId;
   Future placeVal;
   Future placeValForMobile;
@@ -65,7 +69,7 @@ void initState(){
     if (response.statusCode > 0) {
       print('error ${response.statusCode}');
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(
+        const snackBar =  SnackBar(
           content: Text('SubUser Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -77,7 +81,7 @@ void initState(){
       } else {
         _showDialog(context);
       }
-      print('AddSubUserCode  ${response.statusCode}');
+
     }
   }
 
@@ -101,7 +105,7 @@ void initState(){
       print('error ${response.statusCode}');
       print('errorASD ${response.body}');
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('SubUser Added'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -190,7 +194,7 @@ void initState(){
         body: jsonEncode(postData));
     if (response.statusCode > 0) {
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Place Assigned'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -218,7 +222,7 @@ void initState(){
         body: jsonEncode(postData));
     if (response.statusCode > 0) {
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
           content: Text('Place Assigned'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -236,11 +240,11 @@ void initState(){
       context: context,
       builder: (context) =>
           AlertDialog(
-            title: Text("Alert"),
-            content: Text("SubUser Already Added, You can direct assign place"),
+            title: const Text("Alert"),
+            content: const Text("SubUser Already Added, You can direct assign place"),
             actions: <Widget>[
               // ignore: deprecated_member_use
-              FlatButton(child: Text("No"), onPressed: () {
+              FlatButton(child: const Text("No"), onPressed: () {
                 Navigator.of(context).pop();
               }),
 
@@ -260,17 +264,17 @@ void initState(){
           if (viewportConstraints.maxWidth > 600) {
             return changeWidget==true? dropDown(context):Scaffold(
               appBar: AppBar(
-                title: Center(child: Text('Add SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),)),
+                title: Center(child: Text('Add SubUser',style: TextStyle(fontFamily: fonttest ?? 'RobotoMono',),)),
               ),
               body: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [Colors.blue, Colors.lightBlueAccent])),
                 child: SingleChildScrollView(
                   dragStartBehavior: DragStartBehavior.down,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 30,
@@ -299,7 +303,7 @@ void initState(){
                                 keyboardType: TextInputType.emailAddress,
                                 controller: emailController,
                                 style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
+                                const TextStyle(fontSize: 18, color: Colors.black54),
                                 decoration: InputDecoration(
 
                                   filled: true,
@@ -307,17 +311,17 @@ void initState(){
                                   hintText: 'Enter Email for SubUser',
                                   contentPadding: const EdgeInsets.all(15),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide: const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide: const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40,),
+                            const SizedBox(height: 40,),
                             Container(
                               width: 300,
                               child: TextFormField(
@@ -330,7 +334,7 @@ void initState(){
                                 keyboardType: TextInputType.text,
                                 controller: nameController,
                                 style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
+                                const TextStyle(fontSize: 18, color: Colors.black54),
                                 decoration: InputDecoration(
 
                                   filled: true,
@@ -338,20 +342,20 @@ void initState(){
                                   hintText: 'Enter Name for SubUser',
                                   contentPadding: const EdgeInsets.all(15),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide: const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide: const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40,),
+                            const SizedBox(height: 40,),
                             // ignore: deprecated_member_use
                             FlatButton(
-                                child: Text(
+                                child: const Text(
                                   'Submit',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -360,7 +364,7 @@ void initState(){
                                 ),
                                 shape: OutlineInputBorder(
                                   borderSide:
-                                  BorderSide(color: Colors.white, width: 2),
+                                  const BorderSide(color: Colors.white, width: 2),
                                   borderRadius: BorderRadius.circular(90),
                                 ),
                                 padding: const EdgeInsets.all(15),
@@ -521,10 +525,10 @@ void initState(){
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Add SubUser',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                title: Text('Add SubUser',style: TextStyle(fontFamily: fonttest ?? 'RobotoMono',),),
               ),
               body: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -545,7 +549,7 @@ void initState(){
                         // mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          SizedBox(height: 140,),
+                          const SizedBox(height: 140,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -556,7 +560,7 @@ void initState(){
                             keyboardType: TextInputType.emailAddress,
                             controller: emailController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest ?? 'RobotoMono',),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -564,16 +568,16 @@ void initState(){
                               hintText: 'Enter Email for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 40,),
+                          const SizedBox(height: 40,),
                           TextFormField(
                             autofocus: true,
                             textInputAction: TextInputAction.next,
@@ -584,7 +588,7 @@ void initState(){
                             keyboardType: TextInputType.text,
                             controller: nameController,
                             style:
-                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest==null?'RobotoMono':fonttest,),
+                            TextStyle(fontSize: 18, color: Colors.black54,fontFamily: fonttest ?? 'RobotoMono',),
                             decoration: InputDecoration(
 
                               filled: true,
@@ -592,19 +596,19 @@ void initState(){
                               hintText: 'Enter Name for SubUser',
                               contentPadding: const EdgeInsets.all(15),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
+                                borderSide: const BorderSide(color: Colors.white),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
-                          SizedBox(height: 40,),
+                          const SizedBox(height: 40,),
                           // ignore: deprecated_member_use
                           FlatButton(
-                              child: Text(
+                              child: const Text(
                                 'Submit',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -613,7 +617,7 @@ void initState(){
                               ),
                               shape: OutlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.white, width: 2),
+                                const BorderSide(color: Colors.white, width: 2),
                                 borderRadius: BorderRadius.circular(90),
                               ),
                               padding: const EdgeInsets.all(15),
@@ -629,7 +633,7 @@ void initState(){
                                 // goToNextPage();
                               }),
 
-                          SizedBox(height: 40,),
+                          const SizedBox(height: 40,),
                           FutureBuilder(
                               future: placeValForMobile,
                               builder: (context,
@@ -642,7 +646,7 @@ void initState(){
                                   if (snapshot.data.length == 0) {
                                     return Center(
                                         child: Text(
-                                            "No Devices on this place",style: TextStyle( fontFamily: fonttest==null?'RobotoMono':fonttest,),));
+                                            "No Devices on this place",style: TextStyle( fontFamily: fonttest ?? 'RobotoMono',),));
                                   }
                                   return Column(
                                       children: [
@@ -653,7 +657,7 @@ void initState(){
                                       .width * 2,
                                 decoration: BoxDecoration(
                                 color: Colors.white,
-                                boxShadow: [
+                                boxShadow: const [
                                 BoxShadow(
                                 color: Colors.black,
                                 blurRadius: 30,
@@ -667,22 +671,22 @@ void initState(){
                                 decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(15),
                                 focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                 color: Colors.white),
                                 borderRadius: BorderRadius.circular(10),
                                 ),
                                 enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                 color: Colors.black),
                                 borderRadius: BorderRadius.circular(50),
                                 ),
                                 ),
                                 dropdownColor: Colors.white70,
-                                icon: Icon(Icons.arrow_drop_down),
+                                icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 28,
-                                hint: Text('Select Place'),
+                                hint: const Text('Select Place'),
                                 isExpanded: true,
-                                style: TextStyle(
+                                style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 ),
@@ -690,7 +694,7 @@ void initState(){
                                 items: placeRows.map((selectedPlace) {
                                 return DropdownMenuItem(
                                 value: selectedPlace.toString(),
-                                child: Text("${selectedPlace['p_type']}",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                                child: Text("${selectedPlace['p_type']}",style: TextStyle(fontFamily: fonttest ?? 'RobotoMono',),),
                                 );
                                 }).toList(),
                                 onChanged: (selectedPlace) async {
@@ -708,11 +712,11 @@ void initState(){
                                 // items:snapshot.data
                                 ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                 height: 10,
                                 ),
                                 Container(
-                                margin: EdgeInsets.all(8),
+                                margin: const EdgeInsets.all(8),
                                 // ignore: deprecated_member_use
                                 child: FlatButton(
                                 child: Text(
@@ -720,13 +724,13 @@ void initState(){
                                 style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
-                                fontFamily: fonttest==null?'RobotoMono':fonttest,
+                                fontFamily: fonttest ?? 'RobotoMono',
                                 fontWeight: FontWeight.bold,
                                 ),
                                 ),
-                                padding: EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(12),
                                 shape: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                 color: Colors.white, width: 1),
                                 borderRadius:
                                 BorderRadius.circular(50)),
@@ -740,7 +744,7 @@ void initState(){
                                 );
 
                                 } else {
-                                SizedBox(height: 45,);
+                                const SizedBox(height: 45,);
                                 return null;
                                 }
                               }
@@ -765,7 +769,7 @@ void initState(){
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -773,7 +777,7 @@ void initState(){
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 140,),
+          const SizedBox(height: 140,),
           FutureBuilder<List<PlaceType>>(
               future: placeValWeb,
               builder: (context,
@@ -783,10 +787,10 @@ void initState(){
                   // setState(() {
                   //   floorVal = getfloors(snapshot.data[0].p_id);
                   // });
-                  if (snapshot.data.length == 0) {
+                  if (snapshot.data.isEmpty) {
                     return Center(
                         child: Text(
-                          "No Devices on this place",style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),));
+                          "No Devices on this place",style: TextStyle(fontFamily: fonttest ?? 'RobotoMono',),));
                   }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -798,7 +802,7 @@ void initState(){
                             .width * 2,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                   color: Colors.black,
                                   blurRadius: 30,
@@ -812,23 +816,23 @@ void initState(){
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(15),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.white),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.black),
                               borderRadius: BorderRadius.circular(50),
                             ),
                           ),
                           dropdownColor: Colors.white70,
-                          icon: Icon(Icons.arrow_drop_down),
+                          icon: const Icon(Icons.arrow_drop_down),
                           iconSize: 28,
-                          hint: Text('Select Place',style: TextStyle(fontFamily: fonttest==null?'RobotoMono':fonttest,),),
+                          hint: Text('Select Place',style: TextStyle(fontFamily: fonttest ?? 'RobotoMono',),),
                           isExpanded: true,
                           value: pt,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
@@ -850,25 +854,25 @@ void initState(){
                           // items:snapshot.data
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 80,
                       ),
                       Container(
-                        margin: EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(8),
                         // ignore: deprecated_member_use
                         child: FlatButton(
                           child: Text(
                             'Next',
                             style: TextStyle(
-                              fontFamily: fonttest==null?'RobotoMono':fonttest,
+                              fontFamily: fonttest ?? 'RobotoMono',
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           shape: OutlineInputBorder(
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Colors.white, width: 1),
                               borderRadius:
                               BorderRadius.circular(50)),
@@ -882,8 +886,8 @@ void initState(){
                   );
 
                 } else {
-                  SizedBox(height: 45,);
-                  return Center(child: Text('Add User'));
+                  const SizedBox(height: 45,);
+                  return const Center(child: Text('Add User'));
                 }
               }
           ),
